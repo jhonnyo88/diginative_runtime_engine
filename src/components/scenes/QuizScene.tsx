@@ -7,14 +7,13 @@ import {
   Button, 
   Card, 
   CardBody,
-  SimpleGrid,
   Alert,
   Progress,
   Badge,
   Image,
 } from '@chakra-ui/react';
-import { QuizScene as QuizSceneType } from '../../types/game-manifest';
-import { CheckIcon, CloseIcon, InfoIcon, RestartIcon } from '../icons/GameIcons';
+import type { QuizScene as QuizSceneType } from '../../types/game-manifest';
+import { CheckIcon, CloseIcon } from '../icons/GameIcons';
 import { CelebrationEffects, ButtonFeedback } from '../animations/CelebrationEffects';
 import { useAnimations } from '../../hooks/useAnimations';
 
@@ -37,8 +36,7 @@ export const QuizScene: React.FC<QuizSceneProps> = ({
   const [isSubmitted, setIsSubmitted] = useState(false);
   const [showCelebration, setShowCelebration] = useState(false);
   
-  // Game Designer spec: Animation support
-  const { getButtonAnimation } = useAnimations();
+  // Game Designer spec: Animation support handled by CSS
 
   const maxAttempts = scene.maxAttempts || 3;
   const allowMultiple = scene.allowMultiple || false;

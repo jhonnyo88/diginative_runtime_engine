@@ -17,7 +17,7 @@ export const CelebrationEffects: React.FC<CelebrationEffectsProps> = ({
   duration = 3000
 }) => {
   const [isVisible, setIsVisible] = useState(true);
-  const { getCelebrationAnimation, prefersReducedMotion } = useAnimations();
+  const { prefersReducedMotion } = useAnimations();
 
   useEffect(() => {
     const timer = setTimeout(() => {
@@ -30,7 +30,7 @@ export const CelebrationEffects: React.FC<CelebrationEffectsProps> = ({
 
   if (!isVisible) return null;
 
-  const animation = getCelebrationAnimation(type);
+  // Animation configuration handled by CSS classes
 
   const getIcon = () => {
     switch (type) {
@@ -148,7 +148,7 @@ export const ButtonFeedback: React.FC<{
   feedbackType = 'subtle',
   disabled = false 
 }) => {
-  const { getButtonAnimation, prefersReducedMotion } = useAnimations();
+  const { prefersReducedMotion } = useAnimations();
   
   if (disabled || prefersReducedMotion) {
     return <>{children}</>;

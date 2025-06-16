@@ -4,9 +4,7 @@ import {
   VStack, 
   HStack, 
   Text, 
-  Button, 
-  Avatar,
-  SimpleGrid,
+  Button
 } from '@chakra-ui/react';
 import { NextIcon } from '../icons/GameIcons';
 import { CharacterAvatar } from '../common/Avatar';

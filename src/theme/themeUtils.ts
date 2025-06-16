@@ -1,4 +1,4 @@
-import { ThemeConfig } from '../types/game-manifest';
+import type { ThemeConfig } from '../types/game-manifest';
 
 /**
  * Apply theme configuration to CSS custom properties

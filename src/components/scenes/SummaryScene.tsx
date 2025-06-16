@@ -17,7 +17,7 @@ import {
   StatNumber,
   StatHelpText
 } from '@chakra-ui/react';
-import { SummaryScene as SummarySceneType } from '../../types/game-manifest';
+import type { SummaryScene as SummarySceneType } from '../../types/game-manifest';
 import { CheckIcon, StarIcon, ClockIcon, CertificateIcon } from '../icons/GameIcons';
 
 interface SummarySceneProps {

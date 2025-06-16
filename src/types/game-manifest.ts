@@ -95,6 +95,7 @@ export interface BaseScene {
   id: string;
   type: 'dialogue' | 'quiz' | 'assessment' | 'resource' | 'summary';
   title?: string;
+  description?: string;
   navigation?: {
     next?: string; // Scene ID or "end"
     previous?: string;
@@ -163,6 +164,7 @@ export interface AssessmentScene extends BaseScene {
   }>;
   scoring?: {
     passingScore?: number;
+    passThreshold?: number;
     showScore?: boolean;
     feedback?: {
       excellent?: string;
@@ -170,6 +172,7 @@ export interface AssessmentScene extends BaseScene {
       needsImprovement?: string;
     };
   };
+  certificationArea?: string;
 }
 
 // Resource scene for reference materials

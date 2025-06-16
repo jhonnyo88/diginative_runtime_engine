@@ -1,5 +1,14 @@
 import React from 'react';
-import { Avatar as ChakraAvatar, AvatarProps, Box } from '@chakra-ui/react';
+import { Avatar as ChakraAvatar, Box } from '@chakra-ui/react';
+
+// Define AvatarProps for Chakra UI v2 compatibility
+interface AvatarProps {
+  name?: string;
+  src?: string;
+  size?: string;
+  bg?: string;
+  color?: string;
+}
 
 // Game Designer spec: Character Avatar Styles implementation
 // Based on task-005 specifications for municipal-appropriate styling
@@ -65,7 +74,6 @@ export const CharacterAvatar: React.FC<CharacterAvatarProps> = ({
         fontWeight="medium"
         // Game Designer spec: High-quality rendering for professional context
         style={{
-          imageRendering: 'high-quality',
           objectFit: 'cover'
         }}
         {...props}
@@ -123,11 +131,12 @@ export const CharacterAvatarGroup: React.FC<{
           position="relative"
           zIndex={characters.length - index}
         >
-          <CharacterAvatar
-            character={character}
-            size={size}
-            border="2px solid white"
-          />
+          <Box border="2px solid white" borderRadius="full">
+            <CharacterAvatar
+              character={character}
+              size={size}
+            />
+          </Box>
         </Box>
       ))}
       

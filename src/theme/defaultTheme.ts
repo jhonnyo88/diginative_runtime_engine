@@ -1,4 +1,4 @@
-import { ThemeConfig } from '../types/game-manifest';
+import type { ThemeConfig } from '../types/game-manifest';
 
 /**
  * Default theme for DigiNativa Runtime Engine

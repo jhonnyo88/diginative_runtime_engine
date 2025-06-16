@@ -73,7 +73,6 @@ export const ContentWorkflows: React.FC<ContentWorkflowsProps> = ({
 }) => {
   const [selectedItems, setSelectedItems] = useState<Set<string>>(new Set());
   const [bulkOperations, setBulkOperations] = useState<BulkOperation[]>([]);
-  const [showImportDialog, setShowImportDialog] = useState(false);
 
   // Mock content data - in production this comes from API
   const [contentItems] = useState<ContentItem[]>([
@@ -127,7 +126,7 @@ export const ContentWorkflows: React.FC<ContentWorkflowsProps> = ({
     }
   ]);
 
-  const canManageContent = userRole !== 'content_manager' || userRole === 'tenant_admin';
+  const canManageContent = userRole === 'super_admin' || userRole === 'tenant_admin';
   const canBulkEdit = userRole === 'super_admin' || userRole === 'tenant_admin';
 
   const handleSelectItem = (itemId: string) => {
@@ -210,53 +209,7 @@ export const ContentWorkflows: React.FC<ContentWorkflowsProps> = ({
     }, 1000);
   }, [selectedItems]);
 
-  const handleImportContent = useCallback((files: FileList | null) => {
-    if (!files || files.length === 0) return;
-
-    const operation: BulkOperation = {
-      id: `import-${Date.now()}`,
-      type: 'import',
-      status: 'processing',
-      itemCount: files.length,
-      progress: 0,
-      startedAt: new Date()
-    };
-
-    setBulkOperations(prev => [operation, ...prev]);
-
-    // Simulate import process
-    let progress = 0;
-    const progressInterval = setInterval(() => {
-      progress += Math.random() * 15;
-      if (progress >= 100) {
-        progress = 100;
-        clearInterval(progressInterval);
-        
-        setBulkOperations(prev => 
-          prev.map(op => 
-            op.id === operation.id 
-              ? { 
-                  ...op, 
-                  status: 'completed' as const, 
-                  progress: 100,
-                  completedAt: new Date()
-                }
-              : op
-          )
-        );
-      } else {
-        setBulkOperations(prev => 
-          prev.map(op => 
-            op.id === operation.id 
-              ? { ...op, progress }
-              : op
-          )
-        );
-      }
-    }, 800);
-
-    setShowImportDialog(false);
-  }, []);
+  // Import functionality placeholder for future implementation
 
   const getStatusColor = (status: string) => {
     switch (status) {
@@ -299,7 +252,7 @@ export const ContentWorkflows: React.FC<ContentWorkflowsProps> = ({
               <Button
                 variant="outline"
                 size="sm"
-                onClick={() => setShowImportDialog(true)}
+                onClick={() => console.log('Import functionality coming soon')}
               >
                 Import Content
               </Button>

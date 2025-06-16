@@ -1,5 +1,5 @@
 import React, { createContext, useContext, useEffect, useMemo } from 'react';
-import { ThemeConfig } from '../types/game-manifest';
+import type { ThemeConfig } from '../types/game-manifest';
 import { defaultTheme } from './defaultTheme';
 import { applyTheme } from './themeUtils';
 

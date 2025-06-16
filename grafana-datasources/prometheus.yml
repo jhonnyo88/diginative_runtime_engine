@@ -1,0 +1,72 @@
+# DigiNativa Runtime Engine - Grafana Prometheus Datasource
+# Configuration for monitoring Swedish municipal education platform
+
+apiVersion: 1
+
+datasources:
+  - name: Prometheus
+    type: prometheus
+    access: proxy
+    url: http://prometheus:9090
+    isDefault: true
+    editable: true
+    
+    # Basic auth (if needed)
+    # basicAuth: false
+    # basicAuthUser: admin
+    # secureJsonData:
+    #   basicAuthPassword: admin_password
+    
+    jsonData:
+      # HTTP method to use for queries
+      httpMethod: POST
+      
+      # Query timeout
+      queryTimeout: 60s
+      
+      # Time interval options
+      timeInterval: 15s
+      
+      # Custom headers for municipal compliance
+      httpHeaderName1: X-Municipality-Sector
+      
+      # Exemplars configuration for tracing
+      exemplarTraceIdDestinations:
+        - name: trace_id
+          datasourceUid: jaeger_uid
+          
+    secureJsonData:
+      httpHeaderValue1: swedish-education
+      
+    # Metadata
+    uid: prometheus
+    orgId: 1
+    version: 1
+    
+    # Alert configuration
+    alerting:
+      enabled: true
+      
+  # Additional datasource for PostgreSQL analytics (when needed)
+  - name: PostgreSQL Analytics
+    type: postgres
+    access: proxy
+    url: postgres:5432
+    database: diginativa
+    user: diginativa
+    
+    jsonData:
+      sslmode: disable
+      maxOpenConns: 10
+      maxIdleConns: 2
+      connMaxLifetime: 14400
+      postgresVersion: 1500
+      timescaledb: false
+      
+    secureJsonData:
+      password: diginativa123
+      
+    uid: postgres
+    orgId: 1
+    version: 1
+    editable: true

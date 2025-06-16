@@ -1,0 +1,214 @@
+# DigiNativa Runtime Engine - Production Docker Compose
+# Enterprise deployment for Swedish municipal sector
+
+version: '3.8'
+
+services:
+  # Main Application Container
+  diginativa-app:
+    build: 
+      context: .
+      dockerfile: Dockerfile
+      target: production
+    container_name: diginativa-runtime-engine
+    restart: unless-stopped
+    ports:
+      - "8080:8080"
+    networks:
+      - diginativa-network
+    environment:
+      - NODE_ENV=production
+      - NGINX_WORKER_PROCESSES=auto
+      - NGINX_WORKER_CONNECTIONS=4096
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.diginativa.rule=Host(`diginativa.local`)"
+      - "traefik.http.services.diginativa.loadbalancer.server.port=8080"
+      - "com.diginativa.service=runtime-engine"
+      - "com.diginativa.environment=production"
+    healthcheck:
+      test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost:8080/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 30s
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
+    deploy:
+      resources:
+        limits:
+          cpus: '2.0'
+          memory: 2G
+        reservations:
+          cpus: '0.5'
+          memory: 512M
+      restart_policy:
+        condition: on-failure
+        delay: 5s
+        max_attempts: 3
+
+  # Redis for Session Management and Caching
+  redis:
+    image: redis:7-alpine
+    container_name: diginativa-redis
+    restart: unless-stopped
+    ports:
+      - "6379:6379"
+    networks:
+      - diginativa-network
+    command: redis-server --appendonly yes --requirepass ${REDIS_PASSWORD:-diginativa123}
+    volumes:
+      - redis-data:/data
+    environment:
+      - REDIS_PASSWORD=${REDIS_PASSWORD:-diginativa123}
+    healthcheck:
+      test: ["CMD", "redis-cli", "--raw", "incr", "ping"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+    deploy:
+      resources:
+        limits:
+          cpus: '1.0'
+          memory: 1G
+        reservations:
+          cpus: '0.25'
+          memory: 256M
+
+  # PostgreSQL for Analytics and User Data
+  postgres:
+    image: postgres:15-alpine
+    container_name: diginativa-postgres
+    restart: unless-stopped
+    ports:
+      - "5432:5432"
+    networks:
+      - diginativa-network
+    environment:
+      - POSTGRES_DB=${POSTGRES_DB:-diginativa}
+      - POSTGRES_USER=${POSTGRES_USER:-diginativa}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD:-diginativa123}
+      - PGDATA=/var/lib/postgresql/data/pgdata
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+      - ./init-scripts:/docker-entrypoint-initdb.d
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-diginativa} -d ${POSTGRES_DB:-diginativa}"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+    deploy:
+      resources:
+        limits:
+          cpus: '2.0'
+          memory: 2G
+        reservations:
+          cpus: '0.5'
+          memory: 512M
+
+  # Nginx Load Balancer (for multi-instance scaling)
+  nginx-lb:
+    image: nginx:alpine
+    container_name: diginativa-loadbalancer
+    restart: unless-stopped
+    ports:
+      - "80:80"
+      - "443:443"
+    networks:
+      - diginativa-network
+    volumes:
+      - ./nginx-lb.conf:/etc/nginx/nginx.conf:ro
+      - ./ssl:/etc/nginx/ssl:ro
+    depends_on:
+      - diginativa-app
+    healthcheck:
+      test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+    deploy:
+      resources:
+        limits:
+          cpus: '1.0'
+          memory: 512M
+        reservations:
+          cpus: '0.25'
+          memory: 128M
+
+  # Monitoring with Prometheus
+  prometheus:
+    image: prom/prometheus:latest
+    container_name: diginativa-prometheus
+    restart: unless-stopped
+    ports:
+      - "9090:9090"
+    networks:
+      - diginativa-network
+    volumes:
+      - ./prometheus.yml:/etc/prometheus/prometheus.yml:ro
+      - prometheus-data:/prometheus
+    command:
+      - '--config.file=/etc/prometheus/prometheus.yml'
+      - '--storage.tsdb.path=/prometheus'
+      - '--web.console.libraries=/etc/prometheus/console_libraries'
+      - '--web.console.templates=/etc/prometheus/consoles'
+      - '--storage.tsdb.retention.time=200h'
+      - '--web.enable-lifecycle'
+    deploy:
+      resources:
+        limits:
+          cpus: '1.0'
+          memory: 1G
+        reservations:
+          cpus: '0.25'
+          memory: 256M
+
+  # Grafana for Analytics Dashboard
+  grafana:
+    image: grafana/grafana:latest
+    container_name: diginativa-grafana
+    restart: unless-stopped
+    ports:
+      - "3000:3000"
+    networks:
+      - diginativa-network
+    environment:
+      - GF_SECURITY_ADMIN_PASSWORD=${GRAFANA_PASSWORD:-admin123}
+      - GF_USERS_ALLOW_SIGN_UP=false
+      - GF_SECURITY_ADMIN_USER=${GRAFANA_USER:-admin}
+    volumes:
+      - grafana-data:/var/lib/grafana
+      - ./grafana-dashboards:/etc/grafana/provisioning/dashboards:ro
+      - ./grafana-datasources:/etc/grafana/provisioning/datasources:ro
+    depends_on:
+      - prometheus
+    deploy:
+      resources:
+        limits:
+          cpus: '1.0'
+          memory: 1G
+        reservations:
+          cpus: '0.25'
+          memory: 256M
+
+networks:
+  diginativa-network:
+    driver: bridge
+    name: diginativa-network
+
+volumes:
+  redis-data:
+    driver: local
+    name: diginativa-redis-data
+  postgres-data:
+    driver: local
+    name: diginativa-postgres-data
+  prometheus-data:
+    driver: local
+    name: diginativa-prometheus-data
+  grafana-data:
+    driver: local
+    name: diginativa-grafana-data

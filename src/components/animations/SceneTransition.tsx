@@ -13,10 +13,9 @@ export const SceneTransition: React.FC<SceneTransitionProps> = ({
   sceneId,
   isLoading = false
 }) => {
-  const { getSceneTransition, getLoadingAnimation, prefersReducedMotion } = useAnimations();
+  const { prefersReducedMotion } = useAnimations();
 
-  const transitionAnimation = getSceneTransition();
-  const loadingAnimation = getLoadingAnimation();
+  // Transitions handled by CSS classes for performance
 
   // Game Designer spec: Professional scene transitions for municipal context
   return (
@@ -81,7 +80,7 @@ export const LoadingSkeleton: React.FC<{
   borderRadius = 'md',
   count = 1 
 }) => {
-  const { getLoadingAnimation } = useAnimations();
+  // Loading animations handled by CSS
 
   return (
     <>

@@ -1,0 +1,15 @@
+# DigiNativa Runtime Engine - Grafana Dashboard Provisioning
+# Auto-import dashboards for Swedish municipal education monitoring
+
+apiVersion: 1
+
+providers:
+  - name: 'DigiNativa Dashboards'
+    orgId: 1
+    folder: 'DigiNativa'
+    type: file
+    disableDeletion: false
+    updateIntervalSeconds: 10
+    allowUiUpdates: true
+    options:
+      path: /etc/grafana/provisioning/dashboards/json

@@ -18,6 +18,9 @@ import {
   Tbody,
   Tr,
   Th,
+  Card,
+  CardHeader,
+  CardBody,
   Td,
   Avatar,
   Menu,
@@ -41,6 +44,7 @@ interface AdminDashboardProps {
   tenantId: string;
   tenantName: string;
   userRole: 'super_admin' | 'tenant_admin' | 'content_manager';
+  onLogout?: () => void;
 }
 
 // Mock data - in production this comes from real APIs
@@ -103,18 +107,19 @@ const mockDashboardData = {
 export const AdminDashboard: React.FC<AdminDashboardProps> = ({
   tenantId,
   tenantName,
-  userRole
+  userRole,
+  onLogout
 }) => {
+  // Use onLogout in a logout button when needed
+  const handleLogout = onLogout;
   const [selectedTimeframe, setSelectedTimeframe] = useState('30d');
   
   // Real-time analytics integration
   const {
     metrics,
     isLoading,
-    error,
     isConnected,
     lastUpdated,
-    trackActivity,
     exportData,
     refresh,
     isRealTime,

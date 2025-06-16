@@ -14,7 +14,7 @@ import {
   SimpleGrid,
   Divider
 } from '@chakra-ui/react';
-import { AssessmentScene as AssessmentSceneType } from '../../types/game-manifest';
+import type { AssessmentScene as AssessmentSceneType } from '../../types/game-manifest';
 import { CheckIcon, StarIcon, CertificateIcon } from '../icons/GameIcons';
 
 interface AssessmentSceneProps {
@@ -133,7 +133,7 @@ export const AssessmentScene: React.FC<AssessmentSceneProps> = ({
         <CardBody p={8}>
           <VStack gap={6}>
             {/* Circular Score Progress */}
-            <Box position="relative" size="160px">
+            <Box position="relative" width="160px" height="160px">
               <Circle
                 size="160px"
                 bg={`\${getScoreColor(assessmentData.percentageScore)}.50`}

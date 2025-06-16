@@ -1,6 +1,6 @@
 import React from 'react';
 import { Box, Text, Button } from '@chakra-ui/react';
-import { ResourceScene as ResourceSceneType } from '../../types/game-manifest';
+import type { ResourceScene as ResourceSceneType } from '../../types/game-manifest';
 
 interface ResourceSceneProps {
   scene: ResourceSceneType;

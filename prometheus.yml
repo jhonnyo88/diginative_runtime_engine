@@ -1,0 +1,65 @@
+# DigiNativa Runtime Engine - Prometheus Configuration
+# Monitoring for 10,000+ concurrent users and municipal SLA requirements
+
+global:
+  scrape_interval: 15s
+  evaluation_interval: 15s
+  external_labels:
+    monitor: 'diginativa-monitor'
+    environment: 'production'
+    sector: 'municipal-education'
+
+# Alerting configuration
+alerting:
+  alertmanagers:
+    - static_configs:
+        - targets: []
+
+# Rule files for alerting
+rule_files:
+  - "alert_rules.yml"
+
+# Scrape configurations
+scrape_configs:
+  # DigiNativa Runtime Engine metrics
+  - job_name: 'diginativa-app'
+    static_configs:
+      - targets: ['diginativa-app:8080']
+    metrics_path: '/metrics'
+    scrape_interval: 10s
+    scrape_timeout: 5s
+    params:
+      format: ['prometheus']
+
+  # Nginx load balancer metrics
+  - job_name: 'nginx-lb'
+    static_configs:
+      - targets: ['nginx-lb:80']
+    metrics_path: '/metrics'
+    scrape_interval: 15s
+
+  # Redis session store metrics
+  - job_name: 'redis'
+    static_configs:
+      - targets: ['redis:6379']
+    scrape_interval: 30s
+
+  # PostgreSQL analytics database
+  - job_name: 'postgres'
+    static_configs:
+      - targets: ['postgres:5432']
+    scrape_interval: 30s
+
+  # Prometheus self-monitoring
+  - job_name: 'prometheus'
+    static_configs:
+      - targets: ['localhost:9090']
+
+  # Node exporter for system metrics (if added)
+  - job_name: 'node-exporter'
+    static_configs:
+      - targets: ['node-exporter:9100']
+    scrape_interval: 15s
+
+# Swedish municipal sector specific monitoring
+# Focus on Anna Svensson's usage patterns and 7-minute session optimization

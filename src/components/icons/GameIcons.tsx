@@ -1,11 +1,20 @@
 import React from 'react';
-import { Icon, IconProps } from '@chakra-ui/react';
+import { Icon } from '@chakra-ui/react';
 
 // Base icon component following Game Designer's specifications
 // - 24px minimum touch targets
 // - 2px stroke width for mobile visibility
 // - WCAG AA contrast compliance
 // - Screen reader accessibility
+
+// Define our own IconProps since Chakra UI v2 might not export it
+interface IconProps {
+  color?: string;
+  boxSize?: string | number;
+  w?: string | number;
+  h?: string | number;
+  'aria-label'?: string;
+}
 
 interface GameIconProps extends Omit<IconProps, 'children'> {
   'aria-label'?: string;
@@ -240,8 +249,8 @@ export const GameIconButton: React.FC<{
   >
     <IconComponent 
       aria-label={ariaLabel}
-      width={size} 
-      height={size}
+      w={size} 
+      h={size}
     />
   </button>
 );

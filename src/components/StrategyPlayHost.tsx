@@ -1,17 +1,21 @@
-import React, { useState, useCallback, useMemo } from 'react';
+import React, { useState, useCallback, useMemo, useEffect } from 'react';
 import { Box, Progress, VStack, Alert } from '@chakra-ui/react';
-import type { GameManifest, Scene } from '../types/game-manifest';
-import { InfoIcon, ProgressIcon } from './icons/GameIcons';
+import type { GameManifest } from '../types/game-manifest';
+import { InfoIcon } from './icons/GameIcons';
 import { SkipLinks, SkipLink } from './common/SkipLink';
 import { useFocusManagement } from '../hooks/useFocusManagement';
+import { usePerformanceTracker } from '../hooks/usePerformanceTracker';
 import { SceneTransition } from './animations/SceneTransition';
 import { ProgressCelebration } from './animations/CelebrationEffects';
 import { ChakraThemeProvider } from '../theme/ChakraThemeProvider';
+import { detectAndAdaptCultural, type CulturalContext } from '../middleware/CulturalAdaptation';
 import { DialogueScene } from './scenes/DialogueScene';
 import { QuizScene } from './scenes/QuizScene';
 import { AssessmentScene } from './scenes/AssessmentScene';
 import { ResourceScene } from './scenes/ResourceScene';
 import { SummaryScene } from './scenes/SummaryScene';
+import { GameErrorBoundary } from './ErrorBoundary';
+import { performanceAnalytics } from '../services/performance-analytics';
 
 export interface GameResults {
   gameId: string;
@@ -30,6 +34,7 @@ interface StrategyPlayHostProps {
   analytics?: {
     trackEvent: (eventType: string, data: any) => void;
   };
+  culturalContext?: CulturalContext;
 }
 
 export const StrategyPlayHost: React.FC<StrategyPlayHostProps> = ({
@@ -37,8 +42,22 @@ export const StrategyPlayHost: React.FC<StrategyPlayHostProps> = ({
   onComplete,
   onSceneChange,
   analytics,
+  culturalContext = 'swedish_mobile',
 }) => {
-  const [currentSceneId, setCurrentSceneId] = useState(gameManifest.startScene);
+  // Expert recommendation: Cultural adaptation of game manifest
+  const adaptedGameManifest = useMemo(() => {
+    return detectAndAdaptCultural(gameManifest, culturalContext);
+  }, [gameManifest, culturalContext]);
+
+  const [currentSceneId, setCurrentSceneId] = useState(adaptedGameManifest.startScene);
+  
+  // Performance tracking for municipal optimization
+  const { trackGameInteraction, trackSessionProgress } = usePerformanceTracker({
+    componentName: 'StrategyPlayHost',
+    trackComponentMount: true,
+    trackRenderTime: true,
+    trackUserInteractions: true
+  });
   
   // Game Designer spec: Focus management for accessibility
   const { mainContentRef } = useFocusManagement(currentSceneId, {
@@ -54,10 +73,21 @@ export const StrategyPlayHost: React.FC<StrategyPlayHostProps> = ({
   });
   const [error, setError] = useState<string | null>(null);
 
+  // Initialize game session analytics
+  useEffect(() => {
+    performanceAnalytics.startGameSession(adaptedGameManifest.gameId);
+    
+    return () => {
+      // End session when component unmounts
+      const completed = gameState.scenesCompleted.length === adaptedGameManifest.scenes.length;
+      performanceAnalytics.endGameSession(adaptedGameManifest.gameId, completed, gameState.score);
+    };
+  }, [adaptedGameManifest.gameId]);
+
   // Find current scene
   const currentScene = useMemo(() => {
-    return gameManifest.scenes.find(scene => scene.id === currentSceneId);
-  }, [gameManifest.scenes, currentSceneId]);
+    return adaptedGameManifest.scenes.find(scene => scene.id === currentSceneId);
+  }, [adaptedGameManifest.scenes, currentSceneId]);
 
   // Calculate progress
   const progress = useMemo(() => {
@@ -68,6 +98,8 @@ export const StrategyPlayHost: React.FC<StrategyPlayHostProps> = ({
 
   // Handle scene completion
   const handleSceneComplete = useCallback((results: any) => {
+    const endTracking = trackGameInteraction(gameManifest.gameId, currentSceneId, 'scene_complete');
+    
     // Track analytics
     analytics?.trackEvent('scene_complete', {
       gameId: gameManifest.gameId,
@@ -75,17 +107,34 @@ export const StrategyPlayHost: React.FC<StrategyPlayHostProps> = ({
       results,
     });
 
+    // Track performance analytics
+    const responseTime = endTracking('success', { sceneResults: results }) || 0;
+    performanceAnalytics.trackGameInteraction(
+      gameManifest.gameId, 
+      currentSceneId, 
+      'scene_complete', 
+      responseTime
+    );
+
     // Update game state
-    setGameState(prev => ({
-      ...prev,
-      scenesCompleted: [...prev.scenesCompleted, currentSceneId],
-      score: prev.score + (results.score || 0),
-      totalScore: prev.totalScore + (results.maxScore || 0),
-      answers: {
-        ...prev.answers,
-        [currentSceneId]: results.answers,
-      },
-    }));
+    setGameState(prev => {
+      const newState = {
+        ...prev,
+        scenesCompleted: [...prev.scenesCompleted, currentSceneId],
+        score: prev.score + (results.score || 0),
+        totalScore: prev.totalScore + (results.maxScore || 0),
+        answers: {
+          ...prev.answers,
+          [currentSceneId]: results.answers,
+        },
+      };
+      
+      // Track session progress for Anna Svensson's 7-minute sessions
+      const progressPercent = (newState.scenesCompleted.length / gameManifest.scenes.length) * 100;
+      trackSessionProgress(progressPercent);
+      
+      return newState;
+    });
 
     // Determine next scene
     const nextScene = results.nextScene || currentScene?.navigation?.next;
@@ -130,22 +179,21 @@ export const StrategyPlayHost: React.FC<StrategyPlayHostProps> = ({
     }
 
     const baseProps = {
-      scene: currentScene,
       onComplete: handleSceneComplete,
       analytics,
     };
 
     switch (currentScene.type) {
       case 'dialogue':
-        return <DialogueScene {...baseProps} />;
+        return <DialogueScene scene={currentScene as any} {...baseProps} />;
       case 'quiz':
-        return <QuizScene {...baseProps} />;
+        return <QuizScene scene={currentScene as any} {...baseProps} />;
       case 'assessment':
-        return <AssessmentScene {...baseProps} />;
+        return <AssessmentScene scene={currentScene as any} {...baseProps} />;
       case 'resource':
-        return <ResourceScene {...baseProps} />;
+        return <ResourceScene scene={currentScene as any} {...baseProps} />;
       case 'summary':
-        return <SummaryScene {...baseProps} />;
+        return <SummaryScene scene={currentScene as any} {...baseProps} />;
       default:
         setError(`Unknown scene type: ${(currentScene as any).type}`);
         return null;
@@ -169,8 +217,9 @@ export const StrategyPlayHost: React.FC<StrategyPlayHostProps> = ({
 
   return (
     <ChakraThemeProvider gameTheme={gameManifest.theme}>
-      {/* Skip Links - Game Designer spec: WCAG 2.1 AA compliance */}
-      <SkipLinks>
+      <GameErrorBoundary gameId={gameManifest.gameId}>
+        {/* Skip Links - Game Designer spec: WCAG 2.1 AA compliance */}
+        <SkipLinks>
         <SkipLink href="#main-content">
           Hoppa till huvudinnehåll
         </SkipLink>
@@ -198,7 +247,7 @@ export const StrategyPlayHost: React.FC<StrategyPlayHostProps> = ({
         
         {/* Main content area - Game Designer spec: Focus management */}
         <Box 
-          ref={mainContentRef}
+          ref={mainContentRef as any}
           id="main-content"
           flex="1" 
           w="100%" 
@@ -227,6 +276,7 @@ export const StrategyPlayHost: React.FC<StrategyPlayHostProps> = ({
           show={true}
         />
       </VStack>
+      </GameErrorBoundary>
     </ChakraThemeProvider>
   );
 };

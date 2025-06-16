@@ -32,6 +32,7 @@ export const AdminApp: React.FC = () => {
       tenantId={user.tenantId}
       tenantName={user.tenantName}
       userRole={user.role}
+      onLogout={handleLogout}
     />
   );
 };

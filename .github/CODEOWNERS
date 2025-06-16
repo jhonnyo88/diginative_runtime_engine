@@ -1,0 +1,45 @@
+# DigiNativa Runtime Engine - Code Ownership & Review Requirements
+# This file defines who must review changes to critical parts of the codebase
+
+# Global fallback - all files require review from head developer
+* @jhonnyo88
+
+# Core Engine Components - Critical for 10,000+ user performance
+/src/components/StrategyPlayHost.tsx @jhonnyo88
+/src/types/game-manifest.ts @jhonnyo88
+/src/hooks/ @jhonnyo88
+
+# Security & Authentication - Enterprise requirements
+/src/services/analytics.ts @jhonnyo88
+/src/components/admin/ @jhonnyo88
+
+# Testing Infrastructure - Quality assurance
+/src/tests/ @jhonnyo88
+/.github/workflows/ @jhonnyo88
+/vitest.config.ts @jhonnyo88
+
+# Theme System - Multi-tenant requirements
+/src/theme/ @jhonnyo88
+/design_system/ @jhonnyo88
+
+# CI/CD & Deployment - Production stability
+/.github/ @jhonnyo88
+/lighthouse.config.js @jhonnyo88
+/Dockerfile @jhonnyo88
+
+# Documentation - Strategic alignment
+/docs/ @jhonnyo88
+/README.md @jhonnyo88
+/claude.md @jhonnyo88
+
+# Game Designer Collaboration
+/design_dev_sync.json @jhonnyo88
+/claude_game_designer.md @jhonnyo88
+
+# Package Management - Dependency security
+/package.json @jhonnyo88
+/package-lock.json @jhonnyo88
+
+# Build Configuration - Performance optimization
+/vite.config.ts @jhonnyo88
+/tsconfig*.json @jhonnyo88

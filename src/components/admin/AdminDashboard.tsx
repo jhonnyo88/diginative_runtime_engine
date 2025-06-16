@@ -5,9 +5,6 @@ import {
   HStack,
   Text,
   Button,
-  Card,
-  CardBody,
-  CardHeader,
   SimpleGrid,
   Stat,
   StatLabel,
@@ -28,13 +25,13 @@ import {
   MenuList,
   MenuItem,
   Alert,
+  AlertIcon,
   Tabs,
   TabList,
   TabPanels,
   Tab,
   TabPanel
 } from '@chakra-ui/react';
-import { InfoIcon } from '@chakra-ui/icons';
 import { useRealTimeMetrics } from '../../hooks/useRealTimeMetrics';
 
 // Game Designer task-012 specifications: Enterprise Admin Dashboard
@@ -168,15 +165,15 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
 
   return (
     <Box p={6} bg="gray.50" minH="100vh">
-      <VStack gap={6} maxW="1200px" mx="auto">
+      <VStack spacing={6} maxW="1200px" mx="auto">
         
         {/* Header */}
         <HStack justify="space-between" w="100%" mb={4}>
-          <VStack align="start" gap={1}>
+          <VStack align="start" spacing={1}>
             <Text fontSize="2xl" fontWeight="bold" color="gray.800">
               Admin Dashboard
             </Text>
-            <HStack gap={2}>
+            <HStack spacing={2}>
               <Badge colorScheme="blue" px={3} py={1}>
                 {tenantName}
               </Badge>
@@ -186,7 +183,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
             </HStack>
           </VStack>
           
-          <HStack gap={3}>
+          <HStack spacing={3}>
             {/* Connection Status Indicator */}
             <Badge 
               colorScheme={isConnected ? 'green' : 'orange'} 
@@ -238,62 +235,54 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
 
         {/* Key Metrics - Game Designer spec: 10,000+ concurrent user performance */}
         {canViewAnalytics && (
-          <SimpleGrid columns={4} gap={6} w="100%">
-            <Card>
-              <CardBody>
-                <Stat>
-                  <StatLabel>Total Users</StatLabel>
-                  <StatNumber>{realTimeData.totalUsers.toLocaleString()}</StatNumber>
-                  <StatHelpText>
-                    <StatArrow type="increase" />
-                    12.3% from last month
-                  </StatHelpText>
-                </Stat>
-              </CardBody>
-            </Card>
+          <SimpleGrid columns={4} spacing={6} w="100%">
+            <Box bg="white" p={6} borderRadius="lg" boxShadow="sm">
+              <Stat>
+                <StatLabel>Total Users</StatLabel>
+                <StatNumber>{realTimeData.totalUsers.toLocaleString()}</StatNumber>
+                <StatHelpText>
+                  <StatArrow type="increase" />
+                  12.3% from last month
+                </StatHelpText>
+              </Stat>
+            </Box>
 
-            <Card>
-              <CardBody>
-                <Stat>
-                  <StatLabel>Active Games</StatLabel>
-                  <StatNumber>{realTimeData.activeGames}</StatNumber>
-                  <StatHelpText>
-                    <StatArrow type="increase" />
-                    4 new this month
-                  </StatHelpText>
-                </Stat>
-              </CardBody>
-            </Card>
+            <Box bg="white" p={6} borderRadius="lg" boxShadow="sm">
+              <Stat>
+                <StatLabel>Active Games</StatLabel>
+                <StatNumber>{realTimeData.activeGames}</StatNumber>
+                <StatHelpText>
+                  <StatArrow type="increase" />
+                  4 new this month
+                </StatHelpText>
+              </Stat>
+            </Box>
 
-            <Card>
-              <CardBody>
-                <Stat>
-                  <StatLabel>Completion Rate</StatLabel>
-                  <StatNumber>{realTimeData.completionRate.toFixed(1)}%</StatNumber>
-                  <StatHelpText>
-                    <StatArrow type="increase" />
-                    2.1% improvement
-                  </StatHelpText>
-                </Stat>
-              </CardBody>
-            </Card>
+            <Box bg="white" p={6} borderRadius="lg" boxShadow="sm">
+              <Stat>
+                <StatLabel>Completion Rate</StatLabel>
+                <StatNumber>{realTimeData.completionRate.toFixed(1)}%</StatNumber>
+                <StatHelpText>
+                  <StatArrow type="increase" />
+                  2.1% improvement
+                </StatHelpText>
+              </Stat>
+            </Box>
 
-            <Card>
-              <CardBody>
-                <Stat>
-                  <StatLabel>Avg Session Time</StatLabel>
-                  <StatNumber>{realTimeData.avgSessionTime}</StatNumber>
-                  <StatHelpText>
-                    Anna Svensson target: 7min
-                  </StatHelpText>
-                </Stat>
-              </CardBody>
-            </Card>
+            <Box bg="white" p={6} borderRadius="lg" boxShadow="sm">
+              <Stat>
+                <StatLabel>Avg Session Time</StatLabel>
+                <StatNumber>{realTimeData.avgSessionTime}</StatNumber>
+                <StatHelpText>
+                  Anna Svensson target: 7min
+                </StatHelpText>
+              </Stat>
+            </Box>
           </SimpleGrid>
         )}
 
         {/* Main Content Tabs */}
-        <Card w="100%">
+        <Box bg="white" borderRadius="lg" boxShadow="sm" w="100%">
           <Tabs variant="enclosed">
             <TabList>
               {canViewAnalytics && <Tab>Analytics Overview</Tab>}
@@ -307,15 +296,15 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
               {/* Analytics Overview */}
               {canViewAnalytics && (
                 <TabPanel>
-                  <VStack gap={6} align="stretch">
+                  <VStack spacing={6} align="stretch">
                     
                     {/* Completion Trends */}
-                    <Card>
-                      <CardHeader>
+                    <Box bg="white" borderRadius="lg" boxShadow="sm">
+                      <Box p={4} borderBottomWidth={1}>
                         <Text fontSize="lg" fontWeight="bold">Completion Trends</Text>
-                      </CardHeader>
-                      <CardBody>
-                        <VStack gap={4} align="stretch">
+                      </Box>
+                      <Box p={6}>
+                        <VStack spacing={4} align="stretch">
                           <Progress 
                             value={realTimeData.completionRate} 
                             colorScheme="green" 
@@ -331,18 +320,18 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                             </Text>
                           </HStack>
                         </VStack>
-                      </CardBody>
-                    </Card>
+                      </Box>
+                    </Box>
 
                     {/* Recent Activity Feed */}
-                    <Card>
-                      <CardHeader>
+                    <Box bg="white" borderRadius="lg" boxShadow="sm">
+                      <Box p={4} borderBottomWidth={1}>
                         <Text fontSize="lg" fontWeight="bold">Recent Activity</Text>
-                      </CardHeader>
-                      <CardBody>
-                        <VStack gap={3} align="stretch">
+                      </Box>
+                      <Box p={6}>
+                        <VStack spacing={3} align="stretch">
                           {realTimeData.recentActivity.map(activity => (
-                            <HStack key={activity.id} gap={3} p={3} bg="gray.50" borderRadius="md">
+                            <HStack key={activity.id} spacing={3} p={3} bg="gray.50" borderRadius="md">
                               <Avatar size="sm" name={activity.user} />
                               <VStack align="start" gap={0} flex="1">
                                 <Text fontSize="sm" fontWeight="medium">
@@ -370,15 +359,15 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                             </HStack>
                           ))}
                         </VStack>
-                      </CardBody>
-                    </Card>
+                      </Box>
+                    </Box>
                   </VStack>
                 </TabPanel>
               )}
 
               {/* Game Management */}
               <TabPanel>
-                <VStack gap={6} align="stretch">
+                <VStack spacing={6} align="stretch">
                   <HStack justify="space-between">
                     <Text fontSize="lg" fontWeight="bold">Active Games</Text>
                     {canManageContent && (
@@ -427,7 +416,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                             </Badge>
                           </Td>
                           <Td>
-                            <HStack gap={2}>
+                            <HStack spacing={2}>
                               <Button size="xs" variant="outline">
                                 View
                               </Button>
@@ -448,46 +437,46 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
               {/* Content Library */}
               {canManageContent && (
                 <TabPanel>
-                  <VStack gap={4} align="stretch">
+                  <VStack spacing={4} align="stretch">
                     <Alert status="info">
-                      <InfoIcon />
+                      <AlertIcon />
                       Content management features will be available in the next release.
                       Current focus: Enterprise dashboard foundation.
                     </Alert>
                     
-                    <SimpleGrid columns={3} gap={4}>
-                      <Card>
-                        <CardBody textAlign="center">
+                    <SimpleGrid columns={3} spacing={4}>
+                      <Box bg="white" borderRadius="lg" boxShadow="sm">
+                        <Box p={6} textAlign="center">
                           <Text fontSize="2xl" fontWeight="bold" color="brand.500">
                             23
                           </Text>
                           <Text fontSize="sm" color="gray.600">
                             Active Templates
                           </Text>
-                        </CardBody>
-                      </Card>
+                        </Box>
+                      </Box>
                       
-                      <Card>
-                        <CardBody textAlign="center">
+                      <Box bg="white" borderRadius="lg" boxShadow="sm">
+                        <Box p={6} textAlign="center">
                           <Text fontSize="2xl" fontWeight="bold" color="green.500">
                             156
                           </Text>
                           <Text fontSize="sm" color="gray.600">
                             Content Assets
                           </Text>
-                        </CardBody>
-                      </Card>
+                        </Box>
+                      </Box>
                       
-                      <Card>
-                        <CardBody textAlign="center">
+                      <Box bg="white" borderRadius="lg" boxShadow="sm">
+                        <Box p={6} textAlign="center">
                           <Text fontSize="2xl" fontWeight="bold" color="blue.500">
                             8
                           </Text>
                           <Text fontSize="sm" color="gray.600">
                             Draft Games
                           </Text>
-                        </CardBody>
-                      </Card>
+                        </Box>
+                      </Box>
                     </SimpleGrid>
                   </VStack>
                 </TabPanel>
@@ -497,7 +486,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
               {canViewAnalytics && (
                 <TabPanel>
                   <Alert status="info">
-                    <InfoIcon />
+                    <AlertIcon />
                     Detailed user analytics and reporting features are being implemented.
                     Real-time activity feed is available in the Analytics Overview tab.
                   </Alert>
@@ -507,13 +496,13 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
               {/* System Health */}
               {userRole === 'super_admin' && (
                 <TabPanel>
-                  <SimpleGrid columns={2} gap={6}>
+                  <SimpleGrid columns={2} spacing={6}>
                     <Card>
                       <CardHeader>
                         <Text fontSize="lg" fontWeight="bold">System Performance</Text>
                       </CardHeader>
                       <CardBody>
-                        <VStack gap={3} align="stretch">
+                        <VStack spacing={3} align="stretch">
                           <HStack justify="space-between">
                             <Text fontSize="sm">Server Response Time</Text>
                             <Badge colorScheme="green">&lt; 100ms</Badge>
@@ -535,7 +524,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                         <Text fontSize="lg" fontWeight="bold">Accessibility Compliance</Text>
                       </CardHeader>
                       <CardBody>
-                        <VStack gap={3} align="stretch">
+                        <VStack spacing={3} align="stretch">
                           <HStack justify="space-between">
                             <Text fontSize="sm">WCAG 2.1 AA Compliance</Text>
                             <Badge colorScheme="green">100%</Badge>
@@ -556,7 +545,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
               )}
             </TabPanels>
           </Tabs>
-        </Card>
+        </Box>
       </VStack>
     </Box>
   );

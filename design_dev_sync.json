@@ -1073,26 +1073,26 @@
       "status": "🟡 in_progress",
       "priority": "⚡ critical",
       "assigned_by": "head_developer",
-      "description": "CRITICAL NEW DIRECTION: Design component systems that enable DevTeam (Python-based content creation team) to automatically generate games using our engine. Focus on government visual standards as reusable templates för automated municipal game creation.",
+      "description": "CRITICAL PIVOT: Design TECHNICAL SCAFFOLDING ONLY - React rendering components, accessibility framework, municipal branding system. DevTeam delivers 100% AI-generated creative content, we provide world-class technical rendering. NO content templates - pure technical excellence.",
       "devteam_context": {
         "workflow": "Python-based, modular, strong testing culture, documentation-focused",
         "integration_points": "Content templates → Game manifests → Standalone deployable games",
         "automation_requirement": "Minimal manual intervention from content creation to game deployment"
       },
       "requirements": [
-        "Design government visual standard templates that DevTeam can populate automatically",
-        "Create component specification system för automated theme application",
-        "Design municipal branding integration templates för multi-tenant automation",
-        "Build cultural adaptation template system (Klaus/Marie/Pieter/Anna automation)",
-        "Design content-to-game-manifest transformation guidelines",
-        "Create automated visual compliance validation templates"
+        "Design React rendering components för DevTeam's AI-generated content (DialogueRenderer, QuizEngine, ProgressTracker)",
+        "Create municipal branding injection system (logo, colors, typography placeholders)",
+        "Design accessibility compliance framework (WCAG 2.1 AA automatic enforcement)",
+        "Build government visual standards rendering system (Klaus/Marie/Pieter/Anna technical themes)",
+        "Design performance optimization templates (<2s loading, >95 Lighthouse)",
+        "Create deployment automation framework (web, SCORM, mobile PWA)"
       ],
       "deliverables": {
-        "devteam_integration_guide": "/docs/DEVTEAM_INTEGRATION_GUIDE.md",
-        "government_template_system": "/design_system/government_templates/",
-        "automation_component_specs": "/design_system/automation_specs/",
-        "municipal_branding_templates": "/design_system/municipal_templates/",
-        "content_transformation_guidelines": "/docs/content_to_game_transformation.md"
+        "technical_rendering_specs": "/design_system/technical_rendering/",
+        "react_component_library": "/design_system/react_components/",
+        "accessibility_framework": "/design_system/accessibility_compliance/",
+        "municipal_branding_system": "/design_system/branding_injection/",
+        "performance_optimization_guide": "/docs/technical_performance_standards.md"
       },
       "success_criteria": [
         "DevTeam can generate municipal games without manual design intervention",
@@ -1203,6 +1203,11 @@
       "timestamp": "2025-01-17T12:30:00Z",
       "from": "head_developer",
       "message": "🚀 MAJOR ARCHITECTURAL SHIFT: We're building automated game generation platform! DigiNativa portal → DevTeam content creation → Game Engine → Standalone products. Task-017 excellent work! NOW DELEGATING: Build DevTeam Integration Components - design systems that enable automated game generation from content templates. Focus på government visual standards som blir templates!"
+    },
+    {
+      "timestamp": "2025-01-17T14:00:00Z",
+      "from": "head_developer",
+      "message": "🎯 CRITICAL STRATEGY PIVOT: DevTeam feedback received! We're TECHNICAL SCAFFOLDING, not content templates. DevTeam delivers 100% AI-generated creative content, we render it with world-class tech. UPDATING task-021: Focus ONLY on technical rendering templates - React components, accessibility framework, municipal branding placeholders. NO content creation templates!"
     }
   ],
   "implementation_queue": [

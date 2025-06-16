@@ -1,0 +1,579 @@
+{
+  "meta": {
+    "version": "2.0.0",
+    "created": "2025-01-17",
+    "updated": "2025-01-17",
+    "scope": "European Municipal Procurement Visual Compliance",
+    "compliance_standards": ["BITV_2_0", "RGAA_4_1", "EN_301_549", "DOS_2018_1937"],
+    "target_markets": ["Germany", "France", "Netherlands", "Sweden"],
+    "personas": ["Klaus_Mueller", "Marie_Dubois", "Pieter_van_Berg", "Anna_Svensson"]
+  },
+  
+  "government_accessibility_compliance": {
+    "germany_bitv_2_0": {
+      "standard_name": "Barrierefreie-Informationstechnik-Verordnung (BITV 2.0)",
+      "effective_date": "2019-05-01",
+      "based_on": "WCAG 2.1 Level AA",
+      "requirements": {
+        "contrast_ratio": {
+          "minimum": 4.5,
+          "recommended": 5.4,
+          "large_text_minimum": 3.0,
+          "link_contrast": 3.0,
+          "status": "mandatory"
+        },
+        "color_independence": {
+          "requirement": "Information must not depend solely on color",
+          "implementation": "Multiple visual cues (color + icons + text)",
+          "status": "mandatory"
+        },
+        "documentation": {
+          "accessibility_statement": "Required on all pages",
+          "compliance_report": "Annual submission required",
+          "status": "mandatory"
+        }
+      },
+      "checklist": [
+        {
+          "item": "Contrast ratio ≥4.5:1 for normal text",
+          "status": "required",
+          "validation_method": "automated_color_contrast_analyzer"
+        },
+        {
+          "item": "Contrast ratio ≥3.0:1 for large text (18pt+ or 14pt+ bold)",
+          "status": "required",
+          "validation_method": "automated_color_contrast_analyzer"
+        },
+        {
+          "item": "Link contrast ≥3.0:1 against surrounding text",
+          "status": "required",
+          "validation_method": "automated_color_contrast_analyzer"
+        },
+        {
+          "item": "Color-independent information presentation",
+          "status": "required",
+          "validation_method": "manual_color_blindness_test"
+        },
+        {
+          "item": "Accessibility statement in German",
+          "status": "required",
+          "validation_method": "content_review"
+        }
+      ]
+    },
+    
+    "france_rgaa_4_1": {
+      "standard_name": "Référentiel Général d'Amélioration de l'Accessibilité (RGAA 4.1)",
+      "publisher": "DINUM (Direction Interministérielle du Numérique)",
+      "effective_date": "2019-09-01",
+      "legal_basis": "Law No. 2005-102 (February 11, 2005)",
+      "requirements": {
+        "control_criteria": {
+          "total_criteria": 106,
+          "tests_per_criteria": 2.5,
+          "compliance_threshold": "100%_level_aa"
+        },
+        "typography": {
+          "marianne_font": "Preferred for government contexts",
+          "fallback_fonts": "Government-approved alternatives",
+          "status": "strongly_recommended"
+        },
+        "cultural_context": {
+          "french_cultural_adaptation": "Required for government sites",
+          "collaborative_presentation": "Emphasized in guidelines",
+          "status": "recommended"
+        }
+      },
+      "checklist": [
+        {
+          "item": "All 106 RGAA control criteria met",
+          "status": "required",
+          "validation_method": "comprehensive_rgaa_audit"
+        },
+        {
+          "item": "Marianne typography implementation (where licensed)",
+          "status": "recommended",
+          "validation_method": "typography_compliance_check"
+        },
+        {
+          "item": "French cultural context adaptation",
+          "status": "recommended",
+          "validation_method": "cultural_review_french"
+        },
+        {
+          "item": "Accessibility declaration in French",
+          "status": "required",
+          "validation_method": "content_review"
+        }
+      ]
+    },
+    
+    "netherlands_en_301_549": {
+      "standard_name": "EN 301 549 (European Accessibility Standard)",
+      "implementation": "Via Nederlandse Webrichtlijnen",
+      "effective_date": "2020-09-01",
+      "scope": "All EU public sector websites and mobile apps",
+      "requirements": {
+        "wcag_compliance": {
+          "level": "AA",
+          "version": "2.1",
+          "principle": "apply_or_explain"
+        },
+        "technical_specifications": {
+          "video_resolution": "240x320px minimum",
+          "frame_rate": "20fps minimum",
+          "audio_quality": "government_standard"
+        }
+      },
+      "checklist": [
+        {
+          "item": "WCAG 2.1 AA compliance (full implementation)",
+          "status": "required",
+          "validation_method": "automated_wcag_scanner"
+        },
+        {
+          "item": "Video content meets technical specifications",
+          "status": "required",
+          "validation_method": "media_technical_validation"
+        },
+        {
+          "item": "Progressive Dutch cultural presentation",
+          "status": "recommended",
+          "validation_method": "cultural_review_dutch"
+        },
+        {
+          "item": "Accessibility statement in Dutch",
+          "status": "required",
+          "validation_method": "content_review"
+        }
+      ]
+    },
+    
+    "sweden_dos_2018_1937": {
+      "standard_name": "Dos om tillgänglighet till digital offentlig service (DOS 2018:1937)",
+      "enforcer": "DIGG (Swedish Agency for Digital Government)",
+      "legal_framework": "Discrimination Act 2008:567",
+      "effective_date": "2019-01-01",
+      "requirements": {
+        "wcag_compliance": {
+          "level": "AA",
+          "version": "2.1",
+          "implementation": "via_en_301_549"
+        },
+        "accessibility_reports": {
+          "frequency": "annual",
+          "submission_required": true,
+          "public_availability": "mandatory"
+        },
+        "discrimination_prevention": {
+          "legal_consequence": "Inadequate accessibility = discrimination",
+          "enforcement": "DIGG monitoring and compliance"
+        }
+      },
+      "checklist": [
+        {
+          "item": "WCAG 2.1 AA compliance via EN 301 549",
+          "status": "required",
+          "validation_method": "automated_wcag_scanner"
+        },
+        {
+          "item": "Anna Svensson mobile optimization (iPhone 12 focus)",
+          "status": "required",
+          "validation_method": "mobile_accessibility_test"
+        },
+        {
+          "item": "Annual accessibility report preparation",
+          "status": "required",
+          "validation_method": "compliance_documentation"
+        },
+        {
+          "item": "Accessibility statement in Swedish",
+          "status": "required",
+          "validation_method": "content_review"
+        }
+      ]
+    }
+  },
+  
+  "government_visual_branding_standards": {
+    "germany_corporate_design": {
+      "system_name": "Corporate Design der Bundesregierung",
+      "manager": "Press and Information Office of the Federal Government",
+      "typography": {
+        "primary_fonts": ["BundesSerif", "BundesSans"],
+        "designers": ["Jürgen Huber", "Martin Wenzel"],
+        "replaced_fonts": ["Demos", "Praxis"],
+        "replacement_year": 2011
+      },
+      "guidelines_url": "styleguide.bundesregierung.de",
+      "principle": "Single sender (no hierarchical logo system)",
+      "checklist": [
+        {
+          "item": "BundesSerif/BundesSans typography (where licensed)",
+          "status": "recommended",
+          "validation_method": "typography_licensing_check"
+        },
+        {
+          "item": "Single sender principle adherence",
+          "status": "required",
+          "validation_method": "branding_hierarchy_review"
+        },
+        {
+          "item": "Klaus Mueller systematic presentation",
+          "status": "required",
+          "validation_method": "cultural_review_german"
+        }
+      ]
+    },
+    
+    "france_dsfr": {
+      "system_name": "Système de Design de l'État (DSFR)",
+      "manager": "Service d'Information du Gouvernement",
+      "typography": {
+        "primary_font": "Marianne",
+        "weights": ["Thin", "Light", "Regular", "Medium", "Bold", "Extrabold"],
+        "creator": "Mathieu Réguer",
+        "commissioned_by": "4uatre"
+      },
+      "repository": "GitHub GouvernementFR/dsfr",
+      "usage_restrictions": "Approval required, prohibited for territorial/private actors",
+      "checklist": [
+        {
+          "item": "Marianne font implementation (where licensed)",
+          "status": "recommended",
+          "validation_method": "typography_licensing_check"
+        },
+        {
+          "item": "DSFR component compliance",
+          "status": "recommended",
+          "validation_method": "dsfr_component_audit"
+        },
+        {
+          "item": "Marie Dubois collaborative presentation",
+          "status": "required",
+          "validation_method": "cultural_review_french"
+        }
+      ]
+    },
+    
+    "netherlands_rijkshuisstijl": {
+      "system_name": "Rijkshuisstijl (Dutch Government Style)",
+      "project_name": "1 Logo",
+      "designer": "Studio Dumbar/DEPT®",
+      "typography": {
+        "fonts": ["Rijksoverheid Sans", "Rijksoverheid Serif"],
+        "glyphs": "700+ glyphs each",
+        "objective": "Consolidated 200+ departments into unified identity"
+      },
+      "design_elements": {
+        "logo": "Blue ribbon with coat of arms",
+        "principle": "Subtle and unpretentious",
+        "protection": "Strict copyright, not open source"
+      },
+      "checklist": [
+        {
+          "item": "Rijksoverheid typography (where licensed)",
+          "status": "recommended",
+          "validation_method": "typography_licensing_check"
+        },
+        {
+          "item": "Unified identity principle compliance",
+          "status": "recommended",
+          "validation_method": "branding_consistency_review"
+        },
+        {
+          "item": "Pieter van Berg progressive presentation",
+          "status": "required",
+          "validation_method": "cultural_review_dutch"
+        }
+      ]
+    },
+    
+    "sweden_national_brand": {
+      "system_name": "Sweden National Brand",
+      "ownership": ["Swedish Institute", "Visit Sweden", "Business Sweden", "Ministry for Foreign Affairs"],
+      "typography": {
+        "primary_font": "Sweden Sans",
+        "licensing": "License-free",
+        "availability": "Open access"
+      },
+      "colors": {
+        "primary": "Sweden Yellow Standard",
+        "secondary": "Sweden Blue Standard",
+        "principle": "Flag-based identity"
+      },
+      "usage": "Approval required for official usage",
+      "checklist": [
+        {
+          "item": "Sweden Sans typography implementation",
+          "status": "recommended",
+          "validation_method": "typography_implementation_check"
+        },
+        {
+          "item": "Sweden brand colors (where appropriate)",
+          "status": "optional",
+          "validation_method": "color_implementation_review"
+        },
+        {
+          "item": "Anna Svensson mobile-first presentation",
+          "status": "required",
+          "validation_method": "mobile_optimization_review"
+        }
+      ]
+    }
+  },
+  
+  "municipal_procurement_visual_requirements": {
+    "eu_procurement_framework": {
+      "current_state": "55% still use lowest price only as criterion",
+      "trend": "Moving toward best value evaluation",
+      "legal_basis": "2014 EU Procurement Directives",
+      "emphasis": "Simplified rules and best supplier selection"
+    },
+    
+    "visual_design_evaluation_criteria": {
+      "technical_excellence": {
+        "weight": 30,
+        "components": ["Accessibility", "Branding", "Adaptation", "Mobile optimization"],
+        "scoring": "Technical compliance and innovation"
+      },
+      "cultural_appropriateness": {
+        "weight": 25,
+        "components": ["Municipal culture understanding", "Government language", "Local adaptation"],
+        "scoring": "Cultural fit and market knowledge"
+      },
+      "professional_presentation": {
+        "weight": 20,
+        "components": ["Quality", "Documentation", "Scalability", "Consistency"],
+        "scoring": "Government-appropriate professionalism"
+      },
+      "innovation_leadership": {
+        "weight": 15,
+        "components": ["Government-appropriate innovation", "Accessibility features", "Technical advancement"],
+        "scoring": "Innovation within government context"
+      },
+      "compliance_standards": {
+        "weight": 10,
+        "components": ["National standards", "Branding compliance", "Legal documentation"],
+        "scoring": "Comprehensive compliance demonstration"
+      }
+    },
+    
+    "common_visual_design_failures": {
+      "accessibility_failures": [
+        "Insufficient contrast ratios",
+        "Color-only information presentation",
+        "Missing alternative text",
+        "Inadequate keyboard navigation",
+        "Screen reader incompatibility"
+      ],
+      "branding_failures": [
+        "Unauthorized logo usage",
+        "Incorrect visual hierarchy",
+        "Font licensing violations",
+        "Cultural insensitivity",
+        "Poor professional presentation"
+      ],
+      "cultural_failures": [
+        "Inappropriate government language",
+        "Lack of cultural adaptation",
+        "Missing local context",
+        "Systematic/collaborative/progressive mismatch",
+        "Mobile-first neglect"
+      ],
+      "documentation_failures": [
+        "Incomplete style guides",
+        "Missing compliance certification",
+        "Inadequate cultural validation",
+        "Poor technical documentation",
+        "Insufficient testing evidence"
+      ]
+    },
+    
+    "checklist": [
+      {
+        "category": "Technical Excellence",
+        "items": [
+          {
+            "item": "WCAG 2.1 AA compliance across all European standards",
+            "status": "required",
+            "validation_method": "automated_accessibility_scanner"
+          },
+          {
+            "item": "Multi-tenant municipal branding system",
+            "status": "required",
+            "validation_method": "branding_system_demonstration"
+          },
+          {
+            "item": "Mobile-first government device optimization",
+            "status": "required",
+            "validation_method": "mobile_device_testing"
+          },
+          {
+            "item": "Performance optimization for government networks",
+            "status": "required",
+            "validation_method": "network_performance_testing"
+          }
+        ]
+      },
+      {
+        "category": "Cultural Appropriateness",
+        "items": [
+          {
+            "item": "Klaus Mueller German systematic presentation",
+            "status": "required",
+            "validation_method": "german_cultural_review"
+          },
+          {
+            "item": "Marie Dubois French collaborative presentation",
+            "status": "required",
+            "validation_method": "french_cultural_review"
+          },
+          {
+            "item": "Pieter van Berg Dutch progressive presentation",
+            "status": "required",
+            "validation_method": "dutch_cultural_review"
+          },
+          {
+            "item": "Anna Svensson Swedish mobile-first presentation",
+            "status": "required",
+            "validation_method": "swedish_cultural_review"
+          }
+        ]
+      },
+      {
+        "category": "Professional Presentation",
+        "items": [
+          {
+            "item": "Government-appropriate visual hierarchy",
+            "status": "required",
+            "validation_method": "government_presentation_review"
+          },
+          {
+            "item": "Municipal authority recognition system",
+            "status": "required",
+            "validation_method": "authority_hierarchy_validation"
+          },
+          {
+            "item": "Professional documentation standards",
+            "status": "required",
+            "validation_method": "documentation_quality_review"
+          },
+          {
+            "item": "Scalable visual consistency system",
+            "status": "required",
+            "validation_method": "consistency_testing"
+          }
+        ]
+      },
+      {
+        "category": "Innovation Leadership",
+        "items": [
+          {
+            "item": "Advanced accessibility features beyond minimums",
+            "status": "recommended",
+            "validation_method": "accessibility_innovation_review"
+          },
+          {
+            "item": "Cultural adaptation engine",
+            "status": "recommended",
+            "validation_method": "cultural_innovation_demonstration"
+          },
+          {
+            "item": "Government-appropriate design innovations",
+            "status": "recommended",
+            "validation_method": "innovation_appropriateness_review"
+          }
+        ]
+      },
+      {
+        "category": "Compliance Standards",
+        "items": [
+          {
+            "item": "Complete government compliance documentation",
+            "status": "required",
+            "validation_method": "compliance_documentation_audit"
+          },
+          {
+            "item": "Municipal branding legal validation",
+            "status": "required",
+            "validation_method": "legal_compliance_verification"
+          },
+          {
+            "item": "Cultural sensitivity certification",
+            "status": "required",
+            "validation_method": "cultural_sensitivity_audit"
+          }
+        ]
+      }
+    ]
+  },
+  
+  "competitive_advantages": {
+    "official_font_licensing": {
+      "advantage": "Access to restricted government fonts creates impossible-to-replicate authenticity",
+      "fonts": ["BundesSerif/BundesSans", "Marianne", "Rijksoverheid Sans/Serif", "Sweden Sans"],
+      "impact": "Authentic government presentation competitors cannot achieve"
+    },
+    "cultural_adaptation": {
+      "advantage": "Deep understanding of systematic (German), collaborative (French), progressive (Dutch), mobile-first (Swedish) preferences",
+      "implementation": "Persona-driven cultural adaptation engine",
+      "impact": "Cultural intelligence competitors cannot easily replicate"
+    },
+    "compliance_excellence": {
+      "advantage": "Exceeding minimum standards (5.4:1 vs 4.5:1 contrast) for premium positioning",
+      "standards": ["BITV 2.0", "RGAA 4.1", "EN 301 549", "DOS 2018:1937"],
+      "impact": "Premium compliance positioning above competitors"
+    },
+    "procurement_mastery": {
+      "advantage": "Knowledge of EU evaluation criteria and common failure points",
+      "expertise": "30-50% improvement in municipal procurement success rate",
+      "impact": "€5-10M contract wins through superior visual compliance"
+    }
+  },
+  
+  "implementation_priority": {
+    "phase_1_foundation": {
+      "timeframe": "Week 1-2",
+      "priorities": [
+        "Multi-tenant municipal branding system",
+        "WCAG 2.1 AA compliance across all standards",
+        "Anna Svensson mobile-first optimization",
+        "Government authority hierarchy visual system"
+      ]
+    },
+    "phase_2_cultural_adaptation": {
+      "timeframe": "Week 3-4",
+      "priorities": [
+        "Klaus Mueller German systematic presentation",
+        "Marie Dubois French collaborative presentation",
+        "Pieter van Berg Dutch progressive presentation",
+        "Cultural adaptation engine implementation"
+      ]
+    },
+    "phase_3_competitive_advantage": {
+      "timeframe": "Week 5-6",
+      "priorities": [
+        "Official font licensing integration",
+        "Government design system alignment",
+        "Procurement compliance documentation",
+        "Competitive differentiation showcase"
+      ]
+    }
+  },
+  
+  "success_metrics": {
+    "quantitative_targets": {
+      "contract_win_rate": "70% (vs industry average 45%)",
+      "procurement_score": "85+ points (vs competitors 65-75)",
+      "compliance_rating": "100% WCAG 2.1 AA across all municipal themes",
+      "cultural_adaptation_score": "95%+ approval from target personas"
+    },
+    "qualitative_indicators": [
+      "Municipal feedback: 'Authentic government feel'",
+      "Cultural appropriateness: Positive feedback from all personas",
+      "Visual consistency: Consistent presentation across all clients",
+      "Professional presentation: Government-appropriate quality"
+    ]
+  }
+}

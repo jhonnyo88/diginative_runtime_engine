@@ -1,0 +1,535 @@
+# Expert specification: Performance monitoring infrastructure för 10K+ users
+# Prometheus + Grafana setup för cultural performance tracking
+
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: diginativa-monitoring
+  labels:
+    monitoring: cultural-performance
+---
+# Expert requirement: Prometheus för cultural metrics collection
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: prometheus
+  namespace: diginativa-monitoring
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: prometheus
+  template:
+    metadata:
+      labels:
+        app: prometheus
+    spec:
+      containers:
+      - name: prometheus
+        image: prom/prometheus:latest
+        args:
+          - '--config.file=/etc/prometheus/prometheus.yml'
+          - '--storage.tsdb.path=/prometheus'
+          - '--web.console.libraries=/etc/prometheus/console_libraries'
+          - '--web.console.templates=/etc/prometheus/consoles'
+          - '--storage.tsdb.retention.time=200h'
+          - '--web.enable-lifecycle'
+          - '--storage.tsdb.no-lockfile'
+        ports:
+        - containerPort: 9090
+        volumeMounts:
+        - name: prometheus-config
+          mountPath: /etc/prometheus
+        - name: prometheus-storage
+          mountPath: /prometheus
+        resources:
+          requests:
+            memory: "2Gi"
+            cpu: "500m"
+          limits:
+            memory: "4Gi"
+            cpu: "2000m"
+      volumes:
+      - name: prometheus-config
+        configMap:
+          name: prometheus-cultural-config
+      - name: prometheus-storage
+        persistentVolumeClaim:
+          claimName: prometheus-storage
+---
+# Expert specification: Prometheus configuration för cultural metrics
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: prometheus-cultural-config
+  namespace: diginativa-monitoring
+data:
+  prometheus.yml: |
+    global:
+      scrape_interval: 15s
+      evaluation_interval: 15s
+    
+    rule_files:
+      - "cultural-alerts.yml"
+    
+    scrape_configs:
+    # Expert monitoring: Application cultural metrics
+    - job_name: 'diginativa-cultural-metrics'
+      static_configs:
+      - targets: ['diginativa-app-service.diginativa-production:80']
+      metrics_path: /metrics
+      scrape_interval: 10s
+      scrape_timeout: 10s
+      params:
+        cultural_context: ['all']
+    
+    # Expert monitoring: Individual cultural contexts
+    - job_name: 'swedish-mobile-metrics'
+      static_configs:
+      - targets: ['diginativa-app-service.diginativa-production:80']
+      metrics_path: /cultural-metrics
+      scrape_interval: 5s
+      params:
+        context: ['swedish_mobile']
+      relabel_configs:
+      - source_labels: [__name__]
+        target_label: persona
+        replacement: 'anna_svensson'
+    
+    - job_name: 'german-systematic-metrics'
+      static_configs:
+      - targets: ['diginativa-app-service.diginativa-production:80']
+      metrics_path: /cultural-metrics
+      scrape_interval: 5s
+      params:
+        context: ['german_systematic']
+      relabel_configs:
+      - source_labels: [__name__]
+        target_label: persona
+        replacement: 'klaus_mueller'
+    
+    - job_name: 'french-collaborative-metrics'
+      static_configs:
+      - targets: ['diginativa-app-service.diginativa-production:80']
+      metrics_path: /cultural-metrics
+      scrape_interval: 5s
+      params:
+        context: ['french_collaborative']
+      relabel_configs:
+      - source_labels: [__name__]
+        target_label: persona
+        replacement: 'marie_dubois'
+    
+    - job_name: 'dutch-progressive-metrics'
+      static_configs:
+      - targets: ['diginativa-app-service.diginativa-production:80']
+      metrics_path: /cultural-metrics
+      scrape_interval: 5s
+      params:
+        context: ['dutch_progressive']
+      relabel_configs:
+      - source_labels: [__name__]
+        target_label: persona
+        replacement: 'pieter_van_berg'
+    
+    # Expert monitoring: Database sharding performance
+    - job_name: 'postgres-shards'
+      static_configs:
+      - targets: ['postgres-shards.diginativa-production:5432']
+      metrics_path: /metrics
+      scrape_interval: 30s
+    
+    # Expert monitoring: Redis cultural cache
+    - job_name: 'redis-cultural-cache'
+      static_configs:
+      - targets: ['redis-cultural-cache.diginativa-production:6379']
+      metrics_path: /metrics
+      scrape_interval: 15s
+    
+    # Expert monitoring: Kubernetes cluster metrics
+    - job_name: 'kubernetes-pods'
+      kubernetes_sd_configs:
+      - role: pod
+        namespaces:
+          names:
+          - diginativa-production
+      relabel_configs:
+      - source_labels: [__meta_kubernetes_pod_annotation_prometheus_io_scrape]
+        action: keep
+        regex: true
+
+  cultural-alerts.yml: |
+    groups:
+    - name: cultural-performance-alerts
+      rules:
+      # Anna Svensson (Swedish mobile) alerts
+      - alert: AnnaSwenssonMobilePerformanceWarning
+        expr: cultural_response_time{persona="anna_svensson"} > 100
+        för: 1m
+        labels:
+          severity: warning
+          cultural_context: swedish_mobile
+          persona: anna_svensson
+        annotations:
+          summary: "Anna Svensson mobile performance degraded"
+          description: "Swedish mobile response time exceeded 100ms: {{ $value }}ms"
+      
+      - alert: AnnaSwenssonMobilePerformanceCritical
+        expr: cultural_response_time{persona="anna_svensson"} > 200
+        för: 30s
+        labels:
+          severity: critical
+          cultural_context: swedish_mobile
+          persona: anna_svensson
+        annotations:
+          summary: "Anna Svensson mobile performance critical"
+          description: "Swedish mobile response time critical: {{ $value }}ms on iPhone 12"
+      
+      # Klaus Mueller (German systematic) alerts
+      - alert: KlausMuellerSystematicPerformanceWarning
+        expr: cultural_response_time{persona="klaus_mueller"} > 50
+        för: 2m
+        labels:
+          severity: warning
+          cultural_context: german_systematic
+          persona: klaus_mueller
+        annotations:
+          summary: "Klaus Mueller systematic performance warning"
+          description: "German systematic response time exceeded 50ms: {{ $value }}ms"
+      
+      - alert: KlausMuellerSystematicPerformanceCritical
+        expr: cultural_response_time{persona="klaus_mueller"} > 100
+        för: 1m
+        labels:
+          severity: critical
+          cultural_context: german_systematic
+          persona: klaus_mueller
+        annotations:
+          summary: "Klaus Mueller systematic performance critical"
+          description: "German systematic performance unacceptable: {{ $value }}ms"
+      
+      # Marie Dubois (French collaborative) alerts
+      - alert: MarieDuboisCollaborativePerformanceWarning
+        expr: cultural_response_time{persona="marie_dubois"} > 75
+        för: 2m
+        labels:
+          severity: warning
+          cultural_context: french_collaborative
+          persona: marie_dubois
+        annotations:
+          summary: "Marie Dubois collaborative performance warning"
+          description: "French collaborative response time exceeded 75ms: {{ $value }}ms"
+      
+      # Pieter van Berg (Dutch progressive) alerts
+      - alert: PieterVanBergProgressivePerformanceWarning
+        expr: cultural_response_time{persona="pieter_van_berg"} > 25
+        för: 1m
+        labels:
+          severity: warning
+          cultural_context: dutch_progressive
+          persona: pieter_van_berg
+        annotations:
+          summary: "Pieter van Berg progressive performance warning"
+          description: "Dutch progressive efficiency compromised: {{ $value }}ms"
+      
+      # Expert alerts: Overall system performance
+      - alert: CulturalMiddlewareOverload
+        expr: rate(cultural_errors_total[5m]) > 0.01
+        för: 2m
+        labels:
+          severity: warning
+        annotations:
+          summary: "Cultural middleware error rate high"
+          description: "Cultural adaptation errors exceed 1%: {{ $value }}"
+      
+      - alert: DatabaseShardingPerformance
+        expr: rate(database_query_duration_seconds[5m]) > 0.1
+        för: 3m
+        labels:
+          severity: warning
+        annotations:
+          summary: "Database sharding performance degraded"
+          description: "Database query time exceeded 100ms: {{ $value }}s"
+      
+      - alert: EuropeanScalingLimit
+        expr: sum(rate(http_requests_total[5m])) > 1000
+        för: 1m
+        labels:
+          severity: info
+        annotations:
+          summary: "European scaling target reached"
+          description: "Request rate indicates 10K+ concurrent users: {{ $value }} req/s"
+---
+# Expert requirement: Grafana för cultural performance dashboards
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: grafana
+  namespace: diginativa-monitoring
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: grafana
+  template:
+    metadata:
+      labels:
+        app: grafana
+    spec:
+      containers:
+      - name: grafana
+        image: grafana/grafana:latest
+        ports:
+        - containerPort: 3000
+        env:
+        - name: GF_SECURITY_ADMIN_PASSWORD
+          value: "diginativa2024"
+        - name: GF_CULTURAL_DASHBOARD_ENABLED
+          value: "true"
+        - name: GF_INSTALL_PLUGINS
+          value: "grafana-kubernetes-app,grafana-prometheus-alertmanager-datasource"
+        volumeMounts:
+        - name: grafana-storage
+          mountPath: /var/lib/grafana
+        - name: grafana-dashboards
+          mountPath: /etc/grafana/provisioning/dashboards
+        - name: grafana-datasources
+          mountPath: /etc/grafana/provisioning/datasources
+        resources:
+          requests:
+            memory: "1Gi"
+            cpu: "500m"
+          limits:
+            memory: "2Gi"
+            cpu: "1000m"
+      volumes:
+      - name: grafana-storage
+        persistentVolumeClaim:
+          claimName: grafana-storage
+      - name: grafana-dashboards
+        configMap:
+          name: grafana-cultural-dashboards
+      - name: grafana-datasources
+        configMap:
+          name: grafana-datasources
+---
+# Expert specification: Grafana datasources configuration
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: grafana-datasources
+  namespace: diginativa-monitoring
+data:
+  datasources.yml: |
+    apiVersion: 1
+    datasources:
+    - name: Prometheus Cultural Metrics
+      type: prometheus
+      access: proxy
+      url: http://prometheus:9090
+      isDefault: true
+      editable: true
+      jsonData:
+        timeInterval: "5s"
+        queryTimeout: "60s"
+---
+# Expert requirement: Cultural performance dashboards
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: grafana-cultural-dashboards
+  namespace: diginativa-monitoring
+data:
+  cultural-performance.json: |
+    {
+      "dashboard": {
+        "id": null,
+        "title": "DigiNativa Cultural Performance Dashboard",
+        "tags": ["cultural", "performance", "european"],
+        "timezone": "Europe/Stockholm",
+        "panels": [
+          {
+            "id": 1,
+            "title": "Anna Svensson (Swedish Mobile) Performance",
+            "type": "graph",
+            "targets": [
+              {
+                "expr": "cultural_response_time{persona=\"anna_svensson\"}",
+                "legendFormat": "Swedish Mobile Response Time",
+                "refId": "A"
+              }
+            ],
+            "yAxes": [
+              {
+                "label": "Response Time (ms)",
+                "max": 200,
+                "min": 0
+              }
+            ],
+            "alert": {
+              "conditions": [
+                {
+                  "query": {
+                    "params": ["A", "5m", "now"]
+                  },
+                  "reducer": {
+                    "params": [],
+                    "type": "avg"
+                  },
+                  "type": "query"
+                }
+              ],
+              "executionErrorState": "alerting",
+              "för": "1m",
+              "frequency": "10s",
+              "handler": 1,
+              "name": "Anna Svensson Mobile Alert",
+              "noDataState": "no_data",
+              "notifications": []
+            }
+          },
+          {
+            "id": 2,
+            "title": "Klaus Mueller (German Systematic) Performance",
+            "type": "graph",
+            "targets": [
+              {
+                "expr": "cultural_response_time{persona=\"klaus_mueller\"}",
+                "legendFormat": "German Systematic Response Time",
+                "refId": "B"
+              }
+            ],
+            "yAxes": [
+              {
+                "label": "Response Time (ms)",
+                "max": 100,
+                "min": 0
+              }
+            ]
+          },
+          {
+            "id": 3,
+            "title": "European Scaling Overview",
+            "type": "singlestat",
+            "targets": [
+              {
+                "expr": "sum(rate(http_requests_total[5m])) * 60",
+                "legendFormat": "Requests per Minute",
+                "refId": "C"
+              }
+            ],
+            "valueName": "current",
+            "thresholds": "5000,10000",
+            "colors": ["green", "yellow", "red"]
+          },
+          {
+            "id": 4,
+            "title": "Cultural Context Distribution",
+            "type": "piechart",
+            "targets": [
+              {
+                "expr": "sum by (cultural_context) (rate(cultural_requests_total[5m]))",
+                "legendFormat": "{{ cultural_context }}",
+                "refId": "D"
+              }
+            ]
+          }
+        ],
+        "time": {
+          "from": "now-1h",
+          "to": "now"
+        },
+        "refresh": "5s"
+      }
+    }
+---
+# Expert requirement: Persistent volumes för monitoring data
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: prometheus-storage
+  namespace: diginativa-monitoring
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 50Gi
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: grafana-storage
+  namespace: diginativa-monitoring
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 10Gi
+---
+# Expert specification: Services för monitoring access
+apiVersion: v1
+kind: Service
+metadata:
+  name: prometheus
+  namespace: diginativa-monitoring
+spec:
+  selector:
+    app: prometheus
+  ports:
+  - protocol: TCP
+    port: 9090
+    targetPort: 9090
+  type: ClusterIP
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: grafana
+  namespace: diginativa-monitoring
+spec:
+  selector:
+    app: grafana
+  ports:
+  - protocol: TCP
+    port: 3000
+    targetPort: 3000
+  type: LoadBalancer
+---
+# Expert requirement: Ingress för external monitoring access
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: monitoring-ingress
+  namespace: diginativa-monitoring
+  annotations:
+    kubernetes.io/ingress.class: "nginx"
+    cert-manager.io/cluster-issuer: "letsencrypt-prod"
+spec:
+  tls:
+  - hosts:
+    - grafana.diginativa.eu
+    - prometheus.diginativa.eu
+    secretName: monitoring-tls
+  rules:
+  - host: grafana.diginativa.eu
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: grafana
+            port:
+              number: 3000
+  - host: prometheus.diginativa.eu
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: prometheus
+            port:
+              number: 9090

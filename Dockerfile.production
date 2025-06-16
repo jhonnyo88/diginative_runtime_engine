@@ -1,0 +1,75 @@
+# Expert specification: Production Dockerfile för European scaling
+FROM node:18-alpine AS build
+
+# Expert requirement: European timezone setting
+RUN apk add --no-cache tzdata
+ENV TZ=Europe/Stockholm
+
+WORKDIR /app
+
+# Expert optimization: Package.json copying för better Docker cache
+COPY package*.json ./
+RUN npm ci --only=production && npm cache clean --force
+
+# Expert requirement: Copy source code
+COPY . .
+
+# Expert specification: Build för production med cultural optimization
+ENV NODE_ENV=production
+ENV CULTURAL_ADAPTATION=enabled
+ENV EUROPEAN_DEPLOYMENT=true
+
+# Expert optimization: Build application med Vite
+RUN npm run build
+
+# Expert requirement: Production runtime image
+FROM node:18-alpine AS production
+
+# Expert specification: Security hardening
+RUN addgroup -g 1001 -S nodejs && \
+    adduser -S diginativa -u 1001
+
+# Expert requirement: Install production dependencies
+RUN apk add --no-cache \
+    curl \
+    ca-certificates \
+    tzdata && \
+    rm -rf /var/cache/apk/*
+
+# Expert specification: European timezone
+ENV TZ=Europe/Stockholm
+
+WORKDIR /app
+
+# Expert optimization: Copy built application
+COPY --from=build --chown=diginativa:nodejs /app/dist ./dist
+COPY --from=build --chown=diginativa:nodejs /app/node_modules ./node_modules
+COPY --from=build --chown=diginativa:nodejs /app/package*.json ./
+
+# Expert requirement: Cultural configuration files
+COPY --chown=diginativa:nodejs ./src/middleware/CulturalAdaptation.ts ./src/middleware/
+COPY --chown=diginativa:nodejs ./src/services/enterprise-sso.ts ./src/services/
+COPY --chown=diginativa:nodejs ./src/services/gdpr-compliance-framework.ts ./src/services/
+COPY --chown=diginativa:nodejs ./infrastructure/european-cdn-config.ts ./infrastructure/
+
+# Expert specification: Environment variables för European deployment
+ENV NODE_ENV=production
+ENV PORT=3000
+ENV CULTURAL_ADAPTATION_ENABLED=true
+ENV MULTI_TENANT_MODE=true
+ENV EUROPEAN_CDN_ENABLED=true
+ENV DATABASE_SHARDING_ENABLED=true
+ENV ENTERPRISE_SSO_ENABLED=true
+
+# Expert requirement: Health check för Kubernetes
+HEALTHCHECK --interval=30s --timeout=3s --start-period=5s --retries=3 \
+    CMD curl -f http://localhost:3000/health || exit 1
+
+# Expert specification: Run as non-root user
+USER diginativa
+
+# Expert optimization: Expose application port
+EXPOSE 3000
+
+# Expert requirement: Production startup script
+CMD ["node", "dist/main.js"]

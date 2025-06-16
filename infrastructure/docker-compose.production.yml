@@ -1,0 +1,199 @@
+# Expert specification: Production Docker Compose för Kubernetes deployment prep
+version: '3.8'
+
+services:
+  # Expert requirement: Application service med cultural optimization
+  diginativa-app:
+    build:
+      context: .
+      dockerfile: Dockerfile.production
+    environment:
+      # Expert configuration: Cultural adaptation
+      - CULTURAL_ADAPTATION_ENABLED=true
+      - MULTI_TENANT_MODE=true
+      - MAX_CONCURRENT_USERS=10000
+      - EUROPEAN_CDN_ENABLED=true
+      
+      # Database sharding
+      - DATABASE_SHARDING_ENABLED=true
+      - SHARD_COUNT=16
+      
+      # Enterprise SSO
+      - ENTERPRISE_SSO_ENABLED=true
+      - SAML_ENABLED=true
+      - OAUTH_ENABLED=true
+      
+      # Cultural context defaults
+      - DEFAULT_CULTURAL_CONTEXT=swedish_mobile
+      - CULTURAL_MIDDLEWARE_ENABLED=true
+      
+      # Performance optimization
+      - NODE_ENV=production
+      - PORT=3000
+      - CACHE_TTL=3600
+      
+    ports:
+      - "3000:3000"
+    depends_on:
+      - postgres-shard-001
+      - redis-cultural-cache
+    deploy:
+      replicas: 3
+      resources:
+        limits:
+          memory: 2G
+          cpus: '2'
+        reservations:
+          memory: 512M
+          cpus: '0.5'
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:3000/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+
+  # Expert specification: Database sharding services (representative shards)
+  postgres-shard-001:
+    image: postgres:15-alpine
+    environment:
+      - POSTGRES_DB=diginativa_shard_001
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+      - CULTURAL_OPTIMIZATION=swedish_mobile
+    volumes:
+      - postgres_shard_001_data:/var/lib/postgresql/data
+      - ./init-scripts/01-init-db.sql:/docker-entrypoint-initdb.d/01-init-db.sql
+    ports:
+      - "5432:5432"
+    deploy:
+      resources:
+        limits:
+          memory: 4G
+          cpus: '2'
+        reservations:
+          memory: 1G
+          cpus: '0.5'
+
+  postgres-shard-004:
+    image: postgres:15-alpine
+    environment:
+      - POSTGRES_DB=diginativa_shard_004
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+      - CULTURAL_OPTIMIZATION=german_systematic
+    volumes:
+      - postgres_shard_004_data:/var/lib/postgresql/data
+      - ./init-scripts/01-init-db.sql:/docker-entrypoint-initdb.d/01-init-db.sql
+    ports:
+      - "5434:5432"
+
+  postgres-shard-009:
+    image: postgres:15-alpine
+    environment:
+      - POSTGRES_DB=diginativa_shard_009
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+      - CULTURAL_OPTIMIZATION=french_collaborative
+    volumes:
+      - postgres_shard_009_data:/var/lib/postgresql/data
+      - ./init-scripts/01-init-db.sql:/docker-entrypoint-initdb.d/01-init-db.sql
+    ports:
+      - "5439:5432"
+
+  postgres-shard-013:
+    image: postgres:15-alpine
+    environment:
+      - POSTGRES_DB=diginativa_shard_013
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+      - CULTURAL_OPTIMIZATION=dutch_progressive
+    volumes:
+      - postgres_shard_013_data:/var/lib/postgresql/data
+      - ./init-scripts/01-init-db.sql:/docker-entrypoint-initdb.d/01-init-db.sql
+    ports:
+      - "5443:5432"
+
+  # Expert requirement: Redis cultural cache cluster
+  redis-cultural-cache:
+    image: redis:7-alpine
+    command: redis-server --maxmemory 1gb --maxmemory-policy allkeys-lru
+    ports:
+      - "6379:6379"
+    environment:
+      - REDIS_CULTURAL_CACHE=enabled
+    deploy:
+      resources:
+        limits:
+          memory: 1G
+          cpus: '0.5'
+        reservations:
+          memory: 512M
+          cpus: '0.25'
+
+  # Expert specification: Nginx load balancer med cultural routing
+  nginx-cultural-lb:
+    image: nginx:alpine
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./nginx-cultural.conf:/etc/nginx/nginx.conf
+      - ./ssl:/etc/nginx/ssl
+    depends_on:
+      - diginativa-app
+    environment:
+      - CULTURAL_ROUTING_ENABLED=true
+
+  # Expert requirement: Prometheus monitoring för cultural metrics
+  prometheus:
+    image: prom/prometheus:latest
+    ports:
+      - "9090:9090"
+    volumes:
+      - ./prometheus-cultural.yml:/etc/prometheus/prometheus.yml
+      - prometheus_data:/prometheus
+    command:
+      - '--config.file=/etc/prometheus/prometheus.yml'
+      - '--storage.tsdb.path=/prometheus'
+      - '--web.console.libraries=/etc/prometheus/console_libraries'
+      - '--web.console.templates=/etc/prometheus/consoles'
+      - '--storage.tsdb.retention.time=200h'
+      - '--web.enable-lifecycle'
+
+  # Expert specification: Grafana dashboard för cultural performance
+  grafana:
+    image: grafana/grafana:latest
+    ports:
+      - "3001:3000"
+    environment:
+      - GF_SECURITY_ADMIN_PASSWORD=${GRAFANA_PASSWORD}
+      - GF_CULTURAL_DASHBOARD_ENABLED=true
+    volumes:
+      - grafana_data:/var/lib/grafana
+      - ./grafana-dashboards:/etc/grafana/provisioning/dashboards
+      - ./grafana-datasources:/etc/grafana/provisioning/datasources
+
+volumes:
+  # Expert requirement: Persistent storage för sharded databases
+  postgres_shard_001_data:
+    driver: local
+  postgres_shard_004_data:
+    driver: local
+  postgres_shard_009_data:
+    driver: local
+  postgres_shard_013_data:
+    driver: local
+  
+  # Monitoring data
+  prometheus_data:
+    driver: local
+  grafana_data:
+    driver: local
+
+networks:
+  default:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 172.20.0.0/16

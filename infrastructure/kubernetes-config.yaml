@@ -1,0 +1,472 @@
+# Expert specification: Kubernetes Auto-scaling Infrastructure
+# Implementation för 10K+ concurrent users med cultural optimization
+
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: diginativa-production
+  labels:
+    environment: production
+    cultural-optimization: multi-tenant
+---
+# Expert requirement: Application deployment med cultural context
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: diginativa-app
+  namespace: diginativa-production
+  labels:
+    app: diginativa-runtime-engine
+    tier: application
+spec:
+  replicas: 3  # Start with 3, scale to 20 based on expert spec
+  selector:
+    matchLabels:
+      app: diginativa-runtime-engine
+  template:
+    metadata:
+      labels:
+        app: diginativa-runtime-engine
+        cultural-context: multi-tenant
+    spec:
+      containers:
+      - name: diginativa-app
+        image: diginativa/runtime-engine:latest
+        ports:
+        - containerPort: 3000
+        env:
+        # Expert requirement: Cultural context environment variables
+        - name: CULTURAL_ADAPTATION_ENABLED
+          value: "true"
+        - name: MULTI_TENANT_MODE
+          value: "true"
+        - name: MAX_CONCURRENT_USERS
+          value: "10000"
+        - name: EUROPEAN_CDN_ENABLED
+          value: "true"
+        # Database sharding configuration
+        - name: DATABASE_SHARDING_ENABLED
+          value: "true"
+        - name: SHARD_COUNT
+          value: "16"
+        # SSO configuration
+        - name: ENTERPRISE_SSO_ENABLED
+          value: "true"
+        - name: SAML_ENABLED
+          value: "true"
+        - name: OAUTH_ENABLED
+          value: "true"
+        resources:
+          requests:
+            memory: "512Mi"
+            cpu: "500m"
+          limits:
+            memory: "2Gi"
+            cpu: "2000m"
+        # Expert requirement: Health checks för Anna Svensson performance
+        livenessProbe:
+          httpGet:
+            path: /health
+            port: 3000
+          initialDelaySeconds: 30
+          periodSeconds: 10
+        readinessProbe:
+          httpGet:
+            path: /ready
+            port: 3000
+          initialDelaySeconds: 5
+          periodSeconds: 5
+---
+# Expert specification: Horizontal Pod Autoscaler för cultural load patterns
+apiVersion: autoscaling/v2
+kind: HorizontalPodAutoscaler
+metadata:
+  name: diginativa-app-hpa
+  namespace: diginativa-production
+spec:
+  scaleTargetRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: diginativa-app
+  minReplicas: 3
+  maxReplicas: 20  # Expert spec: Support för 10K+ users
+  metrics:
+  - type: Resource
+    resource:
+      name: cpu
+      target:
+        type: Utilization
+        averageUtilization: 70  # German systematic efficiency
+  - type: Resource
+    resource:
+      name: memory
+      target:
+        type: Utilization
+        averageUtilization: 80
+  # Expert requirement: Custom metrics för cultural performance
+  - type: Pods
+    pods:
+      metric:
+        name: cultural_response_time
+      target:
+        type: AverageValue
+        averageValue: "200m"  # 200ms för cultural middleware
+  behavior:
+    scaleUp:
+      stabilizationWindowSeconds: 60
+      policies:
+      - type: Percent
+        value: 50
+        periodSeconds: 60
+    scaleDown:
+      stabilizationWindowSeconds: 300
+      policies:
+      - type: Percent
+        value: 10
+        periodSeconds: 60
+---
+# Expert requirement: Service för cultural load balancing
+apiVersion: v1
+kind: Service
+metadata:
+  name: diginativa-app-service
+  namespace: diginativa-production
+  labels:
+    app: diginativa-runtime-engine
+spec:
+  selector:
+    app: diginativa-runtime-engine
+  ports:
+  - protocol: TCP
+    port: 80
+    targetPort: 3000
+  type: LoadBalancer
+  # Expert specification: Cultural session affinity
+  sessionAffinity: ClientIP
+  sessionAffinityConfig:
+    clientIP:
+      timeoutSeconds: 3600  # 1 hour för municipal work sessions
+---
+# Expert requirement: ConfigMap för cultural middleware configuration
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: cultural-config
+  namespace: diginativa-production
+data:
+  # Klaus Mueller (German systematic) configuration
+  german-systematic.json: |
+    {
+      "cultural_context": "german_systematic",
+      "ui_density": "detailed",
+      "information_priority": "high",
+      "decision_flow": "hierarchical_approval",
+      "performance_targets": {
+        "response_time": "50ms",
+        "information_completeness": "100%",
+        "systematic_validation": true
+      }
+    }
+  
+  # Marie Dubois (French collaborative) configuration  
+  french-collaborative.json: |
+    {
+      "cultural_context": "french_collaborative",
+      "ui_density": "contextual",
+      "information_priority": "collaborative",
+      "decision_flow": "consensus_building",
+      "performance_targets": {
+        "response_time": "75ms",
+        "aesthetic_refinement": true,
+        "collaborative_features": true
+      }
+    }
+  
+  # Pieter van Berg (Dutch progressive) configuration
+  dutch-progressive.json: |
+    {
+      "cultural_context": "dutch_progressive",
+      "ui_density": "minimal",
+      "information_priority": "efficiency",
+      "decision_flow": "autonomous_action",
+      "performance_targets": {
+        "response_time": "25ms",
+        "efficiency_optimization": true,
+        "minimal_friction": true
+      }
+    }
+  
+  # Anna Svensson (Swedish mobile) configuration
+  swedish-mobile.json: |
+    {
+      "cultural_context": "swedish_mobile",
+      "ui_density": "mobile_optimized",
+      "information_priority": "balanced",
+      "decision_flow": "rapid_implementation",
+      "performance_targets": {
+        "response_time": "100ms",
+        "mobile_optimization": true,
+        "professional_workflow": true
+      }
+    }
+---
+# Expert specification: Database sharding services
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: postgres-shards
+  namespace: diginativa-production
+spec:
+  serviceName: postgres-shards
+  replicas: 16  # Expert spec: 16 shards för multi-tenant isolation
+  selector:
+    matchLabels:
+      app: postgres-shard
+  template:
+    metadata:
+      labels:
+        app: postgres-shard
+    spec:
+      containers:
+      - name: postgres
+        image: postgres:15-alpine
+        env:
+        - name: POSTGRES_DB
+          value: diginativa_shard
+        - name: POSTGRES_USER
+          value: postgres
+        - name: POSTGRES_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: postgres-secret
+              key: password
+        - name: CULTURAL_OPTIMIZATION
+          value: "enabled"
+        ports:
+        - containerPort: 5432
+        volumeMounts:
+        - name: postgres-storage
+          mountPath: /var/lib/postgresql/data
+        resources:
+          requests:
+            memory: "1Gi"
+            cpu: "500m"
+          limits:
+            memory: "4Gi"
+            cpu: "2000m"
+  volumeClaimTemplates:
+  - metadata:
+      name: postgres-storage
+    spec:
+      accessModes: [ "ReadWriteOnce" ]
+      resources:
+        requests:
+          storage: 100Gi
+---
+# Expert requirement: Redis för cultural caching
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: redis-cultural-cache
+  namespace: diginativa-production
+spec:
+  replicas: 3  # Cultural cache cluster
+  selector:
+    matchLabels:
+      app: redis-cultural-cache
+  template:
+    metadata:
+      labels:
+        app: redis-cultural-cache
+    spec:
+      containers:
+      - name: redis
+        image: redis:7-alpine
+        ports:
+        - containerPort: 6379
+        env:
+        - name: REDIS_CULTURAL_CACHE
+          value: "enabled"
+        command:
+        - redis-server
+        - --maxmemory
+        - 1gb
+        - --maxmemory-policy
+        - allkeys-lru
+        resources:
+          requests:
+            memory: "512Mi"
+            cpu: "250m"
+          limits:
+            memory: "1Gi"
+            cpu: "500m"
+---
+# Expert specification: Ingress för European CDN integration
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: diginativa-ingress
+  namespace: diginativa-production
+  annotations:
+    kubernetes.io/ingress.class: "nginx"
+    cert-manager.io/cluster-issuer: "letsencrypt-prod"
+    nginx.ingress.kubernetes.io/ssl-redirect: "true"
+    # Expert requirement: Cultural routing
+    nginx.ingress.kubernetes.io/configuration-snippet: |
+      set $cultural_context "swedish_mobile";
+      if ($http_accept_language ~* "de") {
+        set $cultural_context "german_systematic";
+      }
+      if ($http_accept_language ~* "fr") {
+        set $cultural_context "french_collaborative";
+      }
+      if ($http_accept_language ~* "nl") {
+        set $cultural_context "dutch_progressive";
+      }
+      proxy_set_header X-Cultural-Context $cultural_context;
+spec:
+  tls:
+  - hosts:
+    - app.diginativa.eu
+    - de.diginativa.eu  # German systematic domain
+    - fr.diginativa.eu  # French collaborative domain
+    - nl.diginativa.eu  # Dutch progressive domain
+    - se.diginativa.eu  # Swedish mobile domain
+    secretName: diginativa-tls
+  rules:
+  - host: app.diginativa.eu
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: diginativa-app-service
+            port:
+              number: 80
+  # Expert requirement: Cultural domain routing
+  - host: de.diginativa.eu
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: diginativa-app-service
+            port:
+              number: 80
+  - host: fr.diginativa.eu
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: diginativa-app-service
+            port:
+              number: 80
+  - host: nl.diginativa.eu
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: diginativa-app-service
+            port:
+              number: 80
+  - host: se.diginativa.eu
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: diginativa-app-service
+            port:
+              number: 80
+---
+# Expert requirement: Monitoring för cultural performance
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: prometheus-config
+  namespace: diginativa-production
+data:
+  prometheus.yml: |
+    global:
+      scrape_interval: 15s
+    scrape_configs:
+    - job_name: 'diginativa-cultural-metrics'
+      static_configs:
+      - targets: ['diginativa-app-service:80']
+      metrics_path: /metrics
+      scrape_interval: 10s
+      params:
+        cultural_context: ['all']
+    # Expert specification: Cultural performance metrics
+    - job_name: 'cultural-performance'
+      static_configs:
+      - targets: ['diginativa-app-service:80']
+      metrics_path: /cultural-metrics
+      scrape_interval: 5s
+---
+# Expert requirement: Secrets för enterprise SSO
+apiVersion: v1
+kind: Secret
+metadata:
+  name: enterprise-sso-secrets
+  namespace: diginativa-production
+type: Opaque
+stringData:
+  # SAML certificates för municipal authentication
+  saml-malmo-cert: "LS0tLS1CRUdJTi..." # Base64 encoded cert
+  saml-german-cert: "LS0tLS1CRUdJTi..." # Base64 encoded cert
+  saml-french-cert: "LS0tLS1CRUdJTi..." # Base64 encoded cert
+  saml-dutch-cert: "LS0tLS1CRUdJTi..."  # Base64 encoded cert
+  
+  # OAuth credentials
+  azure-client-id: "placeholder-client-id"
+  azure-client-secret: "placeholder-client-secret"
+  okta-client-id: "placeholder-okta-id"
+  okta-client-secret: "placeholder-okta-secret"
+  
+  # Cultural encryption keys
+  cultural-encryption-key: "placeholder-32-char-encryption-key"
+---
+# Expert specification: Network policies för tenant isolation
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: tenant-isolation-policy
+  namespace: diginativa-production
+spec:
+  podSelector:
+    matchLabels:
+      app: diginativa-runtime-engine
+  policyTypes:
+  - Ingress
+  - Egress
+  ingress:
+  - from:
+    - podSelector:
+        matchLabels:
+          tier: application
+    ports:
+    - protocol: TCP
+      port: 3000
+  egress:
+  - to:
+    - podSelector:
+        matchLabels:
+          app: postgres-shard
+    ports:
+    - protocol: TCP
+      port: 5432
+  - to:
+    - podSelector:
+        matchLabels:
+          app: redis-cultural-cache
+    ports:
+    - protocol: TCP
+      port: 6379

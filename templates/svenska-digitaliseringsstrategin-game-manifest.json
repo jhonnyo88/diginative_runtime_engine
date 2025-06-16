@@ -1,0 +1,569 @@
+{
+  "gameId": "svenska-digitaliseringsstrategin-grundkurs",
+  "metadata": {
+    "title": "Svenska Digitaliseringsstrategin - Grundkurs för Kommunala Administratörer",
+    "description": "En interaktiv 7-minuters utbildning som introducerar Sveriges digitaliseringsstrategi med fokus på praktisk tillämpning i kommunal verksamhet. Optimerad för Anna Svensson och liknande kommunala administratörer.",
+    "version": "1.0.0",
+    "duration": 420,
+    "target_persona": "anna_svensson",
+    "cultural_context": "swedish_municipal",
+    "difficulty_level": "beginner",
+    "learning_objectives": [
+      "Förstå vad Sveriges digitaliseringsstrategi innebär för kommunal verksamhet",
+      "Identifiera konkreta tillämpningar av strategin i dagligt arbete",
+      "Känna till viktiga resurser och nästa steg för implementation"
+    ],
+    "tenant_customization": {
+      "supports_municipal_branding": true,
+      "customizable_characters": true,
+      "localizable_examples": true
+    },
+    "accessibility": {
+      "wcag_level": "AA",
+      "mobile_optimized": true,
+      "screen_reader_compatible": true,
+      "keyboard_navigation": true
+    }
+  },
+  "scenes": [
+    {
+      "id": "intro-dialogue",
+      "type": "DialogueScene",
+      "title": "Välkommen till Digitaliseringsstrategin",
+      "data": {
+        "background": {
+          "image": "/assets/backgrounds/swedish-municipal-office.jpg",
+          "alt": "Modern svenskt kommunkontor med digitala skärmar"
+        },
+        "characters": [
+          {
+            "id": "eva_digitalisering",
+            "name": "Eva Digitaliseringsansvarig",
+            "role": "Chef för Digital Utveckling",
+            "avatar": "/assets/avatars/eva-digitalisering-professional.svg",
+            "description": "Erfaren kommunal digitalisering specialist som hjälper Anna förstå strategin",
+            "personality": "professionell, uppmuntrande, praktisk"
+          },
+          {
+            "id": "anna_svensson", 
+            "name": "Anna",
+            "role": "Kommunal Administratör",
+            "avatar": "/assets/avatars/anna-svensson-municipal.svg",
+            "description": "Du i rollen som kommunal administratör",
+            "personality": "nyfiken, upptagen, resultatfokuserad"
+          }
+        ],
+        "dialogue": [
+          {
+            "speaker": "eva_digitalisering",
+            "text": "Hej Anna! Jag vet att du har mycket att göra, så vi håller detta kort och praktiskt. Redo att utforska vad Sveriges digitaliseringsstrategi betyder för ditt dagliga arbete?",
+            "animation": "greeting",
+            "choices": [
+              {
+                "text": "Ja, låt oss börja direkt!",
+                "next": "strategy_overview",
+                "analytics_tag": "eager_start"
+              },
+              {
+                "text": "Berätta lite mer först - vad innebär det egentligen?",
+                "next": "strategy_explanation",
+                "analytics_tag": "wants_context"
+              }
+            ]
+          }
+        ]
+      },
+      "timing": {
+        "estimated_duration": 45,
+        "can_skip": false,
+        "auto_advance": false
+      },
+      "cultural_adaptations": {
+        "swedish_municipal": {
+          "tone": "professional_friendly",
+          "formality": "medium",
+          "time_respect": "high"
+        }
+      }
+    },
+    {
+      "id": "strategy_explanation",
+      "type": "DialogueScene", 
+      "title": "Vad är Digitaliseringsstrategin?",
+      "data": {
+        "characters": ["eva_digitalisering", "anna_svensson"],
+        "dialogue": [
+          {
+            "speaker": "eva_digitalisering",
+            "text": "Enkelt uttryckt är det Sveriges plan för att bli världsledande inom digitalisering fram till 2030. Det handlar om tre huvudområden som påverkar ditt arbete direkt:",
+            "animation": "explaining"
+          },
+          {
+            "speaker": "eva_digitalisering", 
+            "text": "1) Digital kompetens - att alla ska kunna använda digital teknik, 2) Digital trygghet - säkerhet och integritet online, och 3) Digital innovation - nya lösningar som gör jobbet enklare.",
+            "animation": "listing",
+            "visual_aids": {
+              "type": "info_cards",
+              "cards": [
+                {
+                  "title": "Digital Kompetens",
+                  "icon": "/assets/icons/competence.svg",
+                  "description": "Kunskap och färdigheter för digital vardag"
+                },
+                {
+                  "title": "Digital Trygghet", 
+                  "icon": "/assets/icons/security.svg",
+                  "description": "Säkerhet och integritet i digital miljö"
+                },
+                {
+                  "title": "Digital Innovation",
+                  "icon": "/assets/icons/innovation.svg", 
+                  "description": "Nya lösningar för bättre service"
+                }
+              ]
+            }
+          },
+          {
+            "speaker": "anna_svensson",
+            "text": "Det låter bra, men hur påverkar det mig konkret i mitt dagliga arbete?",
+            "animation": "questioning"
+          },
+          {
+            "speaker": "eva_digitalisering",
+            "text": "Bra fråga! Låt mig ge dig några konkreta exempel från kommunal verksamhet...",
+            "animation": "nodding",
+            "choices": [
+              {
+                "text": "Ja, visa mig praktiska exempel",
+                "next": "practical_examples",
+                "analytics_tag": "wants_examples"
+              }
+            ]
+          }
+        ]
+      },
+      "timing": {
+        "estimated_duration": 90,
+        "can_skip": true,
+        "auto_advance": false
+      }
+    },
+    {
+      "id": "practical_examples",
+      "type": "DialogueScene",
+      "title": "Praktiska Exempel från Kommunal Verksamhet", 
+      "data": {
+        "characters": ["eva_digitalisering", "anna_svensson"],
+        "dialogue": [
+          {
+            "speaker": "eva_digitalisering",
+            "text": "Här är tre konkreta sätt som digitaliseringsstrategin redan påverkar kommuner som din:",
+            "animation": "presenting"
+          },
+          {
+            "speaker": "eva_digitalisering",
+            "text": "**Digital kompetens:** Vi utbildar medarbetare i nya digitala verktyg - som den här utbildningsplattformen du använder just nu! **Digital trygghet:** Vi implementerar säkrare system för hantering av medborgardata. **Digital innovation:** Vi testar nya digitala tjänster som gör det enklare för medborgare att kontakta kommunen.",
+            "animation": "explaining",
+            "visual_aids": {
+              "type": "scenario_cards",
+              "scenarios": [
+                {
+                  "title": "Malmö Stad: Digital Medborgarservice",
+                  "description": "Nya självserviceportaler minskar handläggningstid med 40%",
+                  "icon": "/assets/icons/citizen-service.svg"
+                },
+                {
+                  "title": "Göteborg: Säker Datahantering", 
+                  "description": "Förbättrad cybersäkerhet skyddar medborgaruppgifter",
+                  "icon": "/assets/icons/data-protection.svg"
+                },
+                {
+                  "title": "Stockholm: AI-assistenter",
+                  "description": "Chatbots besvarar vanliga frågor dygnet runt", 
+                  "icon": "/assets/icons/ai-assistant.svg"
+                }
+              ]
+            }
+          },
+          {
+            "speaker": "anna_svensson",
+            "text": "Det låter verkligen användbart! Hur kan jag bidra till detta i mitt arbete?",
+            "animation": "interested"
+          },
+          {
+            "speaker": "eva_digitalisering",
+            "text": "Perfekt attityd, Anna! Låt oss testa dina kunskaper med några praktiska frågor...",
+            "animation": "encouraging",
+            "choices": [
+              {
+                "text": "Ja, jag är redo för testet!",
+                "next": "knowledge_quiz",
+                "analytics_tag": "ready_for_quiz"
+              }
+            ]
+          }
+        ]
+      },
+      "timing": {
+        "estimated_duration": 120,
+        "can_skip": false,
+        "auto_advance": false
+      }
+    },
+    {
+      "id": "knowledge_quiz",
+      "type": "QuizScene",
+      "title": "Kunskapstest: Digitaliseringsstrategin i Praktiken",
+      "data": {
+        "instructions": "Svara på frågorna baserat på vad vi just diskuterat. Du behöver få minst 2 av 3 rätt för att klara testet.",
+        "questions": [
+          {
+            "id": "q1_main_goals",
+            "question": "Vilka är de tre huvudområdena i Sveriges digitaliseringsstrategi?",
+            "type": "multiple_choice",
+            "options": [
+              {
+                "text": "Digital kompetens, Digital trygghet, Digital innovation",
+                "correct": true,
+                "feedback": "Rätt! Det är de tre huvudpelarna som påverkar all offentlig verksamhet."
+              },
+              {
+                "text": "Snabbare internet, Billigare datorer, Fler appar",
+                "correct": false,
+                "feedback": "Nej, strategin fokuserar på bredare samhällsmål än bara teknik."
+              },
+              {
+                "text": "Artificiell intelligens, Robotik, Automatisering",
+                "correct": false,
+                "feedback": "Det är viktiga delar, men strategin är bredare än bara dessa teknologier."
+              }
+            ],
+            "time_limit": 30,
+            "explanation": "Digitaliseringsstrategin bygger på dessa tre grundpelare för att Sverige ska bli världsledande inom digitalisering."
+          },
+          {
+            "id": "q2_municipal_impact",
+            "question": "Hur kan digital innovation konkret hjälpa kommunal verksamhet?",
+            "type": "multiple_choice", 
+            "options": [
+              {
+                "text": "Genom att automatisera alla jobb",
+                "correct": false,
+                "feedback": "Nej, målet är att förbättra service, inte ersätta alla anställda."
+              },
+              {
+                "text": "Genom självserviceportaler och bättre medborgarservice",
+                "correct": true,
+                "feedback": "Precis! Digital innovation ska göra det enklare för både anställda och medborgare."
+              },
+              {
+                "text": "Genom att spara pengar på IT",
+                "correct": false,
+                "feedback": "Kostnadsbesparing kan vara en effekt, men huvudmålet är bättre service."
+              }
+            ],
+            "time_limit": 30,
+            "explanation": "Digital innovation i kommuner handlar främst om att förbättra service och effektivitet."
+          },
+          {
+            "id": "q3_personal_role",
+            "question": "Som kommunal administratör, vilket är det bästa sättet att bidra till digitaliseringsstrategin?",
+            "type": "multiple_choice",
+            "options": [
+              {
+                "text": "Undvika nya digitala verktyg tills de är perfekta",
+                "correct": false,
+                "feedback": "Nej, det viktigt att vara öppen för nya verktyg och lära sig kontinuerligt."
+              },
+              {
+                "text": "Vara öppen för utbildning och nya verktyg som förbättrar arbetet",
+                "correct": true,
+                "feedback": "Excellent! Kontinuerlig utveckling och öppenhet för förändring är nyckeln."
+              },
+              {
+                "text": "Fokusera bara på säkerhetsproblem med digitalisering",
+                "correct": false,
+                "feedback": "Säkerhet är viktigt, men balans mellan innovation och trygghet behövs."
+              }
+            ],
+            "time_limit": 30,
+            "explanation": "Som kommunal medarbetare är din attityd och vilja att utvecklas avgörande för framgång."
+          }
+        ],
+        "pass_threshold": 66,
+        "feedback": {
+          "pass": "Bra jobbat, Anna! Du har god förståelse för digitaliseringsstrategin.",
+          "fail": "Inget problem - låt oss gå igenom det viktigaste en gång till."
+        }
+      },
+      "timing": {
+        "estimated_duration": 120,
+        "can_skip": false,
+        "auto_advance": false
+      }
+    },
+    {
+      "id": "resources_and_tools",
+      "type": "ResourceScene",
+      "title": "Användbara Resurser för Dig",
+      "data": {
+        "description": "Här är viktiga resurser och verktyg som hjälper dig i ditt fortsatta arbete med digitalisering:",
+        "resources": [
+          {
+            "title": "Sveriges Digitaliseringsstrategi - Fullständigt Dokument",
+            "type": "pdf",
+            "url": "/assets/documents/digitaliseringsstrategi-2030.pdf",
+            "description": "Det kompletta strategidokumentet från regeringen med alla detaljer och mål.",
+            "size": "2.3 MB",
+            "pages": 48,
+            "estimated_read_time": "15 minuter"
+          },
+          {
+            "title": "Praktisk Guide: Digitalisering i Kommunal Verksamhet",
+            "type": "pdf", 
+            "url": "/assets/documents/kommunal-digitaliseringsguide.pdf",
+            "description": "Konkreta tips och exempel för implementering i kommunal miljö.",
+            "size": "1.8 MB",
+            "pages": 32,
+            "estimated_read_time": "12 minuter"
+          },
+          {
+            "title": "DIGG - Myndigheten för Digital Förvaltning",
+            "type": "website",
+            "url": "https://www.digg.se",
+            "description": "Den officiella myndigheten med resurser, riktlinjer och stöd för offentlig digitalisering.",
+            "note": "Öppnas i ny flik"
+          },
+          {
+            "title": "SKR - Sveriges Kommuner och Regioner: Digitaliseringsresurser",
+            "type": "website", 
+            "url": "https://skr.se/skr/tjanster/digitalisering.html",
+            "description": "Specifikt stöd och resurser för kommunal digitalisering från SKR.",
+            "note": "Öppnas i ny flik"
+          },
+          {
+            "title": "Checklista: Mina Nästa Steg",
+            "type": "checklist",
+            "items": [
+              "Diskutera digitaliseringsstrategin med min chef eller team",
+              "Identifiera ett område i mitt arbete som kan digitaliseras",
+              "Anmäl mig till relevant kompetensutveckling inom digitalisering",
+              "Läs igenom den fullständiga strategin när jag har tid",
+              "Dela denna kunskap med kollegor som kan vara intresserade"
+            ]
+          }
+        ],
+        "downloadable": true,
+        "shareable": true
+      },
+      "timing": {
+        "estimated_duration": 60,
+        "can_skip": true,
+        "auto_advance": false
+      },
+      "analytics": {
+        "track_downloads": true,
+        "track_link_clicks": true,
+        "track_time_spent": true
+      }
+    },
+    {
+      "id": "final_assessment",
+      "type": "AssessmentScene", 
+      "title": "Slutbedömning och Certifiering",
+      "data": {
+        "assessment_type": "comprehensive",
+        "instructions": "Din slutliga bedömning baseras på quiz-resultat och engagemang under utbildningen.",
+        "scoring": {
+          "quiz_weight": 70,
+          "engagement_weight": 20,
+          "completion_weight": 10
+        },
+        "certification": {
+          "certificate_template": "swedish_municipal_digitalization",
+          "certificate_title": "Certifierad inom Sveriges Digitaliseringsstrategi",
+          "issuing_authority": "DigiNativa Learning Platform",
+          "valid_for": "24 månader",
+          "requirements": {
+            "minimum_score": 70,
+            "completion_required": true,
+            "time_limit_respected": true
+          }
+        },
+        "feedback_categories": [
+          {
+            "category": "Förståelse av Strategin",
+            "weight": 40,
+            "description": "Kunskap om digitaliseringsstrategins tre huvudpelare"
+          },
+          {
+            "category": "Praktisk Tillämpning", 
+            "weight": 35,
+            "description": "Förmåga att se konkreta tillämpningar i kommunalt arbete"
+          },
+          {
+            "category": "Engagemang och Attityd",
+            "weight": 25,
+            "description": "Visat intresse för fortsatt utveckling inom digitalisering"
+          }
+        ]
+      },
+      "timing": {
+        "estimated_duration": 45,
+        "can_skip": false,
+        "auto_advance": false
+      }
+    },
+    {
+      "id": "completion_summary",
+      "type": "SummaryScene",
+      "title": "Grattis, Anna! Du har slutfört utbildningen",
+      "data": {
+        "completion_message": "Excellent arbete! Du har nu en solid grund inom Sveriges digitaliseringsstrategi och är redo att bidra till din kommuns digitala utveckling.",
+        "achievements": [
+          {
+            "id": "strategy_master",
+            "title": "Digitaliseringsstrategi-expert",
+            "description": "Visat god förståelse för strategins tre huvudpelare",
+            "icon": "/assets/achievements/strategy-expert.svg"
+          },
+          {
+            "id": "municipal_champion",
+            "title": "Kommunal Digitaliseringschampion", 
+            "description": "Kopplat strategin till praktiskt kommunalt arbete",
+            "icon": "/assets/achievements/municipal-champion.svg"
+          },
+          {
+            "id": "mobile_learner",
+            "title": "Mobil Lärare",
+            "description": "Slutfört utbildningen på mobil enhet",
+            "icon": "/assets/achievements/mobile-learner.svg",
+            "condition": "device_type === 'mobile'"
+          },
+          {
+            "id": "efficient_learner",
+            "title": "Effektiv Lärare",
+            "description": "Slutfört utbildningen under 7 minuter",
+            "icon": "/assets/achievements/efficient-learner.svg",
+            "condition": "total_time < 420"
+          }
+        ],
+        "next_steps": {
+          "recommended_actions": [
+            {
+              "title": "Dela med kollegor",
+              "description": "Rekommendera denna utbildning till andra kommunala medarbetare",
+              "action_type": "share",
+              "priority": "high"
+            },
+            {
+              "title": "Fördjupning: GDPR och Digitalisering",
+              "description": "Nästa utbildning inom digital trygghet och dataskydd",
+              "action_type": "next_course",
+              "course_id": "gdpr-digital-security",
+              "priority": "medium"
+            },
+            {
+              "title": "Implementera i praktiken",
+              "description": "Identifiera och föreslå en digital förbättring på din arbetsplats",
+              "action_type": "practice",
+              "priority": "high"
+            }
+          ]
+        },
+        "supervisor_report": {
+          "enabled": true,
+          "template": "municipal_completion_report",
+          "includes": [
+            "completion_time",
+            "quiz_scores", 
+            "engagement_metrics",
+            "certificate_info",
+            "recommended_next_steps"
+          ]
+        }
+      },
+      "timing": {
+        "estimated_duration": 30,
+        "can_skip": false,
+        "auto_advance": false
+      }
+    }
+  ],
+  "flow_control": {
+    "scene_transitions": {
+      "intro-dialogue": {
+        "strategy_overview": "strategy_explanation",
+        "strategy_explanation": "strategy_explanation"
+      },
+      "strategy_explanation": {
+        "practical_examples": "practical_examples"
+      },
+      "practical_examples": {
+        "knowledge_quiz": "knowledge_quiz"
+      },
+      "knowledge_quiz": {
+        "success": "resources_and_tools",
+        "failure": "strategy_explanation"
+      },
+      "resources_and_tools": {
+        "final_assessment": "final_assessment"
+      },
+      "final_assessment": {
+        "completion_summary": "completion_summary"
+      }
+    },
+    "conditional_logic": {
+      "quiz_retry": {
+        "condition": "quiz_score < pass_threshold",
+        "action": "redirect_to_scene",
+        "target": "strategy_explanation",
+        "message": "Låt oss gå igenom informationen en gång till innan vi testar igen."
+      }
+    }
+  },
+  "analytics": {
+    "tracking_events": [
+      "scene_start",
+      "scene_complete", 
+      "choice_made",
+      "quiz_answer",
+      "resource_download",
+      "certificate_generated",
+      "game_complete"
+    ],
+    "custom_metrics": [
+      "anna_svensson_optimization_score",
+      "mobile_usage_percentage",
+      "lunch_break_completion_rate"
+    ],
+    "retention_period": "7_years"
+  },
+  "localization": {
+    "primary_language": "sv-SE",
+    "supported_languages": ["sv-SE"],
+    "cultural_adaptations": {
+      "swedish_municipal": {
+        "tone": "professional_friendly",
+        "formality_level": "medium_formal",
+        "time_consciousness": "high",
+        "mobile_optimization": "prioritized"
+      }
+    }
+  },
+  "technical_requirements": {
+    "minimum_browser": "Chrome 90+, Firefox 88+, Safari 14+, Edge 90+",
+    "mobile_support": "iOS 14+, Android 8+",
+    "accessibility": {
+      "wcag_compliance": "AA",
+      "screen_reader_tested": true,
+      "keyboard_navigation": true,
+      "high_contrast_mode": true
+    },
+    "performance": {
+      "target_load_time": "2s",
+      "target_interaction_response": "100ms",
+      "mobile_data_usage": "<5MB total"
+    }
+  }
+}

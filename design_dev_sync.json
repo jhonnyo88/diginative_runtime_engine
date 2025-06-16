@@ -920,6 +920,204 @@
       "impact_on_designer": "Once complete, Game Designer can see live components in Storybook"
     }
   ],
+  "expert_integration_tasks": [
+    {
+      "id": "task-017-EXPERT-ANALYSIS",
+      "type": "visual_foundation_audit",
+      "title": "EXPERT FOLLOW-UP: Visual Design Foundation Audit för Enterprise Scaling",
+      "status": "🟡 in_progress",
+      "priority": "⚡ high",
+      "assigned_by": "head_developer", 
+      "description": "Expert har identifierat att vi behöver enterprise-grade visual foundations för €25M ARR European scaling. Analysera våra nuvarande visuella foundations mot enterprise procurement requirements.",
+      "expert_context": {
+        "expert_finding": "Strong technical foundation but missing enterprise-grade visual consistency",
+        "business_impact": "Visual inconsistencies can cost enterprise contracts worth €5-10M per lost deal",
+        "european_requirements": "German systematic, French collaborative, Dutch progressive, Swedish mobile"
+      },
+      "analysis_requirements": [
+        "Audit alla current components mot enterprise visual standards",
+        "Identifiera visual inconsistencies som kan blockera municipal procurement",
+        "Analysera cultural visual adaptations för Klaus Mueller, Marie Dubois, Pieter van Berg",
+        "Benchmarka mot enterprise competitors (SAP SuccessFactors, Workday Learning)",
+        "Identifiera gaps i government accessibility visual requirements"
+      ],
+      "deliverables": {
+        "visual_audit_report": "/design_system/enterprise_visual_audit.md",
+        "inconsistency_matrix": "/design_system/visual_inconsistencies.json", 
+        "cultural_visual_gaps": "/design_system/cultural_visual_analysis.json",
+        "enterprise_benchmark": "/design_system/enterprise_competitor_analysis.md"
+      },
+      "success_criteria": [
+        "Complete visual audit med konkreta förbättringsförslag",
+        "Cultural visual adaptation roadmap för 4 markets",
+        "Enterprise procurement visual readiness assessment",
+        "Priority-ranked visual improvements för €25M ARR target"
+      ],
+      "timeline": "3-4 dagar parallellt arbete",
+      "independence_level": "100% - No developer dependencies",
+      "business_context": "Expert har visat att visual consistency = enterprise contract wins",
+      "deadline": "2025-01-20"
+    },
+    {
+      "id": "task-018-EXPERT-ANALYSIS", 
+      "type": "municipal_visual_requirements",
+      "title": "EXPERT FOLLOW-UP: Municipal Procurement Visual Requirements Analysis",
+      "status": "🟡 in_progress",
+      "priority": "⚡ high",
+      "assigned_by": "head_developer",
+      "description": "Expert identifierade specifika municipal procurement visual requirements som vi saknar. Analysera och specificera government visual standards för European markets.",
+      "expert_context": {
+        "expert_requirement": "Government accessibility standards beyond WCAG 2.1 AA",
+        "market_insight": "Municipal procurement har specifika visual branding requirements",
+        "compliance_gap": "Missing visual compliance för BITV 2.0 (DE), RGAA (FR), EN 301 549 (NL)"
+      },
+      "analysis_requirements": [
+        "Research government visual branding requirements per land (DE/FR/NL/SE)",
+        "Analysera municipal logo integration patterns och placement strategies",
+        "Identifiera government-specific color accessibility requirements",
+        "Benchmarka municipal competitor platforms (visual presentation)",
+        "Definiera visual compliance checklist för procurement RFPs"
+      ],
+      "deliverables": {
+        "gov_visual_requirements": "/design_system/government_visual_standards.md",
+        "municipal_branding_guide": "/design_system/municipal_branding_integration.md",
+        "compliance_visual_checklist": "/design_system/visual_compliance_checklist.json",
+        "procurement_visual_specs": "/design_system/procurement_visual_requirements.md"
+      },
+      "cultural_specifications": {
+        "german_municipal": "Formal, systematic visual hierarchy with detailed information density",
+        "french_municipal": "Collaborative, refined aesthetics with cultural sophistication", 
+        "dutch_municipal": "Progressive, minimal visual efficiency with innovation focus",
+        "swedish_municipal": "Mobile-first professional visual design för Anna Svensson"
+      },
+      "timeline": "2-3 dagar parallellt arbete",
+      "independence_level": "100% - Pure research and design analysis",
+      "deadline": "2025-01-19"
+    },
+    {
+      "id": "task-019-EXPERT-ANALYSIS",
+      "type": "enterprise_ui_optimization", 
+      "title": "EXPERT FOLLOW-UP: Enterprise UI Optimization Strategy",
+      "status": "🟡 in_progress",
+      "priority": "⚡ high",
+      "assigned_by": "head_developer",
+      "description": "Expert påpekade att våra current UI patterns behöver enterprise-grade optimization för 10K+ concurrent users. Analysera och optimera UI för enterprise scale.",
+      "expert_context": {
+        "performance_requirement": "10K+ concurrent users med <50ms response time",
+        "cultural_adaptation": "UI måste adaptera för Klaus/Marie/Pieter samtidigt",
+        "enterprise_complexity": "Support för bulk content management och admin dashboards"
+      },
+      "analysis_requirements": [
+        "Analysera current UI components för enterprise performance bottlenecks",
+        "Identifiera UI patterns som inte skalar till 10K+ users",
+        "Research enterprise UI best practices (Salesforce, Microsoft, SAP)",
+        "Designa UI optimizations för cultural middleware integration",
+        "Specificera enterprise admin dashboard visual requirements"
+      ],
+      "deliverables": {
+        "ui_performance_analysis": "/design_system/ui_performance_optimization.md",
+        "enterprise_ui_patterns": "/design_system/enterprise_ui_best_practices.md", 
+        "cultural_ui_specifications": "/design_system/cultural_ui_adaptations.json",
+        "admin_dashboard_mockups": "/design_assets/admin_dashboard/enterprise_mockups.png"
+      },
+      "performance_targets": {
+        "anna_svensson_mobile": "<100ms interaction response på iPhone 12",
+        "klaus_mueller_desktop": "<50ms för detailed information display",
+        "marie_dubois_collaboration": "<75ms för collaborative UI elements",
+        "pieter_van_berg_efficiency": "<25ms för minimal UI interactions"
+      },
+      "timeline": "4-5 dagar parallellt arbete",
+      "independence_level": "95% - Minimal developer consultation needed",
+      "deadline": "2025-01-22"
+    },
+    {
+      "id": "task-020-EXPERT-STRATEGIC",
+      "type": "competitive_visual_analysis",
+      "title": "EXPERT FOLLOW-UP: Competitive Visual Advantage Analysis", 
+      "status": "🟡 in_progress",
+      "priority": "high",
+      "assigned_by": "head_developer",
+      "description": "Expert betonade att visual design = competitive moat. Analysera competitors och identifiera våra unique visual advantages för European market domination.",
+      "expert_context": {
+        "competitive_insight": "Visual design kan skapa unbeatable competitive advantages",
+        "market_differentiation": "Cultural visual adaptation = unique European positioning",
+        "revenue_impact": "Superior visual design = 30-50% higher enterprise contract win rate"
+      },
+      "analysis_requirements": [
+        "Deep analysis av major competitors (SAP SuccessFactors, Cornerstone, Articulate)",
+        "Identifiera visual design weaknesses hos competitors",
+        "Kartlägga våra unique visual strengths och opportunities",
+        "Designa visual features som competitors cannot replicate",
+        "Specificera visual innovation roadmap för 2025-2027"
+      ],
+      "deliverables": {
+        "competitive_visual_analysis": "/research/competitive_visual_deep_dive.md",
+        "visual_differentiation_strategy": "/design_system/visual_competitive_advantages.md",
+        "innovation_visual_roadmap": "/design_system/visual_innovation_2025_2027.md", 
+        "unique_features_mockups": "/design_assets/competitive_advantages/unique_visual_features.png"
+      },
+      "strategic_focus": [
+        "Cultural visual adaptation (vårt unique advantage)",
+        "Municipal-specific visual language (niche domination)",
+        "Mobile-first enterprise design (Anna Svensson advantage)",
+        "AI-powered visual personalization (future moat)"
+      ],
+      "timeline": "3-4 dagar strategiskt arbete",
+      "independence_level": "100% - Strategic design research",
+      "deadline": "2025-01-23"
+    },
+    {
+      "id": "task-021-DEVTEAM-INTEGRATION",
+      "type": "devteam_integration_design",
+      "title": "DevTeam Integration Components - Automated Game Generation Design Systems",
+      "status": "🟡 in_progress",
+      "priority": "⚡ critical",
+      "assigned_by": "head_developer",
+      "description": "CRITICAL NEW DIRECTION: Design component systems that enable DevTeam (Python-based content creation team) to automatically generate games using our engine. Focus on government visual standards as reusable templates för automated municipal game creation.",
+      "devteam_context": {
+        "workflow": "Python-based, modular, strong testing culture, documentation-focused",
+        "integration_points": "Content templates → Game manifests → Standalone deployable games",
+        "automation_requirement": "Minimal manual intervention from content creation to game deployment"
+      },
+      "requirements": [
+        "Design government visual standard templates that DevTeam can populate automatically",
+        "Create component specification system för automated theme application",
+        "Design municipal branding integration templates för multi-tenant automation",
+        "Build cultural adaptation template system (Klaus/Marie/Pieter/Anna automation)",
+        "Design content-to-game-manifest transformation guidelines",
+        "Create automated visual compliance validation templates"
+      ],
+      "deliverables": {
+        "devteam_integration_guide": "/docs/DEVTEAM_INTEGRATION_GUIDE.md",
+        "government_template_system": "/design_system/government_templates/",
+        "automation_component_specs": "/design_system/automation_specs/",
+        "municipal_branding_templates": "/design_system/municipal_templates/",
+        "content_transformation_guidelines": "/docs/content_to_game_transformation.md"
+      },
+      "success_criteria": [
+        "DevTeam can generate municipal games without manual design intervention",
+        "Government visual standards automatically applied based on target market",
+        "Municipal branding automatically integrated based on client specifications",
+        "Cultural adaptation automatically applied based on persona targeting (Klaus/Marie/Pieter/Anna)",
+        "Complete automation från content upload → game deployment"
+      ],
+      "technical_integration": {
+        "devteam_output_format": "Python modules generate JSON game manifests",
+        "visual_system_input": "Template-based automatic theme application",
+        "deployment_automation": "Generated games deployable as standalone products",
+        "quality_assurance": "Automated visual compliance validation"
+      },
+      "business_impact": {
+        "automation_target": "90% reduction in manual game creation time",
+        "scalability_enabler": "Unlimited municipal games from single content input",
+        "quality_consistency": "Government standards automatically enforced",
+        "market_expansion": "Automated cultural adaptation enables instant European market entry"
+      },
+      "timeline": "1-2 veckor - critical for automation pipeline",
+      "independence_level": "95% - Minimal developer consultation needed",
+      "deadline": "2025-01-31"
+    }
+  ],
   "communication_log": [
     {
       "timestamp": "2025-01-16T12:00:00Z",
@@ -975,6 +1173,36 @@
       "timestamp": "2025-01-17T02:45:00Z",
       "from": "developer",
       "message": "🎉 INCREDIBLE! ALL 14 TASKS COMPLETED - you've designed our entire future! Phase 1✅ + Phase 2✅ + AI Innovation✅ = Platform ready for European domination! Starting Enterprise Admin Dashboard implementation now. Added 2 VISIONARY Phase 3 tasks: task-015 (Next-Gen Innovation) + task-016 (Ecosystem/Marketplace). Your strategic vision is driving DigiNativa to market leadership! 🚀🇪🇺"
+    },
+    {
+      "timestamp": "2025-01-16T20:30:00Z",
+      "from": "head_developer",
+      "message": "🚀 EXPERT ANALYSIS COMPLETE! Received detailed €500K investment roadmap för €25M ARR European scaling. Implemented SSO foundation, European CDN strategy, and database sharding architecture based on expert specifications. Your design excellence enabled this technical acceleration!"
+    },
+    {
+      "timestamp": "2025-01-16T21:00:00Z", 
+      "from": "head_developer",
+      "message": "🎯 NEW STRATEGIC MISSION: Added 4 EXPERT FOLLOW-UP ANALYSIS TASKS (task-017 through task-020). These are 100% independent design research tasks that directly support our €25M ARR goal. Expert identified visual design as critical competitive advantage för European municipal procurement. Your analysis will guide €5-10M contract wins!"
+    },
+    {
+      "timestamp": "2025-01-16T21:15:00Z",
+      "from": "head_developer", 
+      "message": "⚡ PRIORITY GUIDANCE: Start with task-018 (Municipal Visual Requirements) - shortest timeline but highest procurement impact. Then task-017 (Visual Foundation Audit) för enterprise readiness. Expert emphasized that visual consistency = contract wins in municipal markets. Your work directly enables European expansion!"
+    },
+    {
+      "timestamp": "2025-01-16T21:30:00Z",
+      "from": "head_developer",
+      "message": "💡 CONTEXT FOR SUCCESS: Expert confirmed våra technical foundation is world-class (Mercedes motor) but we need enterprise visual chassis. Your analysis tasks will identify the visual upgrades needed för Klaus Mueller (German systematic), Marie Dubois (French collaborative), Pieter van Berg (Dutch progressive) markets. This is strategic competitive intelligence work!"
+    },
+    {
+      "timestamp": "2025-01-17T10:00:00Z",
+      "from": "head_developer",
+      "message": "🎯 STRATEGIC REFOCUS: Prioritizing SPELMOTOR-FIRST approach för snabb go-live. Focus on completing government visual standards (excellent progress!) while I implement game engine documentation & developer experience. Target: Functional game engine för Swedish digitaliseringsstrategi within 2-3 veckor. Your visual compliance work directly enables this!"
+    },
+    {
+      "timestamp": "2025-01-17T12:30:00Z",
+      "from": "head_developer",
+      "message": "🚀 MAJOR ARCHITECTURAL SHIFT: We're building automated game generation platform! DigiNativa portal → DevTeam content creation → Game Engine → Standalone products. Task-017 excellent work! NOW DELEGATING: Build DevTeam Integration Components - design systems that enable automated game generation from content templates. Focus på government visual standards som blir templates!"
     }
   ],
   "implementation_queue": [

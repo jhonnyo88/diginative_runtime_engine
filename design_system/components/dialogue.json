@@ -1,0 +1,228 @@
+{
+  "component": "DialogueScene",
+  "version": "1.0.0",
+  "created": "2025-01-16",
+  "anna_svensson_optimized": true,
+  "chakra_integration": "Uses Chakra components with custom styling",
+  
+  "layout_specifications": {
+    "container": {
+      "chakra_component": "VStack",
+      "max_width": "375px",
+      "padding": "space.4",
+      "spacing": "space.4",
+      "background": "theme.background",
+      "min_height": "100vh"
+    },
+    
+    "character_area": {
+      "chakra_component": "HStack",
+      "justify": "flex-start",
+      "align": "center",
+      "spacing": "space.3",
+      "padding": "space.3",
+      "background": "theme.surface",
+      "border_radius": "radii.lg",
+      "shadow": "shadows.sm"
+    },
+    
+    "dialogue_bubble": {
+      "chakra_component": "Card",
+      "card_body": {
+        "padding": "space.4"
+      },
+      "background": "white",
+      "border_radius": "radii.lg",
+      "shadow": "shadows.base",
+      "max_width": "85%",
+      "border": "2px solid transparent",
+      "hover_border": "brand.200"
+    },
+    
+    "navigation_area": {
+      "chakra_component": "HStack",
+      "justify": "space-between",
+      "padding": "space.4",
+      "background": "theme.surface"
+    }
+  },
+  
+  "character_design": {
+    "avatar": {
+      "chakra_component": "Avatar",
+      "size": "md",
+      "min_size": "48px",
+      "border": "2px solid",
+      "border_color": "brand.500",
+      "background": "brand.50"
+    },
+    
+    "name_tag": {
+      "chakra_component": "Badge",
+      "variant": "subtle",
+      "color_scheme": "brand",
+      "font_size": "fontSizes.sm",
+      "font_weight": "fontWeights.medium",
+      "padding": "space.2"
+    },
+    
+    "role_indicator": {
+      "chakra_component": "Text",
+      "font_size": "fontSizes.xs",
+      "color": "gray.600",
+      "font_weight": "fontWeights.normal"
+    }
+  },
+  
+  "dialogue_text": {
+    "speaker_name": {
+      "chakra_component": "Text",
+      "font_size": "fontSizes.sm",
+      "font_weight": "fontWeights.semibold",
+      "color": "brand.700",
+      "margin_bottom": "space.1"
+    },
+    
+    "message_text": {
+      "chakra_component": "Text",
+      "font_size": "fontSizes.md",
+      "line_height": "lineHeights.tall",
+      "color": "gray.800",
+      "text_align": "left"
+    }
+  },
+  
+  "interaction_elements": {
+    "next_button": {
+      "chakra_component": "Button",
+      "variant": "solid",
+      "color_scheme": "brand",
+      "size": "lg",
+      "min_height": "48px",
+      "font_weight": "fontWeights.medium",
+      "border_radius": "radii.md",
+      "icon": "ChevronRightIcon"
+    },
+    
+    "choice_buttons": {
+      "chakra_component": "VStack",
+      "spacing": "space.3",
+      "width": "100%",
+      "choice_button": {
+        "chakra_component": "Button",
+        "variant": "outline",
+        "color_scheme": "brand",
+        "size": "lg",
+        "min_height": "48px",
+        "text_align": "left",
+        "justify_content": "flex-start",
+        "white_space": "normal",
+        "height": "auto",
+        "padding": "space.4"
+      }
+    }
+  },
+  
+  "visual_states": {
+    "loading": {
+      "chakra_component": "Skeleton",
+      "height": "space.16",
+      "border_radius": "radii.lg"
+    },
+    
+    "active_speaker": {
+      "avatar_border": "brand.500",
+      "name_tag_color": "brand",
+      "glow_effect": "0 0 0 3px rgba(0, 82, 147, 0.3)"
+    },
+    
+    "inactive_speaker": {
+      "avatar_border": "gray.300",
+      "name_tag_color": "gray",
+      "opacity": 0.7
+    }
+  },
+  
+  "animations": {
+    "dialogue_enter": {
+      "chakra_component": "Fade",
+      "in": true,
+      "transition": {
+        "enter": { "duration": 0.3 },
+        "exit": { "duration": 0.2 }
+      }
+    },
+    
+    "speaker_highlight": {
+      "transform": "scale(1.05)",
+      "transition": "all 0.2s ease-in-out"
+    }
+  },
+  
+  "responsive_behavior": {
+    "breakpoints": {
+      "base": {
+        "avatar_size": "md",
+        "font_size": "md",
+        "padding": "space.4"
+      },
+      "sm": {
+        "avatar_size": "lg", 
+        "font_size": "lg",
+        "padding": "space.6"
+      }
+    }
+  },
+  
+  "accessibility": {
+    "keyboard_navigation": {
+      "tab_order": ["avatar", "dialogue_text", "choice_buttons", "next_button"],
+      "focus_styles": {
+        "outline": "2px solid",
+        "outline_color": "brand.500",
+        "outline_offset": "2px"
+      }
+    },
+    
+    "screen_reader": {
+      "aria_labels": {
+        "speaker": "Current speaker",
+        "dialogue": "Dialogue content",
+        "next": "Continue to next dialogue",
+        "choice": "Dialogue choice option"
+      }
+    },
+    
+    "color_contrast": {
+      "text_on_white": "4.5:1 minimum",
+      "text_on_brand": "4.5:1 minimum",
+      "borders": "3:1 minimum"
+    }
+  },
+  
+  "multi_tenant_theming": {
+    "municipality": {
+      "primary_color": "brand.500",
+      "accent_color": "secondary.500",
+      "character_style": "professional_formal"
+    },
+    
+    "corporate": {
+      "primary_color": "blue.600", 
+      "accent_color": "blue.100",
+      "character_style": "business_casual"
+    },
+    
+    "ngo": {
+      "primary_color": "success.600",
+      "accent_color": "success.100", 
+      "character_style": "approachable_friendly"
+    }
+  },
+  
+  "performance_optimizations": {
+    "lazy_loading": "Character avatars loaded on demand",
+    "image_formats": "WebP with PNG fallback",
+    "bundle_impact": "<2KB additional per dialogue scene"
+  }
+}

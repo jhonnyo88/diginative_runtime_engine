@@ -1,0 +1,362 @@
+{
+  "loading_system_specification": {
+    "metadata": {
+      "component_name": "Loading States & Skeleton Screens",
+      "version": "1.0.0",
+      "created": "2025-01-16",
+      "target_persona": "Anna Svensson - 45-årig kommunal administratör",
+      "design_principle": "3-second patience window optimization",
+      "accessibility_standard": "WCAG 2.1 AA",
+      "performance_target": "Perceived load time under 2 seconds"
+    },
+    
+    "anna_svensson_loading_psychology": {
+      "patience_profile": {
+        "attention_span": "3 seconds maximum before frustration",
+        "multitasking_context": "Often interrupted by phone calls, colleagues, emails",
+        "mobile_usage_pattern": "Quick sessions during breaks, between meetings",
+        "expectation": "Government systems should be reliable but can be slow"
+      },
+      "optimization_strategy": {
+        "immediate_feedback": "Show something within 100ms",
+        "progress_indication": "Clear visual progress for Anna's planning",
+        "graceful_degradation": "Useful partial content better than blank screens",
+        "error_recovery": "Clear next steps when things go wrong"
+      }
+    },
+    
+    "loading_state_hierarchy": {
+      "instant_feedback": {
+        "timing": "0-100ms",
+        "purpose": "Acknowledge user interaction immediately",
+        "implementation": [
+          "Button press feedback (color change, slight scale)",
+          "Link hover states with immediate visual response",
+          "Form field focus indicators",
+          "Touch feedback on mobile (haptic + visual)"
+        ],
+        "anna_optimization": "Essential for iPhone 12 touch responsiveness"
+      },
+      
+      "micro_loading": {
+        "timing": "100ms-500ms",
+        "purpose": "Simple component updates, quick API calls",
+        "implementation": [
+          "Spinner for single components",
+          "Progress bars for known operations", 
+          "Pulse animation for content refreshing"
+        ],
+        "accessibility": "aria-live='polite' for screen reader updates"
+      },
+      
+      "standard_loading": {
+        "timing": "500ms-2s",
+        "purpose": "Scene transitions, content loading, game initialization",
+        "implementation": [
+          "Skeleton screens matching final content structure",
+          "Progressive content revelation",
+          "Contextual loading messages"
+        ],
+        "anna_optimization": "Show familiar structure to reduce cognitive load"
+      },
+      
+      "extended_loading": {
+        "timing": "2s-3s",
+        "purpose": "Complex operations, large content, network delays",
+        "implementation": [
+          "Detailed progress indicators with steps",
+          "Educational content during wait",
+          "Option to continue in background"
+        ],
+        "risk_mitigation": "High risk of Anna abandoning task"
+      }
+    },
+    
+    "skeleton_screen_patterns": {
+      "dialogue_scene_skeleton": {
+        "component_structure": [
+          {
+            "element": "character_avatar_placeholder",
+            "size": "64px circle",
+            "position": "top_left",
+            "animation": "gentle_pulse_every_2s"
+          },
+          {
+            "element": "speech_bubble_placeholder", 
+            "size": "80% width, 120px height",
+            "position": "center_content_area",
+            "animation": "shimmer_effect_left_to_right"
+          },
+          {
+            "element": "choice_buttons_placeholder",
+            "size": "2-3 rectangles, 56px height each",
+            "position": "bottom_area",
+            "animation": "sequential_fade_in_top_to_bottom"
+          }
+        ],
+        "anna_specific_elements": {
+          "familiar_layout": "Matches final content exactly to reduce surprise",
+          "progress_hint": "Small progress indicator showing scene X of Y",
+          "content_preview": "Topic title visible during load"
+        }
+      },
+      
+      "quiz_scene_skeleton": {
+        "component_structure": [
+          {
+            "element": "question_text_placeholder",
+            "size": "90% width, 2-3 text lines",
+            "position": "top_section",
+            "animation": "multi_line_shimmer_effect"
+          },
+          {
+            "element": "answer_options_placeholder",
+            "size": "4 rectangles, 64px height, 100% width",
+            "position": "center_section",
+            "animation": "staggered_appearance_300ms_intervals"
+          },
+          {
+            "element": "progress_bar_placeholder",
+            "size": "100% width, 8px height",
+            "position": "bottom_fixed",
+            "animation": "slow_pulse_to_indicate_progress_tracking"
+          }
+        ],
+        "performance_optimization": {
+          "preload_strategy": "Load question text first, then options",
+          "progressive_enhancement": "Show question immediately, add interactions when ready"
+        }
+      },
+      
+      "assessment_scene_skeleton": {
+        "component_structure": [
+          {
+            "element": "score_circle_placeholder",
+            "size": "128px diameter circle",
+            "position": "center_top",
+            "animation": "rotating_dashed_circle"
+          },
+          {
+            "element": "achievements_grid_placeholder",
+            "size": "3x2 grid of 80px squares",
+            "position": "center_section",
+            "animation": "sequential_pop_in_animation"
+          },
+          {
+            "element": "certificate_preview_placeholder",
+            "size": "300px width card shape",
+            "position": "bottom_section",
+            "animation": "gentle_glow_effect"
+          }
+        ],
+        "anna_motivation": {
+          "accomplishment_preview": "Show achievement icons early to build anticipation",
+          "progress_celebration": "Animate score circle filling as content loads"
+        }
+      }
+    },
+    
+    "progressive_loading_strategies": {
+      "content_prioritization": {
+        "critical_path": [
+          "1. Scene structure and navigation",
+          "2. Primary content (dialogue, questions)",
+          "3. Interactive elements (buttons, inputs)",
+          "4. Secondary content (backgrounds, decorations)",
+          "5. Analytics and tracking"
+        ],
+        "anna_priority_order": [
+          "Content text (most important for comprehension)",
+          "Navigation controls (essential for mobile interaction)",
+          "Visual elements (important for engagement)",
+          "Animations (nice-to-have, low priority)"
+        ]
+      },
+      
+      "chunked_loading_patterns": {
+        "dialogue_scene_progression": {
+          "phase_1": "Load first dialogue exchange immediately",
+          "phase_2": "Preload next 2 exchanges in background",
+          "phase_3": "Load choice options when dialogue nears end",
+          "benefit": "Anna can start reading immediately"
+        },
+        "quiz_scene_progression": {
+          "phase_1": "Load question text and first 2 options",
+          "phase_2": "Load remaining options and explanations",
+          "phase_3": "Preload next question in background",
+          "benefit": "Anna can start thinking about answer immediately"
+        }
+      }
+    },
+    
+    "error_state_design": {
+      "network_error_patterns": {
+        "connection_lost": {
+          "visual_design": {
+            "icon": "wifi-off with subtle animation",
+            "color_scheme": "warning yellow, not alarming red",
+            "layout": "centered card with clear messaging"
+          },
+          "messaging": {
+            "primary": "Anslutningen tappades",
+            "secondary": "Kontrollera din internetanslutning",
+            "action": "Försök igen"
+          },
+          "anna_optimization": {
+            "reassuring_tone": "Not Anna's fault, technical issue",
+            "clear_action": "Single button to retry",
+            "progress_preservation": "Save current progress clearly stated"
+          }
+        },
+        
+        "slow_connection": {
+          "detection_threshold": "3 seconds without response",
+          "progressive_messaging": [
+            "Laddar innehåll... (0-2s)",
+            "Anslutningen verkar långsam, fortsätter att försöka... (2-5s)",
+            "Du kan fortsätta arbeta offline med sparad information (5s+)"
+          ],
+          "offline_graceful_degradation": {
+            "cached_content": "Show previously loaded content",
+            "offline_indicator": "Clear 'working offline' status",
+            "sync_promise": "Changes will sync when connection returns"
+          }
+        }
+      },
+      
+      "content_error_patterns": {
+        "game_load_failure": {
+          "visual_design": {
+            "illustration": "friendly_cartoon_character_with_tool",
+            "color_scheme": "soft_blue_supportive_not_alarming",
+            "layout": "spacious_card_not_cramped_error_box"
+          },
+          "messaging": {
+            "primary": "Kunde inte ladda träningsspelet",
+            "secondary": "Detta kan bero på ett tillfälligt tekniskt problem",
+            "actions": ["Försök igen", "Rapportera problem", "Tillbaka till översikt"]
+          },
+          "anna_support": {
+            "blame_free": "Not Anna's fault, system issue",
+            "multiple_options": "Anna can choose next step",
+            "help_available": "Clear path to get assistance"
+          }
+        },
+        
+        "content_not_found": {
+          "prevention_strategy": "This should rarely happen with proper routing",
+          "recovery_design": {
+            "helpful_navigation": "Show available alternative content",
+            "search_functionality": "Help Anna find what she was looking for",
+            "recent_activity": "Quick access to recently used content"
+          }
+        }
+      }
+    },
+    
+    "animation_specifications": {
+      "loading_animations": {
+        "skeleton_shimmer": {
+          "timing": "1.5s ease-in-out infinite",
+          "gradient": "linear-gradient(90deg, transparent, rgba(255,255,255,0.4), transparent)",
+          "reduced_motion": "simple fade pulse instead of shimmer",
+          "performance": "CSS-only, no JavaScript required"
+        },
+        
+        "progress_indicators": {
+          "spinner": {
+            "size": "24px for inline, 48px for centered",
+            "color": "brand primary with 60% opacity",
+            "timing": "0.8s linear infinite rotation",
+            "accessibility": "aria-label='Laddar innehåll'"
+          },
+          "progress_bar": {
+            "height": "4px default, 8px for prominent",
+            "animation": "smooth width transitions with easing",
+            "color": "gradient from brand primary to success green",
+            "indeterminate": "moving gradient for unknown duration"
+          }
+        },
+        
+        "content_reveal": {
+          "fade_in": {
+            "duration": "300ms ease-out",
+            "timing": "staggered 100ms between elements",
+            "reduced_motion": "instant appearance"
+          },
+          "slide_up": {
+            "duration": "400ms ease-out",
+            "distance": "20px upward movement",
+            "reduced_motion": "fade in only"
+          }
+        }
+      }
+    },
+    
+    "accessibility_implementation": {
+      "screen_reader_support": {
+        "loading_announcements": {
+          "aria_live": "polite for non-urgent updates",
+          "aria_busy": "true while loading, false when complete",
+          "status_updates": "Clear progress descriptions for screen readers"
+        },
+        "skeleton_screen_handling": {
+          "aria_hidden": "true for decorative skeleton elements",
+          "descriptive_text": "Hidden text describing what's loading",
+          "focus_management": "Don't trap focus during loading"
+        }
+      },
+      
+      "keyboard_navigation": {
+        "loading_state_skip": "Skip link to bypass loading areas",
+        "focus_preservation": "Maintain focus context through state changes",
+        "escape_hatch": "Escape key to cancel loading when possible"
+      },
+      
+      "motor_accessibility": {
+        "large_touch_targets": "48px minimum for all interactive elements",
+        "stable_interface": "No moving targets during loading",
+        "patient_timeouts": "Generous timeout periods for Anna"
+      }
+    },
+    
+    "performance_monitoring": {
+      "loading_metrics": {
+        "time_to_first_paint": "Target <100ms",
+        "time_to_interactive": "Target <1s",
+        "perceived_performance": "Target <2s (Anna's satisfaction threshold)",
+        "completion_rates": "Monitor abandonment during loading"
+      },
+      
+      "anna_specific_analytics": {
+        "patience_tracking": "Monitor when users abandon loading",
+        "error_recovery": "Track success rates of retry attempts",
+        "mobile_performance": "Special monitoring for iPhone 12 performance",
+        "context_switching": "How often Anna leaves and returns during loading"
+      }
+    },
+    
+    "implementation_guidelines": {
+      "chakra_ui_integration": {
+        "skeleton_component": "Use Chakra's Skeleton with custom variants",
+        "spinner_component": "Extend Chakra's Spinner with brand styling",
+        "progress_component": "Build on Chakra's Progress with animations",
+        "alert_component": "Use Chakra's Alert for error states"
+      },
+      
+      "react_patterns": {
+        "suspense_boundaries": "Strategic Suspense placement for progressive loading",
+        "error_boundaries": "Graceful error handling with recovery options",
+        "custom_hooks": "useLoading, useProgressiveContent, useErrorRecovery",
+        "state_management": "Loading states in context for global coordination"
+      },
+      
+      "testing_strategy": {
+        "loading_states": "Test all loading scenarios in isolation",
+        "error_simulation": "Simulate network conditions and failures",
+        "accessibility_testing": "Screen reader testing for all loading states",
+        "performance_testing": "Validate Anna's 3-second patience window"
+      }
+    }
+  }
+}

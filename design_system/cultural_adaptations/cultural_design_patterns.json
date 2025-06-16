@@ -1,0 +1,468 @@
+{
+  "cultural_adaptation_framework": {
+    "metadata": {
+      "framework_name": "European Municipal Cultural Design Patterns",
+      "version": "1.0.0",
+      "created": "2025-01-17",
+      "scope": "Germany, France, Netherlands market adaptation",
+      "baseline": "Swedish design system optimized for Anna Svensson",
+      "strategic_goal": "Seamless cultural integration while maintaining core user experience"
+    },
+    
+    "design_philosophy": {
+      "core_principle": "Cultural adaptation without compromising accessibility or usability",
+      "approach": "Progressive cultural enhancement over design system foundation",
+      "methodology": "Persona-driven localization with systematic pattern library",
+      "success_criteria": [
+        "90%+ cultural appropriateness ratings from target users",
+        "Maintained WCAG 2.1 AA compliance across all adaptations",
+        "Consistent core functionality across all cultural variants",
+        "Efficient development through systematic pattern reuse"
+      ]
+    },
+    
+    "cultural_dimensions_framework": {
+      "communication_style": {
+        "dimension_description": "How information is presented and language is used",
+        "cultural_spectrum": {
+          "formal_detailed": {
+            "characteristics": ["Comprehensive information", "Formal language", "Process-oriented"],
+            "markets": ["Germany"],
+            "persona_alignment": "Klaus Mueller preferences"
+          },
+          "collaborative_contextual": {
+            "characteristics": ["Relationship context", "Collaborative indicators", "Aesthetic consideration"],
+            "markets": ["France"],
+            "persona_alignment": "Marie Dubois preferences"
+          },
+          "direct_efficient": {
+            "characteristics": ["Minimal text", "Action-oriented", "Results-focused"],
+            "markets": ["Netherlands"],
+            "persona_alignment": "Pieter van Berg preferences"
+          }
+        }
+      },
+      
+      "hierarchy_orientation": {
+        "dimension_description": "How authority and organizational structure is reflected in design",
+        "cultural_spectrum": {
+          "structured_hierarchical": {
+            "characteristics": ["Clear authority indicators", "Formal approval workflows", "Comprehensive documentation"],
+            "markets": ["Germany"],
+            "design_implications": "Visible role indicators, formal process flows"
+          },
+          "collaborative_balanced": {
+            "characteristics": ["Team-oriented features", "Shared decision indicators", "Peer recognition"],
+            "markets": ["France"],
+            "design_implications": "Collaborative tools, shared progress indicators"
+          },
+          "flat_democratic": {
+            "characteristics": ["Equal access features", "Self-service options", "Minimal hierarchy display"],
+            "markets": ["Netherlands"],
+            "design_implications": "Streamlined interfaces, user empowerment"
+          }
+        }
+      },
+      
+      "innovation_adoption": {
+        "dimension_description": "Attitude toward new features and technological advancement",
+        "cultural_spectrum": {
+          "cautious_thorough": {
+            "characteristics": ["Comprehensive onboarding", "Detailed help documentation", "Conservative defaults"],
+            "markets": ["Germany"],
+            "design_implications": "Extensive help systems, gradual feature introduction"
+          },
+          "collaborative_exploratory": {
+            "characteristics": ["Peer learning features", "Community-driven discovery", "Social validation"],
+            "markets": ["France"],
+            "design_implications": "Social learning tools, peer recommendation systems"
+          },
+          "progressive_experimental": {
+            "characteristics": ["Advanced features exposed", "Self-discovery encouraged", "Innovation highlighted"],
+            "markets": ["Netherlands"],
+            "design_implications": "Advanced controls, experimental feature flags"
+          }
+        }
+      }
+    },
+    
+    "language_adaptation_patterns": {
+      "german_localization": {
+        "formality_framework": {
+          "address_form": "Sie-Form throughout (never 'Du' in professional context)",
+          "tone": "Respectful, precise, authoritative",
+          "sentence_structure": "Complex sentences with subordinate clauses for completeness",
+          "vocabulary": "Precise administrative terminology with minimal colloquialisms"
+        },
+        
+        "ui_text_patterns": {
+          "button_labels": {
+            "primary_actions": "Weiter (Continue), Speichern (Save), Abschließen (Complete)",
+            "secondary_actions": "Zurück (Back), Abbrechen (Cancel), Hilfe anzeigen (Show Help)",
+            "destructive_actions": "Löschen (Delete), Verwerfen (Discard) - with confirmation"
+          },
+          "navigation_labels": {
+            "main_sections": "Übersicht (Overview), Schulungen (Training), Fortschritt (Progress), Einstellungen (Settings)",
+            "breadcrumbs": "Vollständige hierarchische Pfade (Complete hierarchical paths)",
+            "help_sections": "Hilfe und Dokumentation (Help and Documentation)"
+          },
+          "status_messages": {
+            "success": "Erfolgreich abgeschlossen (Successfully completed)",
+            "error": "Fehler aufgetreten - Details und Lösungsvorschläge (Error occurred - details and solution suggestions)",
+            "loading": "Wird geladen... (Loading...)",
+            "progress": "Fortschritt: X von Y abgeschlossen (Progress: X of Y completed)"
+          }
+        },
+        
+        "content_adaptation": {
+          "scenarios": "German municipal contexts (DSGVO, Verwaltungsverfahrensgesetz, Arbeitsschutzgesetz)",
+          "examples": "Düsseldorf Bürgerservice, Hamburg Digitalisierung, München Verwaltung",
+          "regulations": "DSGVO (GDPR), Arbeitsschutzgesetz (Workplace Safety), Verwaltungsmodernisierung",
+          "cultural_references": "German administrative tradition, Rechtsstaat principles, Beamtentum culture"
+        }
+      },
+      
+      "french_localization": {
+        "formality_framework": {
+          "address_form": "Vous (formal) with warmth and accessibility",
+          "tone": "Professional but approachable, collaborative",
+          "sentence_structure": "Elegant French with clear action orientation",
+          "vocabulary": "Modern administrative French with digital transformation vocabulary"
+        },
+        
+        "ui_text_patterns": {
+          "button_labels": {
+            "primary_actions": "Continuer (Continue), Enregistrer (Save), Terminer (Complete)",
+            "secondary_actions": "Retour (Back), Annuler (Cancel), Voir l'aide (Show Help)",
+            "destructive_actions": "Supprimer (Delete), Abandonner (Discard) - with confirmation"
+          },
+          "navigation_labels": {
+            "main_sections": "Tableau de bord (Dashboard), Formations (Training), Progression (Progress), Paramètres (Settings)",
+            "breadcrumbs": "Navigation contextuelle claire (Clear contextual navigation)",
+            "help_sections": "Aide et ressources (Help and Resources)"
+          },
+          "status_messages": {
+            "success": "Terminé avec succès (Successfully completed)",
+            "error": "Erreur rencontrée - détails et suggestions (Error encountered - details and suggestions)",
+            "loading": "Chargement en cours... (Loading...)",
+            "progress": "Progression : X sur Y terminé (Progress: X of Y completed)"
+          }
+        },
+        
+        "content_adaptation": {
+          "scenarios": "French municipal contexts (RGPD, Code du travail, Transformation numérique)",
+          "examples": "Lyon Innovation, Marseille Numérique, Paris Administration",
+          "regulations": "RGPD, Code du travail, Loi pour une République numérique",
+          "cultural_references": "French republican values, Service public excellence, Innovation dans la tradition"
+        }
+      },
+      
+      "dutch_localization": {
+        "formality_framework": {
+          "address_form": "Professional 'u' with direct, efficient communication",
+          "tone": "Direct, practical, results-oriented",
+          "sentence_structure": "Concise Dutch with clear information hierarchy",
+          "vocabulary": "Modern Dutch with accepted English technical terms"
+        },
+        
+        "ui_text_patterns": {
+          "button_labels": {
+            "primary_actions": "Doorgaan (Continue), Opslaan (Save), Afronden (Complete)",
+            "secondary_actions": "Terug (Back), Annuleren (Cancel), Help tonen (Show Help)",
+            "destructive_actions": "Verwijderen (Delete), Weggooien (Discard) - with confirmation"
+          },
+          "navigation_labels": {
+            "main_sections": "Overzicht (Overview), Training (Training), Voortgang (Progress), Instellingen (Settings)",
+            "breadcrumbs": "Efficiënte navigatiepaden (Efficient navigation paths)",
+            "help_sections": "Hulp en ondersteuning (Help and Support)"
+          },
+          "status_messages": {
+            "success": "Succesvol voltooid (Successfully completed)",
+            "error": "Fout opgetreden - details en oplossingen (Error occurred - details and solutions)",
+            "loading": "Laden... (Loading...)",
+            "progress": "Voortgang: X van Y voltooid (Progress: X of Y completed)"
+          }
+        },
+        
+        "content_adaptation": {
+          "scenarios": "Dutch municipal contexts (AVG, Digitale overheid, Innovatie bestuur)",
+          "examples": "Amsterdam Digitaal, Rotterdam Innovatie, Den Haag Smart City",
+          "regulations": "AVG (GDPR), Wet digitale overheid, Innovatierichtlijnen",
+          "cultural_references": "Dutch pragmatism, Innovation in government, Citizen-centered approach"
+        }
+      }
+    },
+    
+    "visual_design_adaptations": {
+      "color_psychology_by_culture": {
+        "german_preferences": {
+          "primary_palette": {
+            "blue": "#1E3A8A (Trust, reliability, authority)",
+            "gray": "#6B7280 (Professionalism, neutrality)",
+            "green": "#059669 (Success, completion, approval)"
+          },
+          "cultural_significance": {
+            "blue": "Associated with German federal government and institutional trust",
+            "red": "Use sparingly - associated with warnings and stop signs",
+            "black": "Professional, formal - appropriate for official documents"
+          },
+          "application_guidelines": {
+            "buttons": "Conservative blue/gray with clear hierarchy",
+            "alerts": "Traditional traffic light system (red/yellow/green)",
+            "backgrounds": "Clean whites and light grays for document-like feel"
+          }
+        },
+        
+        "french_preferences": {
+          "primary_palette": {
+            "blue": "#2563EB (French institutional blue - République)",
+            "red": "#DC2626 (Passion, energy - used sparingly)",
+            "white": "#FFFFFF (Clarity, elegance, sophistication)"
+          },
+          "cultural_significance": {
+            "tricolor_reference": "Subtle nods to French flag colors without being literal",
+            "elegant_grays": "Sophisticated gray tones for refinement",
+            "gold_accents": "Occasional gold for achievement and excellence"
+          },
+          "application_guidelines": {
+            "buttons": "Elegant blues with refined hover states",
+            "alerts": "Sophisticated color coding with aesthetic consideration",
+            "backgrounds": "Warm whites and elegant grays for visual comfort"
+          }
+        },
+        
+        "dutch_preferences": {
+          "primary_palette": {
+            "blue": "#1D4ED8 (Innovation, progress, digital government)",
+            "orange": "#EA580C (Dutch national color - used as accent)",
+            "green": "#16A34A (Sustainability, progress, positive outcomes)"
+          },
+          "cultural_significance": {
+            "orange_accent": "Subtle Dutch identity without overwhelming interface",
+            "sustainable_greens": "Environmental consciousness and innovation",
+            "clean_blues": "Progressive government and digital transformation"
+          },
+          "application_guidelines": {
+            "buttons": "Modern blues with orange accent highlights",
+            "alerts": "Clear, functional color coding with high contrast",
+            "backgrounds": "Pure whites and subtle grays for minimal distraction"
+          }
+        }
+      },
+      
+      "typography_cultural_adaptation": {
+        "german_typography": {
+          "font_selection": {
+            "primary": "System fonts with high legibility for dense German text",
+            "headings": "Strong, authoritative font weight for clear hierarchy",
+            "body": "Optimized for longer German compound words and complex sentences"
+          },
+          "sizing_strategy": {
+            "base_size": "16px minimum for accessibility with dense German text",
+            "line_height": "1.6 for readability of complex German sentence structure",
+            "letter_spacing": "Normal - German texts need space for compound words"
+          },
+          "hierarchy_principles": {
+            "clear_levels": "6 distinct heading levels for German administrative structure",
+            "emphasis": "Bold and underline for important German administrative terms",
+            "documentation": "Consistent styling for extensive German help documentation"
+          }
+        },
+        
+        "french_typography": {
+          "font_selection": {
+            "primary": "Elegant system fonts that reflect French design aesthetic",
+            "headings": "Refined font weight balancing authority with approachability",
+            "body": "Optimized for flowing French text and elegant presentation"
+          },
+          "sizing_strategy": {
+            "base_size": "16px with elegant scaling for French text flow",
+            "line_height": "1.5 for comfortable reading of French sentence structure",
+            "letter_spacing": "Slightly loose for French character elegance"
+          },
+          "hierarchy_principles": {
+            "aesthetic_levels": "5 heading levels with visual elegance priority",
+            "emphasis": "Italic and color for French administrative sophistication",
+            "collaborative": "Typography that supports collaborative content and discussions"
+          }
+        },
+        
+        "dutch_typography": {
+          "font_selection": {
+            "primary": "Modern, clean system fonts for efficient Dutch communication",
+            "headings": "Medium font weight for direct, accessible hierarchy",
+            "body": "Optimized for concise Dutch text and quick scanning"
+          },
+          "sizing_strategy": {
+            "base_size": "16px with efficient scaling for Dutch directness",
+            "line_height": "1.4 for efficient reading of concise Dutch sentences",
+            "letter_spacing": "Tight for space-efficient Dutch text presentation"
+          },
+          "hierarchy_principles": {
+            "functional_levels": "4 heading levels focused on information efficiency",
+            "emphasis": "Color and weight for Dutch functional clarity",
+            "progressive": "Typography supporting progressive disclosure and efficiency"
+          }
+        }
+      },
+      
+      "iconography_cultural_adaptation": {
+        "german_iconography": {
+          "style_characteristics": {
+            "precision": "Detailed, technically accurate icons with clear symbolic meaning",
+            "formality": "Traditional administrative symbols adapted for digital use",
+            "completeness": "Comprehensive icon set covering all German administrative functions"
+          },
+          "cultural_symbols": {
+            "government": "German federal eagle adaptation, official seals, administrative symbols",
+            "processes": "Flowchart-style icons reflecting German process orientation",
+            "documentation": "File, certificate, and document icons prominent in interface"
+          },
+          "accessibility_focus": {
+            "contrast": "High contrast icons for German accessibility standards",
+            "size": "Larger touch targets respecting German elderly user base",
+            "redundancy": "Icons paired with text for German thoroughness expectations"
+          }
+        },
+        
+        "french_iconography": {
+          "style_characteristics": {
+            "elegance": "Refined, aesthetically pleasing icons with sophisticated design",
+            "collaboration": "Icons emphasizing teamwork, discussion, and shared activities",
+            "balance": "Harmonious icon design reflecting French aesthetic principles"
+          },
+          "cultural_symbols": {
+            "government": "French republican symbols adapted tastefully for digital interface",
+            "social": "Icons emphasizing community, collaboration, and shared responsibility",
+            "innovation": "Modern symbols reflecting French innovation within tradition"
+          },
+          "accessibility_focus": {
+            "aesthetic_accessibility": "Beautiful icons that don't compromise usability",
+            "cultural_recognition": "Symbols immediately recognizable to French municipal workers",
+            "collaborative_context": "Icons supporting social learning and team features"
+          }
+        },
+        
+        "dutch_iconography": {
+          "style_characteristics": {
+            "minimalism": "Clean, simple icons with maximum information efficiency",
+            "functionality": "Purpose-driven design with clear action association",
+            "innovation": "Modern symbols reflecting Dutch digital government leadership"
+          },
+          "cultural_symbols": {
+            "government": "Modern interpretation of Dutch governmental symbols",
+            "efficiency": "Icons emphasizing speed, efficiency, and results orientation",
+            "sustainability": "Environmental and sustainability symbols integrated appropriately"
+          },
+          "accessibility_focus": {
+            "universal_design": "Icons optimized for diverse Dutch population",
+            "efficiency": "Quick recognition and minimal cognitive load",
+            "progressive": "Icons supporting advanced features and self-service"
+          }
+        }
+      }
+    },
+    
+    "interaction_pattern_adaptations": {
+      "german_interaction_patterns": {
+        "navigation_behavior": {
+          "thorough_exploration": "Support for comprehensive exploration of all features",
+          "hierarchical_browsing": "Clear parent-child relationships in navigation",
+          "documentation_access": "Always-available help and documentation links"
+        },
+        "feedback_expectations": {
+          "comprehensive_feedback": "Detailed explanations for all actions and outcomes",
+          "error_handling": "Thorough error messages with step-by-step recovery instructions",
+          "progress_indication": "Detailed progress tracking with remaining steps clearly indicated"
+        },
+        "decision_support": {
+          "information_provision": "Comprehensive information before decision points",
+          "confirmation_dialogs": "Detailed confirmation dialogs for important actions",
+          "undo_capabilities": "Clear undo/redo functionality for cautious exploration"
+        }
+      },
+      
+      "french_interaction_patterns": {
+        "navigation_behavior": {
+          "contextual_flow": "Navigation that maintains context and relationship awareness",
+          "collaborative_discovery": "Features supporting peer learning and shared exploration",
+          "aesthetic_transitions": "Smooth, elegant transitions between interface states"
+        },
+        "feedback_expectations": {
+          "contextual_feedback": "Feedback that provides context and relationship information",
+          "collaborative_validation": "Options for peer review and social validation",
+          "elegant_messaging": "Error and success messages with sophisticated presentation"
+        },
+        "decision_support": {
+          "collaborative_input": "Options for team input on important decisions",
+          "relationship_context": "Decision support that considers team and organizational impact",
+          "aesthetic_presentation": "Decision interfaces with visual elegance and clarity"
+        }
+      },
+      
+      "dutch_interaction_patterns": {
+        "navigation_behavior": {
+          "efficient_pathfinding": "Direct routes to common tasks and objectives",
+          "self_service_emphasis": "Support for independent task completion",
+          "progressive_disclosure": "Advanced features available but not overwhelming"
+        },
+        "feedback_expectations": {
+          "concise_feedback": "Brief, actionable feedback focused on next steps",
+          "result_orientation": "Feedback emphasizing outcomes and results achieved",
+          "minimal_interruption": "Non-blocking feedback that doesn't interrupt workflow"
+        },
+        "decision_support": {
+          "rapid_decision_making": "Streamlined decision interfaces with clear options",
+          "data_driven_support": "Decision support backed by clear data and metrics",
+          "experimental_mindset": "Support for trying different approaches and iterating"
+        }
+      }
+    },
+    
+    "accessibility_cultural_considerations": {
+      "german_accessibility": {
+        "regulatory_compliance": "Strict adherence to German accessibility regulations (BITV 2.0)",
+        "documentation_requirements": "Comprehensive accessibility documentation and help systems",
+        "user_support": "Extensive user support systems for accessibility needs",
+        "testing_standards": "Thorough accessibility testing with German user groups"
+      },
+      
+      "french_accessibility": {
+        "inclusive_design": "Accessibility integrated elegantly into overall design aesthetic",
+        "social_accessibility": "Features supporting collaborative accessibility (peer assistance)",
+        "cultural_sensitivity": "Accessibility accommodations that respect French cultural values",
+        "universal_elegance": "Accessible design that maintains French aesthetic standards"
+      },
+      
+      "dutch_accessibility": {
+        "innovative_accessibility": "Cutting-edge accessibility features and technologies",
+        "efficient_accommodation": "Accessibility features that enhance rather than complicate workflow",
+        "universal_design": "Accessibility as design principle benefiting all users",
+        "progressive_standards": "Leading-edge accessibility implementation as innovation example"
+      }
+    },
+    
+    "implementation_framework": {
+      "development_approach": {
+        "base_system": "Swedish design system (Anna Svensson optimized) as foundation",
+        "cultural_layers": "Progressive enhancement with cultural adaptation layers",
+        "component_variants": "Cultural variants of base components maintaining accessibility",
+        "theme_system": "Advanced theming system supporting cultural customization"
+      },
+      
+      "testing_strategy": {
+        "cultural_validation": "User testing with representative users from each target culture",
+        "accessibility_verification": "Accessibility testing meeting each country's standards",
+        "usability_comparison": "Comparative usability testing across cultural variants",
+        "performance_monitoring": "Performance impact assessment of cultural adaptations"
+      },
+      
+      "maintenance_approach": {
+        "centralized_updates": "Core functionality updates propagated to all cultural variants",
+        "localized_content": "Cultural content managed by local teams with design system constraints",
+        "version_synchronization": "Cultural variants kept synchronized with base system updates",
+        "feedback_integration": "Cultural feedback integrated into base system improvements"
+      }
+    }
+  }
+}

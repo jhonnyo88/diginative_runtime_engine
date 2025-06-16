@@ -1,0 +1,215 @@
+{
+  "gameManifest": {
+    "title": "GDPR för Malmö Stads Medarbetare",
+    "description": "Grundläggande GDPR-utbildning anpassad för Malmö stads verksamhet",
+    "estimatedDuration": 420,
+    "targetAudience": "malmo_municipal_employees",
+    "organizationSpecific": {
+      "municipality": "Malmö Stad",
+      "logo": "/assets/malmo-stad-logo.svg",
+      "primaryColor": "#005293",
+      "contactPerson": "Anna Karlsson, Dataskyddsombud",
+      "contactEmail": "dataskydd@malmo.se"
+    },
+    
+    "customizations": {
+      "localExamples": [
+        "Malmö stads medborgartjänst och personuppgiftshantering",
+        "Skolförvaltningens elevregister och GDPR",
+        "Socialtjänstens hantering av känsliga personuppgifter",
+        "Miljöförvaltningens tillsynsregister"
+      ],
+      
+      "localSystems": [
+        "Malmö stads ärendehanteringssystem (Ciceron)",
+        "Skolplattformen",
+        "Vårdnadsbidragssystemet",
+        "Ekonomisystemet"
+      ],
+      
+      "localPolicies": [
+        "Malmö stads riktlinjer för personuppgiftsbehandling",
+        "Rutin för hantering av personuppgiftsincidenter",
+        "Policy för säker e-post och informationsutbyte"
+      ]
+    },
+    
+    "scenes": [
+      {
+        "id": "malmo_intro",
+        "type": "DialogueScene",
+        "title": "GDPR på Malmö Stad - En introduktion",
+        
+        "customDialogue": [
+          {
+            "speaker": "dataskyddsombud",
+            "characterName": "Anna Karlsson",
+            "role": "Dataskyddsombud, Malmö Stad",
+            "text": "Välkommen till GDPR-utbildningen för Malmö stads medarbetare! Som dataskyddsombud hjälper jag er att förstå hur vi ska hantera personuppgifter i vår verksamhet."
+          },
+          {
+            "speaker": "anna",
+            "text": "Tack Anna! Jag arbetar på medborgartjänsten och hanterar många olika typer av ärenden. Vilka GDPR-regler är viktigast för mig?"
+          },
+          {
+            "speaker": "dataskyddsombud",
+            "text": "På medborgartjänsten möter du medborgare med olika ärenden - från personnummerändringar till bostadsbidrag. Alla dessa innehåller personuppgifter som vi måste skydda enligt GDPR."
+          }
+        ],
+        
+        "localizedChoices": [
+          {
+            "text": "Berätta om Ciceron-systemet och GDPR",
+            "consequence": "malmo_systems_scene",
+            "feedback": "Vi går igenom hur GDPR gäller för vårt ärendehanteringssystem."
+          },
+          {
+            "text": "Vad gäller för känsliga uppgifter på socialtjänsten?",
+            "consequence": "malmo_sensitive_data_scene",
+            "feedback": "Låt oss titta på särskilda regler för socialtjänstens verksamhet."
+          }
+        ]
+      },
+      
+      {
+        "id": "malmo_practical_case",
+        "type": "CaseStudyScene", 
+        "title": "Fallstudie: Personuppgiftsincident på Malmö Stad",
+        
+        "localizedScenario": {
+          "title": "E-post med personnummer skickad till fel mottagare",
+          "description": "En medarbetare på Malmö stads ekonomiavdelning skickar av misstag en e-post med medborgares personnummer och ekonomiska uppgifter till fel e-postadress utanför kommunen.",
+          
+          "stakeholders": [
+            "Medarbetare som gjort misstaget",
+            "Anna Karlsson (Dataskyddsombud)",
+            "Avdelningschef",
+            "IT-säkerhetsansvarig",
+            "Berörda medborgare"
+          ],
+          
+          "localProcedures": [
+            "Malmö stads rutin för personuppgiftsincidenter",
+            "Rapportering till Integritetsskyddsmyndigheten",
+            "Information till berörda personer",
+            "Åtgärder för att förhindra upprepning"
+          ]
+        },
+        
+        "decisionPoints": [
+          {
+            "question": "Vad är första steget enligt Malmö stads rutiner?",
+            "options": [
+              "Vänta och se om någon reagerar",
+              "Omedelbart kontakta dataskyddsombudet",
+              "Bara informera chefen",
+              "Försöka återkalla e-posten"
+            ],
+            "correctAnswer": 1,
+            "malmoSpecificExplanation": "Enligt Malmö stads rutiner ska alla personuppgiftsincidenter omedelbart rapporteras till dataskyddsombudet Anna Karlsson för korrekt hantering."
+          }
+        ]
+      },
+      
+      {
+        "id": "malmo_quiz",
+        "type": "QuizScene",
+        "title": "GDPR-kunskapstest för Malmö Stad",
+        
+        "localizedQuestions": [
+          {
+            "questionText": "Vilken är Malmö stads policy för säker e-post med personuppgifter?",
+            "options": [
+              "Personuppgifter får skickas med vanlig e-post inom kommunen",
+              "Alla personuppgifter måste krypteras eller skickas via säker e-post",
+              "Endast personnummer behöver särskild hantering",
+              "Chefen avgör från fall till fall"
+            ],
+            "correctAnswer": 1,
+            "localExplanation": "Malmö Stad kräver att alla personuppgifter skickas via säkra kanaler enligt kommunens IT-säkerhetspolicy."
+          },
+          {
+            "questionText": "Vem kontaktar du vid GDPR-frågor på Malmö Stad?",
+            "options": [
+              "IT-avdelningen",
+              "Anna Karlsson, Dataskyddsombud",
+              "HR-avdelningen", 
+              "Kommunledningen"
+            ],
+            "correctAnswer": 1,
+            "localExplanation": "Anna Karlsson är Malmö stads dataskyddsombud och ska kontaktas vid alla GDPR-relaterade frågor."
+          }
+        ]
+      },
+      
+      {
+        "id": "malmo_assessment",
+        "type": "AssessmentScene",
+        "title": "GDPR-certifiering för Malmö Stads Medarbetare",
+        
+        "customCertificate": {
+          "title": "GDPR Grundcertifikat - Malmö Stad",
+          "description": "Bekräftar att medarbetaren har genomgått GDPR-utbildning enligt Malmö stads krav och kan hantera personuppgifter korrekt i kommunal verksamhet",
+          "issuingAuthority": "Malmö Stad via DigiNativa",
+          "validityNote": "Giltigt i 12 månader enligt Malmö stads kompetenspolicy",
+          "logoUrl": "/assets/malmo-stad-logo.svg",
+          "signatoryTitle": "Anna Karlsson, Dataskyddsombud",
+          "municipalStamp": true
+        },
+        
+        "localNextSteps": [
+          {
+            "action": "Informera din närmaste chef om slutförd utbildning",
+            "description": "Certifikatet dokumenteras i ditt personaldossier",
+            "contact": "HR-avdelningen"
+          },
+          {
+            "action": "Anmäl dig till fördjupningskurs",
+            "description": "GDPR Incidenthantering för Malmö Stads Medarbetare",
+            "contact": "Anna Karlsson, dataskydd@malmo.se"
+          },
+          {
+            "action": "Delta i arbetsplatsträff om dataskydd",
+            "description": "Diskutera GDPR-tillämpning med dina kollegor",
+            "frequency": "Kvartalsvis på alla avdelningar"
+          }
+        ]
+      }
+    ],
+    
+    "branding": {
+      "colors": {
+        "primary": "#005293",
+        "secondary": "#E6F3FF", 
+        "accent": "#003D5C",
+        "text": "#1A1A1A"
+      },
+      
+      "typography": {
+        "official": "Malmö Stad använder systemfonter för bästa läsbarhet",
+        "headers": "Systemfont, fet stil",
+        "body": "Systemfont, normal stil"
+      },
+      
+      "imagery": {
+        "backgroundStyle": "Professional municipal aesthetic",
+        "iconStyle": "Swedish public sector appropriate",
+        "characterStyle": "Diverse, representative of Malmö's population"
+      }
+    },
+    
+    "analytics": {
+      "malmoSpecificTracking": {
+        "departmentCompletion": "Track completion rates by department",
+        "roleBasedProgress": "Monitor progress by role/function",
+        "complianceReporting": "Generate reports for municipal leadership"
+      },
+      
+      "reportingSchedule": {
+        "monthly": "Completion statistics to HR",
+        "quarterly": "Compliance report to city management",
+        "annually": "Full GDPR competence assessment"
+      }
+    }
+  }
+}

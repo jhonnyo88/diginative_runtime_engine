@@ -1,0 +1,226 @@
+{
+  "schemaVersion": "0.1.0",
+  "gameId": "malmo-gdpr-training",
+  "metadata": {
+    "title": "GDPR för Malmö Stad",
+    "subtitle": "Lär dig grunderna i dataskydd",
+    "description": "En interaktiv utbildning om GDPR och personuppgiftsbehandling för kommunal personal",
+    "duration": "7 minuter",
+    "difficulty": "beginner",
+    "tags": ["GDPR", "Dataskydd", "Kommun"],
+    "learningObjectives": [
+      "Förstå vad GDPR innebär",
+      "Känna till dina skyldigheter som kommunal tjänsteman",
+      "Veta hur du hanterar personuppgifter korrekt"
+    ],
+    "targetAudience": "Kommunal personal",
+    "language": "sv",
+    "version": "1.0.0"
+  },
+  "theme": {
+    "brand": {
+      "name": "Malmö Stad",
+      "logo": {
+        "url": "/logo-malmo.svg",
+        "alt": "Malmö Stad",
+        "placement": "header",
+        "maxHeight": "56px"
+      }
+    },
+    "colors": {
+      "primary": "#00685e",
+      "primaryDark": "#004d46",
+      "primaryLight": "#2d8a82",
+      "secondary": "#e20e17",
+      "secondaryDark": "#b30b13",
+      "secondaryLight": "#e8464d"
+    }
+  },
+  "analytics": {
+    "enabled": true,
+    "customEvents": ["gdpr_knowledge_check", "policy_accessed"]
+  },
+  "scenes": [
+    {
+      "id": "intro",
+      "type": "dialogue",
+      "title": "Välkommen till GDPR-utbildningen",
+      "character": {
+        "id": "anna_jurist",
+        "name": "Anna Andersson",
+        "role": "Juridisk rådgivare, Malmö Stad",
+        "avatar": "/avatars/anna-jurist.png"
+      },
+      "messages": [
+        {
+          "text": "Hej och välkommen! Jag heter Anna och arbetar som juridisk rådgivare här på Malmö Stad.",
+          "characterId": "anna_jurist",
+          "emotion": "happy"
+        },
+        {
+          "text": "Idag ska vi prata om GDPR - Europas dataskyddsförordning. Det är viktigt att alla som arbetar med personuppgifter förstår reglerna.",
+          "characterId": "anna_jurist",
+          "emotion": "neutral",
+          "delay": 2000
+        },
+        {
+          "text": "Utbildningen tar cirka 7 minuter och avslutas med några kunskapsfrågor. Är du redo att börja?",
+          "characterId": "anna_jurist",
+          "emotion": "thinking"
+        }
+      ],
+      "choices": [
+        {
+          "id": "ready",
+          "text": "Ja, jag är redo att lära mig om GDPR!",
+          "nextScene": "what_is_gdpr",
+          "points": 0
+        },
+        {
+          "id": "nervous",
+          "text": "Jag är lite nervös, GDPR låter komplicerat...",
+          "nextScene": "reassurance",
+          "points": 0
+        }
+      ],
+      "navigation": {
+        "next": "what_is_gdpr",
+        "canSkip": false
+      }
+    },
+    {
+      "id": "reassurance",
+      "type": "dialogue",
+      "character": {
+        "id": "anna_jurist",
+        "name": "Anna Andersson",
+        "role": "Juridisk rådgivare, Malmö Stad"
+      },
+      "messages": [
+        {
+          "text": "Ingen fara! GDPR handlar egentligen bara om sunt förnuft och respekt för människors integritet.",
+          "characterId": "anna_jurist",
+          "emotion": "happy"
+        },
+        {
+          "text": "Vi tar det steg för steg. Du kommer att märka att mycket av det du redan gör är rätt!",
+          "characterId": "anna_jurist",
+          "emotion": "neutral"
+        }
+      ],
+      "navigation": {
+        "next": "what_is_gdpr"
+      }
+    },
+    {
+      "id": "what_is_gdpr",
+      "type": "dialogue",
+      "title": "Vad är GDPR?",
+      "character": {
+        "id": "anna_jurist",
+        "name": "Anna Andersson",
+        "role": "Juridisk rådgivare, Malmö Stad"
+      },
+      "messages": [
+        {
+          "text": "GDPR står för General Data Protection Regulation - på svenska kallas det Dataskyddsförordningen.",
+          "characterId": "anna_jurist",
+          "emotion": "neutral"
+        },
+        {
+          "text": "Det är EU-regler som skyddar människors personuppgifter. Reglerna gäller alla organisationer som hanterar personuppgifter om EU-medborgare.",
+          "characterId": "anna_jurist",
+          "emotion": "thinking",
+          "delay": 3000
+        },
+        {
+          "text": "Som kommun hanterar vi många personuppgifter - från skol- och vårdregister till bygglov och bidragsansökningar.",
+          "characterId": "anna_jurist",
+          "emotion": "concerned"
+        }
+      ],
+      "navigation": {
+        "next": "quiz_personal_data"
+      }
+    },
+    {
+      "id": "quiz_personal_data",
+      "type": "quiz",
+      "title": "Kunskapstest: Personuppgifter",
+      "question": "Vilka av följande räknas som personuppgifter enligt GDPR?",
+      "allowMultiple": true,
+      "showFeedback": true,
+      "maxAttempts": 2,
+      "options": [
+        {
+          "id": "name",
+          "text": "För- och efternamn",
+          "isCorrect": true,
+          "feedback": "Korrekt! Namn är en tydlig personuppgift.",
+          "points": 1
+        },
+        {
+          "id": "email",
+          "text": "E-postadress",
+          "isCorrect": true,
+          "feedback": "Rätt! E-post kan identifiera en person.",
+          "points": 1
+        },
+        {
+          "id": "weather",
+          "text": "Väderprognoser",
+          "isCorrect": false,
+          "feedback": "Nej, väderdata är inte personuppgifter.",
+          "points": 0
+        },
+        {
+          "id": "ip",
+          "text": "IP-adresser",
+          "isCorrect": true,
+          "feedback": "Ja! IP-adresser kan användas för att identifiera personer.",
+          "points": 1
+        }
+      ],
+      "navigation": {
+        "next": "summary"
+      }
+    },
+    {
+      "id": "summary",
+      "type": "summary",
+      "title": "Bra jobbat!",
+      "message": "Du har nu en grundläggande förståelse för GDPR. Kom ihåg att alltid tänka på integritet när du hanterar personuppgifter.",
+      "score": {
+        "achieved": 0,
+        "total": 3,
+        "showPercentage": true
+      },
+      "achievements": [
+        {
+          "id": "gdpr_beginner",
+          "title": "GDPR Nybörjare",
+          "description": "Du har slutfört grundutbildningen i GDPR",
+          "icon": "🎓"
+        }
+      ],
+      "nextActions": [
+        {
+          "label": "Läs mer om GDPR",
+          "action": "link",
+          "url": "https://malmo.se/gdpr"
+        },
+        {
+          "label": "Avsluta utbildning",
+          "action": "exit"
+        }
+      ]
+    }
+  ],
+  "startScene": "intro",
+  "settings": {
+    "allowNavigation": false,
+    "showProgress": true,
+    "autoSave": true,
+    "soundEnabled": false
+  }
+}

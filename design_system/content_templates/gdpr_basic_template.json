@@ -1,0 +1,322 @@
+{
+  "template_metadata": {
+    "templateId": "gdpr-basic-v1",
+    "templateName": "GDPR Grundutbildning för Kommunala Tjänstemän",
+    "version": "1.0.0",
+    "created": "2025-01-16",
+    "targetPersona": "Anna Svensson - 45-årig kommunal administratör",
+    "estimatedDuration": "6-7 minuter",
+    "difficulty": "grundläggande",
+    "language": "sv-SE"
+  },
+  
+  "learning_objectives": [
+    "Förstå GDPR:s grundprinciper och syfte",
+    "Kunna identifiera personuppgifter i kommunal verksamhet", 
+    "Veta hur man hanterar personuppgifter säkert",
+    "Känna till rättigheterna för registrerade personer",
+    "Förstå vikten av dataskydd i offentlig sektor"
+  ],
+  
+  "game_manifest": {
+    "title": "GDPR Grundutbildning",
+    "description": "Lär dig grundläggande GDPR-regler för kommunal verksamhet",
+    "estimatedDuration": 420,
+    "targetAudience": "municipal_employees",
+    "learningObjectives": [
+      "Förstå GDPR:s grundprinciper",
+      "Hantera personuppgifter korrekt", 
+      "Känna till medborgarrättigheter"
+    ],
+    
+    "scenes": [
+      {
+        "id": "intro_dialogue",
+        "type": "DialogueScene",
+        "title": "Välkommen till GDPR-utbildning",
+        "estimatedDuration": 90,
+        
+        "characters": [
+          {
+            "id": "anna",
+            "name": "Anna Andersson",
+            "role": "Kommunal administratör",
+            "avatar": "/characters/anna-administrator.svg"
+          },
+          {
+            "id": "marie",
+            "name": "Marie Larsson", 
+            "role": "Juridisk rådgivare",
+            "avatar": "/characters/marie-lawyer.svg"
+          }
+        ],
+        
+        "dialogue": [
+          {
+            "speaker": "marie",
+            "text": "Hej Anna! Idag ska vi gå igenom de viktigaste GDPR-reglerna som påverkar ditt dagliga arbete här på kommunen."
+          },
+          {
+            "speaker": "anna",
+            "text": "Bra! Jag har hört så mycket om GDPR men vill förstå vad det betyder i praktiken för mig."
+          },
+          {
+            "speaker": "marie", 
+            "text": "GDPR handlar om att skydda medborgarnas personuppgifter. Som kommunal tjänsteman hanterar du dagligen känslig information om våra invånare."
+          },
+          {
+            "speaker": "anna",
+            "text": "Ja, jag arbetar ju med allt från bidragsansökningar till skolinskrivningar. Vilka regler gäller då?"
+          },
+          {
+            "speaker": "marie",
+            "text": "Det finns sex grundprinciper inom GDPR som styr all behandling av personuppgifter. Den viktigaste är att behandlingen ska vara laglig, rättvis och transparent."
+          }
+        ],
+        
+        "choices": [
+          {
+            "text": "Vilka typer av personuppgifter hanterar jag i mitt arbete?",
+            "consequence": "scene_personal_data_types",
+            "feedback": "Bra fråga! Låt oss titta på vilka uppgifter som räknas som personuppgifter."
+          },
+          {
+            "text": "Vad händer om jag gör fel vid hantering av personuppgifter?",
+            "consequence": "scene_risk_overview", 
+            "feedback": "Viktigt att förstå konsekvenserna. Vi går igenom vad som kan hända."
+          }
+        ]
+      },
+      
+      {
+        "id": "knowledge_quiz",
+        "type": "QuizScene",
+        "title": "GDPR Kunskapsvalidering",
+        "estimatedDuration": 180,
+        
+        "questions": [
+          {
+            "id": "q1",
+            "questionText": "Vilken är den viktigaste grundprincipen inom GDPR?",
+            "type": "multiple_choice",
+            "options": [
+              "Samtycke krävs alltid för all behandling",
+              "Personuppgifter ska behandlas lagligt, rättvist och transparent",
+              "Alla personuppgifter måste raderas efter exakt ett år",
+              "Endast avdelningschefer får hantera personuppgifter"
+            ],
+            "correctAnswer": 1,
+            "explanation": "Rätt! GDPR bygger på principen om laglig, rättvis och transparent behandling. Samtycke är bara en av flera rättsliga grunder för behandling.",
+            "points": 10
+          },
+          {
+            "id": "q2",
+            "questionText": "En medborgare kontaktar dig och begär att få se alla personuppgifter som kommunen har om hen. Vad gör du?",
+            "type": "multiple_choice",
+            "options": [
+              "Hänvisar personen till min chef eftersom jag inte får lämna ut sådan information",
+              "Förklarar att det inte är möjligt att få ut personuppgifter från kommunen",
+              "Behandlar begäran enligt kommunens rutin för registerutdrag",
+              "Kräver en skriftlig ansökan med tre veckors handläggningstid"
+            ],
+            "correctAnswer": 2,
+            "explanation": "Korrekt! Alla medborgare har rätt till registerutdrag enligt GDPR. Kommunen ska ha rutiner för detta och svara inom en månad.",
+            "points": 10
+          },
+          {
+            "id": "q3",
+            "questionText": "Du får en e-post med personnummer och andra känsliga uppgifter som behöver vidarebefordras till en kollega. Hur gör du?",
+            "type": "multiple_choice",
+            "options": [
+              "Vidarebefordrar e-posten direkt till kollegan",
+              "Skriver av informationen i ett vanligt e-postmeddelande",
+              "Använder kommunens säkra e-post eller interna system",
+              "Ringer kollegan och läser upp informationen över telefon"
+            ],
+            "correctAnswer": 2,
+            "explanation": "Rätt! Personnummer och känsliga personuppgifter kräver extra skydd. Använd alltid säkra kommunikationskanaler.",
+            "points": 10
+          }
+        ],
+        
+        "passingScore": 24,
+        "feedback": {
+          "excellent": "Utmärkt! Du behärskar GDPR:s grundprinciper mycket bra.",
+          "good": "Bra jobbat! Du har god förståelse för GDPR-reglerna.",
+          "needs_improvement": "Du behöver öva mer på GDPR-reglerna. Gå gärna igenom materialet igen."
+        }
+      },
+      
+      {
+        "id": "practical_examples",
+        "type": "DialogueScene", 
+        "title": "Praktiska exempel från din arbetsdag",
+        "estimatedDuration": 120,
+        
+        "characters": [
+          {
+            "id": "anna",
+            "name": "Anna Andersson",
+            "role": "Kommunal administratör",
+            "avatar": "/characters/anna-administrator.svg"
+          },
+          {
+            "id": "lars",
+            "name": "Lars Nilsson",
+            "role": "IT-säkerhetschef", 
+            "avatar": "/characters/lars-it-specialist.svg"
+          }
+        ],
+        
+        "dialogue": [
+          {
+            "speaker": "lars",
+            "text": "Anna, nu när du förstår grundprinciperna, låt oss gå igenom några praktiska situationer från din arbetsdag."
+          },
+          {
+            "speaker": "anna",
+            "text": "Det låter bra! Jag vill verkligen förstå hur jag ska tänka i olika situationer."
+          },
+          {
+            "speaker": "lars",
+            "text": "Säg att du får en e-post med personnummer och behöver skicka den vidare till socialförvaltningen. Vad tänker du på?"
+          },
+          {
+            "speaker": "anna",
+            "text": "Att jag inte bör vidarebefordra den utan att tänka på säkerheten?"
+          },
+          {
+            "speaker": "lars",
+            "text": "Exakt! Personnummer är känsliga personuppgifter. Använd alltid vår säkra e-post eller det interna ärendesystemet för sådan information."
+          },
+          {
+            "speaker": "anna",
+            "text": "Och om någon ringer och frågar om en annan persons ärende?"
+          },
+          {
+            "speaker": "lars",
+            "text": "Då måste du först verifiera vem som ringer och om de har rätt att få informationen. Sekretess gäller även över telefon."
+          }
+        ],
+        
+        "choices": [
+          {
+            "text": "Berätta mer om säker hantering av e-post",
+            "consequence": "scene_email_security",
+            "feedback": "Vi går igenom hur du säkert hanterar e-post med personuppgifter."
+          },
+          {
+            "text": "Hur vet jag om någon har rätt att få information?",
+            "consequence": "scene_information_rights",
+            "feedback": "Låt oss gå igenom reglerna för utlämnande av information."
+          }
+        ]
+      },
+      
+      {
+        "id": "final_assessment",
+        "type": "AssessmentScene",
+        "title": "GDPR Grundutbildning Genomförd",
+        "estimatedDuration": 60,
+        
+        "summary": {
+          "course_title": "GDPR Grundutbildning för Kommunala Tjänstemän",
+          "completion_date": "{{current_date}}",
+          "total_score": "{{calculated_score}}",
+          "passing_score": 24,
+          "time_spent": "{{actual_duration}}"
+        },
+        
+        "achievements": [
+          {
+            "id": "gdpr_awareness",
+            "name": "GDPR Medvetenhet",
+            "description": "Förstår grundläggande GDPR-principer och deras tillämpning",
+            "icon": "shield-check",
+            "points": 10
+          },
+          {
+            "id": "practical_application",
+            "name": "Praktisk Tillämpning",
+            "description": "Kan hantera personuppgifter enligt GDPR i dagligt arbete",
+            "icon": "clipboard-check", 
+            "points": 10
+          },
+          {
+            "id": "first_completion",
+            "name": "GDPR Pionjär",
+            "description": "Första genomförandet av GDPR-utbildning",
+            "icon": "star",
+            "points": 5
+          }
+        ],
+        
+        "certificate": {
+          "title": "GDPR Grundcertifikat för Kommunala Tjänstemän",
+          "description": "Bekräftar grundläggande kunskap om GDPR-regler för hantering av personuppgifter i kommunal verksamhet",
+          "issuing_authority": "DigiNativa Utbildningsplattform",
+          "valid_for_months": 12,
+          "certificate_id": "{{generated_cert_id}}",
+          "template": "municipal_professional"
+        },
+        
+        "next_steps": [
+          {
+            "action": "Ladda ner certifikat",
+            "description": "Spara ditt certifikat för dokumentation",
+            "priority": "high"
+          },
+          {
+            "action": "Dela med chef",
+            "description": "Informera din närmaste chef om slutförd utbildning",
+            "priority": "medium"
+          },
+          {
+            "action": "Fortsätt med fördjupning",
+            "description": "Ta nästa kurs: 'GDPR Incidenthantering'",
+            "priority": "low"
+          }
+        ]
+      }
+    ]
+  },
+  
+  "customization_options": {
+    "municipality_specific": {
+      "organization_name": "{{municipality_name}}",
+      "local_contact": "{{local_gdpr_officer}}",
+      "specific_systems": "{{municipal_systems}}",
+      "local_examples": "{{local_case_examples}}"
+    },
+    
+    "role_specific": {
+      "administrator": "Standard version",
+      "manager": "Enhanced with leadership responsibilities",
+      "it_staff": "Technical focus with system administration",
+      "social_worker": "Special focus on sensitive personal data"
+    },
+    
+    "difficulty_levels": {
+      "basic": "For new employees or first-time GDPR training",
+      "intermediate": "For experienced staff needing refresher", 
+      "advanced": "For GDPR coordinators and specialists"
+    }
+  },
+  
+  "analytics_tracking": {
+    "completion_metrics": [
+      "time_to_complete",
+      "quiz_scores", 
+      "choice_patterns",
+      "help_requests",
+      "certificate_downloads"
+    ],
+    
+    "learning_effectiveness": [
+      "knowledge_retention_test",
+      "practical_application_survey",
+      "manager_feedback",
+      "incident_reduction_correlation"
+    ]
+  }
+}

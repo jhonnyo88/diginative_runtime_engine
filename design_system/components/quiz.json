@@ -1,0 +1,329 @@
+{
+  "component": "QuizScene",
+  "version": "1.0.0",
+  "created": "2025-01-16",
+  "anna_svensson_optimized": true,
+  "chakra_integration": "Uses Chakra components with custom styling",
+  "status": "🟢 ready_for_implementation",
+  
+  "impact_tracking": {
+    "affects_components": ["QuizScene", "Button", "Card", "Progress", "Alert"],
+    "performance_impact": "Low - CSS animations only, no heavy assets",
+    "accessibility_impact": "High - new ARIA live regions for feedback",
+    "bundle_size_estimate": "+2.5KB gzipped"
+  },
+  
+  "layout_specifications": {
+    "container": {
+      "chakra_component": "VStack",
+      "max_width": "375px",
+      "padding": "space.4",
+      "spacing": "space.6",
+      "background": "theme.background",
+      "min_height": "100vh"
+    },
+    
+    "progress_header": {
+      "chakra_component": "VStack",
+      "spacing": "space.3",
+      "width": "100%",
+      "align": "stretch",
+      "progress_bar": {
+        "chakra_component": "Progress",
+        "color_scheme": "brand",
+        "size": "lg",
+        "height": "space.2",
+        "border_radius": "radii.full",
+        "background": "gray.200"
+      },
+      "progress_text": {
+        "chakra_component": "Text",
+        "font_size": "fontSizes.sm",
+        "color": "gray.600",
+        "text_align": "center"
+      }
+    },
+    
+    "question_area": {
+      "chakra_component": "Card",
+      "card_body": {
+        "padding": "space.6"
+      },
+      "background": "white",
+      "border_radius": "radii.xl",
+      "shadow": "shadows.lg",
+      "border": "1px solid",
+      "border_color": "gray.200"
+    },
+    
+    "answers_container": {
+      "chakra_component": "VStack",
+      "spacing": "space.3",
+      "width": "100%",
+      "align": "stretch"
+    },
+    
+    "navigation_footer": {
+      "chakra_component": "HStack",
+      "justify": "space-between",
+      "width": "100%",
+      "padding": "space.4"
+    }
+  },
+  
+  "question_design": {
+    "question_text": {
+      "chakra_component": "Text",
+      "font_size": "fontSizes.lg",
+      "font_weight": "fontWeights.semibold",
+      "line_height": "lineHeights.tall",
+      "color": "gray.800",
+      "margin_bottom": "space.4"
+    },
+    
+    "question_number": {
+      "chakra_component": "Badge",
+      "variant": "subtle",
+      "color_scheme": "brand",
+      "font_size": "fontSizes.sm",
+      "margin_bottom": "space.2"
+    },
+    
+    "context_hint": {
+      "chakra_component": "Text",
+      "font_size": "fontSizes.sm",
+      "color": "gray.600",
+      "font_style": "italic",
+      "margin_bottom": "space.4"
+    }
+  },
+  
+  "answer_options": {
+    "answer_button": {
+      "chakra_component": "Button",
+      "variant": "outline",
+      "size": "lg",
+      "min_height": "60px",
+      "padding": "space.4",
+      "text_align": "left",
+      "justify_content": "flex-start",
+      "white_space": "normal",
+      "height": "auto",
+      "border_width": "2px",
+      "border_radius": "radii.lg",
+      "font_weight": "fontWeights.medium"
+    },
+    
+    "option_states": {
+      "default": {
+        "border_color": "gray.300",
+        "background": "white",
+        "color": "gray.800",
+        "_hover": {
+          "border_color": "brand.400",
+          "background": "brand.50"
+        }
+      },
+      "selected": {
+        "border_color": "brand.500",
+        "background": "brand.50",
+        "color": "brand.800"
+      },
+      "correct": {
+        "border_color": "success.500",
+        "background": "success.50",
+        "color": "success.800"
+      },
+      "incorrect": {
+        "border_color": "error.500",
+        "background": "error.50",
+        "color": "error.800"
+      },
+      "disabled": {
+        "opacity": 0.6,
+        "cursor": "not-allowed"
+      }
+    },
+    
+    "option_indicator": {
+      "chakra_component": "Box",
+      "width": "space.6",
+      "height": "space.6",
+      "border_radius": "radii.full",
+      "border": "2px solid",
+      "margin_right": "space.3",
+      "flex_shrink": 0
+    }
+  },
+  
+  "feedback_system": {
+    "feedback_alert": {
+      "chakra_component": "Alert",
+      "border_radius": "radii.lg",
+      "padding": "space.4",
+      "margin_top": "space.4"
+    },
+    
+    "feedback_states": {
+      "correct": {
+        "status": "success",
+        "color_scheme": "success",
+        "icon": "CheckCircleIcon"
+      },
+      "incorrect": {
+        "status": "error", 
+        "color_scheme": "error",
+        "icon": "WarningIcon"
+      },
+      "info": {
+        "status": "info",
+        "color_scheme": "blue",
+        "icon": "InfoIcon"
+      }
+    },
+    
+    "explanation_text": {
+      "chakra_component": "Text",
+      "font_size": "fontSizes.md",
+      "line_height": "lineHeights.tall",
+      "margin_top": "space.2"
+    }
+  },
+  
+  "navigation_controls": {
+    "previous_button": {
+      "chakra_component": "Button",
+      "variant": "ghost",
+      "color_scheme": "gray",
+      "size": "lg",
+      "min_height": "48px",
+      "left_icon": "ChevronLeftIcon"
+    },
+    
+    "next_button": {
+      "chakra_component": "Button",
+      "variant": "solid",
+      "color_scheme": "brand", 
+      "size": "lg",
+      "min_height": "48px",
+      "right_icon": "ChevronRightIcon"
+    },
+    
+    "submit_button": {
+      "chakra_component": "Button",
+      "variant": "solid",
+      "color_scheme": "success",
+      "size": "lg",
+      "min_height": "48px",
+      "right_icon": "CheckIcon"
+    }
+  },
+  
+  "animations": {
+    "option_select": {
+      "transform": "scale(0.98)",
+      "transition": "all 0.1s ease-in-out"
+    },
+    
+    "feedback_enter": {
+      "chakra_component": "Fade",
+      "in": true,
+      "transition": {
+        "enter": { "duration": 0.3 }
+      }
+    },
+    
+    "progress_update": {
+      "transition": "width 0.5s ease-out"
+    },
+    
+    "correct_celebration": {
+      "keyframes": {
+        "0%": { "transform": "scale(1)" },
+        "50%": { "transform": "scale(1.05)" },
+        "100%": { "transform": "scale(1)" }
+      },
+      "animation": "celebration 0.6s ease-in-out"
+    }
+  },
+  
+  "responsive_behavior": {
+    "breakpoints": {
+      "base": {
+        "font_size": "md",
+        "spacing": "space.3",
+        "button_height": "60px"
+      },
+      "sm": {
+        "font_size": "lg",
+        "spacing": "space.4", 
+        "button_height": "64px"
+      }
+    }
+  },
+  
+  "accessibility": {
+    "keyboard_navigation": {
+      "tab_order": ["question", "option_1", "option_2", "option_3", "option_4", "previous", "next"],
+      "shortcut_keys": {
+        "1-6": "Select answer option",
+        "Enter": "Submit answer",
+        "Space": "Select/deselect option"
+      }
+    },
+    
+    "screen_reader": {
+      "aria_labels": {
+        "question": "Quiz question",
+        "option": "Answer option",
+        "feedback": "Answer feedback",
+        "progress": "Quiz progress"
+      },
+      "live_regions": {
+        "feedback": "aria-live='polite'",
+        "progress": "aria-live='polite'"
+      }
+    },
+    
+    "color_contrast": {
+      "text_ratios": "4.5:1 minimum",
+      "border_ratios": "3:1 minimum", 
+      "state_indicators": "Visual + text feedback for color blind users"
+    }
+  },
+  
+  "multi_tenant_theming": {
+    "municipality": {
+      "primary_color": "brand.500",
+      "success_color": "success.500",
+      "progress_style": "formal_municipal"
+    },
+    
+    "corporate": {
+      "primary_color": "blue.600",
+      "success_color": "success.600", 
+      "progress_style": "business_professional"
+    },
+    
+    "ngo": {
+      "primary_color": "success.600",
+      "success_color": "success.500",
+      "progress_style": "friendly_approachable"
+    }
+  },
+  
+  "anna_svensson_optimizations": {
+    "touch_targets": "Minimum 60px height for easy thumb interaction",
+    "reading_time": "Question text optimized for 7-minute sessions",
+    "progress_clarity": "Always visible progress to reduce anxiety",
+    "immediate_feedback": "Instant visual confirmation for selections",
+    "error_prevention": "Clear button states prevent accidental submission"
+  },
+  
+  "performance_optimizations": {
+    "lazy_loading": "Questions loaded progressively",
+    "state_management": "Efficient answer state tracking", 
+    "animation_budget": "60fps animations under 100ms",
+    "bundle_impact": "<2.5KB additional per quiz scene"
+  }
+}

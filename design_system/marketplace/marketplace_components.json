@@ -1,0 +1,399 @@
+{
+  "marketplace_design_system": {
+    "metadata": {
+      "system_name": "DigiNativa Marketplace Components",
+      "version": "1.0.0",
+      "created": "2025-01-17",
+      "design_philosophy": "Municipal-first marketplace that maintains Anna Svensson excellence at scale",
+      "target_users": ["municipal_buyers", "content_creators", "technology_partners", "service_providers"],
+      "accessibility_standard": "WCAG 2.1 AA across all marketplace interactions"
+    },
+    
+    "marketplace_design_principles": {
+      "municipal_procurement_optimization": "Interface designed for complex municipal procurement processes",
+      "creator_empowerment": "Tools that enable content creators to build sustainable businesses",
+      "quality_transparency": "Clear quality indicators and validation throughout marketplace",
+      "cultural_sensitivity": "Marketplace adaptation for German, French, Dutch, Swedish markets",
+      "accessibility_excellence": "Universal design principles ensuring inclusive marketplace access"
+    },
+    
+    "buyer_interface_components": {
+      "municipal_procurement_dashboard": {
+        "component_name": "MunicipalProcurementDashboard",
+        "description": "Procurement-optimized interface for municipal training acquisition",
+        "chakra_base": "Grid, Card, VStack, HStack, Badge, Button",
+        
+        "dashboard_sections": {
+          "procurement_overview": {
+            "current_requirements": "Active procurement needs with budget and timeline visibility",
+            "approval_status": "Multi-stakeholder approval workflow status tracking",
+            "compliance_checklist": "Automated compliance verification and documentation",
+            "budget_tracking": "Real-time budget utilization and remaining allocation display"
+          },
+          "content_discovery": {
+            "procurement_filters": "Filters designed for municipal procurement criteria",
+            "compliance_indicators": "Clear WCAG, regulatory, and quality compliance badges",
+            "reference_network": "Similar municipalities and their successful implementations",
+            "roi_calculators": "Built-in return on investment calculation tools"
+          },
+          "vendor_management": {
+            "approved_creators": "Pre-approved content creators for streamlined procurement",
+            "vendor_scorecards": "Performance history and municipal satisfaction ratings",
+            "contract_templates": "Municipal-appropriate contract templates and terms",
+            "payment_processing": "Municipal budget cycle aligned payment scheduling"
+          }
+        },
+        
+        "persona_adaptations": {
+          "anna_svensson_buyer": {
+            "mobile_optimization": "iPhone 12 optimized procurement dashboard",
+            "quick_decisions": "Streamlined interface for busy municipal administrators",
+            "practical_focus": "Emphasis on immediate applicability and time efficiency",
+            "interruption_handling": "Procurement state preservation during municipal work interruptions"
+          },
+          "klaus_mueller_buyer": {
+            "comprehensive_documentation": "Detailed procurement documentation and audit trails",
+            "systematic_evaluation": "Structured content evaluation and comparison tools",
+            "authority_validation": "Clear authority indicators and expert endorsements",
+            "process_compliance": "Full compliance with German municipal procurement procedures"
+          },
+          "marie_dubois_buyer": {
+            "collaborative_procurement": "Team-based procurement decision making tools",
+            "aesthetic_presentation": "Sophisticated visual presentation of procurement options",
+            "relationship_context": "Integration with team goals and organizational objectives",
+            "social_validation": "Peer insights and collaborative recommendation systems"
+          },
+          "pieter_van_berg_buyer": {
+            "efficiency_optimization": "Streamlined procurement with minimal bureaucratic friction",
+            "innovation_showcase": "Prominent display of cutting-edge content and experimental approaches",
+            "data_driven_decisions": "Advanced analytics and performance data for procurement decisions",
+            "progressive_features": "Access to latest marketplace features and beta functionality"
+          }
+        },
+        
+        "procurement_workflow": {
+          "requirement_specification": {
+            "need_assessment": "Guided workflow for identifying training requirements",
+            "budget_planning": "Integration with municipal budget cycles and planning",
+            "stakeholder_identification": "Multi-stakeholder approval workflow setup",
+            "compliance_requirements": "Automatic compliance requirement identification"
+          },
+          "content_evaluation": {
+            "comparison_tools": "Side-by-side content comparison with municipal criteria",
+            "trial_programs": "Risk-free trial access for content evaluation",
+            "reference_checking": "Automated reference municipality contact and validation",
+            "pilot_testing": "Structured pilot testing with representative municipal users"
+          },
+          "approval_management": {
+            "workflow_automation": "Automated routing through municipal approval hierarchies",
+            "stakeholder_notifications": "Proactive notification and reminder systems",
+            "document_generation": "Automatic generation of procurement documentation",
+            "audit_trail": "Comprehensive audit trail for procurement compliance"
+          }
+        }
+      },
+      
+      "content_marketplace_browser": {
+        "component_name": "ContentMarketplaceBrowser",
+        "description": "Municipal-optimized content discovery and evaluation interface",
+        "chakra_base": "Grid, Card, Image, Badge, Button, Modal",
+        
+        "discovery_features": {
+          "municipal_filters": {
+            "role_specific": "Filter by municipal roles (administrator, manager, specialist)",
+            "department_focus": "Content categorized by municipal departments",
+            "compliance_requirements": "Filter by specific compliance needs (GDPR, safety, etc.)",
+            "language_localization": "Multi-language content with cultural adaptation indicators"
+          },
+          "quality_indicators": {
+            "municipal_validation": "Badge indicating municipal expert validation",
+            "accessibility_compliance": "WCAG 2.1 AA compliance verification display",
+            "user_ratings": "Aggregated ratings from municipal users with role breakdown",
+            "usage_statistics": "Anonymous usage data from similar municipalities"
+          },
+          "practical_preview": {
+            "learning_objectives": "Clear, measurable learning objectives with municipal context",
+            "time_investment": "Realistic time requirements with mobile session options",
+            "prerequisite_check": "Automated prerequisite knowledge assessment",
+            "outcome_demonstration": "Expected learning outcomes with real-world application examples"
+          }
+        },
+        
+        "content_presentation": {
+          "municipal_scenarios": {
+            "scenario_preview": "Preview of municipal scenarios and case studies included",
+            "local_relevance": "Indication of content relevance to specific municipal contexts",
+            "practical_application": "Examples of real-world application in municipal work",
+            "colleague_insights": "Anonymous insights from colleagues in similar roles"
+          },
+          "accessibility_features": {
+            "universal_design": "Clear indication of universal design principles implementation",
+            "assistive_technology": "Compatibility information for screen readers and assistive devices",
+            "cognitive_accessibility": "Information about cognitive accessibility accommodations",
+            "customization_options": "Available customization for different accessibility needs"
+          }
+        }
+      }
+    },
+    
+    "creator_interface_components": {
+      "creator_studio_dashboard": {
+        "component_name": "CreatorStudioDashboard",
+        "description": "Comprehensive content creation and business management platform",
+        "chakra_base": "Tabs, Card, Progress, Chart, Button, Modal",
+        
+        "creation_workspace": {
+          "content_builder": {
+            "template_library": "Pre-built templates optimized for Anna Svensson and European personas",
+            "scenario_builder": "Drag-and-drop municipal scenario creation tools",
+            "character_editor": "Municipal character and dialogue creation interface",
+            "assessment_creator": "Quiz and assessment creation with automatic accessibility compliance"
+          },
+          "quality_assurance": {
+            "accessibility_checker": "Real-time WCAG 2.1 AA compliance validation",
+            "cultural_validator": "Cultural appropriateness checking for target markets",
+            "mobile_optimizer": "Anna Svensson mobile experience validation tools",
+            "performance_tester": "Loading time and performance optimization feedback"
+          },
+          "collaboration_tools": {
+            "expert_review": "Municipal expert review request and management system",
+            "peer_feedback": "Creator community feedback and collaboration tools",
+            "version_control": "Content versioning and collaborative editing capabilities",
+            "approval_workflow": "Content approval workflow for multi-creator projects"
+          }
+        },
+        
+        "business_management": {
+          "revenue_analytics": {
+            "sales_dashboard": "Real-time sales and revenue tracking with trend analysis",
+            "performance_metrics": "Content performance analytics with municipal user insights",
+            "market_insights": "Municipal market trends and content demand forecasting",
+            "competitive_analysis": "Anonymous competitive positioning and opportunity identification"
+          },
+          "creator_growth": {
+            "skill_development": "Creator skill assessment and improvement recommendations",
+            "market_opportunities": "Identification of high-demand content areas",
+            "partnership_matching": "Matching with complementary creators and subject matter experts",
+            "success_coaching": "Access to creator success coaching and mentorship programs"
+          },
+          "marketing_tools": {
+            "content_promotion": "Tools for promoting content within marketplace",
+            "case_study_builder": "Success story and case study creation tools",
+            "reference_network": "Municipal reference building and testimonial collection",
+            "social_proof": "Municipal endorsement and validation showcase tools"
+          }
+        }
+      },
+      
+      "content_submission_workflow": {
+        "component_name": "ContentSubmissionWorkflow",
+        "description": "Streamlined content submission and approval process",
+        "chakra_base": "Stepper, Form, Upload, Progress, Alert",
+        
+        "submission_stages": {
+          "content_preparation": {
+            "metadata_collection": "Comprehensive content metadata with municipal relevance indicators",
+            "learning_objectives": "Clear learning objective definition with measurability requirements",
+            "target_audience": "Municipal role and persona targeting specification",
+            "accessibility_documentation": "Accessibility features and compliance documentation"
+          },
+          "quality_validation": {
+            "automated_checks": "Automated technical and accessibility validation",
+            "content_review": "Municipal expert review scheduling and management",
+            "pilot_testing": "Municipal user pilot testing coordination",
+            "feedback_integration": "Review feedback integration and content refinement tools"
+          },
+          "marketplace_publication": {
+            "pricing_strategy": "Municipal-appropriate pricing strategy guidance",
+            "marketing_materials": "Marketplace listing optimization and marketing material creation",
+            "launch_planning": "Content launch timing and promotional strategy",
+            "performance_monitoring": "Post-launch performance monitoring and optimization recommendations"
+          }
+        }
+      }
+    },
+    
+    "partner_integration_components": {
+      "partner_onboarding_portal": {
+        "component_name": "PartnerOnboardingPortal",
+        "description": "Comprehensive partner integration and onboarding platform",
+        "chakra_base": "Wizard, Form, Code, Documentation, Support",
+        
+        "integration_wizard": {
+          "partner_assessment": {
+            "integration_type": "Selection of integration type (content, technology, service)",
+            "technical_capabilities": "Assessment of technical integration capabilities",
+            "municipal_expertise": "Validation of municipal domain expertise",
+            "quality_standards": "Agreement to DigiNativa quality and accessibility standards"
+          },
+          "technical_setup": {
+            "api_configuration": "Step-by-step API integration configuration",
+            "authentication_setup": "SSO and authentication system configuration",
+            "data_mapping": "Municipal data structure mapping and synchronization setup",
+            "testing_environment": "Sandbox environment setup and integration testing"
+          },
+          "business_configuration": {
+            "revenue_sharing": "Revenue sharing model selection and configuration",
+            "marketing_materials": "Partner marketing materials and co-branding setup",
+            "support_framework": "Support escalation and responsibility definition",
+            "success_metrics": "Key performance indicator definition and tracking setup"
+          }
+        }
+      },
+      
+      "api_integration_dashboard": {
+        "component_name": "APIIntegrationDashboard",
+        "description": "Technical integration monitoring and management interface",
+        "chakra_base": "Grid, Stat, Chart, Code, Alert",
+        
+        "integration_monitoring": {
+          "api_performance": {
+            "response_times": "Real-time API response time monitoring",
+            "uptime_tracking": "API availability and uptime statistics",
+            "error_monitoring": "Error rate tracking and incident management",
+            "usage_analytics": "API usage patterns and capacity planning"
+          },
+          "data_quality": {
+            "sync_status": "Data synchronization status and health monitoring",
+            "data_integrity": "Data quality validation and error detection",
+            "compliance_tracking": "Privacy and compliance requirement adherence",
+            "audit_logging": "Comprehensive audit trail for data access and modifications"
+          }
+        }
+      }
+    },
+    
+    "quality_assurance_components": {
+      "content_quality_dashboard": {
+        "component_name": "ContentQualityDashboard",
+        "description": "Comprehensive content quality monitoring and management system",
+        "chakra_base": "Grid, Progress, Badge, Chart, Alert",
+        
+        "quality_metrics": {
+          "accessibility_compliance": {
+            "wcag_validation": "WCAG 2.1 AA compliance scoring and tracking",
+            "assistive_technology": "Screen reader and assistive technology compatibility testing",
+            "cognitive_accessibility": "Cognitive load and comprehension assessment",
+            "mobile_accessibility": "Mobile accessibility optimization validation"
+          },
+          "learning_effectiveness": {
+            "objective_achievement": "Learning objective achievement rate tracking",
+            "knowledge_retention": "Long-term knowledge retention measurement",
+            "practical_application": "Real-world application success tracking",
+            "competency_improvement": "Municipal competency improvement measurement"
+          },
+          "user_satisfaction": {
+            "municipal_ratings": "Municipal user satisfaction ratings and feedback",
+            "persona_specific": "Satisfaction tracking by municipal persona type",
+            "cultural_appropriateness": "Cultural sensitivity and appropriateness validation",
+            "engagement_metrics": "User engagement and completion rate analytics"
+          }
+        },
+        
+        "quality_improvement": {
+          "automated_recommendations": "AI-powered quality improvement recommendations",
+          "peer_review_system": "Municipal expert and creator peer review coordination",
+          "continuous_monitoring": "Ongoing quality monitoring and alert system",
+          "remediation_workflow": "Quality issue identification and remediation process"
+        }
+      },
+      
+      "municipal_validation_system": {
+        "component_name": "MunicipalValidationSystem",
+        "description": "Municipal expert validation and endorsement platform",
+        "chakra_base": "Card, Avatar, Badge, Form, Modal",
+        
+        "expert_network": {
+          "validator_profiles": "Municipal expert validator profiles and expertise areas",
+          "validation_requests": "Content validation request submission and tracking",
+          "expert_matching": "Automatic matching of content with appropriate municipal experts",
+          "validation_tracking": "Validation progress and completion tracking"
+        },
+        
+        "validation_workflow": {
+          "content_review": "Structured content review process with municipal criteria",
+          "accuracy_verification": "Municipal accuracy and relevance verification",
+          "accessibility_assessment": "Expert accessibility review beyond automated checking",
+          "endorsement_system": "Municipal expert endorsement and recommendation system"
+        }
+      }
+    },
+    
+    "analytics_and_insights_components": {
+      "marketplace_analytics_dashboard": {
+        "component_name": "MarketplaceAnalyticsDashboard",
+        "description": "Comprehensive marketplace performance and insights platform",
+        "chakra_base": "Grid, Chart, Stat, Table, Filter",
+        
+        "market_insights": {
+          "content_demand": "Municipal training content demand trends and forecasting",
+          "creator_performance": "Creator success metrics and ranking systems",
+          "municipal_adoption": "Municipal adoption patterns and growth analytics",
+          "revenue_analytics": "Marketplace revenue analytics with trend analysis"
+        },
+        
+        "user_behavior": {
+          "persona_analytics": "User behavior analytics segmented by municipal personas",
+          "content_consumption": "Content consumption patterns and preference analysis",
+          "learning_outcomes": "Aggregated learning outcome and effectiveness measurement",
+          "satisfaction_trends": "User satisfaction trends and improvement opportunities"
+        },
+        
+        "ecosystem_health": {
+          "platform_vitality": "Overall platform health and growth indicators",
+          "quality_metrics": "Ecosystem-wide quality and compliance metrics",
+          "partner_performance": "Partner ecosystem performance and contribution analysis",
+          "competitive_positioning": "Market position and competitive advantage tracking"
+        }
+      }
+    },
+    
+    "accessibility_marketplace_features": {
+      "universal_marketplace_design": {
+        "inclusive_navigation": {
+          "keyboard_accessibility": "Full keyboard navigation support throughout marketplace",
+          "screen_reader_optimization": "Comprehensive screen reader support with rich descriptions",
+          "focus_management": "Intelligent focus management across complex marketplace interfaces",
+          "skip_navigation": "Context-aware skip links for efficient marketplace navigation"
+        },
+        
+        "cognitive_accessibility": {
+          "clear_information_architecture": "Intuitive information organization for municipal procurement",
+          "consistent_interaction_patterns": "Predictable interaction patterns across marketplace sections",
+          "cognitive_load_management": "Information chunking and progressive disclosure",
+          "error_prevention": "Proactive error prevention and clear recovery guidance"
+        },
+        
+        "sensory_accessibility": {
+          "visual_design": "High contrast design with customizable visual preferences",
+          "audio_alternatives": "Audio descriptions and alternatives for visual content",
+          "text_scaling": "Flexible text scaling maintaining layout integrity",
+          "color_independence": "Information design independent of color coding"
+        }
+      }
+    },
+    
+    "cultural_marketplace_adaptations": {
+      "german_marketplace_features": {
+        "systematic_procurement": "Comprehensive procurement documentation and systematic evaluation tools",
+        "authority_validation": "Clear authority indicators and expert credential verification",
+        "compliance_documentation": "Detailed compliance documentation and audit trail generation",
+        "thorough_evaluation": "In-depth content evaluation tools with comprehensive comparison"
+      },
+      
+      "french_marketplace_features": {
+        "collaborative_procurement": "Team-based procurement decision making and stakeholder collaboration",
+        "aesthetic_sophistication": "Refined visual presentation maintaining French design sensibilities",
+        "relationship_context": "Integration with organizational relationships and team dynamics",
+        "social_validation": "Peer insight integration and collaborative recommendation systems"
+      },
+      
+      "dutch_marketplace_features": {
+        "efficient_procurement": "Streamlined procurement processes with minimal bureaucratic overhead",
+        "innovation_showcase": "Prominent display of innovative content and experimental approaches",
+        "advanced_analytics": "Sophisticated analytics and data-driven procurement decision support",
+        "progressive_features": "Early access to experimental marketplace features and capabilities"
+      }
+    }
+  }
+}

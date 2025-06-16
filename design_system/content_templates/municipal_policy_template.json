@@ -1,0 +1,225 @@
+{
+  "template_metadata": {
+    "templateId": "municipal-policy-v1",
+    "templateName": "Kommunallagen för Kommunala Tjänstemän",
+    "version": "1.0.0",
+    "created": "2025-01-16",
+    "targetPersona": "Anna Svensson - Kommunal handläggare",
+    "estimatedDuration": "7 minuter",
+    "difficulty": "grundläggande-medel",
+    "language": "sv-SE"
+  },
+  
+  "learning_objectives": [
+    "Förstå kommunallagens grundprinciper",
+    "Tillämpa likställighetsprincipen i praktiken",
+    "Känna till objektivitetsprincipen",
+    "Förstå proportionalitetsprincipen",
+    "Veta vad som ingår i kommunal kompetens"
+  ],
+  
+  "game_manifest": {
+    "title": "Kommunallagen i Praktiken",
+    "description": "Lär dig tillämpa kommunallagens principer i ditt dagliga arbete",
+    "estimatedDuration": 420,
+    "targetAudience": "municipal_employees",
+    
+    "scenes": [
+      {
+        "id": "intro_principles",
+        "type": "DialogueScene",
+        "title": "Kommunallagens grundprinciper",
+        "estimatedDuration": 120,
+        
+        "characters": [
+          {
+            "id": "anna",
+            "name": "Anna Andersson",
+            "role": "Handläggare",
+            "avatar": "/characters/anna-administrator.svg"
+          },
+          {
+            "id": "gunnar",
+            "name": "Gunnar Svensson", 
+            "role": "Erfaren handläggare och mentor",
+            "avatar": "/characters/gunnar-mentor.svg"
+          }
+        ],
+        
+        "dialogue": [
+          {
+            "speaker": "gunnar",
+            "text": "Anna, som ny handläggare är det viktigt att du förstår kommunallagens grundprinciper. De styr allt vi gör här på kommunen."
+          },
+          {
+            "speaker": "anna",
+            "text": "Ja, jag har hört talas om likställighetsprincipen, men vad innebär den egentligen i praktiken?"
+          },
+          {
+            "speaker": "gunnar",
+            "text": "Likställighetsprincipen betyder att alla medborgare ska behandlas lika i lika situationer. Du får inte gynna någon på grund av vem de är."
+          },
+          {
+            "speaker": "anna",
+            "text": "Så om två personer ansöker om samma bidrag med samma förutsättningar ska de få samma behandling?"
+          },
+          {
+            "speaker": "gunnar",
+            "text": "Exakt! Objektivitetsprincipen säger också att du ska vara saklig och opartisk. Inga privata vänskap eller tidigare konflikter får påverka ditt beslut."
+          }
+        ],
+        
+        "choices": [
+          {
+            "text": "Berätta mer om proportionalitetsprincipen",
+            "consequence": "scene_proportionality",
+            "feedback": "Vi går igenom hur åtgärder ska stå i proportion till syftet."
+          },
+          {
+            "text": "Vad händer om jag bryter mot principerna?",
+            "consequence": "scene_consequences",
+            "feedback": "Låt oss titta på konsekvenserna av att inte följa kommunallagen."
+          }
+        ]
+      },
+      
+      {
+        "id": "case_study_application",
+        "type": "CaseStudyScene",
+        "title": "Fallstudie: Bidragsansökan",
+        "estimatedDuration": 180,
+        
+        "scenario": {
+          "title": "Ekonomiskt bistånd - Anna ska fatta beslut",
+          "description": "Du har fått två ansökningar om ekonomiskt bistånd. Båda personerna har liknande ekonomiska situationer men olika bakgrund. Hur tillämpar du kommunallagens principer?",
+          
+          "case_details": {
+            "applicant_1": {
+              "name": "Maria Johansson",
+              "age": 35,
+              "situation": "Arbetslös sedan 3 månader, inga sparmedel, hyra 8000 kr/månad",
+              "background": "Född i Sverige, har arbetat som lärare"
+            },
+            "applicant_2": {
+              "name": "Ahmad Hassan", 
+              "age": 32,
+              "situation": "Arbetslös sedan 3 månader, inga sparmedel, hyra 8000 kr/månad",
+              "background": "Kom till Sverige för 2 år sedan, har arbetat som ingenjör"
+            }
+          }
+        },
+        
+        "documents": [
+          {
+            "title": "Ansökningar om ekonomiskt bistånd",
+            "content": "Detaljerade ansökningshandlingar för båda personerna"
+          },
+          {
+            "title": "Kommunala riktlinjer",
+            "content": "Malmö stads riktlinjer för ekonomiskt bistånd"
+          },
+          {
+            "title": "Kommunallagen",
+            "content": "Relevanta paragrafer om likställighet och objektivitet"
+          }
+        ],
+        
+        "decision_points": [
+          {
+            "question": "Vilka faktorer får du beakta i din bedömning?",
+            "options": [
+              "Ekonomisk situation och behov",
+              "Nationalitet och ursprung", 
+              "Tidigare arbetslivserfarenhet",
+              "Personlig sympati"
+            ],
+            "correct_answers": [0],
+            "explanation": "Endast objektiva faktorer som ekonomisk situation får beaktas. Nationalitet, ursprung och personliga känslor är irrelevanta."
+          },
+          {
+            "question": "Hur dokumenterar du ditt beslut?",
+            "options": [
+              "Kort anteckning om beslutet",
+              "Fullständig motivering baserad på riktlinjer och faktiska förhållanden",
+              "Ingen dokumentation behövs",
+              "Hänvisning till 'praxis'"
+            ],
+            "correct_answers": [1],
+            "explanation": "Alla beslut ska vara väl motiverade och dokumenterade med hänvisning till faktiska förhållanden och tillämpliga regler."
+          }
+        ],
+        
+        "learning_outcome": "Förståelse för praktisk tillämpning av kommunallagens principer i handläggning av ärenden."
+      },
+      
+      {
+        "id": "competence_quiz",
+        "type": "QuizScene",
+        "title": "Kommunal kompetens - Vad får kommunen göra?",
+        "estimatedDuration": 90,
+        
+        "questions": [
+          {
+            "id": "q1",
+            "questionText": "Kommunen överväger att starta en egen frisörsalong. Är detta tillåtet enligt kommunallagen?",
+            "type": "multiple_choice",
+            "options": [
+              "Ja, kommunen får bedriva alla typer av verksamhet",
+              "Nej, detta ligger utanför kommunal kompetens",
+              "Ja, om det finns allmänintresse",
+              "Ja, men bara som ekonomisk förening"
+            ],
+            "correctAnswer": 1,
+            "explanation": "Frisörverksamhet ligger utanför kommunal kompetens då det normalt bedrivs av privata aktörer och saknar allmänintresse.",
+            "points": 10
+          },
+          {
+            "id": "q2", 
+            "questionText": "Vad krävs för att en kommunal verksamhet ska vara laglig enligt kommunallagen?",
+            "type": "multiple_choice",
+            "options": [
+              "Att den är lönsam",
+              "Att det finns allmänintresse och kommunal kompetens",
+              "Att privata företag inte kan bedriva verksamheten",
+              "Att medborgarna röstat för det"
+            ],
+            "correctAnswer": 1,
+            "explanation": "Kommunal verksamhet kräver både allmänintresse och att det ligger inom kommunal kompetens. Lönsamhet är inte ett krav.",
+            "points": 10
+          }
+        ]
+      },
+      
+      {
+        "id": "final_assessment",
+        "type": "AssessmentScene", 
+        "title": "Kommunallagen - Utbildning Genomförd",
+        "estimatedDuration": 60,
+        
+        "certificate": {
+          "title": "Kommunallagen Grundcertifikat",
+          "description": "Bekräftar kunskap om kommunallagens grundprinciper och tillämpning",
+          "issuing_authority": "DigiNativa Utbildningsplattform",
+          "valid_for_months": 24
+        },
+        
+        "achievements": [
+          {
+            "id": "principles_master",
+            "name": "Principernas Mästare",
+            "description": "Behärskar kommunallagens grundprinciper",
+            "icon": "scales",
+            "points": 15
+          },
+          {
+            "id": "case_solver",
+            "name": "Falllösare",
+            "description": "Tillämpar kommunallagen i praktiska situationer",
+            "icon": "puzzle",
+            "points": 10
+          }
+        ]
+      }
+    ]
+  }
+}

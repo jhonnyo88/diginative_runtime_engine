@@ -1,0 +1,188 @@
+import React from 'react';
+import { Avatar as ChakraAvatar, AvatarProps, Box } from '@chakra-ui/react';
+
+// Game Designer spec: Character Avatar Styles implementation
+// Based on task-005 specifications for municipal-appropriate styling
+
+interface CharacterAvatarProps extends Omit<AvatarProps, 'src'> {
+  character?: {
+    name: string;
+    avatar?: string;
+    role?: string;
+    type?: 'municipal' | 'legal' | 'it' | 'manager' | 'hr' | 'training';
+  };
+  showIndicator?: boolean;
+  indicatorColor?: string;
+  size?: 'sm' | 'md' | 'lg' | 'xl';
+}
+
+export const CharacterAvatar: React.FC<CharacterAvatarProps> = ({
+  character,
+  showIndicator = true,
+  indicatorColor = 'brand.500',
+  size = 'lg',
+  ...props
+}) => {
+  // Game Designer spec: Default professional avatars for different roles
+  const getDefaultAvatar = (type?: string) => {
+    // In production, these would be actual professional avatar images
+    const defaultAvatars = {
+      municipal: '/avatars/municipal-admin.svg',
+      legal: '/avatars/legal-advisor.svg', 
+      it: '/avatars/it-specialist.svg',
+      manager: '/avatars/manager.svg',
+      hr: '/avatars/hr-representative.svg',
+      training: '/avatars/training-coordinator.svg'
+    };
+    
+    return defaultAvatars[type as keyof typeof defaultAvatars] || defaultAvatars.municipal;
+  };
+
+  // Game Designer spec: Size mapping for Anna Svensson mobile optimization
+  const getSizeMapping = (avatarSize: string) => {
+    const sizeMap = {
+      sm: { size: '32px', indicator: '8px', border: '2px' },
+      md: { size: '48px', indicator: '12px', border: '2px' },
+      lg: { size: '64px', indicator: '16px', border: '3px' },
+      xl: { size: '96px', indicator: '20px', border: '4px' }
+    };
+    
+    return sizeMap[avatarSize as keyof typeof sizeMap] || sizeMap.lg;
+  };
+
+  const dimensions = getSizeMapping(size);
+  
+  return (
+    <Box position="relative" display="inline-block">
+      <ChakraAvatar
+        src={character?.avatar || getDefaultAvatar(character?.type)}
+        name={character?.name || 'Anställd'}
+        size={size}
+        border={`${dimensions.border} solid`}
+        borderColor={indicatorColor}
+        bg="gray.100"
+        color="gray.600"
+        fontWeight="medium"
+        // Game Designer spec: High-quality rendering for professional context
+        style={{
+          imageRendering: 'high-quality',
+          objectFit: 'cover'
+        }}
+        {...props}
+      />
+      
+      {/* Professional indicator - Game Designer spec: Municipal context */}
+      {showIndicator && (
+        <Box
+          position="absolute"
+          bottom="-2px"
+          right="-2px"
+          w={dimensions.indicator}
+          h={dimensions.indicator}
+          bg={indicatorColor}
+          borderRadius="full"
+          border="2px solid white"
+          display="flex"
+          alignItems="center"
+          justifyContent="center"
+        >
+          {/* Role indicator icon */}
+          <Box
+            w="60%"
+            h="60%"
+            bg="white"
+            borderRadius="full"
+          />
+        </Box>
+      )}
+    </Box>
+  );
+};
+
+// Avatar group for multiple characters - Game Designer spec
+export const CharacterAvatarGroup: React.FC<{
+  characters: Array<{
+    id: string;
+    name: string;
+    avatar?: string;
+    role?: string;
+    type?: 'municipal' | 'legal' | 'it' | 'manager' | 'hr' | 'training';
+  }>;
+  max?: number;
+  size?: 'sm' | 'md' | 'lg' | 'xl';
+}> = ({ characters, max = 3, size = 'md' }) => {
+  const visibleCharacters = characters.slice(0, max);
+  const remainingCount = characters.length - max;
+
+  return (
+    <Box display="flex" alignItems="center">
+      {visibleCharacters.map((character, index) => (
+        <Box
+          key={character.id}
+          ml={index > 0 ? '-8px' : '0'}
+          position="relative"
+          zIndex={characters.length - index}
+        >
+          <CharacterAvatar
+            character={character}
+            size={size}
+            border="2px solid white"
+          />
+        </Box>
+      ))}
+      
+      {remainingCount > 0 && (
+        <Box
+          ml="-8px"
+          w={size === 'sm' ? '32px' : size === 'md' ? '48px' : '64px'}
+          h={size === 'sm' ? '32px' : size === 'md' ? '48px' : '64px'}
+          bg="gray.200"
+          borderRadius="full"
+          border="2px solid white"
+          display="flex"
+          alignItems="center"
+          justifyContent="center"
+          fontSize={size === 'sm' ? 'xs' : 'sm'}
+          fontWeight="medium"
+          color="gray.600"
+        >
+          +{remainingCount}
+        </Box>
+      )}
+    </Box>
+  );
+};
+
+// Preset avatar configurations for common municipal roles
+export const municipalAvatars = {
+  annaManager: {
+    name: 'Anna Svensson',
+    role: 'Kommunal administratör',
+    type: 'municipal' as const,
+    avatar: '/avatars/anna-svensson.svg'
+  },
+  legalAdvisor: {
+    name: 'Lars Eriksson',
+    role: 'Juridisk rådgivare',
+    type: 'legal' as const,
+    avatar: '/avatars/lars-eriksson.svg'
+  },
+  itSpecialist: {
+    name: 'Maria Andersson',
+    role: 'IT-specialist',
+    type: 'it' as const,
+    avatar: '/avatars/maria-andersson.svg'
+  },
+  hrManager: {
+    name: 'Per Johansson',
+    role: 'HR-chef',
+    type: 'manager' as const,
+    avatar: '/avatars/per-johansson.svg'
+  },
+  trainingCoordinator: {
+    name: 'Karin Nilsson',
+    role: 'Utbildningskoordinator',
+    type: 'training' as const,
+    avatar: '/avatars/karin-nilsson.svg'
+  }
+};

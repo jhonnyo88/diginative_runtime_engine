@@ -1,0 +1,338 @@
+{
+  "component_library": {
+    "metadata": {
+      "library_name": "Enterprise Admin Dashboard Components",
+      "version": "1.0.0",
+      "created": "2025-01-16",
+      "target_persona": "Multi-level admin users (Anna Svensson + supervisors)",
+      "design_system_base": "Chakra UI + DigiNativa extensions",
+      "accessibility_standard": "WCAG 2.1 AA"
+    },
+    
+    "dashboard_layout": {
+      "component_name": "AdminDashboardLayout",
+      "description": "Main layout container for enterprise admin interface",
+      "chakra_base": "Grid, Container",
+      
+      "responsive_behavior": {
+        "mobile": {
+          "breakpoint": "375px+",
+          "layout": "single_column_stack",
+          "navigation": "bottom_tab_bar",
+          "cards_per_row": 1,
+          "anna_optimization": "Large touch targets, essential metrics only"
+        },
+        "tablet": {
+          "breakpoint": "768px+", 
+          "layout": "two_column_sidebar",
+          "navigation": "collapsible_left_sidebar",
+          "cards_per_row": 2,
+          "features": "Swipe gestures, expanded metrics"
+        },
+        "desktop": {
+          "breakpoint": "1024px+",
+          "layout": "three_column_full",
+          "navigation": "persistent_sidebar",
+          "cards_per_row": 3,
+          "features": "Full feature set, detailed analytics"
+        }
+      },
+      
+      "color_theming": {
+        "header_background": "var(--chakra-colors-brand-600)",
+        "sidebar_background": "var(--chakra-colors-gray-50)",
+        "content_background": "var(--chakra-colors-white)",
+        "card_background": "var(--chakra-colors-white)",
+        "border_color": "var(--chakra-colors-gray-200)",
+        "text_primary": "var(--chakra-colors-gray-900)",
+        "text_secondary": "var(--chakra-colors-gray-600)"
+      },
+      
+      "accessibility_features": {
+        "skip_links": "Skip to main content, Skip to navigation",
+        "aria_landmarks": "banner, navigation, main, complementary",
+        "focus_management": "Proper focus order, visible focus indicators",
+        "screen_reader": "Live regions for dynamic content updates"
+      }
+    },
+    
+    "metric_cards": {
+      "component_name": "MetricCard",
+      "description": "Reusable cards for displaying key performance indicators",
+      "chakra_base": "Card, CardHeader, CardBody, Stat",
+      
+      "variants": {
+        "progress_card": {
+          "primary_metric": "completion_percentage",
+          "visual_element": "circular_progress_ring",
+          "secondary_metrics": ["users_active", "time_remaining"],
+          "min_height": "200px",
+          "touch_target": "entire_card_clickable"
+        },
+        "trend_card": {
+          "primary_metric": "performance_trend",
+          "visual_element": "sparkline_chart", 
+          "secondary_metrics": ["trend_direction", "change_percentage"],
+          "min_height": "180px",
+          "interaction": "hover_for_detailed_tooltip"
+        },
+        "alert_card": {
+          "primary_metric": "alert_count",
+          "visual_element": "status_indicator",
+          "secondary_metrics": ["priority_level", "last_updated"],
+          "min_height": "160px",
+          "urgency_styling": "color_coded_borders"
+        }
+      },
+      
+      "mobile_optimizations": {
+        "touch_targets": "56px minimum height for all interactive elements",
+        "text_sizing": "16px minimum body text, 20px minimum headings",
+        "spacing": "16px padding, 8px margins aligned to grid",
+        "loading_states": "skeleton_screens_for_perceived_performance"
+      },
+      
+      "data_visualization": {
+        "chart_accessibility": {
+          "alt_text": "Descriptive text for screen readers",
+          "aria_label": "Detailed chart description",
+          "keyboard_navigation": "Tab through data points",
+          "color_independence": "Patterns + colors for differentiation"
+        },
+        "performance_specs": {
+          "render_time": "<100ms for simple charts",
+          "animation_duration": "300ms with easing",
+          "reduced_motion": "Respect prefers-reduced-motion setting"
+        }
+      }
+    },
+    
+    "navigation_components": {
+      "primary_navigation": {
+        "component_name": "PrimaryNavigation",
+        "chakra_base": "Tabs, TabList, Tab",
+        "structure": [
+          {
+            "label": "Dashboard",
+            "icon": "dashboard",
+            "route": "/admin/dashboard"
+          },
+          {
+            "label": "Users", 
+            "icon": "users",
+            "route": "/admin/users"
+          },
+          {
+            "label": "Content",
+            "icon": "book",
+            "route": "/admin/content"
+          },
+          {
+            "label": "Reports",
+            "icon": "chart-bar",
+            "route": "/admin/reports"
+          },
+          {
+            "label": "Settings",
+            "icon": "settings",
+            "route": "/admin/settings"
+          }
+        ],
+        "mobile_behavior": "horizontal_scroll_tabs",
+        "active_state": "border_bottom_indicator",
+        "accessibility": "aria_current_page"
+      },
+      
+      "organization_selector": {
+        "component_name": "OrganizationSelector",
+        "chakra_base": "Select, Menu",
+        "functionality": "multi_tenant_switching",
+        "display_format": "organization_name + logo",
+        "search_functionality": "filter_organizations_by_name",
+        "permissions": "only_show_accessible_organizations",
+        "mobile_optimization": "large_dropdown_targets"
+      }
+    },
+    
+    "data_tables": {
+      "component_name": "EnterpriseDataTable", 
+      "description": "Complex data tables for user management and reporting",
+      "chakra_base": "Table, Thead, Tbody, Tr, Td, Th",
+      
+      "features": {
+        "sorting": "multi_column_sorting_with_indicators",
+        "filtering": "column_filters_with_search",
+        "pagination": "server_side_pagination",
+        "bulk_actions": "multi_select_with_action_bar",
+        "export": "csv_pdf_export_functionality"
+      },
+      
+      "responsive_strategy": {
+        "mobile": "card_layout_transformation", 
+        "tablet": "horizontal_scroll_with_sticky_columns",
+        "desktop": "full_table_display"
+      },
+      
+      "accessibility_compliance": {
+        "table_headers": "proper_th_scope_attributes",
+        "row_selection": "aria_selected_state",
+        "sort_indicators": "aria_sort_attributes", 
+        "live_regions": "announce_data_changes",
+        "keyboard_navigation": "full_keyboard_table_navigation"
+      },
+      
+      "performance_optimization": {
+        "virtual_scrolling": "for_large_datasets_1000plus_rows",
+        "lazy_loading": "load_data_on_demand",
+        "debounced_search": "300ms_delay_for_search_requests",
+        "caching": "client_side_caching_for_static_data"
+      }
+    },
+    
+    "bulk_operations": {
+      "component_name": "BulkActionBar",
+      "description": "Interface for performing actions on multiple selected items",
+      "chakra_base": "HStack, Button, ButtonGroup, Badge",
+      
+      "interaction_pattern": {
+        "selection_indicator": "selected_count_badge",
+        "action_buttons": [
+          {
+            "action": "assign_training",
+            "label": "Assign Training",
+            "icon": "plus",
+            "confirmation": "modal_with_details"
+          },
+          {
+            "action": "send_reminder",
+            "label": "Send Reminder", 
+            "icon": "mail",
+            "confirmation": "simple_confirm_dialog"
+          },
+          {
+            "action": "export_data",
+            "label": "Export Selected",
+            "icon": "download", 
+            "confirmation": "format_selection_modal"
+          },
+          {
+            "action": "bulk_delete",
+            "label": "Delete",
+            "icon": "trash",
+            "confirmation": "destructive_action_confirmation",
+            "style": "danger_variant"
+          }
+        ],
+        "clear_selection": "x_button_to_clear_all"
+      },
+      
+      "anna_svensson_optimization": {
+        "mobile_sticky": "fixed_bottom_position_on_mobile",
+        "touch_friendly": "48px_minimum_button_height",
+        "visual_feedback": "selection_count_prominently_displayed",
+        "error_handling": "clear_error_messages_for_failed_operations"
+      }
+    },
+    
+    "analytics_widgets": {
+      "component_name": "AnalyticsWidget",
+      "description": "Specialized components for data visualization",
+      "chakra_base": "Box, Flex, Text, Progress",
+      
+      "widget_types": {
+        "completion_ring": {
+          "purpose": "show_training_completion_percentage",
+          "visual": "circular_progress_with_center_percentage",
+          "colors": "success_gradient_for_completion",
+          "animation": "smooth_fill_animation_on_load",
+          "accessibility": "aria_valuenow_aria_valuetext"
+        },
+        "trend_line": {
+          "purpose": "display_performance_over_time",
+          "visual": "simple_line_chart_with_data_points", 
+          "colors": "brand_colors_with_trend_indicators",
+          "interaction": "hover_for_specific_data_points",
+          "accessibility": "data_table_alternative_for_screen_readers"
+        },
+        "heat_map": {
+          "purpose": "show_usage_patterns_by_department_time",
+          "visual": "grid_layout_with_color_intensity",
+          "colors": "sequential_color_scale_accessible",
+          "interaction": "click_for_detailed_drill_down",
+          "accessibility": "keyboard_navigation_through_cells"
+        },
+        "real_time_feed": {
+          "purpose": "live_activity_monitoring",
+          "visual": "scrolling_list_with_timestamps",
+          "colors": "activity_type_color_coding",
+          "interaction": "pause_resume_auto_scroll",
+          "accessibility": "live_region_for_new_activities"
+        }
+      },
+      
+      "mobile_considerations": {
+        "simplified_views": "essential_metrics_only_on_small_screens",
+        "touch_interactions": "tap_to_expand_detailed_views",
+        "performance": "lazy_load_complex_visualizations",
+        "offline_support": "cached_data_display_when_offline"
+      }
+    },
+    
+    "form_components": {
+      "component_name": "AdminFormComponents",
+      "description": "Specialized form elements for admin configuration",
+      "chakra_base": "FormControl, FormLabel, Input, Select, Checkbox",
+      
+      "admin_specific_inputs": {
+        "user_role_selector": {
+          "type": "multi_select_dropdown",
+          "options": ["super_admin", "organization_admin", "department_manager", "content_creator"],
+          "validation": "role_hierarchy_enforcement",
+          "accessibility": "clear_option_descriptions"
+        },
+        "department_assignment": {
+          "type": "hierarchical_tree_select",
+          "behavior": "parent_child_department_selection",
+          "bulk_selection": "select_all_children_option",
+          "search": "filter_departments_by_name"
+        },
+        "training_scheduler": {
+          "type": "calendar_date_picker_with_time",
+          "features": "recurring_schedule_options",
+          "validation": "business_hours_enforcement",
+          "timezone": "organization_timezone_aware"
+        },
+        "sso_configuration": {
+          "type": "tabbed_configuration_panel",
+          "protocols": ["saml", "oauth", "ldap"],
+          "validation": "connection_testing_built_in",
+          "security": "credential_masking_in_ui"
+        }
+      }
+    }
+  },
+  
+  "implementation_guidelines": {
+    "chakra_integration": {
+      "theme_extension": "extend_chakra_theme_with_admin_variants",
+      "component_composition": "compose_complex_components_from_chakra_primitives",
+      "custom_hooks": "create_admin_specific_hooks_for_data_fetching",
+      "responsive_props": "leverage_chakra_responsive_prop_system"
+    },
+    
+    "performance_requirements": {
+      "initial_load": "<2_seconds_for_dashboard_with_basic_metrics",
+      "interaction_response": "<200ms_for_ui_interactions",
+      "data_refresh": "<500ms_for_metric_updates",
+      "memory_usage": "<50mb_for_typical_admin_session"
+    },
+    
+    "testing_strategy": {
+      "unit_tests": "test_individual_components_with_jest",
+      "integration_tests": "test_admin_workflows_with_testing_library",
+      "accessibility_tests": "automated_a11y_testing_with_axe",
+      "performance_tests": "lighthouse_performance_budgets",
+      "user_testing": "anna_svensson_persona_validation"
+    }
+  }
+}

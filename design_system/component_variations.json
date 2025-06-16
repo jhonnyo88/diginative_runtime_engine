@@ -1,0 +1,258 @@
+{
+  "component_variations_matrix": {
+    "version": "1.0.0",
+    "created": "2025-01-16",
+    "scaling_strategy": "European expansion with cultural adaptation",
+    
+    "game_types": {
+      "current_implemented": {
+        "DialogueScene": {
+          "complexity_levels": ["simple", "medium", "complex", "custom"],
+          "cultural_variants": ["swedish", "german", "french", "dutch"],
+          "use_cases": ["policy_discussion", "legal_consultation", "team_meeting"],
+          "scalability": "proven"
+        },
+        
+        "QuizScene": {
+          "complexity_levels": ["simple", "medium", "complex", "custom"],
+          "cultural_variants": ["swedish", "german", "french", "dutch"],
+          "use_cases": ["knowledge_check", "certification", "assessment"],
+          "scalability": "proven"
+        },
+        
+        "AssessmentScene": {
+          "complexity_levels": ["simple", "medium", "complex", "custom"],
+          "cultural_variants": ["swedish", "german", "french", "dutch"],
+          "use_cases": ["completion_certificate", "progress_summary", "achievement_display"],
+          "scalability": "proven"
+        },
+        
+        "ResourceScene": {
+          "complexity_levels": ["simple", "medium", "complex"],
+          "cultural_variants": ["swedish", "german", "french", "dutch"],
+          "use_cases": ["document_library", "reference_materials", "downloadable_resources"],
+          "scalability": "in_progress"
+        }
+      },
+      
+      "phase_1_expansion": {
+        "SimulationScene": {
+          "complexity_levels": ["medium", "complex", "custom"],
+          "cultural_variants": ["planned_all"],
+          "use_cases": ["decision_tree", "scenario_planning", "risk_assessment"],
+          "design_requirements": {
+            "branching_logic": "Visual decision trees",
+            "consequence_display": "Clear outcome visualization",
+            "progress_tracking": "Path taken through simulation"
+          },
+          "technical_specs": {
+            "state_management": "Complex decision state tracking",
+            "performance_target": "+3KB bundle increase",
+            "accessibility": "Keyboard navigation for decision trees"
+          }
+        },
+        
+        "TimelineScene": {
+          "complexity_levels": ["simple", "medium", "complex"],
+          "cultural_variants": ["planned_all"],
+          "use_cases": ["chronological_learning", "process_steps", "historical_context"],
+          "design_requirements": {
+            "timeline_visualization": "Interactive timeline component",
+            "event_details": "Expandable event information",
+            "navigation": "Timeline scrubbing and jumping"
+          },
+          "technical_specs": {
+            "scroll_performance": "Smooth timeline navigation",
+            "performance_target": "+2KB bundle increase",
+            "accessibility": "Screen reader timeline announcements"
+          }
+        }
+      },
+      
+      "phase_2_expansion": {
+        "CollaborationScene": {
+          "complexity_levels": ["complex", "custom"],
+          "cultural_variants": ["planned_all"],
+          "use_cases": ["team_exercises", "group_decision", "peer_learning"],
+          "design_requirements": {
+            "multi_user_ui": "Multiple participant visualization",
+            "real_time_updates": "Live collaboration indicators",
+            "consensus_building": "Group agreement mechanisms"
+          },
+          "technical_specs": {
+            "websocket_integration": "Real-time communication",
+            "performance_target": "+5KB bundle increase",
+            "accessibility": "Multi-user screen reader support"
+          }
+        },
+        
+        "CaseStudyScene": {
+          "complexity_levels": ["complex", "custom"],
+          "cultural_variants": ["planned_all"],
+          "use_cases": ["problem_solving", "analysis_exercise", "practical_application"],
+          "design_requirements": {
+            "evidence_presentation": "Document and data visualization",
+            "analysis_tools": "Note-taking and highlighting",
+            "solution_building": "Structured response interface"
+          },
+          "technical_specs": {
+            "rich_text_editing": "Advanced input capabilities",
+            "performance_target": "+4KB bundle increase",
+            "accessibility": "Complex form accessibility"
+          }
+        }
+      },
+      
+      "phase_3_expansion": {
+        "DebateScene": {
+          "complexity_levels": ["complex", "custom"],
+          "cultural_variants": ["planned_all"],
+          "use_cases": ["structured_argumentation", "policy_debate", "critical_thinking"],
+          "design_requirements": {
+            "argument_structure": "Point-counterpoint visualization",
+            "evidence_management": "Source citation and verification",
+            "position_tracking": "Argument strength indicators"
+          },
+          "technical_specs": {
+            "argument_logic": "Structured reasoning validation",
+            "performance_target": "+6KB bundle increase",
+            "accessibility": "Complex argument navigation"
+          }
+        },
+        
+        "WorkshopScene": {
+          "complexity_levels": ["complex", "custom"],
+          "cultural_variants": ["planned_all"],
+          "use_cases": ["hands_on_practice", "skill_building", "interactive_tutorial"],
+          "design_requirements": {
+            "step_by_step": "Guided practice interface",
+            "tool_simulation": "Interactive tool replicas",
+            "progress_validation": "Skill demonstration checks"
+          },
+          "technical_specs": {
+            "interactive_components": "Custom tool simulations",
+            "performance_target": "+7KB bundle increase",
+            "accessibility": "Interactive element descriptions"
+          }
+        }
+      }
+    },
+    
+    "cultural_adaptation_matrix": {
+      "swedish": {
+        "persona": "Anna Svensson - Municipal Administrator",
+        "interaction_style": "consensus_building",
+        "visual_preferences": "clean_professional",
+        "communication_tone": "collaborative_respectful",
+        "design_adaptations": {
+          "colors": "Swedish government blues",
+          "typography": "Clear Sans-serif hierarchy",
+          "spacing": "Generous whitespace",
+          "animations": "Subtle professional"
+        }
+      },
+      
+      "german": {
+        "persona": "Klaus Mueller - Verwaltungsbeamter",
+        "interaction_style": "structured_hierarchical",
+        "visual_preferences": "formal_systematic",
+        "communication_tone": "precise_authoritative",
+        "design_adaptations": {
+          "colors": "Conservative navy and grays",
+          "typography": "Structured information hierarchy",
+          "spacing": "Efficient space usage",
+          "animations": "Minimal, purposeful"
+        }
+      },
+      
+      "french": {
+        "persona": "Marie Dubois - Fonctionnaire",
+        "interaction_style": "elegant_refined",
+        "visual_preferences": "sophisticated_polished",
+        "communication_tone": "diplomatic_nuanced",
+        "design_adaptations": {
+          "colors": "Refined blues and creams",
+          "typography": "Elegant serif options",
+          "spacing": "Balanced composition",
+          "animations": "Smooth, sophisticated"
+        }
+      },
+      
+      "dutch": {
+        "persona": "Pieter Van Der Berg - Ambtenaar",
+        "interaction_style": "direct_efficient",
+        "visual_preferences": "practical_straightforward",
+        "communication_tone": "honest_pragmatic",
+        "design_adaptations": {
+          "colors": "Orange accents acceptable",
+          "typography": "Clear, no-nonsense",
+          "spacing": "Efficient information density",
+          "animations": "Quick, functional"
+        }
+      }
+    },
+    
+    "complexity_level_specifications": {
+      "simple": {
+        "description": "Basic functionality with minimal customization",
+        "development_time": "1-2 days",
+        "maintenance_burden": "low",
+        "use_cases": ["quick_assessments", "simple_information_delivery"]
+      },
+      
+      "medium": {
+        "description": "Enhanced features with moderate customization",
+        "development_time": "3-5 days", 
+        "maintenance_burden": "medium",
+        "use_cases": ["interactive_learning", "assessment_with_feedback"]
+      },
+      
+      "complex": {
+        "description": "Advanced features with significant customization",
+        "development_time": "1-2 weeks",
+        "maintenance_burden": "medium-high",
+        "use_cases": ["comprehensive_training", "certification_programs"]
+      },
+      
+      "custom": {
+        "description": "Fully customized components for specific needs",
+        "development_time": "2-4 weeks",
+        "maintenance_burden": "high",
+        "use_cases": ["specialized_workflows", "unique_client_requirements"]
+      }
+    },
+    
+    "scaling_priorities": {
+      "immediate": ["SimulationScene", "TimelineScene"],
+      "european_launch": ["CollaborationScene", "CaseStudyScene"],
+      "advanced": ["DebateScene", "WorkshopScene"]
+    },
+    
+    "performance_scaling_matrix": {
+      "current_4_scenes": {
+        "bundle_size": "15KB gzipped",
+        "memory_usage": "50MB",
+        "load_time": "<2 seconds"
+      },
+      
+      "expanded_6_scenes": {
+        "bundle_size": "25KB gzipped",
+        "memory_usage": "65MB", 
+        "load_time": "<2.2 seconds"
+      },
+      
+      "full_10_scenes": {
+        "bundle_size": "40KB gzipped",
+        "memory_usage": "80MB",
+        "load_time": "<2.5 seconds"
+      }
+    },
+    
+    "implementation_strategy": {
+      "code_splitting": "Scene-based lazy loading",
+      "cultural_assets": "Language pack separation",
+      "progressive_enhancement": "Core features first, enhancements by device capability",
+      "fallback_strategy": "Graceful degradation for older devices"
+    }
+  }
+}

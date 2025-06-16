@@ -1,0 +1,247 @@
+{
+  "template_metadata": {
+    "templateId": "workplace-safety-v1",
+    "templateName": "Systematiskt Arbetsmiljöarbete för Kommunala Arbetsplatser",
+    "version": "1.0.0",
+    "created": "2025-01-16",
+    "targetPersona": "Anna Svensson - Kontorsarbetare",
+    "estimatedDuration": "6 minuter",
+    "difficulty": "grundläggande",
+    "language": "sv-SE"
+  },
+  
+  "learning_objectives": [
+    "Förstå vad systematiskt arbetsmiljöarbete (SAM) innebär",
+    "Kunna identifiera risker på den egna arbetsplatsen",
+    "Veta hur man rapporterar arbetsmiljöproblem",
+    "Känna till sina rättigheter och skyldigheter",
+    "Förstå vikten av ergonomi vid kontorsarbete"
+  ],
+  
+  "game_manifest": {
+    "title": "Arbetsmiljö och Säkerhet på Kommunkontoret",
+    "description": "Lär dig skapa en säker och hälsosam arbetsplats",
+    "estimatedDuration": 360,
+    "targetAudience": "municipal_office_workers",
+    
+    "scenes": [
+      {
+        "id": "sam_introduction",
+        "type": "DialogueScene",
+        "title": "Vad är Systematiskt Arbetsmiljöarbete?",
+        "estimatedDuration": 90,
+        
+        "characters": [
+          {
+            "id": "anna",
+            "name": "Anna Andersson",
+            "role": "Kontorsarbetare",
+            "avatar": "/characters/anna-administrator.svg"
+          },
+          {
+            "id": "petra",
+            "name": "Petra Lindqvist",
+            "role": "Skyddsombud",
+            "avatar": "/characters/petra-safety-rep.svg"
+          }
+        ],
+        
+        "dialogue": [
+          {
+            "speaker": "petra",
+            "text": "Hej Anna! Som skyddsombud vill jag prata med dig om systematiskt arbetsmiljöarbete. Vet du vad det innebär?"
+          },
+          {
+            "speaker": "anna",
+            "text": "Jag har hört uttrycket, men förstår inte riktigt vad det betyder i praktiken för mig på kontoret."
+          },
+          {
+            "speaker": "petra",
+            "text": "SAM handlar om att systematiskt förebygga ohälsa och olycksfall. Det betyder att vi aktivt ska leta efter risker innan de blir problem."
+          },
+          {
+            "speaker": "anna",
+            "text": "Men vilka risker finns det egentligen på ett kontor? Vi arbetar ju mest vid datorer."
+          },
+          {
+            "speaker": "petra",
+            "text": "Fler än du tror! Ergonomiska problem, stress, halkrisk, dålig inomhusmiljö. Även små problem kan bli stora om vi inte åtgärdar dem i tid."
+          }
+        ],
+        
+        "choices": [
+          {
+            "text": "Vilka är mina rättigheter som arbetstagare?",
+            "consequence": "scene_worker_rights",
+            "feedback": "Vi går igenom dina rättigheter enligt arbetsmiljölagen."
+          },
+          {
+            "text": "Hur rapporterar jag arbetsmiljöproblem?",
+            "consequence": "scene_reporting_process", 
+            "feedback": "Låt oss titta på rapporteringsprocessen steg för steg."
+          }
+        ]
+      },
+      
+      {
+        "id": "risk_identification_simulation",
+        "type": "SimulationScene",
+        "title": "Identifiera risker på din arbetsplats",
+        "estimatedDuration": 150,
+        
+        "simulation_setup": {
+          "environment": "Kommunkontor med flera arbetsplatser",
+          "task": "Klicka på potentiella risker du upptäcker",
+          "scoring": "Poäng för varje korrekt identifierad risk"
+        },
+        
+        "interactive_elements": [
+          {
+            "element": "datorskärm_för_låg",
+            "risk_type": "ergonomi",
+            "description": "Skärmen är placerad för lågt, vilket kan orsaka nackproblem",
+            "severity": "medium",
+            "action": "Justera skärmhöjd så ögonen är i nivå med överkanten"
+          },
+          {
+            "element": "sladdar_på_golv",
+            "risk_type": "olycksfall",
+            "description": "Lösa sladdar på golvet utgör snubbelrisk",
+            "severity": "high",
+            "action": "Använd sladdhantering eller fäst sladdar längs vägg"
+          },
+          {
+            "element": "dålig_belysning",
+            "risk_type": "ergonomi",
+            "description": "Otillräcklig belysning kan orsaka ögontrötthet och huvudvärk",
+            "severity": "medium",
+            "action": "Komplettera med skrivbordslampa eller justera befintlig belysning"
+          },
+          {
+            "element": "överfulla_bokhyllor",
+            "risk_type": "olycksfall",
+            "description": "Överlastade hyllor kan falla ner och orsaka skador",
+            "severity": "high",
+            "action": "Minska belastning och kontrollera fästen"
+          },
+          {
+            "element": "ingen_handstöd",
+            "risk_type": "ergonomi",
+            "description": "Saknar handledsstöd vid tangentbord och mus",
+            "severity": "medium",
+            "action": "Installera ergonomiskt handledsstöd"
+          }
+        ],
+        
+        "feedback_system": {
+          "immediate": "Popup med förklaring när risk identifieras",
+          "summary": "Översikt av alla funna risker och föreslagna åtgärder",
+          "learning": "Tips för fortsatt riskidentifiering"
+        }
+      },
+      
+      {
+        "id": "ergonomics_quiz",
+        "type": "QuizScene",
+        "title": "Ergonomi och Kontorsarbete",
+        "estimatedDuration": 90,
+        
+        "questions": [
+          {
+            "id": "q1",
+            "questionText": "Hur ska din datorskärm vara placerad för bästa ergonomi?",
+            "type": "multiple_choice",
+            "options": [
+              "Överkanten i ögonhöjd, armslängds avstånd",
+              "Nederkanten i ögonhöjd, nära ansiktet",
+              "Så högt som möjligt för bättre överblick",
+              "Spelar ingen roll så länge du ser bra"
+            ],
+            "correctAnswer": 0,
+            "explanation": "Skärmens överkant ska vara i ögonhöjd och på armslängds avstånd för att undvika belastning på nacke och ögon.",
+            "points": 10
+          },
+          {
+            "id": "q2",
+            "questionText": "Hur ofta bör du ta paus från datorarbete?",
+            "type": "multiple_choice",
+            "options": [
+              "En gång per dag",
+              "Varannan timme",
+              "Var 50:e minut med 10 minuters paus",
+              "Bara när du känner dig trött"
+            ],
+            "correctAnswer": 2,
+            "explanation": "Arbetsgivarverket rekommenderar paus var 50:e minut vid intensivt skärmarbete för att förebygga belastningsskador.",
+            "points": 10
+          },
+          {
+            "id": "q3",
+            "questionText": "Vad ska du göra om du får ont i nacken av datorarbetet?",
+            "type": "multiple_choice",
+            "options": [
+              "Ignorera det, det går över av sig själv",
+              "Rapportera till chef och be om ergonomisk bedömning",
+              "Bara ta smärtstillande medicin",
+              "Byta arbetsplats med en kollega"
+            ],
+            "correctAnswer": 1,
+            "explanation": "Arbetsmiljöproblem ska alltid rapporteras så att orsaken kan åtgärdas, inte bara symptomen.",
+            "points": 10
+          }
+        ]
+      },
+      
+      {
+        "id": "final_assessment",
+        "type": "AssessmentScene",
+        "title": "Arbetsmiljöutbildning Genomförd",
+        "estimatedDuration": 60,
+        
+        "certificate": {
+          "title": "Systematiskt Arbetsmiljöarbete Grundcertifikat",
+          "description": "Bekräftar kunskap om arbetsmiljö och säkerhet på kontorsarbetsplatser",
+          "issuing_authority": "DigiNativa Utbildningsplattform",
+          "valid_for_months": 12
+        },
+        
+        "achievements": [
+          {
+            "id": "risk_detector",
+            "name": "Riskdetektiv",
+            "description": "Identifierar arbetsmiljörisker proaktivt",
+            "icon": "search",
+            "points": 15
+          },
+          {
+            "id": "ergonomics_expert",
+            "name": "Ergonomiexpert",
+            "description": "Förstår principerna för ergonomiskt kontorsarbete",
+            "icon": "user-check",
+            "points": 10
+          },
+          {
+            "id": "safety_advocate",
+            "name": "Säkerhetsambassadör",
+            "description": "Främjar säkerhet och hälsa på arbetsplatsen",
+            "icon": "shield",
+            "points": 5
+          }
+        ],
+        
+        "next_steps": [
+          {
+            "action": "Genomför ergonomisk bedömning av din arbetsplats",
+            "description": "Använd checklistan för att bedöma din egen arbetsstation",
+            "priority": "high"
+          },
+          {
+            "action": "Delta i arbetsplatsträff om arbetsmiljö",
+            "description": "Diskutera arbetsmiljöfrågor med dina kollegor",
+            "priority": "medium"
+          }
+        ]
+      }
+    ]
+  }
+}

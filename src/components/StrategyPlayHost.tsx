@@ -6,11 +6,14 @@ import { SkipLinks, SkipLink } from './common/SkipLink';
 import { useFocusManagement } from '../hooks/useFocusManagement';
 import { usePerformanceTracker } from '../hooks/usePerformanceTracker';
 import { SceneTransition } from './animations/SceneTransition';
-import { ProgressCelebration } from './animations/CelebrationEffects';
+// TASK-HD-014: Replaced intrusive celebrations with municipal achievement system
+import { MunicipalToastNotification } from './notifications/MunicipalToastNotification';
+import { MunicipalProgressIndicator, DefaultGDPRMilestones, getLocalizedMilestones } from './progress/MunicipalProgressIndicator';
+import { useAnnaSvenssonAchievements } from '../hooks/useMunicipalAchievements';
 import { ChakraThemeProvider } from '../theme/ChakraThemeProvider';
 import { detectAndAdaptCultural, type CulturalContext } from '../middleware/CulturalAdaptation';
-import { DialogueScene } from './scenes/DialogueScene';
-import { QuizScene } from './scenes/QuizScene';
+import { DialogueScene } from './DialogueScene/DialogueScene';
+import { QuizScene } from './QuizScene/QuizScene';
 import { AssessmentScene } from './scenes/AssessmentScene';
 import { ResourceScene } from './scenes/ResourceScene';
 import { SummaryScene } from './scenes/SummaryScene';
@@ -25,6 +28,12 @@ export interface GameResults {
   timeSpent: number; // milliseconds
   scenesCompleted: string[];
   answers?: Record<string, any>;
+  // TASK-HD-014: Municipal achievement system results
+  municipalAchievements?: {
+    earned: any[];
+    competencies: string[];
+    report: any;
+  };
 }
 
 interface StrategyPlayHostProps {
@@ -35,6 +44,7 @@ interface StrategyPlayHostProps {
     trackEvent: (eventType: string, data: any) => void;
   };
   culturalContext?: CulturalContext;
+  playerName?: string;
 }
 
 export const StrategyPlayHost: React.FC<StrategyPlayHostProps> = ({
@@ -43,13 +53,14 @@ export const StrategyPlayHost: React.FC<StrategyPlayHostProps> = ({
   onSceneChange,
   analytics,
   culturalContext = 'swedish_mobile',
+  playerName,
 }) => {
   // Expert recommendation: Cultural adaptation of game manifest
   const adaptedGameManifest = useMemo(() => {
     return detectAndAdaptCultural(gameManifest, culturalContext);
   }, [gameManifest, culturalContext]);
 
-  const [currentSceneId, setCurrentSceneId] = useState(adaptedGameManifest.startScene);
+  const [currentSceneId, setCurrentSceneId] = useState(adaptedGameManifest.scenes[0]?.id || 'intro-dialogue');
   
   // Performance tracking for municipal optimization
   const { trackGameInteraction, trackSessionProgress } = usePerformanceTracker({
@@ -70,8 +81,17 @@ export const StrategyPlayHost: React.FC<StrategyPlayHostProps> = ({
     score: 0,
     totalScore: 0,
     answers: {} as Record<string, any>,
+    correctAnswers: 0,
+    totalQuestions: 0,
   });
   const [error, setError] = useState<string | null>(null);
+
+  // TASK-HD-014: Municipal Achievement System Integration
+  const municipalAchievements = useAnnaSvenssonAchievements({
+    name: playerName || 'Anna Svensson',
+    department: 'IT-avdelningen',
+    role: 'Kommunal specialist'
+  });
 
   // Initialize game session analytics
   useEffect(() => {
@@ -123,6 +143,8 @@ export const StrategyPlayHost: React.FC<StrategyPlayHostProps> = ({
         scenesCompleted: [...prev.scenesCompleted, currentSceneId],
         score: prev.score + (results.score || 0),
         totalScore: prev.totalScore + (results.maxScore || 0),
+        correctAnswers: prev.correctAnswers + (results.isCorrect ? 1 : 0),
+        totalQuestions: prev.totalQuestions + 1,
         answers: {
           ...prev.answers,
           [currentSceneId]: results.answers,
@@ -132,6 +154,18 @@ export const StrategyPlayHost: React.FC<StrategyPlayHostProps> = ({
       // Track session progress for Anna Svensson's 7-minute sessions
       const progressPercent = (newState.scenesCompleted.length / gameManifest.scenes.length) * 100;
       trackSessionProgress(progressPercent);
+      
+      // TASK-HD-014: Evaluate municipal achievements
+      const timeSpent = Date.now() - newState.startTime;
+      municipalAchievements.evaluateAchievements({
+        totalScore: newState.score,
+        maxScore: newState.totalScore,
+        timeSpent,
+        correctAnswers: newState.correctAnswers,
+        totalQuestions: newState.totalQuestions,
+        sectionsCompleted: newState.scenesCompleted.length,
+        totalSections: gameManifest.scenes.length
+      });
       
       return newState;
     });
@@ -151,6 +185,12 @@ export const StrategyPlayHost: React.FC<StrategyPlayHostProps> = ({
         answers: {
           ...gameState.answers,
           [currentSceneId]: results.answers,
+        },
+        // TASK-HD-014: Include municipal achievement data
+        municipalAchievements: {
+          earned: municipalAchievements.earnedAchievements,
+          competencies: municipalAchievements.competencies,
+          report: municipalAchievements.generateReport()
         },
       };
       
@@ -185,9 +225,33 @@ export const StrategyPlayHost: React.FC<StrategyPlayHostProps> = ({
 
     switch (currentScene.type) {
       case 'dialogue':
-        return <DialogueScene scene={currentScene as any} {...baseProps} />;
+        return (
+          <DialogueScene 
+            sceneData={currentScene as any}
+            onComplete={() => handleSceneComplete({})}
+            municipalBranding={{
+              primaryColor: gameManifest.theme?.colors?.primary || '#005AA0',
+              logoUrl: gameManifest.theme?.brand?.logo?.url || '',
+              municipality: gameManifest.theme?.brand?.name || 'Svenska Kommuner'
+            }}
+            culturalContext={'swedish' as const}
+            playerName={playerName}
+          />
+        );
       case 'quiz':
-        return <QuizScene scene={currentScene as any} {...baseProps} />;
+        return (
+          <QuizScene 
+            sceneData={currentScene as any}
+            onComplete={(results) => handleSceneComplete({ score: results.score })}
+            municipalBranding={{
+              primaryColor: gameManifest.theme?.colors?.primary || '#005AA0',
+              logoUrl: gameManifest.theme?.brand?.logo?.url || '',
+              municipality: gameManifest.theme?.brand?.name || 'Svenska Kommuner'
+            }}
+            culturalContext={'swedish' as const}
+            playerName={playerName}
+          />
+        );
       case 'assessment':
         return <AssessmentScene scene={currentScene as any} {...baseProps} />;
       case 'resource':
@@ -229,20 +293,41 @@ export const StrategyPlayHost: React.FC<StrategyPlayHostProps> = ({
       </SkipLinks>
       
       <VStack gap={0} minH="100vh" bg="gray.50">
-        {/* Progress bar */}
+        {/* TASK-HD-014: Municipal Progress Indicator with Achievement Milestones */}
         {gameManifest.settings?.showProgress !== false && (
-          <Progress 
-            value={progress} 
-            w="100%" 
-            h="4px" 
-            colorScheme="brand"
-            bg="gray.200"
-            role="progressbar"
-            aria-label={`Spelframsteg: ${Math.round(progress)}% av spelet slutfört`}
-            aria-valuenow={progress}
-            aria-valuemin={0}
-            aria-valuemax={100}
-          />
+          <Box w="100%" bg="white" py={4} px={6} borderBottom="1px solid" borderBottomColor="gray.200">
+            <MunicipalProgressIndicator
+              progress={{
+                currentStep: gameState.scenesCompleted.length,
+                totalSteps: gameManifest.scenes.length,
+                completedSections: gameState.scenesCompleted,
+                achievementMilestones: getLocalizedMilestones('swedish').map(milestone => ({
+                  ...milestone,
+                  achieved: municipalAchievements.isAchievementEarned(milestone.id)
+                })),
+                competenciesEarned: municipalAchievements.competencies
+              }}
+              visualDesign={{
+                baseColor: '#E2E8F0',
+                progressColor: gameManifest.theme?.colors?.primary || '#0066CC',
+                milestoneColor: '#004C99',
+                textColor: '#333333'
+              }}
+              achievementIntegration={{
+                milestoneMarkers: true,
+                hoverDetails: true,
+                clickableMarkers: false, // Keep simple for Anna's workflow
+                professionalLabels: true
+              }}
+              accessibility={{
+                ariaLabel: 'GDPR-utbildning framsteg med kompetensmål',
+                ariaValueText: `${gameState.scenesCompleted.length} av ${gameManifest.scenes.length} sektioner slutförda, ${municipalAchievements.competencies.length} kompetenser utvecklade`,
+                keyboardNavigation: true
+              }}
+              culturalContext="swedish"
+              municipalEntity={gameManifest.theme?.brand?.name || 'Malmö Stad'}
+            />
+          </Box>
         )}
         
         {/* Main content area - Game Designer spec: Focus management */}
@@ -269,12 +354,35 @@ export const StrategyPlayHost: React.FC<StrategyPlayHostProps> = ({
           </SceneTransition>
         </Box>
         
-        {/* Progress celebration effects - Game Designer spec */}
-        <ProgressCelebration 
-          progress={Math.round(progress)}
-          milestone={25}
-          show={true}
-        />
+        {/* TASK-HD-014: Municipal Achievement Toast Notifications */}
+        {municipalAchievements.currentToast && (
+          <MunicipalToastNotification
+            achievement={municipalAchievements.currentToast}
+            design={{
+              variant: 'municipal-achievement',
+              culturalContext: 'swedish',
+              municipalEntity: 'malmö',
+              professionalLevel: 'intermediate'
+            }}
+            accessibility={{
+              dismissible: true,
+              autoTimeout: 4000,
+              reducedMotion: window.matchMedia('(prefers-reduced-motion: reduce)').matches,
+              screenReaderFriendly: true
+            }}
+            integration={{
+              onDismiss: municipalAchievements.dismissCurrentToast,
+              analytics: (event, data) => {
+                analytics?.trackEvent(event, {
+                  ...data,
+                  gameId: gameManifest.gameId,
+                  sceneId: currentSceneId,
+                  playerName
+                });
+              }
+            }}
+          />
+        )}
       </VStack>
       </GameErrorBoundary>
     </ChakraThemeProvider>

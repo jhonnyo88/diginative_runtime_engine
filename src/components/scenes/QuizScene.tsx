@@ -14,7 +14,7 @@ import {
 } from '@chakra-ui/react';
 import type { QuizScene as QuizSceneType } from '../../types/game-manifest';
 import { CheckIcon, CloseIcon } from '../icons/GameIcons';
-import { CelebrationEffects, ButtonFeedback } from '../animations/CelebrationEffects';
+import { ButtonFeedback } from '../animations/CelebrationEffects';
 import { useAnimations } from '../../hooks/useAnimations';
 
 interface QuizSceneProps {
@@ -34,7 +34,7 @@ export const QuizScene: React.FC<QuizSceneProps> = ({
   const [showFeedback, setShowFeedback] = useState(false);
   const [attempts, setAttempts] = useState(0);
   const [isSubmitted, setIsSubmitted] = useState(false);
-  const [showCelebration, setShowCelebration] = useState(false);
+  // TASK-HD-014: Removed showCelebration state - no more popup celebrations
   
   // Game Designer spec: Animation support handled by CSS
 
@@ -99,10 +99,8 @@ export const QuizScene: React.FC<QuizSceneProps> = ({
     if (scene.showFeedback !== false) {
       setShowFeedback(true);
       
-      // Show celebration for correct answers
-      if (isCorrect) {
-        setShowCelebration(true);
-      }
+      // TASK-HD-014: Removed intrusive celebration popup
+      // Achievement System Redesign: No interruptions during quiz workflow
       
       // Auto-advance after feedback delay
       setTimeout(() => {
@@ -370,15 +368,7 @@ export const QuizScene: React.FC<QuizSceneProps> = ({
         </Text>
       )}
       
-      {/* Celebration Effects - Game Designer spec */}
-      {showCelebration && (
-        <CelebrationEffects
-          type="success"
-          message="Rätt svar! 🎉"
-          duration={2000}
-          onComplete={() => setShowCelebration(false)}
-        />
-      )}
+      {/* TASK-HD-014: Celebration effects removed for municipal professional context */}
     </Box>
   );
 };

@@ -1,0 +1,250 @@
+{
+  "gameId": "sverige-digitaliseringsstrategi-2025-2030",
+  "metadata": {
+    "title": "Sveriges Digitaliseringsstrategi 2025-2030",
+    "subtitle": "Interaktiv utbildning för kommunala administratörer",
+    "description": "Lär dig om Sveriges nya digitaliseringsstrategi och hur den påverkar din kommun",
+    "duration": "7 minutes",
+    "difficulty": "intermediate",
+    "tags": ["digitalisering", "strategi", "kommun", "2025-2030"],
+    "learningObjectives": [
+      "Förstå de fem strategiska områdena",
+      "Identifiera påverkan på kommunal verksamhet",
+      "Planera implementering i din organisation",
+      "Känna till AI och säkerhetsaspekter"
+    ],
+    "targetAudience": "Municipal administrators",
+    "language": "sv",
+    "version": "1.0.0"
+  },
+  "theme": {
+    "brand": {
+      "name": "Malmö Stad",
+      "logo": {
+        "url": "https://malmo.se/images/malmo-logo.svg",
+        "alt": "Malmö Stad logotyp",
+        "placement": "header",
+        "maxHeight": "48px"
+      }
+    },
+    "colors": {
+      "primary": "#005AA0",
+      "primaryLight": "#E6F3FF",
+      "secondary": "#2D3748",
+      "success": "#38A169",
+      "background": "#FFFFFF",
+      "text": "#1A202C"
+    }
+  },
+  "scenes": [
+    {
+      "id": "intro-dialogue",
+      "type": "dialogue",
+      "title": "Välkommen till Digitaliseringsstrategin",
+      "description": "En introduktion till Sveriges nya digitala framtid",
+      "navigation": {
+        "next": "strategy-quiz"
+      },
+      "scene_id": "intro-dialogue",
+      "scene_type": "DialogueScene",
+      "characters": [
+        {
+          "character_id": "erik-slottner",
+          "name": "Erik Slottner",
+          "role": "Civilminister",
+          "personality": "Visionär och praktisk",
+          "background": "Ansvarig för digitaliseringspolitiken",
+          "speaking_style": "Professionell men tillgänglig",
+          "cultural_background": "Svensk regeringsrepresentant",
+          "avatar_description": "Professionell man i kostym med vänligt leende",
+          "visual_style": "Auktoritativ men tillgänglig"
+        },
+        {
+          "character_id": "player",
+          "name": "{{PLAYER_NAME}}",
+          "role": "Kommunadministratör",
+          "personality": "Nyfiken och praktisk",
+          "background": "Arbetar i svensk kommun",
+          "speaking_style": "Direkt och målinriktad",
+          "cultural_background": "Svensk kommun",
+          "avatar_description": "Professionell person med vänligt utseende",
+          "visual_style": "Professionell och approachable"
+        }
+      ],
+      "dialogue_turns": [
+        {
+          "speaker": "Erik Slottner",
+          "character_id": "erik-slottner",
+          "text": "Hej {{PLAYER_NAME}}! Jag är Erik Slottner, civilminister. Idag ska vi utforska Sveriges nya digitaliseringsstrategi för 2025-2030.",
+          "emotion": "confident",
+          "timing": 3000
+        },
+        {
+          "speaker": "{{PLAYER_NAME}}",
+          "character_id": "player",
+          "text": "Hej Erik! Som kommunadministratör är jag mycket intresserad. Vad betyder denna strategi för oss i kommunerna?",
+          "emotion": "questioning",
+          "timing": 3000
+        },
+        {
+          "speaker": "Erik Slottner",
+          "character_id": "erik-slottner",
+          "text": "Strategin fokuserar på fem områden: digital kompetens, näringsliv, offentlig förvaltning, välfärd och konnektivitet. AI och säkerhet genomsyrar allt.",
+          "emotion": "confident",
+          "timing": 4000
+        },
+        {
+          "speaker": "{{PLAYER_NAME}}",
+          "character_id": "player",
+          "text": "Det låter omfattande! Hur ska vi i kommunerna prioritera? Vi har begränsade resurser och många digitala utmaningar redan idag.",
+          "emotion": "concerned",
+          "timing": 3500
+        },
+        {
+          "speaker": "Erik Slottner",
+          "character_id": "erik-slottner",
+          "text": "Strategin syftar till att förenkla vardagen för medborgare. Vi planerar en medborgarapp som samlar alla myndighetskontakter på ett ställe.",
+          "emotion": "confident",
+          "timing": 4000
+        },
+        {
+          "speaker": "{{PLAYER_NAME}}",
+          "character_id": "player",
+          "text": "En medborgarapp låter bra! Men vad innebär det praktiskt för våra befintliga system och medarbetares kompetensutveckling?",
+          "emotion": "questioning",
+          "timing": 3500
+        }
+      ],
+      "scene_settings": {
+        "auto_progress": false,
+        "allow_replay": true
+      }
+    },
+    {
+      "id": "strategy-quiz",
+      "type": "quiz",
+      "title": "Testa din förståelse",
+      "description": "Hur väl förstår du digitaliseringsstrategin?",
+      "navigation": {
+        "next": "end"
+      },
+      "scene_id": "strategy-quiz",
+      "scene_type": "QuizScene",
+      "quiz_settings": {
+        "question_count": 3,
+        "randomize_questions": false,
+        "randomize_options": true,
+        "allow_retries": true,
+        "show_correct_answers": true,
+        "time_limit": 300
+      },
+      "questions": [
+        {
+          "question_id": "q1-strategic-areas",
+          "question_text": "Vilka är de fem strategiska områdena i digitaliseringsstrategin 2025-2030?",
+          "question_type": "multiple_choice",
+          "options": [
+            {
+              "option_id": "q1-a",
+              "option_text": "Digital kompetens, näringsliv, offentlig förvaltning, välfärd, konnektivitet",
+              "is_correct": true,
+              "feedback_text": "Rätt! Dessa fem områden utgör kärnan i strategin.",
+              "partial_credit": 1.0
+            },
+            {
+              "option_id": "q1-b", 
+              "option_text": "AI, blockchain, molntjänster, cybersäkerhet, automatisering",
+              "is_correct": false,
+              "feedback_text": "Inte rätt. AI och säkerhet är horisontella områden, inte de fem huvudområdena.",
+              "partial_credit": 0.0
+            },
+            {
+              "option_id": "q1-c",
+              "option_text": "Innovation, utbildning, infrastruktur, ekonomi, miljö",
+              "is_correct": false,
+              "feedback_text": "Inte rätt. Dessa är allmänna samhällsområden, inte de specifika områdena i strategin.",
+              "partial_credit": 0.0
+            }
+          ],
+          "explanation": "Digitaliseringsstrategin bygger på fem strategiska områden där AI och säkerhet genomsyrar allt.",
+          "learning_objective": "Identifiera de fem strategiska områdena",
+          "difficulty": "medium",
+          "points": 10
+        },
+        {
+          "question_id": "q2-citizen-benefit",
+          "question_text": "Vad är huvudfokus för digitaliseringsstrategin enligt Erik Slottner?",
+          "question_type": "multiple_choice",
+          "options": [
+            {
+              "option_id": "q2-a",
+              "option_text": "Att förenkla för människor i vardagen",
+              "is_correct": true,
+              "feedback_text": "Korrekt! Medborgarnytta och förenkling i vardagen är centralt.",
+              "partial_credit": 1.0
+            },
+            {
+              "option_id": "q2-b",
+              "option_text": "Att öka regeringens kontroll över digitala system",
+              "is_correct": false,
+              "feedback_text": "Nej, fokus ligger på att hjälpa medborgare, inte öka kontroll.",
+              "partial_credit": 0.0
+            },
+            {
+              "option_id": "q2-c",
+              "option_text": "Att minska kostnaderna för offentlig sektor",
+              "is_correct": false,
+              "feedback_text": "Kostnadsbesparingar kan komma, men huvudfokus är medborgarnytta.",
+              "partial_credit": 0.0
+            }
+          ],
+          "explanation": "Strategin sätter medborgaren i centrum - vad som är bäst för den som använder digitala tjänster.",
+          "learning_objective": "Förstå medborgarfokus i strategin",
+          "difficulty": "easy",
+          "points": 5
+        },
+        {
+          "question_id": "q3-municipal-impact", 
+          "question_text": "Vilken konkret åtgärd nämns för att förbättra myndighetskontakter?",
+          "question_type": "multiple_choice",
+          "options": [
+            {
+              "option_id": "q3-a",
+              "option_text": "En medborgarapp som samlar alla myndighetskontakter",
+              "is_correct": true,
+              "feedback_text": "Rätt! Medborgarappen ska förenkla kontakten med myndigheter.",
+              "partial_credit": 1.0
+            },
+            {
+              "option_id": "q3-b",
+              "option_text": "Nya fysiska servicekontor i alla kommuner",
+              "is_correct": false,
+              "feedback_text": "Nej, strategin fokuserar på digitala lösningar, inte fysiska kontor.",
+              "partial_credit": 0.0
+            },
+            {
+              "option_id": "q3-c",
+              "option_text": "Obligatorisk digital identifiering för alla medborgare",
+              "is_correct": false,
+              "feedback_text": "Detta nämns inte som en specifik åtgärd i strategin.",
+              "partial_credit": 0.0
+            }
+          ],
+          "explanation": "Medborgarappen är en konkret åtgärd för att samla myndighetskontakter och förenkla vardagen.",
+          "learning_objective": "Identifiera konkreta åtgärder",
+          "difficulty": "medium",
+          "points": 10
+        }
+      ],
+      "scoring": {
+        "passing_score": 70,
+        "max_attempts": 3,
+        "penalty_per_retry": 5
+      }
+    }
+  ],
+  "analytics": {
+    "enabled": true,
+    "trackingId": "demo-digitaliseringsstrategi-2025"
+  }
+}

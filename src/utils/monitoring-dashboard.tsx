@@ -284,12 +284,14 @@ export function useMonitoringDashboard(autoShow = false) {
   const [showDashboard, setShowDashboard] = useState(autoShow);
 
   useEffect(() => {
-    // Show dashboard in development or when enabled
-    const isDev = import.meta.env.DEV;
+    // Only show dashboard if explicitly enabled in localStorage
     const isEnabled = localStorage.getItem('diginativa_monitoring_enabled') === 'true';
     
-    if (isDev || isEnabled) {
+    if (isEnabled) {
       setShowDashboard(true);
+    } else {
+      // Respect the autoShow parameter if not explicitly enabled
+      setShowDashboard(autoShow);
     }
 
     // Keyboard shortcut to toggle (Ctrl+Shift+M)

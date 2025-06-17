@@ -4,6 +4,7 @@ import './index.css'
 import App from './App.tsx'
 import { ErrorBoundary } from './components/ErrorBoundary'
 import { AuthProvider } from './contexts/AuthContext'
+import { ChakraThemeProvider } from './theme/ChakraThemeProvider'
 import { errorMonitoring } from './services/error-monitoring'
 import { performanceAnalytics } from './services/performance-analytics'
 
@@ -13,9 +14,11 @@ console.info('DigiNativa Runtime Engine - Initializing monitoring services');
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
     <ErrorBoundary>
-      <AuthProvider mockMode={import.meta.env.DEV}>
-        <App />
-      </AuthProvider>
+      <ChakraThemeProvider>
+        <AuthProvider mockMode={import.meta.env.DEV}>
+          <App />
+        </AuthProvider>
+      </ChakraThemeProvider>
     </ErrorBoundary>
   </StrictMode>,
 )

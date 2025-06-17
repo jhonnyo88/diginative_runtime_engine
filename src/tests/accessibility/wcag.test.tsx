@@ -5,6 +5,8 @@ import { axe, toHaveNoViolations } from 'jest-axe';
 import { StrategyPlayHost } from '../../components/StrategyPlayHost';
 import { DialogueScene } from '../../components/scenes/DialogueScene';
 import { QuizScene } from '../../components/scenes/QuizScene';
+import { DialogueScene as NewDialogueScene } from '../../components/DialogueScene/DialogueScene';
+import { QuizScene as NewQuizScene } from '../../components/QuizScene/QuizScene';
 import { AdminDashboard } from '../../components/admin/AdminDashboard';
 import { ChakraThemeProvider } from '../../theme/ChakraThemeProvider';
 import type { GameManifest, DialogueScene as DialogueSceneType, QuizScene as QuizSceneType } from '../../types/game-manifest';
@@ -808,6 +810,363 @@ describe('WCAG 2.1 AA Compliance Tests', () => {
         // Radio group should provide context
         const radioGroup = radio.closest('[role="radiogroup"]');
         expect(radioGroup).toHaveAttribute('aria-labelledby');
+      });
+    });
+  });
+
+  describe('New Core Components WCAG Compliance', () => {
+    // Test data for new components matching DevTeam JSON schema
+    const newDialogueData = {
+      scene_id: 'new-dialogue-wcag-test',
+      scene_type: 'DialogueScene' as const,
+      title: 'New WCAG Dialogue Test',
+      description: 'Testing new dialogue component accessibility',
+      characters: [
+        {
+          character_id: 'anna',
+          name: 'Anna Svensson',
+          role: 'WCAG Specialist',
+          avatar_description: 'Professional accessibility expert'
+        }
+      ],
+      dialogue_turns: [
+        {
+          speaker: 'Anna Svensson',
+          character_id: 'anna',
+          text: 'Welcome to our WCAG 2.1 AA compliant training.',
+          emotion: 'confident' as const,
+          timing: 0
+        }
+      ],
+      learning_objectives: ['Understand WCAG compliance'],
+      scene_duration: 300
+    };
+
+    const newQuizData = {
+      scene_id: 'new-quiz-wcag-test',
+      scene_type: 'QuizScene' as const,
+      title: 'New WCAG Quiz Test',
+      description: 'Testing new quiz component accessibility',
+      questions: [
+        {
+          question_id: 'wcag-q1',
+          question_type: 'multiple_choice' as const,
+          question_text: 'Which WCAG principle ensures content is accessible via keyboard?',
+          options: [
+            {
+              option_id: 'operable',
+              text: 'Operable',
+              is_correct: true
+            },
+            {
+              option_id: 'perceivable',
+              text: 'Perceivable',
+              is_correct: false
+            }
+          ],
+          explanation: 'Operable means interface components must be operable via keyboard.',
+          learning_objective: 'Understand WCAG principles',
+          points: 10
+        }
+      ],
+      passing_score: 70,
+      scene_duration: 180,
+      feedback_immediate: true
+    };
+
+    const testMunicipalBranding = {
+      primaryColor: '#1e40af',
+      logoUrl: 'https://example.se/accessibility-logo.svg',
+      municipality: 'WCAG Test Municipality'
+    };
+
+    describe('New DialogueScene WCAG Compliance', () => {
+      it('has no accessibility violations', async () => {
+        const { container } = render(
+          <TestWrapper>
+            <NewDialogueScene
+              sceneData={newDialogueData}
+              onComplete={() => {}}
+              culturalContext="swedish"
+            />
+          </TestWrapper>
+        );
+
+        const results = await axe(container);
+        expect(results).toHaveNoViolations();
+      });
+
+      it('meets Government accessibility standards across all cultural contexts', async () => {
+        const contexts: Array<'swedish' | 'german' | 'french' | 'dutch'> = 
+          ['swedish', 'german', 'french', 'dutch'];
+
+        for (const context of contexts) {
+          const { container } = render(
+            <TestWrapper>
+              <NewDialogueScene
+                sceneData={newDialogueData}
+                onComplete={() => {}}
+                culturalContext={context}
+                municipalBranding={testMunicipalBranding}
+              />
+            </TestWrapper>
+          );
+
+          const results = await axe(container, {
+            rules: {
+              'color-contrast': { enabled: true },
+              'focusable-content': { enabled: true },
+              'aria-valid-attr-value': { enabled: true },
+              'label': { enabled: true }
+            }
+          });
+          expect(results).toHaveNoViolations();
+        }
+      });
+
+      it('provides proper Anna Svensson mobile accessibility', async () => {
+        const { container } = render(
+          <TestWrapper>
+            <NewDialogueScene
+              sceneData={newDialogueData}
+              onComplete={() => {}}
+              culturalContext="swedish"
+            />
+          </TestWrapper>
+        );
+
+        // Test mobile-specific accessibility
+        const results = await axe(container, {
+          rules: {
+            'target-size': { enabled: true }, // 48px minimum touch targets
+            'color-contrast': { enabled: true }
+          }
+        });
+        expect(results).toHaveNoViolations();
+      });
+
+      it('supports municipal branding without accessibility violations', async () => {
+        const { container } = render(
+          <TestWrapper>
+            <NewDialogueScene
+              sceneData={newDialogueData}
+              onComplete={() => {}}
+              municipalBranding={testMunicipalBranding}
+              culturalContext="swedish"
+            />
+          </TestWrapper>
+        );
+
+        const results = await axe(container);
+        expect(results).toHaveNoViolations();
+
+        // Verify municipal logo has proper alt text
+        const logo = screen.getByAltText(/WCAG Test Municipality logotyp/);
+        expect(logo).toBeInTheDocument();
+      });
+    });
+
+    describe('New QuizScene WCAG Compliance', () => {
+      it('has no accessibility violations', async () => {
+        const { container } = render(
+          <TestWrapper>
+            <NewQuizScene
+              sceneData={newQuizData}
+              onComplete={() => {}}
+              culturalContext="swedish"
+            />
+          </TestWrapper>
+        );
+
+        const results = await axe(container);
+        expect(results).toHaveNoViolations();
+      });
+
+      it('supports keyboard shortcuts (1-9) without accessibility issues', async () => {
+        const { container } = render(
+          <TestWrapper>
+            <NewQuizScene
+              sceneData={newQuizData}
+              onComplete={() => {}}
+              culturalContext="swedish"
+            />
+          </TestWrapper>
+        );
+
+        const results = await axe(container, {
+          rules: {
+            'focusable-content': { enabled: true },
+            'focus-order-semantics': { enabled: true }
+          }
+        });
+        expect(results).toHaveNoViolations();
+
+        // Verify keyboard shortcuts are accessible
+        expect(screen.getByText(/Tryck 1-2 för att välja/)).toBeInTheDocument();
+      });
+
+      it('handles different question types accessibly', async () => {
+        const questionTypes = [
+          {
+            ...newQuizData,
+            questions: [{
+              ...newQuizData.questions[0],
+              question_type: 'true_false' as const,
+              options: [
+                { option_id: 'true', text: 'Sant', is_correct: true },
+                { option_id: 'false', text: 'Falskt', is_correct: false }
+              ]
+            }]
+          },
+          {
+            ...newQuizData,
+            questions: [{
+              ...newQuizData.questions[0],
+              question_type: 'multiple_select' as const,
+              options: [
+                { option_id: 'opt1', text: 'Option 1', is_correct: true },
+                { option_id: 'opt2', text: 'Option 2', is_correct: true },
+                { option_id: 'opt3', text: 'Option 3', is_correct: false }
+              ]
+            }]
+          }
+        ];
+
+        for (const quizVariant of questionTypes) {
+          const { container } = render(
+            <TestWrapper>
+              <NewQuizScene
+                sceneData={quizVariant}
+                onComplete={() => {}}
+                culturalContext="swedish"
+              />
+            </TestWrapper>
+          );
+
+          const results = await axe(container);
+          expect(results).toHaveNoViolations();
+        }
+      });
+
+      it('provides immediate feedback accessibly', async () => {
+        const { container } = render(
+          <TestWrapper>
+            <NewQuizScene
+              sceneData={newQuizData}
+              onComplete={() => {}}
+              culturalContext="swedish"
+            />
+          </TestWrapper>
+        );
+
+        // Select an answer and submit
+        fireEvent.click(screen.getAllByRole('radio')[0]);
+        fireEvent.click(screen.getByText('Svara'));
+
+        // Check accessibility after feedback appears
+        const results = await axe(container);
+        expect(results).toHaveNoViolations();
+
+        // Verify feedback is announced to screen readers
+        const feedback = screen.getByText(/Rätt svar!/);
+        expect(feedback.closest('[aria-live]')).toBeTruthy();
+      });
+    });
+
+    describe('European Government Standards - New Components', () => {
+      it('meets BITV 2.0 (German) standards for new components', async () => {
+        const { container } = render(
+          <TestWrapper>
+            <NewDialogueScene
+              sceneData={newDialogueData}
+              onComplete={() => {}}
+              culturalContext="german"
+            />
+          </TestWrapper>
+        );
+
+        // BITV 2.0 specific requirements
+        const results = await axe(container, {
+          rules: {
+            'color-contrast': { enabled: true },
+            'focusable-content': { enabled: true },
+            'aria-valid-attr-value': { enabled: true },
+            'aria-required-attr': { enabled: true },
+            'label': { enabled: true }
+          }
+        });
+        expect(results).toHaveNoViolations();
+      });
+
+      it('meets RGAA 4.1 (French) standards for new components', async () => {
+        const { container } = render(
+          <TestWrapper>
+            <NewQuizScene
+              sceneData={newQuizData}
+              onComplete={() => {}}
+              culturalContext="french"
+            />
+          </TestWrapper>
+        );
+
+        // RGAA 4.1 specific requirements  
+        const results = await axe(container, {
+          rules: {
+            'color-contrast': { enabled: true },
+            'focusable-content': { enabled: true },
+            'aria-valid-attr-value': { enabled: true },
+            'label': { enabled: true },
+            'focus-order-semantics': { enabled: true }
+          }
+        });
+        expect(results).toHaveNoViolations();
+      });
+
+      it('meets EN 301 549 (Dutch) standards for new components', async () => {
+        const { container } = render(
+          <TestWrapper>
+            <NewDialogueScene
+              sceneData={newDialogueData}
+              onComplete={() => {}}
+              culturalContext="dutch"
+            />
+          </TestWrapper>
+        );
+
+        // EN 301 549 specific requirements
+        const results = await axe(container, {
+          rules: {
+            'color-contrast': { enabled: true },
+            'focusable-content': { enabled: true },
+            'aria-valid-attr-value': { enabled: true },
+            'focus-order-semantics': { enabled: true }
+          }
+        });
+        expect(results).toHaveNoViolations();
+      });
+
+      it('meets DOS 2018:1937 (Swedish) standards for new components', async () => {
+        const { container } = render(
+          <TestWrapper>
+            <NewQuizScene
+              sceneData={newQuizData}
+              onComplete={() => {}}
+              culturalContext="swedish"
+            />
+          </TestWrapper>
+        );
+
+        // DOS Act specific requirements
+        const results = await axe(container, {
+          rules: {
+            'color-contrast': { enabled: true },
+            'focusable-content': { enabled: true },
+            'aria-valid-attr-value': { enabled: true },
+            'label': { enabled: true },
+            'focus-order-semantics': { enabled: true }
+          }
+        });
+        expect(results).toHaveNoViolations();
       });
     });
   });

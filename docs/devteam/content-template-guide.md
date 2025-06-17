@@ -4,6 +4,8 @@
 
 Återanvändbara innehållsmallar för snabb spelutveckling inom svenska kommuner. Designade för Anna Svensson och hennes kollegor - praktiska, relevanta och enkla att implementera för effektiv kompetensutveckling.
 
+**⚠️ IMPORTANT**: This guide provides content examples and templates. For DevTeam AI-generated content, use the mandatory JSON schema defined in [`devteam-json-schema-specification.md`](devteam-json-schema-specification.md).
+
 ## Template Philosophy
 
 ### 🎯 Anna Svensson-Driven Content Design
@@ -51,23 +53,31 @@
 #### **Metadata Template**
 ```json
 {
-  "templateId": "gdpr-basic-v1",
-  "title": "GDPR Grundutbildning för Kommunala Tjänstemän",
-  "description": "Grundläggande GDPR-kunskap för hantering av personuppgifter i kommunal verksamhet",
-  "targetAudience": "Anna Svensson och kommunala administratörer",
-  "estimatedDuration": "6-7 minuter",
-  "difficulty": "grundläggande",
-  "prerequisites": "Grundläggande datorkunskap",
-  "learningObjectives": [
-    "Förstå GDPR:s grundprinciper",
-    "Kunna hantera personuppgifter korrekt",
-    "Känna till incidenthantering"
-  ],
-  "complianceAreas": ["GDPR", "Kommunallagen", "Offentlighetsprincipen"],
-  "lastUpdated": "2025-01-16",
-  "version": "1.0"
+  "submission_metadata": {
+    "submission_id": "gdpr-basic-2025-001",
+    "customer_order_id": "municipality-pilot-001",
+    "generated_at": "2025-01-17T10:00:00Z",
+    "content_version": "1.0.0",
+    "processing_priority": "normal"
+  },
+  "game_content": {
+    "game_id": "gdpr-basic-v1",
+    "title": "GDPR Grundutbildning för Kommunala Tjänstemän",
+    "description": "Grundläggande GDPR-kunskap för hantering av personuppgifter",
+    "estimated_duration": 420,
+    "target_audience": "municipal-administrators", 
+    "difficulty_level": "beginner",
+    "learning_objectives": [
+      "Förstå GDPR:s grundprinciper",
+      "Kunna hantera personuppgifter korrekt",
+      "Känna till incidenthantering"
+    ],
+    "scenes": []
+  }
 }
 ```
+
+**Note**: This example shows the DevTeam JSON schema structure. For complete schema requirements, see [`devteam-json-schema-specification.md`](devteam-json-schema-specification.md).
 
 #### **Scene Flow Template**
 ```json

@@ -15,10 +15,16 @@ import {
   Stat,
   StatLabel,
   StatNumber,
-  StatHelpText
+  StatHelpText,
+  useBreakpointValue,
+  Image,
+  Link,
+  Stack,
+  Flex
 } from '@chakra-ui/react';
 import type { SummaryScene as SummarySceneType } from '../../types/game-manifest';
 import { CheckIcon, StarIcon, ClockIcon, CertificateIcon } from '../icons/GameIcons';
+import { validateMunicipalBranding, getMunicipalThemeOverrides, type MunicipalBranding } from '../../utils/municipalBranding';
 
 interface SummarySceneProps {
   scene: SummarySceneType;
@@ -26,32 +32,40 @@ interface SummarySceneProps {
   analytics?: {
     trackEvent: (eventType: string, data: any) => void;
   };
+  // Municipal branding integration
+  municipalBranding?: Partial<MunicipalBranding>;
 }
 
 export const SummaryScene: React.FC<SummarySceneProps> = ({
   scene,
   onComplete,
   analytics,
+  municipalBranding,
 }) => {
   const [showContent, setShowContent] = useState(false);
-  const [animationStep, setAnimationStep] = useState(0);
-
-  // Game Designer spec: Celebration animation sequence
+  
+  // Professional completion entrance - subtle fade-in with reduced motion support
   useEffect(() => {
-    const timer1 = setTimeout(() => setShowContent(true), 300);
-    const timer2 = setTimeout(() => setAnimationStep(1), 800);
-    const timer3 = setTimeout(() => setAnimationStep(2), 1500);
-    const timer4 = setTimeout(() => setAnimationStep(3), 2200);
-    
-    return () => {
-      clearTimeout(timer1);
-      clearTimeout(timer2);
-      clearTimeout(timer3);
-      clearTimeout(timer4);
-    };
+    const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const timer = setTimeout(() => setShowContent(true), prefersReducedMotion ? 100 : 300);
+    return () => clearTimeout(timer);
   }, []);
+  
+  // Responsive design breakpoints for Anna Svensson iPhone 12 optimization
+  const isMobile = useBreakpointValue({ base: true, md: false });
+  const isTablet = useBreakpointValue({ base: false, md: true, lg: false });
+  const isDesktop = useBreakpointValue({ base: false, lg: true });
+  
+  // Accessibility - Check for reduced motion preference
+  const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const getTransition = (defaultTransition: string) => 
+    prefersReducedMotion ? 'none' : defaultTransition;
+  
+  // Municipal branding validation and application
+  const { sanitizedBranding } = validateMunicipalBranding(municipalBranding);
+  const municipalTheme = getMunicipalThemeOverrides(sanitizedBranding);
 
-  // Mock game completion data - in real implementation from game state
+  // Municipal completion data - streamlined for professional context
   const gameData = {
     totalScore: 147,
     maxPossibleScore: 160,
@@ -59,32 +73,37 @@ export const SummaryScene: React.FC<SummarySceneProps> = ({
     totalTime: '6 min 45 sek',
     scenesCompleted: 5,
     totalScenes: 5,
-    achievements: [
-      { id: 'perfect_score', name: 'Expert', description: 'Över 90% totalt', earned: true },
-      { id: 'speed_demon', name: 'Effektiv', description: 'Under 7 minuter', earned: true },
-      { id: 'no_mistakes', name: 'Felfri', description: 'Inga fel svar', earned: false }
-    ],
+    completionStatus: 'godkänd' as const,
+    // Streamlined key learnings (3-4 most important for municipal context)
     keyLearnings: [
       'GDPR personuppgifter och rättigheter',
       'Datahantering och säkerhet',
-      'Anmälningsplikt vid incidenter',
-      'Användarrättigheter och samtycke'
+      'Anmälningsplikt vid incidenter'
     ],
+    // Municipal workplace next steps
     nextSteps: [
-      'Implementera GDPR-rutiner på din arbetsplats',
-      'Informera kollegor om viktiga punkter',
-      'Kontakta IT-avdelningen vid frågor'
+      'Tillämpa GDPR-kunskaper på arbetsplatsen',
+      'Diskutera viktiga punkter med närmaste chef', 
+      'Kontakta IT-support vid specifika frågor'
     ],
-    certificateEarned: true
+    certificateEarned: true,
+    municipalContext: {
+      authority: 'Malmö Stad',
+      trainingTitle: 'GDPR-utbildning för kommunal personal',
+      participantName: 'Anna Svensson',
+      supportContact: 'it-support@malmo.se'
+    }
   };
 
   const handleComplete = () => {
-    analytics?.trackEvent('game_summary_complete', {
+    analytics?.trackEvent('municipal_training_complete', {
       sceneId: scene.id,
       totalScore: gameData.totalScore,
       percentageScore: gameData.percentageScore,
       timeSpent: gameData.totalTime,
-      achievementsEarned: gameData.achievements.filter(a => a.earned).length
+      certificateEarned: gameData.certificateEarned,
+      municipality: sanitizedBranding.municipality,
+      culturalContext: sanitizedBranding.culturalContext
     });
 
     onComplete({ 
@@ -92,204 +111,240 @@ export const SummaryScene: React.FC<SummarySceneProps> = ({
       finalScore: gameData.totalScore,
       maxScore: gameData.maxPossibleScore,
       timeSpent: gameData.totalTime,
-      certificateEarned: gameData.certificateEarned
+      certificateEarned: gameData.certificateEarned,
+      municipalCompletion: true,
+      municipality: sanitizedBranding.municipality
     });
   };
 
-  const getScoreColor = (percentage: number) => {
-    if (percentage >= 90) return 'green';
-    if (percentage >= 80) return 'blue';
-    if (percentage >= 70) return 'yellow';
-    return 'red';
+  // Municipal color scheme - professional blue instead of gaming colors
+  const getMunicipalStatusColor = (status: string) => {
+    switch (status) {
+      case 'godkänd': return 'brand'; // Municipal blue from theme
+      case 'delvis_godkänd': return 'orange';
+      case 'ej_godkänd': return 'red';
+      default: return 'brand';
+    }
   };
 
-  return (
-    <Box p={4} maxW="600px" mx="auto" minH="100vh" bg="gray.50">
-      {/* Celebration Header */}
-      <VStack 
-        gap={6} 
-        mb={8} 
-        textAlign="center"
-        transform={showContent ? 'translateY(0)' : 'translateY(-20px)'}
-        opacity={showContent ? 1 : 0}
-        transition="all 0.8s ease-out"
-      >
-        <Box 
-          fontSize="4xl"
-          transform={animationStep >= 1 ? 'scale(1)' : 'scale(0.8)'}
-          transition="all 0.6s ease-out"
-        >
-          🎉
-        </Box>
-        
-        <Text 
-          fontSize="2xl" 
-          fontWeight="bold" 
-          color="green.600"
-          transform={animationStep >= 1 ? 'translateY(0)' : 'translateY(10px)'}
-          opacity={animationStep >= 1 ? 1 : 0}
-          transition="all 0.6s ease-out 0.2s"
-        >
-          {scene.title || 'Fantastiskt arbete, Anna!'}
-        </Text>
-        
-        {scene.message && (
+  // Municipal Summary Header Component
+  const MunicipalSummaryHeader = () => (
+    <Card 
+      as="header"
+      role="banner"
+      bg={`linear-gradient(135deg, ${sanitizedBranding.primaryColor} 0%, ${sanitizedBranding.primaryColor}CC 100%)`}
+      color="white"
+      mb={6}
+      borderRadius={isMobile ? "xl" : "2xl"}
+      overflow="hidden"
+      transform={showContent ? 'translateY(0)' : 'translateY(-10px)'}
+      opacity={showContent ? 1 : 0}
+      transition={getTransition('all 0.6s ease-out')}
+      aria-labelledby="completion-title"
+      aria-describedby="completion-description"
+    >
+      <CardBody p={isMobile ? 6 : 8}>
+        <VStack spacing={4} textAlign="center">
+          {/* Municipal Authority Header */}
+          <HStack spacing={3} justify="center" role="group" aria-label="Municipal authority and completion status">
+            {sanitizedBranding.logoUrl && (
+              <Image 
+                src={sanitizedBranding.logoUrl} 
+                alt={`${sanitizedBranding.municipality} logotyp`}
+                maxH="32px"
+                objectFit="contain"
+                role="img"
+              />
+            )}
+            <Text 
+              fontSize={isMobile ? "md" : "lg"} 
+              fontWeight="medium" 
+              opacity={0.9}
+              role="text"
+            >
+              {sanitizedBranding.municipality}
+            </Text>
+            <CheckIcon w="20px" h="20px" color="white" aria-label="Godkänd status" />
+          </HStack>
+          
+          {/* Professional Completion Title */}
           <Text 
-            fontSize="lg" 
-            color="gray.600"
-            maxW="400px"
-            transform={animationStep >= 1 ? 'translateY(0)' : 'translateY(10px)'}
-            opacity={animationStep >= 1 ? 1 : 0}
-            transition="all 0.6s ease-out 0.4s"
+            id="completion-title"
+            as="h1"
+            fontSize={isMobile ? "xl" : "2xl"} 
+            fontWeight="bold"
+            lineHeight="1.2"
+            role="heading"
+            aria-level={1}
           >
-            {scene.message}
+            GDPR-utbildning Slutförd
           </Text>
-        )}
-      </VStack>
+          
+          {/* Municipal Certification */}
+          <Text 
+            id="completion-description"
+            fontSize={isMobile ? "sm" : "md"} 
+            opacity={0.9}
+            fontWeight="medium"
+            role="text"
+          >
+            Du har framgångsrikt genomfört din kompetensutveckling
+          </Text>
+          
+          <Text 
+            fontSize="sm" 
+            opacity={0.8}
+            fontWeight="medium"
+            role="text"
+            aria-label={`Certifierad av ${gameData.municipalContext.authority}`}
+          >
+            Certifierad av {gameData.municipalContext.authority}
+          </Text>
+        </VStack>
+      </CardBody>
+    </Card>
+  );
+  
+  return (
+    <Box 
+      as="main"
+      role="main"
+      p={isMobile ? 4 : 6} 
+      maxW={isMobile ? "100%" : "800px"} 
+      mx="auto" 
+      minH="100vh" 
+      bg="gray.50"
+      sx={municipalTheme as any}
+      aria-label="GDPR-utbildning sammanfattning"
+    >
+      <MunicipalSummaryHeader />
 
-      {/* Overall Performance Card */}
+      {/* Essential Municipal Results Card */}
       <Card 
+        as="section"
+        role="region"
+        aria-labelledby="results-heading"
         mb={6} 
         bg="white" 
-        shadow="lg"
-        transform={animationStep >= 2 ? 'translateY(0)' : 'translateY(20px)'}
-        opacity={animationStep >= 2 ? 1 : 0}
-        transition="all 0.6s ease-out"
+        shadow="md"
+        borderRadius={isMobile ? "xl" : "2xl"}
+        transform={showContent ? 'translateY(0)' : 'translateY(10px)'}
+        opacity={showContent ? 1 : 0}
+        transition={getTransition('all 0.6s ease-out 0.3s')}
       >
-        <CardBody p={6}>
-          <VStack gap={6}>
-            <Text fontSize="xl" fontWeight="bold" color="gray.800">
-              Ditt Slutresultat
-            </Text>
+        <CardBody p={isMobile ? 6 : 8}>
+          <VStack spacing={6}>
+            {/* Completion Status */}
+            <VStack spacing={3} textAlign="center">
+              <HStack spacing={3} justify="center" role="group" aria-label="Slutresultat">
+                <CheckIcon w="24px" h="24px" color={`${sanitizedBranding.primaryColor}`} aria-label="Godkänd" />
+                <Text 
+                  id="results-heading"
+                  as="h2"
+                  fontSize={isMobile ? "xl" : "2xl"} 
+                  fontWeight="bold" 
+                  color={sanitizedBranding.primaryColor}
+                  role="heading"
+                  aria-level={2}
+                >
+                  Godkänd
+                </Text>
+              </HStack>
+              
+              <Text 
+                fontSize={isMobile ? "md" : "lg"} 
+                color="gray.700" 
+                fontWeight="medium"
+                role="text"
+                aria-label={`Tid: ${gameData.totalTime}, Resultat: ${gameData.percentageScore} procent`}
+              >
+                {gameData.totalTime} • {gameData.percentageScore}% resultat
+              </Text>
+              
+              {gameData.certificateEarned && (
+                <HStack spacing={2} color={sanitizedBranding.primaryColor} role="group" aria-label="Certifikat information">
+                  <CertificateIcon w="20px" h="20px" aria-label="Certifikat" />
+                  <Text fontSize="md" fontWeight="medium" role="text">
+                    Certifikat Erhållet
+                  </Text>
+                </HStack>
+              )}
+            </VStack>
             
-            {/* Score Circle */}
-            <Box position="relative">
+            {/* Municipal Progress Bar */}
+            <Box w="100%" maxW="300px" role="group" aria-label="Framstållning av resultat">
               <Progress
                 value={gameData.percentageScore}
-                size="xl"
-                colorScheme={getScoreColor(gameData.percentageScore)}
+                size="lg"
+                colorScheme={getMunicipalStatusColor(gameData.completionStatus)}
                 borderRadius="full"
                 bg="gray.200"
-                w="120px"
-                h="120px"
+                aria-label={`Slutresultat: ${gameData.percentageScore} procent av möjliga poäng`}
+                aria-valuenow={gameData.percentageScore}
+                aria-valuemin={0}
+                aria-valuemax={100}
                 sx={{
                   '& > div': {
                     borderRadius: 'full',
-                    transition: 'all 1.5s ease-out 0.5s'
+                    background: sanitizedBranding.primaryColor
                   }
                 }}
               />
-              <Box
-                position="absolute"
-                top="50%"
-                left="50%"
-                transform="translate(-50%, -50%)"
-                textAlign="center"
+              <Text 
+                fontSize="sm" 
+                color="gray.600" 
+                textAlign="center" 
+                mt={2}
+                role="text"
               >
-                <Text 
-                  fontSize="2xl" 
-                  fontWeight="bold" 
-                  color={`\${getScoreColor(gameData.percentageScore)}.700`}
-                >
-                  {gameData.percentageScore}%
-                </Text>
-                <Text fontSize="sm" color="gray.600">
-                  {gameData.totalScore}/{gameData.maxPossibleScore}
-                </Text>
-              </Box>
+                Skickat till din tjänst-e-post
+              </Text>
             </Box>
-            
-            {/* Quick Stats */}
-            <SimpleGrid columns={3} gap={6} w="100%">
-              <Stat textAlign="center">
-                <StatLabel color="gray.600">Tid</StatLabel>
-                <StatNumber fontSize="md" color="blue.600">
-                  <HStack justify="center">
-                    <ClockIcon w="16px" h="16px" />
-                    <Text>{gameData.totalTime}</Text>
-                  </HStack>
-                </StatNumber>
-              </Stat>
-              
-              <Stat textAlign="center">
-                <StatLabel color="gray.600">Avklarat</StatLabel>
-                <StatNumber fontSize="md" color="green.600">
-                  <HStack justify="center">
-                    <CheckIcon w="16px" h="16px" />
-                    <Text>{gameData.scenesCompleted}/{gameData.totalScenes}</Text>
-                  </HStack>
-                </StatNumber>
-              </Stat>
-              
-              <Stat textAlign="center">
-                <StatLabel color="gray.600">Utmärkelser</StatLabel>
-                <StatNumber fontSize="md" color="yellow.600">
-                  <HStack justify="center">
-                    <StarIcon w="16px" h="16px" />
-                    <Text>{gameData.achievements.filter(a => a.earned).length}</Text>
-                  </HStack>
-                </StatNumber>
-              </Stat>
-            </SimpleGrid>
           </VStack>
         </CardBody>
       </Card>
 
-      {/* Achievements */}
-      {gameData.achievements.some(a => a.earned) && (
-        <Card 
-          mb={6} 
-          bg="white" 
-          shadow="lg"
-          transform={animationStep >= 3 ? 'translateY(0)' : 'translateY(20px)'}
-          opacity={animationStep >= 3 ? 1 : 0}
-          transition="all 0.6s ease-out 0.3s"
-        >
-          <CardBody p={6}>
-            <Text fontSize="lg" fontWeight="bold" mb={4} color="gray.800">
-              Erhållna Utmärkelser
-            </Text>
-            <VStack gap={3}>
-              {gameData.achievements.filter(a => a.earned).map((achievement) => (
-                <Card key={achievement.id} bg="yellow.50" border="1px solid" borderColor="yellow.200" w="100%">
-                  <CardBody p={4}>
-                    <HStack gap={3}>
-                      <StarIcon color="yellow.500" flexShrink={0} />
-                      <Box>
-                        <Text fontWeight="bold" color="yellow.800">
-                          {achievement.name}
-                        </Text>
-                        <Text fontSize="sm" color="yellow.600">
-                          {achievement.description}
-                        </Text>
-                      </Box>
-                    </HStack>
-                  </CardBody>
-                </Card>
-              ))}
-            </VStack>
-          </CardBody>
-        </Card>
-      )}
-
-      {/* Key Learnings Summary */}
+      {/* Municipal Key Learnings */}
       <Card 
+        as="section"
+        role="region"
+        aria-labelledby="learnings-heading"
         mb={6} 
         bg="white" 
-        shadow="lg"
-        transform={animationStep >= 3 ? 'translateY(0)' : 'translateY(20px)'}
-        opacity={animationStep >= 3 ? 1 : 0}
-        transition="all 0.6s ease-out 0.6s"
+        shadow="md"
+        borderRadius={isMobile ? "xl" : "2xl"}
+        transform={showContent ? 'translateY(0)' : 'translateY(10px)'}
+        opacity={showContent ? 1 : 0}
+        transition={getTransition('all 0.6s ease-out 0.6s')}
       >
-        <CardBody p={6}>
-          <Text fontSize="lg" fontWeight="bold" mb={4} color="gray.800">
+        <CardBody p={isMobile ? 6 : 8}>
+          <Text 
+            id="learnings-heading"
+            as="h2"
+            fontSize={isMobile ? "lg" : "xl"} 
+            fontWeight="bold" 
+            mb={4} 
+            color="gray.800"
+            role="heading"
+            aria-level={2}
+          >
             Viktiga Lärdomar
           </Text>
-          <VStack gap={3} align="stretch">
+          <VStack as="ul" spacing={3} align="stretch" role="list" aria-labelledby="learnings-heading">
             {gameData.keyLearnings.map((learning, index) => (
-              <HStack key={index} gap={3} p={3} bg="blue.50" borderRadius="lg">
-                <CheckIcon color="blue.500" flexShrink={0} />
-                <Text fontSize="sm" color="blue.700">
+              <HStack 
+                as="li"
+                key={index} 
+                spacing={3} 
+                p={4} 
+                bg={`${sanitizedBranding.primaryColor}1A`} 
+                borderRadius="lg"
+                role="listitem"
+                tabIndex={0}
+                aria-label={`Lärdom ${index + 1}: ${learning}`}
+              >
+                <CheckIcon color={sanitizedBranding.primaryColor} flexShrink={0} aria-hidden="true" />
+                <Text fontSize={isMobile ? "sm" : "md"} color="gray.700" fontWeight="medium" role="text">
                   {learning}
                 </Text>
               </HStack>
@@ -298,38 +353,63 @@ export const SummaryScene: React.FC<SummarySceneProps> = ({
         </CardBody>
       </Card>
 
-      {/* Next Steps */}
+      {/* Municipal Next Steps */}
       <Card 
+        as="section"
+        role="region"
+        aria-labelledby="next-steps-heading"
         mb={6} 
         bg="white" 
-        shadow="lg"
-        transform={animationStep >= 3 ? 'translateY(0)' : 'translateY(20px)'}
-        opacity={animationStep >= 3 ? 1 : 0}
-        transition="all 0.6s ease-out 0.9s"
+        shadow="md"
+        borderRadius={isMobile ? "xl" : "2xl"}
+        transform={showContent ? 'translateY(0)' : 'translateY(10px)'}
+        opacity={showContent ? 1 : 0}
+        transition={getTransition('all 0.6s ease-out 0.9s')}
       >
-        <CardBody p={6}>
-          <Text fontSize="lg" fontWeight="bold" mb={4} color="gray.800">
+        <CardBody p={isMobile ? 6 : 8}>
+          <Text 
+            id="next-steps-heading"
+            as="h2"
+            fontSize={isMobile ? "lg" : "xl"} 
+            fontWeight="bold" 
+            mb={4} 
+            color="gray.800"
+            role="heading"
+            aria-level={2}
+          >
             Nästa Steg
           </Text>
-          <VStack gap={3} align="stretch">
+          <VStack as="ol" spacing={3} align="stretch" role="list" aria-labelledby="next-steps-heading">
             {gameData.nextSteps.map((step, index) => (
-              <HStack key={index} gap={3} p={3} bg="green.50" borderRadius="lg">
+              <HStack 
+                as="li"
+                key={index} 
+                spacing={4} 
+                p={4} 
+                bg="gray.50" 
+                borderRadius="lg"
+                role="listitem"
+                tabIndex={0}
+                aria-label={`Steg ${index + 1}: ${step}`}
+              >
                 <Box 
-                  bg="green.500" 
+                  bg={sanitizedBranding.primaryColor}
                   color="white" 
                   borderRadius="full" 
-                  w="24px" 
-                  h="24px" 
+                  w="28px" 
+                  h="28px" 
                   display="flex" 
                   alignItems="center" 
                   justifyContent="center" 
                   fontSize="sm" 
                   fontWeight="bold"
                   flexShrink={0}
+                  aria-label={`Steg nummer ${index + 1}`}
+                  role="text"
                 >
                   {index + 1}
                 </Box>
-                <Text fontSize="sm" color="green.700">
+                <Text fontSize={isMobile ? "sm" : "md"} color="gray.700" fontWeight="medium" role="text">
                   {step}
                 </Text>
               </HStack>
@@ -338,101 +418,172 @@ export const SummaryScene: React.FC<SummarySceneProps> = ({
         </CardBody>
       </Card>
 
-      {/* Certificate Notice */}
-      {gameData.certificateEarned && (
-        <Alert 
-          status="success" 
-          borderRadius="xl"
-          bg="blue.600"
-          color="white"
-          border="none"
-          mb={6}
-          transform={animationStep >= 3 ? 'translateY(0)' : 'translateY(20px)'}
-          opacity={animationStep >= 3 ? 1 : 0}
-          transition="all 0.8s ease-out 1.2s"
-        >
-          <CertificateIcon color="white" />
-          <Box ml={3}>
-            <Text fontWeight="bold" fontSize="md">
-              Certifikat Erhållet! 🏆
-            </Text>
-            <Text fontSize="sm" opacity={0.9}>
-              Ditt certifikat har skickats till din e-post och är tillgängligt i ditt användarkonto.
-            </Text>
-          </Box>
-        </Alert>
-      )}
-
-      {/* Action Buttons */}
-      <VStack gap={4} mt={8}>
-        <Button
-          onClick={handleComplete}
-          colorScheme="green"
-          size="lg"
-          w="100%"
-          minH="56px"
+      {/* Municipal Actions Panel */}
+      <VStack 
+        as="section"
+        role="region"
+        aria-labelledby="actions-heading"
+        spacing={4} 
+        mt={8}
+      >
+        {/* Screen reader heading for actions */}
+        <Text 
+          id="actions-heading"
+          as="h2"
           fontSize="lg"
           fontWeight="bold"
+          color="gray.800"
+          position="absolute"
+          left="-10000px"
+          width="1px"
+          height="1px"
+          overflow="hidden"
+          role="heading"
+          aria-level={2}
+        >
+          Åtgärder
+        </Text>
+        
+        {/* Primary Municipal Action */}
+        <Button
+          onClick={handleComplete}
+          bg={sanitizedBranding.primaryColor}
+          color="white"
+          size="lg"
+          w="100%"
+          minH={isMobile ? "56px" : "64px"}
+          fontSize={isMobile ? "lg" : "xl"}
+          fontWeight="bold"
           borderRadius="xl"
-          leftIcon={<CheckIcon />}
+          leftIcon={<CheckIcon aria-hidden="true" />}
+          aria-label="Avsluta utbildningen och återgå till huvudmenyn"
           _hover={{
-            transform: 'translateY(-2px)',
+            bg: `${sanitizedBranding.primaryColor}E6`,
+            transform: prefersReducedMotion ? 'none' : 'translateY(-1px)',
             shadow: 'lg',
           }}
           _active={{
-            transform: 'translateY(0)',
+            transform: prefersReducedMotion ? 'none' : 'translateY(0)',
           }}
-          transition="all 0.2s"
+          _focusVisible={{
+            outline: '2px solid',
+            outlineColor: 'white',
+            outlineOffset: '2px'
+          }}
+          transition={getTransition('all 0.2s')}
         >
-          Avsluta Kursen
+          Avsluta Utbildningen
         </Button>
         
-        {/* Additional Actions */}
-        <HStack gap={3} w="100%">
+        {/* Secondary Municipal Actions */}
+        <Stack 
+          direction={isMobile ? "column" : "row"} 
+          spacing={3} 
+          w="100%"
+          role="group"
+          aria-label="Ytterligare åtgärder"
+        >
           <Button
             variant="outline"
-            colorScheme="blue"
-            size="md"
+            borderColor={sanitizedBranding.primaryColor}
+            color={sanitizedBranding.primaryColor}
+            size={isMobile ? "md" : "lg"}
             flex="1"
-            minH="48px"
+            minH={isMobile ? "48px" : "56px"}
             borderRadius="lg"
+            leftIcon={<CertificateIcon aria-hidden="true" />}
+            aria-label="Ladda ner ditt officiella GDPR-certifikat från Malmö Stad"
             onClick={() => {
-              analytics?.trackEvent('summary_share_results', {
+              analytics?.trackEvent('municipal_certificate_download', {
                 sceneId: scene.id,
-                score: gameData.percentageScore
+                municipality: sanitizedBranding.municipality
               });
             }}
+            _hover={{
+              bg: `${sanitizedBranding.primaryColor}1A`
+            }}
+            _focusVisible={{
+              outline: '2px solid',
+              outlineColor: sanitizedBranding.primaryColor,
+              outlineOffset: '2px'
+            }}
+            transition={getTransition('background-color 0.2s ease')}
           >
-            📊 Dela Resultat
+            Ladda ner Certifikat
           </Button>
           
           <Button
             variant="outline"
-            colorScheme="blue"
-            size="md"
+            borderColor={sanitizedBranding.primaryColor}
+            color={sanitizedBranding.primaryColor}
+            size={isMobile ? "md" : "lg"}
             flex="1"
-            minH="48px"
+            minH={isMobile ? "48px" : "56px"}
             borderRadius="lg"
+            aria-label="Åtkomst till GDPR-resurser och verktyg för din arbetsplats"
             onClick={() => {
-              analytics?.trackEvent('summary_view_certificate', {
-                sceneId: scene.id
+              analytics?.trackEvent('municipal_resources_access', {
+                sceneId: scene.id,
+                municipality: sanitizedBranding.municipality
               });
             }}
+            _hover={{
+              bg: `${sanitizedBranding.primaryColor}1A`
+            }}
+            _focusVisible={{
+              outline: '2px solid',
+              outlineColor: sanitizedBranding.primaryColor,
+              outlineOffset: '2px'
+            }}
+            transition={getTransition('background-color 0.2s ease')}
           >
-            📜 Visa Certifikat
+            Resurser för Arbetsplatsen
           </Button>
-        </HStack>
+        </Stack>
       </VStack>
 
-      {/* Footer */}
-      <Box mt={8} pt={6} borderTop="1px solid" borderColor="gray.200">
-        <VStack gap={2}>
-          <Text fontSize="sm" color="gray.500" textAlign="center">
-            Tack för att du genomförde denna utbildning!
+      {/* Municipal Footer */}
+      <Box 
+        as="footer"
+        role="contentinfo"
+        mt={8} 
+        pt={6} 
+        borderTop="1px solid" 
+        borderColor="gray.200"
+        aria-label="Sidans sidfot med supportinformation"
+      >
+        <VStack spacing={3}>
+          <Text 
+            fontSize="sm" 
+            color="gray.600" 
+            textAlign="center" 
+            fontWeight="medium"
+            role="text"
+          >
+            Tack för att du genomförde din kompetensutveckling!
           </Text>
-          <Text fontSize="xs" color="gray.400" textAlign="center">
-            DigiNativa Runtime Engine • {new Date().toLocaleDateString('sv-SE')}
-          </Text>
+          
+          {/* Municipal Support Contact */}
+          <VStack spacing={1} role="group" aria-label="Supportinformation">
+            <Text 
+              fontSize="sm" 
+              color="gray.500" 
+              textAlign="center"
+              role="text"
+              aria-label={`Support: ${gameData.municipalContext.supportContact}`}
+            >
+              Support: {gameData.municipalContext.supportContact}
+            </Text>
+            <Text 
+              fontSize="xs" 
+              color="gray.400" 
+              textAlign="center"
+              role="text"
+              aria-label={`Leverantörer: ${sanitizedBranding.municipality} och DigiNativa, datum: ${new Date().toLocaleDateString('sv-SE')}`}
+            >
+              {sanitizedBranding.municipality} • DigiNativa • {new Date().toLocaleDateString('sv-SE')}
+            </Text>
+          </VStack>
         </VStack>
       </Box>
     </Box>

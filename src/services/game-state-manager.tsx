@@ -3,6 +3,7 @@
  * Critical för Anna Svensson municipal work interruptions
  */
 
+import React from 'react';
 import { supabase } from '../lib/supabase';
 
 export interface GameState {

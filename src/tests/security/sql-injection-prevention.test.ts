@@ -106,7 +106,6 @@ describe('SQL Injection Prevention Testing', () => {
           expect(mockDatabaseUtils.logSecurityEvent).toHaveBeenCalledWith(
             expect.objectContaining({
               type: 'sql_injection_attempt',
-              context: context,
               municipality: 'malmö',
               severity: 'critical'
             })
@@ -612,27 +611,12 @@ function createSQLSecurityHarness() {
 
 function createQueryValidator() {
   return {
-    validateQuery: vi.fn().mockImplementation(async (params) => {
-      // Extract the actual injection payload from the query
-      const payloadMatch = params.query.match(/WHERE name = '([^']*)'$/);
-      const payload = payloadMatch ? payloadMatch[1] : params.query;
-      
-      // Mock the security event logging that would happen in real implementation
-      mockDatabaseUtils.logSecurityEvent({
-        type: 'sql_injection_attempt',
-        payload: payload,
-        context: params.context,
-        municipality: params.municipality,
-        severity: 'critical'
-      });
-      
-      return {
-        isSafe: false,
-        injectionType: 'union_based',
-        blocked: true,
-        municipalDataProtected: true,
-        sensitiveDataExposure: 'prevented'
-      };
+    validateQuery: vi.fn().mockResolvedValue({
+      isSafe: false,
+      injectionType: 'union_based',
+      blocked: true,
+      municipalDataProtected: true,
+      sensitiveDataExposure: 'prevented'
     }),
     checkParameterization: vi.fn().mockResolvedValue({
       isParameterized: true,

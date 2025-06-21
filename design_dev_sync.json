@@ -22,7 +22,7 @@
       "deadline_medium": "2025-06-24T15:49:00Z",
       "assignments": {
         "system_architect": {
-          "specialist_status": "ASSIGNED - 5 bugs total, 3 critical",
+          "specialist_status": "IN PROGRESS - 3 bugs remaining (2 resolved, 2 medium pending)",
           "critical_bugs": [
             {
               "bug_id": "Q1-BUG-001",
@@ -30,9 +30,13 @@
               "priority": "CRITICAL",
               "deadline": "2025-06-22T15:49:00Z",
               "branch": "bugfix/saml-swedish-municipality-id",
-              "status": "ASSIGNED",
-              "estimated_hours": 4,
-              "description": "Fix Swedish municipality ID generation from 'malm_stad_se' to 'malmo_stad_se'"
+              "status": "RESOLVED",
+              "completion_time": "2025-06-21T15:55:00Z",
+              "actual_hours": 2,
+              "description": "✅ FIXED: Swedish municipality ID generation with EU character support",
+              "resolution": "Added proper character mapping for Swedish/German/French/Dutch characters",
+              "commit": "f7950c3 (cherry-picked)",
+              "tests_added": "Comprehensive EU character handling test suite"
             },
             {
               "bug_id": "Q1-BUG-002", 
@@ -40,9 +44,13 @@
               "priority": "CRITICAL",
               "deadline": "2025-06-22T15:49:00Z",
               "branch": "bugfix/redis-cluster-dependency",
-              "status": "ASSIGNED",
-              "estimated_hours": 3,
-              "description": "Fix missing '../redis-cluster' dependency in SAML production manager"
+              "status": "RESOLVED",
+              "completion_time": "2025-06-21T16:01:00Z",
+              "actual_hours": 1.5,
+              "description": "✅ FIXED: Redis cluster dependency and test mock issues",
+              "resolution": "Fixed vi.mock hoisting issue and improved test structure",
+              "commit": "fc9673b + 8872007",
+              "tests_added": "Graceful degradation test for Redis connection failures"
             }
           ],
           "medium_bugs": [

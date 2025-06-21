@@ -552,6 +552,26 @@ export class SAMLProductionManager {
   private generateTenantId(municipalityName: string, country: string): string {
     const normalized = municipalityName
       .toLowerCase()
+      // Handle Swedish characters (ö → o, ä → a, å → a)
+      .replace(/ö/g, 'o')
+      .replace(/ä/g, 'a') 
+      .replace(/å/g, 'a')
+      // Handle German characters (ü → u, ö → o, ä → a, ß → ss)
+      .replace(/ü/g, 'u')
+      .replace(/ß/g, 'ss')
+      // Handle French characters (é → e, è → e, ê → e, ë → e, etc.)
+      .replace(/[éèêë]/g, 'e')
+      .replace(/[àâä]/g, 'a')
+      .replace(/[îï]/g, 'i')
+      .replace(/[ôö]/g, 'o')
+      .replace(/[ùûü]/g, 'u')
+      .replace(/ç/g, 'c')
+      // Handle Dutch characters
+      .replace(/[ëé]/g, 'e')
+      .replace(/[ïí]/g, 'i')
+      .replace(/[öó]/g, 'o')
+      .replace(/[üú]/g, 'u')
+      // Replace non-alphanumeric with underscore
       .replace(/[^a-z0-9]/g, '_')
       .replace(/_+/g, '_')
       .replace(/^_|_$/g, '');

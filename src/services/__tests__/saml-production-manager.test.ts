@@ -78,6 +78,55 @@ describe('SAMLProductionManager', () => {
       expect(result.supportContact).toBe('support@diginativa.se');
     });
 
+    it('should handle Swedish characters correctly in tenant ID generation', async () => {
+      const testCases = [
+        { name: 'Göteborg Stad', expected: 'goteborg_stad_se' },
+        { name: 'Västerås kommun', expected: 'vasteras_kommun_se' },
+        { name: 'Örebro', expected: 'orebro_se' },
+        { name: 'Hässleholm', expected: 'hassleholm_se' }
+      ];
+
+      for (const testCase of testCases) {
+        const request: TenantRegistrationRequest = {
+          municipalityName: testCase.name,
+          country: 'SE',
+          contactEmail: 'admin@test.se',
+          administratorName: 'Test Admin',
+          idpType: 'azure-ad',
+          expectedUsers: 100,
+          deploymentTarget: 'pilot'
+        };
+
+        const result = await manager.registerMunicipalTenant(request);
+        expect(result.tenantId).toBe(testCase.expected);
+        expect(result.success).toBe(true);
+      }
+    });
+
+    it('should handle German characters correctly in tenant ID generation', async () => {
+      const testCases = [
+        { name: 'München Stadt', expected: 'munchen_stadt_de' },
+        { name: 'Düsseldorf', expected: 'dusseldorf_de' },
+        { name: 'Straße Hamburg', expected: 'strasse_hamburg_de' }
+      ];
+
+      for (const testCase of testCases) {
+        const request: TenantRegistrationRequest = {
+          municipalityName: testCase.name,
+          country: 'DE',
+          contactEmail: 'admin@test.de',
+          administratorName: 'Test Admin',
+          idpType: 'okta',
+          expectedUsers: 100,
+          deploymentTarget: 'pilot'
+        };
+
+        const result = await manager.registerMunicipalTenant(request);
+        expect(result.tenantId).toBe(testCase.expected);
+        expect(result.success).toBe(true);
+      }
+    });
+
     it('should register German municipality with Okta', async () => {
       const request: TenantRegistrationRequest = {
         municipalityName: 'Stadt Berlin',

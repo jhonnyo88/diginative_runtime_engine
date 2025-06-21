@@ -1,0 +1,95 @@
+{
+  "timestamp": "2025-06-21T13:40:25.142Z",
+  "summary": {
+    "totalGates": 11,
+    "passedGates": 9,
+    "overallCompliance": 92
+  },
+  "details": {
+    "testCoverage": {
+      "actual": 92,
+      "threshold": 90,
+      "passed": true
+    },
+    "typeChecking": {
+      "passed": false,
+      "errors": 0
+    },
+    "linting": {
+      "passed": false,
+      "warnings": 30,
+      "errors": 1161
+    },
+    "dataResidency": {
+      "compliant": true,
+      "region": "EU-North-1 (Stockholm)",
+      "violations": []
+    },
+    "accessibility": {
+      "score": 96,
+      "threshold": 95,
+      "passed": true,
+      "violations": [
+        "Minor contrast issue on secondary buttons",
+        "Missing alt text on 2 decorative images"
+      ]
+    },
+    "keyboardNavigation": {
+      "supported": true,
+      "coverage": 98,
+      "issues": [
+        "Skip link positioning could be improved"
+      ]
+    },
+    "security": {
+      "criticalVulnerabilities": 0,
+      "highVulnerabilities": 0,
+      "passed": true
+    },
+    "contentSecurityPolicy": {
+      "compliant": true,
+      "policies": [
+        "default-src 'self'",
+        "script-src 'self' 'unsafe-inline'",
+        "style-src 'self' 'unsafe-inline'"
+      ],
+      "violations": []
+    },
+    "performance": {
+      "score": 88,
+      "threshold": 85,
+      "passed": true,
+      "metrics": {
+        "firstContentfulPaint": 1200,
+        "largestContentfulPaint": 2800,
+        "cumulativeLayoutShift": 0.05,
+        "timeToInteractive": 3200
+      }
+    },
+    "annaSvenssonSession": {
+      "completionTime": 380000,
+      "target": 420000,
+      "passed": true,
+      "bottlenecks": [
+        "AI content generation: 2.3s (target: 2s)",
+        "Database query optimization needed"
+      ]
+    },
+    "networkCompliance": {
+      "threeGPerformance": {
+        "loadTime": 2800,
+        "throughput": 1.5
+      },
+      "wifiPerformance": {
+        "loadTime": 1200,
+        "throughput": 10
+      },
+      "passed": true
+    }
+  },
+  "recommendations": [
+    "Increase test coverage to 95% for better code quality assurance",
+    "Optimize performance for better municipal network experience",
+    "Address accessibility violations for full WCAG 2.1 AA compliance"
+  ]
+}

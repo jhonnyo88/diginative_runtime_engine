@@ -30,6 +30,12 @@
 - **Exempel**: `Q2-GEI-Milestone-2.1` (Q2 Game Experience Innovation Milestone 2.1)
 - **Läs varje måndag**: [`docs/developers/road_map.md`](docs/developers/road_map.md) för aktuella prioriteter
 
+### **🔍 QUALITY ASSURANCE INTEGRATION**
+- **Daily Reference**: [`docs/workflows/daily-quality-workflow.md`](docs/workflows/daily-quality-workflow.md) - **MANDATORY:** Daily quality process
+- **Bug Tracking**: [`docs/quality/Q1-bug-report.md`](docs/quality/Q1-bug-report.md) - Check for design-related bugs
+- **Branch Strategy**: All design work on feature branches, merge via PR to develop
+- **Quality Focus**: WCAG 2.1 AA compliance, cultural adaptation validation, design system consistency
+
 ### **STRATEGISKA PELARE (Ditt designfokus)**
 ```json
 {

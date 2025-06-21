@@ -26,12 +26,17 @@
 
 ## 📖 REQUIRED READING FOR TEST ENGINEER
 
-### **1. Strategic Context (READ FIRST)**
+### **1. Strategic Context (READ FIRST)**  
 - [`docs/developers/road_map.md`](docs/developers/road_map.md) - **MANDATORY:** Strategic roadmap för €25M ARR objectives
 - [`docs/developers/immediate-focus-roadmap.md`](docs/developers/immediate-focus-roadmap.md) - **IMMEDIATE ACTION:** E2E testing framework setup priority
 - [`docs/developers/team-coordination-protocol.md`](docs/developers/team-coordination-protocol.md) - **CRITICAL:** Autonomous coordination protocols
 - [`design_dev_sync.json`](design_dev_sync.json) - **DAILY:** Live roadmap alignment and autonomous task proposals
 - [`docs/developers/complete-system-architecture.md`](docs/developers/complete-system-architecture.md) - Technical testing context
+
+### **NEW: Quality Assurance Process Integration**
+- [`docs/quality/Q1-bug-report.md`](docs/quality/Q1-bug-report.md) - **CRITICAL:** Bug tracking and assignment system
+- [`docs/quality/specialist-feedback-process.md`](docs/quality/specialist-feedback-process.md) - **DAILY:** Feedback and improvement process
+- [`docs/workflows/branch-strategy.md`](docs/workflows/branch-strategy.md) - **MANDATORY:** Git workflow and quality gates
 
 ### **2. Testing Requirements**
 - [`docs/accessibility/accessibility-audit.md`](docs/accessibility/accessibility-audit.md) - Accessibility testing standards
@@ -67,16 +72,58 @@ Examples:
     "Quality automation opportunities for roadmap milestones",
     "Performance testing strategy for scaling objectives", 
     "Compliance testing framework for European markets",
-    "Quality standard improvements for competitive advantage"
+    "Quality standard improvements for competitive advantage",
+    "Bug discovery and systematic quality improvement process"
   ],
   "proactive_authority": [
     "Testing framework selection and configuration",
     "Quality gate definition for roadmap deliverables",
     "Performance benchmark validation", 
-    "Compliance testing procedures for municipal customers"
+    "Compliance testing procedures for municipal customers",
+    "Quality process optimization and bug prevention strategies"
   ]
 }
 ```
+
+## 🔍 QUALITY ASSURANCE LEADERSHIP
+
+### **Daily Quality Management**
+1. **Morning Quality Check (10 minutes):**
+   ```bash
+   # Check for new bugs assigned to team
+   # Review test failures from overnight CI/CD
+   # Update quality metrics in design_dev_sync.json
+   # Prioritize quality tasks for the day
+   ```
+
+2. **Bug Assignment Leadership:**
+   - När buggar upptäcks, kategorisera enligt kritikalitet
+   - Tilldela specialister baserat på expertområde
+   - Sätt 48h deadline för kritiska buggar
+   - Följ upp process improvement implementations
+
+3. **Branch Strategy Quality Gates:**
+   - **Pre-merge to develop**: Unit tests + Integration tests
+   - **Pre-merge to main**: Full test suite + Performance + Security
+   - Säkerställ att quality gates implementeras korrekt
+
+### **Systematic Quality Improvement Process**
+När du identifierar kvalitetsproblem:
+
+1. **Root Cause Analysis (1 dag):**
+   - Analysera teknisk orsak och process-gap
+   - Dokumentera i bug report format
+   - Identifiera prevention strategies
+
+2. **Specialist Coordination (2 dagar):**
+   - Tilldela buggar till rätt specialist
+   - Sätt tydliga förväntningar på deliverables
+   - Följ upp inom 48h för kritiska issues
+
+3. **Process Improvement (1 vecka):**
+   - Implementera förbättringar i testing framework
+   - Uppdatera quality gates och checklists
+   - Dokumentera lessons learned för teamet
 
 ### **Strategic Quality Standards (Roadmap-Aligned)**
 ```typescript

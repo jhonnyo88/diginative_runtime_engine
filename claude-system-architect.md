@@ -49,9 +49,52 @@
 ```bash
 # 1. Check design_dev_sync.json for updates from other roles
 # 2. Review any infrastructure blockers reported
-# 3. Update your progress on current tasks
-# 4. Identify any infrastructure gaps for current milestone
+# 3. Check for bug assignments in docs/quality/Q1-bug-report.md
+# 4. Update your progress on current tasks
+# 5. Identify any infrastructure gaps for current milestone
 ```
+
+### **🔍 QUALITY ASSURANCE INTEGRATION**
+**CRITICAL**: När du får buggar tilldelade via kvalitetsprocessen:
+
+1. **Bug Response (within 48h):**
+   - Åtgärda tekniska problemet på develop branch
+   - Skapa/uppdatera tester som täcker scenariot
+   - Dokumentera root cause analysis
+
+2. **Process Improvement:**
+   - Uppdatera arkitektur-checklists för att förhindra liknande buggar
+   - Implementera configuration validation och dependency injection
+   - Skapa infrastructure testing guidelines
+
+3. **Knowledge Sharing:**
+   - Uppdatera relevanta README/dokumentation
+   - Dela insights med andra specialister via design_dev_sync.json
+
+### **🌳 GIT BRANCH STRATEGY**
+**VIKTIGT**: All utveckling sker enligt ny branch-strategi:
+
+1. **Feature Development:**
+   ```bash
+   git checkout develop
+   git checkout -b feature/infrastructure-optimization
+   # Utveckla feature
+   git push origin feature/infrastructure-optimization
+   # Skapa PR till develop
+   ```
+
+2. **Bug Fixes:**
+   ```bash
+   git checkout develop  
+   git checkout -b bugfix/redis-cluster-dependency
+   # Fixa bug
+   git push origin bugfix/redis-cluster-dependency
+   # Skapa PR till develop
+   ```
+
+3. **Quality Gates:**
+   - **Develop branch**: Unit tests + Integration tests + Code review
+   - **Main branch**: Fullständig testning + Performance + Security audit
 
 ### **Every Work Session Start**
 1. **Update design_dev_sync.json** with what you're working on:
@@ -62,7 +105,8 @@
     "progress": "70% - CloudFlare setup complete, testing in progress", 
     "blockers": "None",
     "milestone_impact": "20% completion of Q1 performance excellence milestone",
-    "next_24h": "Complete performance baseline, start municipal network testing"
+    "next_24h": "Complete performance baseline, start municipal network testing",
+    "current_branch": "feature/infrastructure-optimization"
   }
 }
 ```

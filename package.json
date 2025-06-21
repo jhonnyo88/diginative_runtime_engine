@@ -14,7 +14,7 @@
     "test:coverage": "vitest run --coverage",
     "test:accessibility": "vitest run src/tests/accessibility",
     "test:performance": "vitest run src/tests/performance",
-    "test:compliance": "vitest run src/tests/accessibility/european-compliance.test.tsx",
+    "test:accessibility": "vitest run src/tests/accessibility/european-compliance.test.tsx",
     "test:municipal-network": "vitest run src/tests/performance/municipal-network.test.ts",
     "test:e2e": "playwright test",
     "test:e2e:ui": "playwright test --ui",

@@ -7,20 +7,30 @@ import {
   Avatar,
   Progress,
   useTheme,
-  useColorModeValue
+  useColorModeValue,
+  Badge,
+  Tooltip
 } from '@chakra-ui/react';
 import { motion } from 'framer-motion';
 import { processDialogueSceneWithPlayerName } from '../../utils/playerNameReplacement';
 import { MunicipalButton } from '../Button';
 import { getButtonText } from '../../theme/municipalButtonTheme';
+import { MunicipalEmotionType, getEmotionVisualization, getCulturalEmotionVariant, mapLegacyEmotion } from '../../types/character-emotions';
+import { MunicipalArchetypeId, getArchetypeById, getCulturalArchetypeVariant } from '../../types/character-archetypes';
+import CharacterRelationshipManager, { RelationshipType, InteractionType } from '../../services/character-relationship-manager';
 
-// DevTeam JSON Schema Types (from System Architect analysis)
+// Enhanced DevTeam JSON Schema Types with Character System Support
 interface DialogueTurn {
   speaker: string;
   character_id: string;
   text: string;
-  emotion: 'neutral' | 'concerned' | 'confident' | 'questioning';
+  emotion: 'neutral' | 'concerned' | 'confident' | 'questioning' | MunicipalEmotionType;
   timing: number; // milliseconds
+  // Enhanced character-driven properties
+  archetype?: MunicipalArchetypeId;
+  relationshipContext?: string;
+  emotionIntensity?: 'subtle' | 'moderate' | 'clear';
+  municipalContext?: string;
 }
 
 interface DialogueSceneData {
@@ -33,10 +43,30 @@ interface DialogueSceneData {
     name: string;
     role: string;
     avatar_description: string;
+    // Enhanced character system properties
+    archetype?: MunicipalArchetypeId;
+    department?: string;
+    experience_level?: string;
+    personality_traits?: string[];
   }[];
   dialogue_turns: DialogueTurn[];
   learning_objectives: string[];
   scene_duration: number; // seconds
+  // Character-driven enhancements
+  relationship_dynamics?: {
+    character_relationships: Array<{
+      character1_id: string;
+      character2_id: string;
+      relationship_type: RelationshipType;
+      relationship_strength: number;
+    }>;
+  };
+  municipal_context?: {
+    scenario_type: string;
+    department: string;
+    service_area: string;
+    stakeholders: string[];
+  };
 }
 
 interface DialogueSceneProps {
@@ -49,6 +79,10 @@ interface DialogueSceneProps {
   };
   culturalContext: 'swedish' | 'german' | 'french' | 'dutch';
   playerName?: string;
+  // Character system enhancements
+  relationshipManager?: CharacterRelationshipManager;
+  enableCharacterSystem?: boolean;
+  onCharacterInteraction?: (character1Id: string, character2Id: string, interactionType: InteractionType, outcome: 'positive' | 'neutral' | 'negative') => void;
 }
 
 // Cultural adaptation based on Game Designer specifications
@@ -87,12 +121,96 @@ const getCulturalStyles = (context: string, theme: any) => {
   }
 };
 
+// Enhanced Emotion Visualization Component
+const EmotionIndicator: React.FC<{
+  emotion: MunicipalEmotionType;
+  intensity: 'subtle' | 'moderate' | 'clear';
+  culturalContext: 'swedish' | 'german' | 'french' | 'dutch';
+}> = ({ emotion, intensity, culturalContext }) => {
+  const emotionData = getEmotionVisualization(emotion, culturalContext);
+  const culturalVariant = getCulturalEmotionVariant(emotion, culturalContext);
+  
+  const getEmotionColor = (emotion: MunicipalEmotionType) => {
+    const colorMap: Record<MunicipalEmotionType, string> = {
+      supportive: 'green',
+      analytical: 'blue', 
+      concerned: 'orange',
+      satisfied: 'purple',
+      determined: 'red',
+      collaborative: 'teal',
+      neutral: 'gray',
+      confident: 'blue',
+      questioning: 'yellow'
+    };
+    return colorMap[emotion] || 'gray';
+  };
+
+  const getIntensityProps = (intensity: 'subtle' | 'moderate' | 'clear') => {
+    switch (intensity) {
+      case 'subtle': return { size: 'sm', opacity: 0.7 };
+      case 'moderate': return { size: 'md', opacity: 0.8 };
+      case 'clear': return { size: 'lg', opacity: 1.0 };
+      default: return { size: 'md', opacity: 0.8 };
+    }
+  };
+
+  const intensityProps = getIntensityProps(intensity);
+  const emotionColor = getEmotionColor(emotion);
+
+  return (
+    <Tooltip 
+      label={`${emotionData.displayName}: ${culturalVariant?.localizedDescription || emotionData.accessibilityLabel}`}
+      aria-label={emotionData.accessibilityLabel}
+    >
+      <Badge
+        colorScheme={emotionColor}
+        size={intensityProps.size}
+        opacity={intensityProps.opacity}
+        borderRadius="full"
+        px={2}
+        py={1}
+        fontSize="xs"
+        fontWeight="medium"
+      >
+        {emotionData.displayName}
+      </Badge>
+    </Tooltip>
+  );
+};
+
+// Character Archetype Indicator Component
+const ArchetypeIndicator: React.FC<{
+  archetype: MunicipalArchetypeId;
+  culturalContext: 'swedish' | 'german' | 'french' | 'dutch';
+}> = ({ archetype, culturalContext }) => {
+  const archetypeData = getArchetypeById(archetype);
+  const culturalVariant = getCulturalArchetypeVariant(archetype, culturalContext);
+  
+  return (
+    <Tooltip 
+      label={`${culturalVariant?.localizedTitle || archetypeData.displayName}: ${archetypeData.description}`}
+    >
+      <Text 
+        fontSize="xs" 
+        color="gray.500"
+        fontStyle="italic"
+        textTransform="capitalize"
+      >
+        {culturalVariant?.localizedTitle || archetypeData.displayName}
+      </Text>
+    </Tooltip>
+  );
+};
+
 export const DialogueScene: React.FC<DialogueSceneProps> = ({
   sceneData,
   onComplete,
   municipalBranding,
   culturalContext = 'swedish',
-  playerName
+  playerName,
+  relationshipManager,
+  enableCharacterSystem = true,
+  onCharacterInteraction
 }) => {
   const [currentTurnIndex, setCurrentTurnIndex] = useState(0);
   const [isAnimating, setIsAnimating] = useState(false);
@@ -123,6 +241,25 @@ export const DialogueScene: React.FC<DialogueSceneProps> = ({
   const character = characters.find((c: any) => c.character_id === currentTurn?.character_id);
   const progress = dialogueTurns.length > 0 ? ((currentTurnIndex + 1) / dialogueTurns.length) * 100 : 0;
 
+  // Character system enhancements
+  const currentEmotion = useMemo(() => {
+    if (!currentTurn?.emotion) return 'neutral' as MunicipalEmotionType;
+    // Map legacy emotions to new system
+    return typeof currentTurn.emotion === 'string' && 
+           ['neutral', 'concerned', 'confident', 'questioning'].includes(currentTurn.emotion)
+           ? mapLegacyEmotion(currentTurn.emotion)
+           : currentTurn.emotion as MunicipalEmotionType;
+  }, [currentTurn]);
+
+  const currentArchetype = useMemo(() => {
+    return currentTurn?.archetype || character?.archetype;
+  }, [currentTurn, character]);
+
+  // Initialize relationship manager if not provided
+  const activeRelationshipManager = useMemo(() => {
+    return relationshipManager || new CharacterRelationshipManager();
+  }, [relationshipManager]);
+
   // Keyboard navigation (WCAG 2.1 AA requirement)
   useEffect(() => {
     const handleKeyPress = (e: KeyboardEvent) => {
@@ -140,6 +277,21 @@ export const DialogueScene: React.FC<DialogueSceneProps> = ({
     if (isAnimating) return;
     
     setIsAnimating(true);
+
+    // Track character interaction if character system is enabled
+    if (enableCharacterSystem && currentTurn && onCharacterInteraction) {
+      const nextTurn = dialogueTurns[currentTurnIndex + 1];
+      if (nextTurn && nextTurn.character_id !== currentTurn.character_id) {
+        // Determine interaction outcome based on emotions
+        const outcome = determineInteractionOutcome(currentEmotion, nextTurn.emotion as MunicipalEmotionType);
+        onCharacterInteraction(
+          currentTurn.character_id,
+          nextTurn.character_id,
+          'daily_coordination', // Default interaction type for dialogue
+          outcome
+        );
+      }
+    }
     
     if (currentTurnIndex < dialogueTurns.length - 1) {
       setTimeout(() => {
@@ -153,6 +305,25 @@ export const DialogueScene: React.FC<DialogueSceneProps> = ({
         setIsAnimating(false);
       }, 500);
     }
+  };
+
+  // Helper function to determine interaction outcome based on emotions
+  const determineInteractionOutcome = (
+    emotion1: MunicipalEmotionType, 
+    emotion2: MunicipalEmotionType
+  ): 'positive' | 'neutral' | 'negative' => {
+    const positiveEmotions: MunicipalEmotionType[] = ['supportive', 'collaborative', 'satisfied', 'confident'];
+    const negativeEmotions: MunicipalEmotionType[] = ['concerned', 'determined'];
+    
+    const isPositive1 = positiveEmotions.includes(emotion1);
+    const isPositive2 = positiveEmotions.includes(emotion2);
+    const isNegative1 = negativeEmotions.includes(emotion1);
+    const isNegative2 = negativeEmotions.includes(emotion2);
+    
+    if (isPositive1 && isPositive2) return 'positive';
+    if (isNegative1 && isNegative2) return 'negative';
+    if ((isPositive1 && isNegative2) || (isNegative1 && isPositive2)) return 'neutral';
+    return 'neutral';
   };
 
   // Accessibility: Screen reader announcements
@@ -249,28 +420,62 @@ export const DialogueScene: React.FC<DialogueSceneProps> = ({
                 }}
               >
                 <VStack align="start" spacing={2}>
-                  <HStack spacing={2} align="center">
-                    <Avatar
-                      name={character.character_id === 'player' && playerName ? playerName : character.name}
-                      size="xs"
-                      bg={character.character_id === 'player' ? 'whiteAlpha.300' : primaryColor}
-                      color={character.character_id === 'player' ? 'white' : 'white'}
-                    />
-                    <Text 
-                      fontSize="sm"
-                      fontWeight="semibold"
-                      color={character.character_id === 'player' ? 'whiteAlpha.900' : primaryColor}
-                    >
-                      {character.character_id === 'player' && playerName ? playerName : character.name}
-                    </Text>
-                    <Text 
-                      fontSize="xs" 
-                      color={character.character_id === 'player' ? 'whiteAlpha.700' : mutedTextColor}
-                      textTransform="capitalize"
-                    >
-                      {character.role}
-                    </Text>
-                  </HStack>
+                  <VStack align="start" spacing={1}>
+                    <HStack spacing={2} align="center">
+                      <Avatar
+                        name={character.character_id === 'player' && playerName ? playerName : character.name}
+                        size="xs"
+                        bg={character.character_id === 'player' ? 'whiteAlpha.300' : primaryColor}
+                        color={character.character_id === 'player' ? 'white' : 'white'}
+                      />
+                      <Text 
+                        fontSize="sm"
+                        fontWeight="semibold"
+                        color={character.character_id === 'player' ? 'whiteAlpha.900' : primaryColor}
+                      >
+                        {character.character_id === 'player' && playerName ? playerName : character.name}
+                      </Text>
+                      <Text 
+                        fontSize="xs" 
+                        color={character.character_id === 'player' ? 'whiteAlpha.700' : mutedTextColor}
+                        textTransform="capitalize"
+                      >
+                        {character.role}
+                      </Text>
+                    </HStack>
+                    
+                    {/* Enhanced character system indicators */}
+                    {enableCharacterSystem && (
+                      <HStack spacing={2} align="center">
+                        {/* Emotion indicator */}
+                        <EmotionIndicator
+                          emotion={currentEmotion}
+                          intensity={currentTurn?.emotionIntensity || 'moderate'}
+                          culturalContext={culturalContext}
+                        />
+                        
+                        {/* Archetype indicator */}
+                        {currentArchetype && (
+                          <ArchetypeIndicator
+                            archetype={currentArchetype}
+                            culturalContext={culturalContext}
+                          />
+                        )}
+                        
+                        {/* Municipal context indicator */}
+                        {currentTurn?.municipalContext && (
+                          <Badge 
+                            variant="outline" 
+                            colorScheme="gray" 
+                            size="sm"
+                            fontSize="xs"
+                          >
+                            {currentTurn.municipalContext}
+                          </Badge>
+                        )}
+                      </HStack>
+                    )}
+                  </VStack>
                   
                   <Text 
                     fontSize={isMobile ? "md" : "lg"}

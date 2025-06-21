@@ -35,7 +35,7 @@ docs/
 - [`docs/developers/component-library-analysis.md`](docs/developers/component-library-analysis.md) - Component library beslut
 
 ### **📅 Strategic & Tactical Planning**
-- [`docs/developers/road_map.md`](docs/developers/road_map.md) - **STRATEGIC:** Q1-Q4 2025 roadmap för €25M ARR
+- [`docs/developers/road_map.md`](docs/developers/road_map.md) - **STRATEGIC:** Q1-Q4 2025 roadmap med Q3 Game Engine Evolution pivot
 - [`docs/developers/immediate-focus-roadmap.md`](docs/developers/immediate-focus-roadmap.md) - **TACTICAL:** 7-day execution plan för current milestone
 
 ### **⚙️ Implementation & Workflow**
@@ -63,6 +63,11 @@ docs/
 - [`design_dev_sync.json`](design_dev_sync.json) - Multi-role team coordination (live)
 - [`docs/developers/coordination-implementation-guide.md`](docs/developers/coordination-implementation-guide.md) - Implementation guide för new coordination
 - [`docs/developers/collaboration-guide.md`](docs/developers/collaboration-guide.md) - AI-to-AI collaboration och visual status system
+
+### **🚀 Q3 Game Engine Evolution**
+- [`docs/q3-coordination/Q3-EXECUTION-READY.md`](docs/q3-coordination/Q3-EXECUTION-READY.md) - **TRIGGER:** Q3 execution activation document
+- [`docs/q3-coordination/q3-complete-strategy.md`](docs/q3-coordination/q3-complete-strategy.md) - Consolidated Q3 strategy med technical validation
+- [`docs/q3-coordination/q3-specialist-prompts.md`](docs/q3-coordination/q3-specialist-prompts.md) - Self-contained specialist prompts med embedded context
 
 ---
 

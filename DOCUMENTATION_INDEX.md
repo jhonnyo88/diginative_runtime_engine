@@ -34,6 +34,10 @@ docs/
 - [`docs/developers/chakra-design-reference.md`](docs/developers/chakra-design-reference.md) - Chakra UI integration och design
 - [`docs/developers/component-library-analysis.md`](docs/developers/component-library-analysis.md) - Component library beslut
 
+### **📅 Strategic & Tactical Planning**
+- [`docs/developers/road_map.md`](docs/developers/road_map.md) - **STRATEGIC:** Q1-Q4 2025 roadmap för €25M ARR
+- [`docs/developers/immediate-focus-roadmap.md`](docs/developers/immediate-focus-roadmap.md) - **TACTICAL:** 7-day execution plan för current milestone
+
 ### **⚙️ Implementation & Workflow**
 - [`docs/developers/game-engine-development.md`](docs/developers/game-engine-development.md) - Spelmotor implementation
 - [`docs/developers/collaboration-guide.md`](docs/developers/collaboration-guide.md) - Team collaboration workflow

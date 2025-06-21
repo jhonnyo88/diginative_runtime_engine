@@ -45,3 +45,37 @@ const localStorageMock = {
   clear: vi.fn(),
 };
 global.localStorage = localStorageMock;
+
+// Mock WebSocket to prevent analytics connection errors
+global.WebSocket = class MockWebSocket {
+  constructor(url) {
+    this.url = url;
+    this.readyState = 0;
+    setTimeout(() => {
+      this.readyState = 1;
+      if (this.onopen) this.onopen(new Event('open'));
+    }, 10);
+  }
+  close() {
+    this.readyState = 3;
+    if (this.onclose) this.onclose(new Event('close'));
+  }
+  send() {}
+  addEventListener() {}
+  removeEventListener() {}
+};
+
+// Mock fetch for analytics to prevent network errors
+const originalFetch = global.fetch;
+global.fetch = vi.fn().mockImplementation((url, options) => {
+  // Mock analytics endpoints
+  if (typeof url === 'string' && url.includes('/api/analytics')) {
+    return Promise.resolve({
+      ok: true,
+      status: 200,
+      json: async () => ({ success: true }),
+    });
+  }
+  // Call original fetch for other URLs
+  return originalFetch(url, options);
+});

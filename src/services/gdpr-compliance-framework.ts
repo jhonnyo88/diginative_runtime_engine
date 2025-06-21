@@ -160,6 +160,13 @@ export class EUComplianceManager {
         key_management: 'Government approved standards'
       },
       
+      retention_policies: {
+        user_data: '7 years (Dutch administrative requirements)',
+        analytics_data: '2 years (AVG limitation)',
+        audit_logs: '7 years (Dutch audit requirements)',
+        session_data: '30 days maximum'
+      },
+      
       proportionality_assessment: {
         data_collection: 'Proportional to municipal training needs',
         processing_scope: 'Limited to learning objectives',
@@ -188,6 +195,13 @@ export class EUComplianceManager {
         minimum_standard: 'AES-256',
         key_rotation: '12 months',
         key_management: 'MSB (Swedish Civil Contingencies Agency) guidelines'
+      },
+      
+      retention_policies: {
+        user_data: '7 years (Swedish municipal requirements)',
+        analytics_data: '2 years (Datainspektionen guidance)',
+        audit_logs: '10 years (Swedish municipal audit requirements)',
+        session_data: '30 days maximum'
       },
       
       municipal_specific_requirements: {

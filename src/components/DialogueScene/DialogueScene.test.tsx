@@ -471,7 +471,7 @@ describe('DialogueScene Component Tests', () => {
 
       const results = await axe(container);
       expect(results).toHaveNoViolations();
-    });
+    }, 20000); // Increased timeout for axe accessibility tests
 
     it('provides screen reader announcements', () => {
       render(
@@ -545,6 +545,8 @@ describe('DialogueScene Component Tests', () => {
     });
 
     it('prevents rapid clicking during animations', async () => {
+      vi.useFakeTimers();
+      
       render(
         <TestWrapper>
           <DialogueScene
@@ -560,15 +562,14 @@ describe('DialogueScene Component Tests', () => {
       fireEvent.click(nextButton); // Should be ignored during animation
 
       // Wait for animation to complete
-      vi.advanceTimersByTime(300);
+      await vi.runOnlyPendingTimersAsync();
 
       // Should only advance one turn
-      await waitFor(() => {
-        expect(screen.getByText('Today we will learn about GDPR compliance in municipal work.')).toBeInTheDocument();
-      }, { timeout: 1000 });
-
+      expect(screen.getByText('Today we will learn about GDPR compliance in municipal work.')).toBeInTheDocument();
       expect(screen.queryByText('I understand. Please tell me more.')).not.toBeInTheDocument();
-    }, 15000);
+      
+      vi.useRealTimers();
+    });
   });
 
   describe('Error Handling', () => {

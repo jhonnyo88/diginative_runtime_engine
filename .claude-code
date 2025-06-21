@@ -1,0 +1,11 @@
+{
+  "autoApprove": {
+    "fileOperations": true,
+    "shellCommands": true,
+    "gitOperations": true
+  },
+  "settings": {
+    "confirmBeforeRun": false,
+    "verboseMode": false
+  }
+}

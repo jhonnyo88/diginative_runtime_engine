@@ -25,11 +25,28 @@ interface QuizSceneProps {
   };
 }
 
+// Data transformation helper to handle both option_text and text formats
+const transformQuizOptions = (options: any[]): QuizSceneType['options'] => {
+  return options.map(option => ({
+    id: option.id || option.option_id,
+    text: option.text || option.option_text || '',
+    isCorrect: option.isCorrect !== undefined ? option.isCorrect : option.is_correct,
+    feedback: option.feedback || option.feedback_text,
+    points: option.points || option.partial_credit || 1
+  }));
+};
+
 export const QuizScene: React.FC<QuizSceneProps> = ({
   scene,
   onComplete,
   analytics,
 }) => {
+  // Transform the scene to handle data format variations from different sources
+  const normalizedScene = {
+    ...scene,
+    question: scene.question || (scene as any).question_text || '',
+    options: transformQuizOptions(scene.options || (scene as any).questions?.[0]?.options || [])
+  };
   const [selectedAnswers, setSelectedAnswers] = useState<string[]>([]);
   const [showFeedback, setShowFeedback] = useState(false);
   const [attempts, setAttempts] = useState(0);
@@ -38,14 +55,14 @@ export const QuizScene: React.FC<QuizSceneProps> = ({
   
   // Game Designer spec: Animation support handled by CSS
 
-  const maxAttempts = scene.maxAttempts || 3;
-  const allowMultiple = scene.allowMultiple || false;
+  const maxAttempts = normalizedScene.maxAttempts || 3;
+  const allowMultiple = normalizedScene.allowMultiple || false;
 
   const handleAnswerSelect = (optionId: string) => {
     if (isSubmitted) return;
 
     analytics?.trackEvent('quiz_answer_select', {
-      sceneId: scene.id,
+      sceneId: normalizedScene.id,
       optionId,
       attempt: attempts + 1,
     });
@@ -71,9 +88,9 @@ export const QuizScene: React.FC<QuizSceneProps> = ({
     setIsSubmitted(true);
 
     // Calculate score
-    const correctAnswers = scene.options.filter(option => option.isCorrect);
+    const correctAnswers = normalizedScene.options.filter(option => option.isCorrect);
     const selectedCorrect = selectedAnswers.filter(answerId => 
-      scene.options.find(opt => opt.id === answerId)?.isCorrect
+      normalizedScene.options.find(opt => opt.id === answerId)?.isCorrect
     );
     
     const isCorrect = allowMultiple 
@@ -88,7 +105,7 @@ export const QuizScene: React.FC<QuizSceneProps> = ({
     const maxScore = correctAnswers.reduce((sum, option) => sum + (option.points || 1), 0);
 
     analytics?.trackEvent('quiz_submit', {
-      sceneId: scene.id,
+      sceneId: normalizedScene.id,
       selectedAnswers,
       isCorrect,
       score,
@@ -96,7 +113,7 @@ export const QuizScene: React.FC<QuizSceneProps> = ({
     });
 
     // Show feedback if enabled
-    if (scene.showFeedback !== false) {
+    if (normalizedScene.showFeedback !== false) {
       setShowFeedback(true);
       
       // TASK-HD-014: Removed intrusive celebration popup
@@ -106,7 +123,7 @@ export const QuizScene: React.FC<QuizSceneProps> = ({
       setTimeout(() => {
         if (isCorrect || newAttempts >= maxAttempts) {
           onComplete({
-            nextScene: scene.navigation?.next,
+            nextScene: normalizedScene.navigation?.next,
             score,
             maxScore,
             answers: selectedAnswers,
@@ -135,13 +152,13 @@ export const QuizScene: React.FC<QuizSceneProps> = ({
 
   const getSelectedFeedback = () => {
     return selectedAnswers.map(answerId => {
-      const option = scene.options.find(opt => opt.id === answerId);
+      const option = normalizedScene.options.find(opt => opt.id === answerId);
       return option?.feedback;
     }).filter(Boolean).join(' ');
   };
 
   const isCorrectAnswer = (optionId: string) => {
-    return scene.options.find(opt => opt.id === optionId)?.isCorrect || false;
+    return normalizedScene.options.find(opt => opt.id === optionId)?.isCorrect || false;
   };
 
   const getButtonVariant = (optionId: string) => {
@@ -174,9 +191,9 @@ export const QuizScene: React.FC<QuizSceneProps> = ({
     <Box p={4} maxW="600px" mx="auto">
       {/* Scene header */}
       <VStack spacing={4} mb={6}>
-        {scene.title && (
+        {normalizedScene.title && (
           <Text fontSize="xl" fontWeight="bold" textAlign="center">
-            {scene.title}
+            {normalizedScene.title}
           </Text>
         )}
         
@@ -199,20 +216,20 @@ export const QuizScene: React.FC<QuizSceneProps> = ({
       </VStack>
 
       {/* Media content */}
-      {scene.media && (
+      {normalizedScene.media && (
         <Box mb={6} textAlign="center">
-          {scene.questionType === 'image' && (
+          {normalizedScene.questionType === 'image' && (
             <Image 
-              src={scene.media.url} 
-              alt={scene.media.alt}
+              src={normalizedScene.media.url} 
+              alt={normalizedScene.media.alt}
               maxH="200px"
               mx="auto"
               borderRadius="md"
             />
           )}
-          {scene.media.caption && (
+          {normalizedScene.media.caption && (
             <Text fontSize="sm" color="gray.600" mt={2}>
-              {scene.media.caption}
+              {normalizedScene.media.caption}
             </Text>
           )}
         </Box>
@@ -222,14 +239,14 @@ export const QuizScene: React.FC<QuizSceneProps> = ({
       <Card mb={6} bg="blue.50" borderLeft="4px" borderLeftColor="brand.500">
         <CardBody>
           <Text fontSize="lg" fontWeight="medium" lineHeight="1.6">
-            {scene.question}
+            {normalizedScene.question}
           </Text>
         </CardBody>
       </Card>
 
       {/* Answer options */}
       <VStack spacing={3} mb={6}>
-        {scene.options.map((option) => (
+        {normalizedScene.options.map((option) => (
           <ButtonFeedback key={option.id} feedbackType="subtle" disabled={isSubmitted}>
             <Button
             key={option.id}

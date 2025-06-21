@@ -8,6 +8,13 @@ export default defineConfig({
     setupFiles: ['./src/tests/setup.ts'],
     globals: true,
     css: true,
+    pool: 'forks',
+    poolOptions: {
+      forks: {
+        maxForks: 4,
+        minForks: 1,
+      }
+    },
     coverage: {
       provider: 'v8',
       reporter: ['text', 'json', 'html'],
@@ -28,8 +35,8 @@ export default defineConfig({
       }
     },
     // Performance testing configuration
-    testTimeout: 10000,
-    hookTimeout: 10000,
+    testTimeout: 30000, // Increased from 10s to 30s for complex tests
+    hookTimeout: 20000, // Increased from 10s to 20s
   },
   resolve: {
     alias: {

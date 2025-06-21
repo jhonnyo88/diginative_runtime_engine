@@ -36,6 +36,7 @@ import {
   FiPhone 
 } from 'react-icons/fi';
 import { motion } from 'framer-motion';
+import { InfrastructureMonitoring } from '../../services/infrastructure-monitoring';
 
 // Municipal theme types from GameContainer
 type MunicipalTheme = 'sweden' | 'germany' | 'france' | 'netherlands';
@@ -481,8 +482,6 @@ export class EnhancedErrorBoundary extends Component<
   
   reportError = async (error: Error, errorInfo: ErrorInfo) => {
     try {
-      // In production, report to monitoring service like Sentry
-      // For now, just log to console
       const errorReport = {
         errorId: this.state.errorId,
         message: error.message,
@@ -496,12 +495,28 @@ export class EnhancedErrorBoundary extends Component<
       
       console.log('Error Report:', errorReport);
       
-      // TODO: Send to actual monitoring service
-      // await fetch('/api/error-reporting', {
-      //   method: 'POST',
-      //   headers: { 'Content-Type': 'application/json' },
-      //   body: JSON.stringify(errorReport)
-      // });
+      // Report to Infrastructure Monitoring Service
+      const monitoring = InfrastructureMonitoring.getInstance();
+      if (monitoring) {
+        monitoring.reportError(error, {
+          errorId: this.state.errorId,
+          municipalTheme: this.props.municipalTheme,
+          brandingLevel: this.props.brandingLevel,
+          componentStack: errorInfo.componentStack,
+          url: window.location.href
+        });
+      }
+      
+      // Also send to API endpoint for backup
+      try {
+        await fetch('/api/error-reporting', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(errorReport)
+        });
+      } catch (apiError) {
+        console.warn('Failed to send error report to API:', apiError);
+      }
       
     } catch (reportingError) {
       console.error('Failed to report error:', reportingError);

@@ -338,7 +338,7 @@ export class InfrastructureMonitoring {
         unit: 'count',
         timestamp: Date.now(),
         tags: { 
-          critical: endpoint.critical.toString(),
+          critical: (endpoint.critical || false).toString(),
           error: 'true'
         }
       });

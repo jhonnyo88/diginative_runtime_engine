@@ -92,7 +92,6 @@ function generateSuggestions(errors: ValidationError[]): string[] {
 export async function validateContent(
   req: Request<Record<string, unknown>, Record<string, unknown>, ValidationRequest>,
   res: Response<ValidationResponse>,
-  _next: NextFunction
 ): Promise<void> {
   const startTime = Date.now();
   const monitoring = InfrastructureMonitoring.getInstance();

@@ -7,7 +7,7 @@
  */
 
 import { Router, type Request, type Response } from 'express';
-import { getSAMLProductionManager, type TenantRegistrationRequest, type ProductionSAMLConfig } from '../../services/saml-production-manager';
+import { getSAMLProductionManager, type TenantRegistrationRequest } from '../../services/saml-production-manager';
 import { InfrastructureMonitoring } from '../../services/infrastructure-monitoring';
 import { requireSAMLAuth } from '../auth/saml';
 
@@ -20,7 +20,7 @@ interface AuditLogEntry {
   ipAddress: string;
   userAgent: string;
   success: boolean;
-  details: Record<string, any>;
+  details: Record<string, unknown>;
   severity: 'low' | 'medium' | 'high' | 'critical';
 }
 

@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useMemo } from 'react';
+import React, { useState, useEffect, useMemo, useCallback } from 'react';
 import {
   Box,
   VStack,
@@ -271,9 +271,9 @@ export const DialogueScene: React.FC<DialogueSceneProps> = ({
 
     window.addEventListener('keydown', handleKeyPress);
     return () => window.removeEventListener('keydown', handleKeyPress);
-  }, [currentTurnIndex]);
+  }, [currentTurnIndex, handleNextTurn]);
 
-  const handleNextTurn = () => {
+  const handleNextTurn = useCallback(() => {
     if (isAnimating) return;
     
     setIsAnimating(true);
@@ -305,7 +305,7 @@ export const DialogueScene: React.FC<DialogueSceneProps> = ({
         setIsAnimating(false);
       }, 500);
     }
-  };
+  }, [isAnimating, enableCharacterSystem, currentTurn, onCharacterInteraction, dialogueTurns, currentTurnIndex, currentEmotion, onComplete]);
 
   // Helper function to determine interaction outcome based on emotions
   const determineInteractionOutcome = (

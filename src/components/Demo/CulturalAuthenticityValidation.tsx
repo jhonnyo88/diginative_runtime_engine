@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useMemo } from 'react';
+import React, { useState, useEffect, useMemo, useCallback } from 'react';
 import {
   Box,
   VStack,
@@ -759,7 +759,7 @@ export const CulturalAuthenticityValidation: React.FC<CulturalAuthenticityValida
     };
   }, [validationResults]);
 
-  const handleElementValidation = async (elementId: string) => {
+  const handleElementValidation = useCallback(async (elementId: string) => {
     setIsValidating(true);
     
     // Simulate validation process
@@ -804,9 +804,9 @@ export const CulturalAuthenticityValidation: React.FC<CulturalAuthenticityValida
 
     setValidationResults(prev => new Map(prev.set(elementId, result)));
     setIsValidating(false);
-  };
+  }, []);
 
-  const handleBulkValidation = async () => {
+  const handleBulkValidation = useCallback(async () => {
     setIsValidating(true);
     
     for (const element of swedishCulturalElements) {
@@ -815,19 +815,19 @@ export const CulturalAuthenticityValidation: React.FC<CulturalAuthenticityValida
     }
     
     setIsValidating(false);
-  };
+  }, [handleElementValidation]);
 
   useEffect(() => {
     if (autoValidate) {
       handleBulkValidation();
     }
-  }, [autoValidate]);
+  }, [autoValidate, handleBulkValidation]);
 
   useEffect(() => {
     if (validationResults.size > 0) {
       onValidationComplete(validationSuite);
     }
-  }, [validationSuite, onValidationComplete]);
+  }, [validationSuite, onValidationComplete, validationResults]);
 
   const filteredElements = selectedCategory === 'all' 
     ? swedishCulturalElements 

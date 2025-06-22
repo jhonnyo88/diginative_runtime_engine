@@ -119,11 +119,6 @@ describe('DevTeam Integration API', () => {
       const invalidManifest = { ...mockGameManifest };
       delete invalidManifest.gameId;
       
-      const invalidRequest = {
-        ...mockSubmissionRequest,
-        gameManifest: invalidManifest
-      };
-
       const validation = validateGameManifest(invalidManifest);
       expect(validation.isValid).toBe(false);
       expect(validation.errors).toContain('Missing required field: gameId');

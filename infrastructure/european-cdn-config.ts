@@ -124,7 +124,7 @@ export class EuropeanCDNManager {
     const optimizedAssets = await this.culturalOptimization(assets, culturalContext);
     
     // Deploy to optimal edge location
-    await this.deployToEdge(edgeLocation, optimizedAssets);
+    await this.deployToEdge(edgeLocation);
     
     return {
       edgeLocation,
@@ -312,7 +312,7 @@ export class EuropeanCDNManager {
     }
   }
 
-  private async deployToEdge(edgeLocation: EdgeLocation, _assets: Asset[]): Promise<void> {
+  private async deployToEdge(edgeLocation: EdgeLocation): Promise<void> {
     // CloudFlare Workers deployment för cultural assets
     const workerScript = this.generateCulturalWorker();
     await this.deployWorkerToEdge(edgeLocation, workerScript);

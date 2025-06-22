@@ -898,7 +898,7 @@ export const PerfectSverigesDigitaliseringsstrategiDemo: React.FC<PerfectSverige
 
     window.addEventListener('keydown', handleKeyPress);
     return () => window.removeEventListener('keydown', handleKeyPress);
-  }, [isPlaying, isFullscreen, presentationMode]);
+  }, [isPlaying, isFullscreen, presentationMode, handlePause, handlePlay, handleNext, handlePrevious]);
 
   // Enhanced timer management
   useEffect(() => {

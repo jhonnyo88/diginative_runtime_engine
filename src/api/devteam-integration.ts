@@ -8,7 +8,6 @@
 import { z } from 'zod';
 import { validateGameManifest } from '../utils/contentValidation';
 import { applyMunicipalBrandingToManifest, validateMunicipalBranding, getMunicipalContext } from '../utils/municipalBranding';
-import { processGameManifestWithPlayerName } from '../utils/playerNameReplacement';
 
 // Processing status tracking
 export enum ProcessingStatus {
@@ -269,8 +268,8 @@ async function applyMunicipalBranding(
 async function createDeploymentPackages(
   gameManifest: Record<string, unknown>,
   formats: DeploymentFormat[]
-): Promise<Map<DeploymentFormat, any>> {
-  const packages = new Map<DeploymentFormat, any>();
+): Promise<Map<DeploymentFormat, Record<string, unknown>>> {
+  const packages = new Map<DeploymentFormat, Record<string, unknown>>();
   
   for (const format of formats) {
     switch (format) {
@@ -348,7 +347,7 @@ function updateJobStatus(
  */
 function getMunicipalBranding(municipalityId: string): Record<string, unknown> {
   // Municipal branding database integration
-  const municipalityBrandings: Record<string, any> = {
+  const municipalityBrandings: Record<string, Record<string, unknown>> = {
     'malmo': {
       municipality: 'Malmö Stad',
       primaryColor: '#005293',

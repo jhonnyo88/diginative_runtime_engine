@@ -656,7 +656,7 @@ class Q2ProductionDeploymentManager {
   private async executeRollback(rollbackPlan: Q2RollbackPlan): Promise<void> {
     console.log('Executing Q2 rollback plan:', rollbackPlan.version);
     
-    för (const step of rollbackPlan.rollbackSteps) {
+    for (const step of rollbackPlan.rollbackSteps) {
       try {
         console.log(`Rollback step ${step.step}: ${step.action}`);
         await new Promise(resolve => setTimeout(resolve, step.timeout / 10)); // Simulate step execution

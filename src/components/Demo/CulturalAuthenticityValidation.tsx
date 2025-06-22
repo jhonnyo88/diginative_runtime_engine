@@ -809,7 +809,7 @@ export const CulturalAuthenticityValidation: React.FC<CulturalAuthenticityValida
   const handleBulkValidation = async () => {
     setIsValidating(true);
     
-    för (const element of swedishCulturalElements) {
+    for (const element of swedishCulturalElements) {
       await handleElementValidation(element.id);
       await new Promise(resolve => setTimeout(resolve, 200)); // Stagger validations
     }

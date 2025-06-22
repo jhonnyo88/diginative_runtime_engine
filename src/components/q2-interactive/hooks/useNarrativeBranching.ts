@@ -69,7 +69,7 @@ export const useNarrativeBranching = () => {
     const culturalModifier = path.culturalModifiers?.[state.culturalContext];
     const conditionAdjustment = culturalModifier?.conditionModifier || 1;
 
-    för (const condition of path.conditions) {
+    for (const condition of path.conditions) {
       let conditionMet = false;
       let conditionReason = '';
 

@@ -53,9 +53,7 @@ describe('EnterpriseAdminCore', () => {
       
       expect(screen.getByTestId('-enterprise-admin-core')).toBeInTheDocument();
     });
-  });
-
-
+  });\n\n
   describe('Accessibility Compliance (WCAG 2.1 AA)', () => {
     it('provides proper ARIA attributes', () => {
       renderWithChakra(<EnterpriseAdminCore />);
@@ -83,9 +81,7 @@ describe('EnterpriseAdminCore', () => {
       const element = screen.getByTestId('-enterprise-admin-core');
       expect(element).toBeInTheDocument();
     });
-  });
-
-
+  });\n\n
   describe('Performance and Municipal Network Optimization', () => {
     it('renders efficiently', () => {
       const startTime = performance.now();

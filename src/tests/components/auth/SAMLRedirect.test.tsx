@@ -61,7 +61,9 @@ describe('SAMLRedirect', () => {
       
       expect(screen.getByTestId('-s-a-m-l-redirect')).toBeInTheDocument();
     });
-  });\n\n
+  });
+
+
   describe('Accessibility Compliance (WCAG 2.1 AA)', () => {
     it('provides proper ARIA attributes', () => {
       renderWithChakra(<SAMLRedirect />);

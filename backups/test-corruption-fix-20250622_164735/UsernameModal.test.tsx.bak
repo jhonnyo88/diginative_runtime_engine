@@ -53,9 +53,7 @@ describe('UsernameModal', () => {
       
       expect(screen.getByTestId('-username-modal')).toBeInTheDocument();
     });
-  });
-
-
+  });\n\n
   describe('Accessibility Compliance (WCAG 2.1 AA)', () => {
     it('provides proper ARIA attributes', () => {
       renderWithChakra(<UsernameModal />);

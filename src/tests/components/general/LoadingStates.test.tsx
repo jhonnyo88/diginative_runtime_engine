@@ -53,7 +53,9 @@ describe('LoadingStates', () => {
       
       expect(screen.getByTestId('-loading-states')).toBeInTheDocument();
     });
-  });\n\n
+  });
+
+
   describe('Accessibility Compliance (WCAG 2.1 AA)', () => {
     it('provides proper ARIA attributes', () => {
       renderWithChakra(<LoadingStates />);

@@ -53,7 +53,9 @@ describe('Avatar', () => {
       
       expect(screen.getByTestId('-avatar')).toBeInTheDocument();
     });
-  });\n\n
+  });
+
+
   describe('Accessibility Compliance (WCAG 2.1 AA)', () => {
     it('provides proper ARIA attributes', () => {
       renderWithChakra(<Avatar />);

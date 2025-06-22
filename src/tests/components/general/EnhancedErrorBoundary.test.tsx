@@ -53,7 +53,9 @@ describe('EnhancedErrorBoundary', () => {
       
       expect(screen.getByTestId('-enhanced-error-boundary')).toBeInTheDocument();
     });
-  });\n\n
+  });
+
+
   describe('Accessibility Compliance (WCAG 2.1 AA)', () => {
     it('provides proper ARIA attributes', () => {
       renderWithChakra(<EnhancedErrorBoundary />);

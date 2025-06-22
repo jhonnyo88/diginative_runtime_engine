@@ -58,7 +58,9 @@ describe('MunicipalButtonExamples', () => {
       
       expect(screen.getByTestId('-municipal-button-examples')).toBeInTheDocument();
     });
-  });\n\n
+  });
+
+
   describe('Municipal Branding Compliance', () => {
     it('displays municipal styling correctly', () => {
       renderWithChakra(
@@ -94,7 +96,9 @@ describe('MunicipalButtonExamples', () => {
         expect(element).toHaveAttribute('data-municipality', municipality);
       });
     });
-  });\n\n
+  });
+
+
   describe('Accessibility Compliance (WCAG 2.1 AA)', () => {
     it('provides proper ARIA attributes', () => {
       renderWithChakra(<MunicipalButtonExamples />);

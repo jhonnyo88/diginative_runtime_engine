@@ -60,7 +60,9 @@ describe('ResourceScene', () => {
       
       expect(screen.getByTestId('-resource-scene')).toBeInTheDocument();
     });
-  });\n\n
+  });
+
+
   describe('Accessibility Compliance (WCAG 2.1 AA)', () => {
     it('provides proper ARIA attributes', () => {
       renderWithChakra(<ResourceScene />);
@@ -88,7 +90,9 @@ describe('ResourceScene', () => {
       const element = screen.getByTestId('-resource-scene');
       expect(element).toBeInTheDocument();
     });
-  });\n\n
+  });
+
+
   describe('Performance and Municipal Network Optimization', () => {
     it('renders efficiently', () => {
       const startTime = performance.now();

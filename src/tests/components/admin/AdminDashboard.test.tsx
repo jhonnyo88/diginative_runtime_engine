@@ -53,7 +53,9 @@ describe('AdminDashboard', () => {
       
       expect(screen.getByTestId('-admin-dashboard')).toBeInTheDocument();
     });
-  });\n\n
+  });
+
+
   describe('Accessibility Compliance (WCAG 2.1 AA)', () => {
     it('provides proper ARIA attributes', () => {
       renderWithChakra(<AdminDashboard />);
@@ -81,7 +83,9 @@ describe('AdminDashboard', () => {
       const element = screen.getByTestId('-admin-dashboard');
       expect(element).toBeInTheDocument();
     });
-  });\n\n
+  });
+
+
   describe('Performance and Municipal Network Optimization', () => {
     it('renders efficiently', () => {
       const startTime = performance.now();

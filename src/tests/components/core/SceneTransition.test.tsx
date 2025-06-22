@@ -60,7 +60,9 @@ describe('SceneTransition', () => {
       
       expect(screen.getByTestId('-scene-transition')).toBeInTheDocument();
     });
-  });\n\n
+  });
+
+
   describe('Accessibility Compliance (WCAG 2.1 AA)', () => {
     it('provides proper ARIA attributes', () => {
       renderWithChakra(<SceneTransition />);
@@ -88,7 +90,9 @@ describe('SceneTransition', () => {
       const element = screen.getByTestId('-scene-transition');
       expect(element).toBeInTheDocument();
     });
-  });\n\n
+  });
+
+
   describe('Performance and Municipal Network Optimization', () => {
     it('renders efficiently', () => {
       const startTime = performance.now();

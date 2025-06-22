@@ -53,7 +53,9 @@ describe('MonitoringDashboard', () => {
       
       expect(screen.getByTestId('-monitoring-dashboard')).toBeInTheDocument();
     });
-  });\n\n
+  });
+
+
   describe('Accessibility Compliance (WCAG 2.1 AA)', () => {
     it('provides proper ARIA attributes', () => {
       renderWithChakra(<MonitoringDashboard />);
@@ -81,7 +83,9 @@ describe('MonitoringDashboard', () => {
       const element = screen.getByTestId('-monitoring-dashboard');
       expect(element).toBeInTheDocument();
     });
-  });\n\n
+  });
+
+
   describe('Performance and Municipal Network Optimization', () => {
     it('renders efficiently', () => {
       const startTime = performance.now();

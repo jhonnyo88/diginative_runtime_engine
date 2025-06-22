@@ -53,7 +53,9 @@ describe('ContentWorkflows', () => {
       
       expect(screen.getByTestId('-content-workflows')).toBeInTheDocument();
     });
-  });\n\n
+  });
+
+
   describe('Accessibility Compliance (WCAG 2.1 AA)', () => {
     it('provides proper ARIA attributes', () => {
       renderWithChakra(<ContentWorkflows />);

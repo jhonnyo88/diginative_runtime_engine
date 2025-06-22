@@ -1,5 +1,5 @@
 /**
- * UsernameModal Component Tests
+ * ErrorBoundary Component Tests
  * Task: proposal-028 - Component Testing Infrastructure
  * Priority: P2 - MEDIUM (Enhancement)
  * Category: general
@@ -11,7 +11,7 @@ import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import '@testing-library/jest-dom';
 import { ChakraProvider } from '@chakra-ui/react';
-import UsernameModal from '../../../components/UsernameModal/UsernameModal.tsx';
+import ErrorBoundary from '../../../components/ErrorBoundary.tsx';
 
 // Mock dependencies if needed
 
@@ -24,16 +24,16 @@ const renderWithChakra = (component: React.ReactElement) => {
   );
 };
 
-describe('UsernameModal', () => {
+describe('ErrorBoundary', () => {
   beforeEach(() => {
     vi.clearAllMocks();
   });
 
   describe('Basic Functionality', () => {
     it('renders without crashing', () => {
-      renderWithChakra(<UsernameModal />);
+      renderWithChakra(<ErrorBoundary />);
       
-      const component = screen.getByTestId('-username-modal');
+      const component = screen.getByTestId('-error-boundary');
       expect(component).toBeInTheDocument();
     });
 
@@ -42,34 +42,32 @@ describe('UsernameModal', () => {
         // Add relevant props based on component analysis
       };
       
-      renderWithChakra(<UsernameModal {...testProps} />);
+      renderWithChakra(<ErrorBoundary {...testProps} />);
       
       // Add assertions based on props
     });
 
     it('handles edge cases gracefully', () => {
       // Test with empty/invalid props
-      renderWithChakra(<UsernameModal />);
+      renderWithChakra(<ErrorBoundary />);
       
-      expect(screen.getByTestId('-username-modal')).toBeInTheDocument();
+      expect(screen.getByTestId('-error-boundary')).toBeInTheDocument();
     });
-  });
-
-
+  });\n\n
   describe('Accessibility Compliance (WCAG 2.1 AA)', () => {
     it('provides proper ARIA attributes', () => {
-      renderWithChakra(<UsernameModal />);
+      renderWithChakra(<ErrorBoundary />);
       
-      const element = screen.getByTestId('-username-modal');
+      const element = screen.getByTestId('-error-boundary');
       
       // Check for appropriate ARIA attributes
       expect(element).toHaveAttribute('role');
     });
 
     it('supports keyboard navigation', () => {
-      renderWithChakra(<UsernameModal />);
+      renderWithChakra(<ErrorBoundary />);
       
-      const element = screen.getByTestId('-username-modal');
+      const element = screen.getByTestId('-error-boundary');
       
       // Test tab navigation
       element.focus();
@@ -77,10 +75,10 @@ describe('UsernameModal', () => {
     });
 
     it('maintains sufficient color contrast', () => {
-      renderWithChakra(<UsernameModal />);
+      renderWithChakra(<ErrorBoundary />);
       
       // Basic contrast check
-      const element = screen.getByTestId('-username-modal');
+      const element = screen.getByTestId('-error-boundary');
       expect(element).toBeInTheDocument();
     });
   });

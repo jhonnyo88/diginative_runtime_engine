@@ -60,7 +60,9 @@ describe('AssessmentScene', () => {
       
       expect(screen.getByTestId('-assessment-scene')).toBeInTheDocument();
     });
-  });\n\n
+  });
+
+
   describe('Accessibility Compliance (WCAG 2.1 AA)', () => {
     it('provides proper ARIA attributes', () => {
       renderWithChakra(<AssessmentScene />);
@@ -88,7 +90,9 @@ describe('AssessmentScene', () => {
       const element = screen.getByTestId('-assessment-scene');
       expect(element).toBeInTheDocument();
     });
-  });\n\n
+  });
+
+
   describe('Performance and Municipal Network Optimization', () => {
     it('renders efficiently', () => {
       const startTime = performance.now();

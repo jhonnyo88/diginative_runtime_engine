@@ -58,9 +58,7 @@ describe('MunicipalitySelector', () => {
       
       expect(screen.getByTestId('-municipality-selector')).toBeInTheDocument();
     });
-  });
-
-
+  });\n\n
   describe('Municipal Branding Compliance', () => {
     it('displays municipal styling correctly', () => {
       renderWithChakra(
@@ -96,9 +94,7 @@ describe('MunicipalitySelector', () => {
         expect(element).toHaveAttribute('data-municipality', municipality);
       });
     });
-  });
-
-
+  });\n\n
   describe('Accessibility Compliance (WCAG 2.1 AA)', () => {
     it('provides proper ARIA attributes', () => {
       renderWithChakra(<MunicipalitySelector />);

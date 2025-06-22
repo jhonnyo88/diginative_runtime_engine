@@ -98,16 +98,7 @@ export const InvoiceApprovalWorkflow: React.FC<InvoiceApprovalWorkflowProps> = (
   const [selectedInvoice, setSelectedInvoice] = useState<string | null>(null);
   
   const { validateFinancialCompliance } = useFinancialCompliance();
-  const {
-    handleDragStart,
-    handleDragEnd, 
-    handleDrop,
-    isDragging
-  } = useDragDrop({
-    onDrop: handleInvoiceDrop,
-    validateDrop: validateInvoiceDrop
-  });
-
+  
   // Role-based stage access
   const accessibleStages = useMemo(() => {
     switch (userRole) {
@@ -187,6 +178,16 @@ export const InvoiceApprovalWorkflow: React.FC<InvoiceApprovalWorkflowProps> = (
       (invoice.status === 'approved' && targetStage === 'paid')
     );
   }, [invoices, accessibleStages]);
+
+  const {
+    handleDragStart,
+    handleDragEnd, 
+    handleDrop,
+    isDragging
+  } = useDragDrop({
+    onDrop: handleInvoiceDrop,
+    validateDrop: validateInvoiceDrop
+  });
 
   const validateCulturalFinancialCompliance = (invoice: MunicipalInvoice, locale: string): boolean => {
     const { culturalCompliance } = invoice;

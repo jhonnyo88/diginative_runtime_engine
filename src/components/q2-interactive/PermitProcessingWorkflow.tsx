@@ -80,16 +80,7 @@ export const PermitProcessingWorkflow: React.FC<PermitProcessingWorkflowProps> =
   const dropZoneRef = useRef<HTMLDivElement>(null);
   
   const { validateMunicipalCompliance } = useMunicipalCompliance();
-  const { 
-    handleDragStart,
-    handleDragEnd,
-    handleDrop,
-    isDragging 
-  } = useDragDrop({
-    onDrop: handlePermitDrop,
-    validateDrop: validatePermitDrop
-  });
-
+  
   const handlePermitDrop = useCallback(async (permitId: string, targetStage: string) => {
     const permit = permits.find(p => p.id === permitId);
     if (!permit) return false;
@@ -131,6 +122,16 @@ export const PermitProcessingWorkflow: React.FC<PermitProcessingWorkflowProps> =
     // Allow progressive advancement or rejection at any stage
     return targetStageIndex > currentStageIndex || targetStage === 'rejected';
   }, [permits]);
+
+  const { 
+    handleDragStart,
+    handleDragEnd,
+    handleDrop,
+    isDragging 
+  } = useDragDrop({
+    onDrop: handlePermitDrop,
+    validateDrop: validatePermitDrop
+  });
 
   const validateCulturalCompliance = (permit: PermitApplication, locale: string) => {
     if (!permit.culturalConsiderations) return { isValid: true };

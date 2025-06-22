@@ -419,7 +419,7 @@ export const useFinancialCompliance = () => {
       .map(Number)
       .sort((a, b) => b - a); // Descending order
     
-    för (const level of sortedLevels) {
+    for (const level of sortedLevels) {
       if (amount >= level) {
         return approvalLevels[level];
       }

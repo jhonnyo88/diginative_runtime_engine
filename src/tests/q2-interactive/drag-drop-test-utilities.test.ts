@@ -9,6 +9,7 @@
 import { describe, it, expect, beforeEach, vi } from 'vitest';
 import { render, screen, fireEvent } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
+import { PermitProcessingWorkflow } from '../../components/q2-interactive/PermitProcessingWorkflow';
 
 // Mock drag-drop utilities
 const mockDragDropUtils = {
@@ -52,11 +53,24 @@ describe('Drag & Drop Test Utilities', () => {
   describe('Municipal Document Routing', () => {
     it('should support drag-drop for municipal document routing workflow', async () => {
       const user = userEvent.setup();
+      const mockPermits = [
+        {
+          id: 'permit-001',
+          type: 'building' as const,
+          applicant: 'Test Applicant',
+          municipality: 'malmö',
+          urgency: 'medium' as const,
+          submittedDate: '2025-06-22',
+          requiredDocuments: ['blueprint', 'safety-plan']
+        }
+      ];
+      
       const { container } = render(
-        <MunicipalDocumentRoutingWorkflow 
-          testId="document-routing"
+        <PermitProcessingWorkflow 
           municipality="malmö"
-          locale="sv-SE"
+          locale="sv"
+          permits={mockPermits}
+          onPermitStatusChange={vi.fn()}
         />
       );
 

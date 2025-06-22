@@ -1,0 +1,152 @@
+.citizen-service-world {
+  min-height: 100vh;
+  background: linear-gradient(135deg, #f0fdf4 0%, #dcfce7 100%);
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
+}
+
+.citizen-service-loading {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, #f0fdf4 0%, #dcfce7 100%);
+}
+
+.loading-content {
+  text-align: center;
+  background: #ffffff;
+  padding: 40px;
+  border-radius: 16px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.loading-content .world-icon {
+  font-size: 4rem;
+  margin-bottom: 16px;
+}
+
+.loading-content h2 {
+  margin: 0 0 8px 0;
+  color: #1e293b;
+  font-size: 1.5rem;
+}
+
+.loading-content p {
+  margin: 0;
+  color: #64748b;
+}
+
+.world-header {
+  background: #ffffff;
+  padding: 20px 24px;
+  border-bottom: 1px solid #e2e8f0;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.world-branding {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.world-branding .world-icon {
+  font-size: 2.5rem;
+}
+
+.world-title {
+  margin: 0 0 4px 0;
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: #1e293b;
+}
+
+.world-subtitle {
+  margin: 0;
+  font-size: 0.875rem;
+  color: #64748b;
+  font-weight: 500;
+}
+
+.return-to-hub-button {
+  padding: 8px 16px;
+  background: #f1f5f9;
+  border: 1px solid #d1d5db;
+  border-radius: 6px;
+  color: #374151;
+  font-size: 0.875rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.return-to-hub-button:hover {
+  background: #e2e8f0;
+  transform: translateY(-1px);
+}
+
+.world-content {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 64px 24px;
+  text-align: center;
+}
+
+.coming-soon {
+  background: #ffffff;
+  border-radius: 16px;
+  padding: 48px 32px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  border: 1px solid #e2e8f0;
+}
+
+.coming-soon h2 {
+  font-size: 2rem;
+  font-weight: 700;
+  color: #1e293b;
+  margin: 0 0 16px 0;
+}
+
+.coming-soon > p {
+  font-size: 1.125rem;
+  color: #64748b;
+  margin: 0 0 32px 0;
+  line-height: 1.6;
+}
+
+.world-preview {
+  background: #f8fafc;
+  border-radius: 12px;
+  padding: 24px;
+  text-align: left;
+}
+
+.world-preview h3 {
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: #374151;
+  margin: 0 0 16px 0;
+}
+
+.world-preview ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.world-preview li {
+  padding: 8px 0;
+  color: #4b5563;
+  position: relative;
+  padding-left: 24px;
+}
+
+.world-preview li:before {
+  content: '✓';
+  position: absolute;
+  left: 0;
+  color: #10b981;
+  font-weight: bold;
+}

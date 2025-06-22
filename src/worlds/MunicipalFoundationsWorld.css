@@ -1,0 +1,286 @@
+.municipal-foundations-world {
+  min-height: 100vh;
+  background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%);
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
+}
+
+.municipal-foundations-loading {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%);
+}
+
+.loading-content {
+  text-align: center;
+  background: #ffffff;
+  padding: 40px;
+  border-radius: 16px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.loading-content .world-icon {
+  font-size: 4rem;
+  margin-bottom: 16px;
+}
+
+.loading-content h2 {
+  margin: 0 0 8px 0;
+  color: #1e293b;
+  font-size: 1.5rem;
+}
+
+.loading-content p {
+  margin: 0;
+  color: #64748b;
+}
+
+/* World Header */
+.world-header {
+  background: #ffffff;
+  padding: 20px 24px;
+  border-bottom: 1px solid #e2e8f0;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.world-branding {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.world-branding .world-icon {
+  font-size: 2.5rem;
+}
+
+.world-title {
+  margin: 0 0 4px 0;
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: #1e293b;
+}
+
+.world-subtitle {
+  margin: 0;
+  font-size: 0.875rem;
+  color: #64748b;
+  font-weight: 500;
+}
+
+.world-progress {
+  display: flex;
+  align-items: center;
+  gap: 24px;
+}
+
+.scenario-progress {
+  text-align: right;
+}
+
+.progress-text {
+  font-size: 0.875rem;
+  color: #374151;
+  font-weight: 500;
+  display: block;
+  margin-bottom: 8px;
+}
+
+.progress-bar {
+  width: 200px;
+  height: 8px;
+  background: #e2e8f0;
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.progress-fill {
+  height: 100%;
+  background: linear-gradient(90deg, #3b82f6 0%, #1d4ed8 100%);
+  transition: width 0.5s ease;
+}
+
+.return-to-hub-button {
+  padding: 8px 16px;
+  background: #f1f5f9;
+  border: 1px solid #d1d5db;
+  border-radius: 6px;
+  color: #374151;
+  font-size: 0.875rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.return-to-hub-button:hover {
+  background: #e2e8f0;
+  transform: translateY(-1px);
+}
+
+/* Main Content */
+.world-content {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 32px 24px;
+}
+
+.scenario-container {
+  background: #ffffff;
+  border-radius: 16px;
+  padding: 32px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  border: 1px solid #e2e8f0;
+}
+
+.scenario-intro {
+  margin-bottom: 32px;
+  text-align: center;
+}
+
+.scenario-title {
+  font-size: 2rem;
+  font-weight: 700;
+  color: #1e293b;
+  margin: 0 0 16px 0;
+}
+
+.scenario-description {
+  font-size: 1.125rem;
+  color: #64748b;
+  margin: 0 0 24px 0;
+  line-height: 1.6;
+  max-width: 600px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.scenario-metadata {
+  display: flex;
+  justify-content: center;
+  gap: 32px;
+  flex-wrap: wrap;
+}
+
+.scenario-meta-item {
+  text-align: center;
+}
+
+.meta-label {
+  display: block;
+  font-size: 0.75rem;
+  color: #64748b;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin-bottom: 4px;
+}
+
+.meta-value {
+  font-size: 0.875rem;
+  color: #374151;
+  font-weight: 500;
+}
+
+.scenario-content {
+  min-height: 400px;
+}
+
+/* World Footer */
+.world-footer {
+  background: #f8fafc;
+  padding: 16px 24px;
+  border-top: 1px solid #e2e8f0;
+}
+
+.competency-indicators {
+  max-width: 1200px;
+  margin: 0 auto;
+  display: flex;
+  justify-content: center;
+  gap: 24px;
+  flex-wrap: wrap;
+}
+
+.competency-indicator {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 16px;
+  background: #ffffff;
+  border-radius: 20px;
+  border: 1px solid #e2e8f0;
+  font-size: 0.875rem;
+  color: #374151;
+  font-weight: 500;
+}
+
+.competency-icon {
+  font-size: 1rem;
+}
+
+/* Cultural Adaptations */
+.municipal-foundations-world[data-cultural-context="german_municipal"] {
+  background: linear-gradient(135deg, #fffbeb 0%, #fef3c7 100%);
+}
+
+.municipal-foundations-world[data-cultural-context="french_municipal"] {
+  background: linear-gradient(135deg, #f0f9ff 0%, #dbeafe 100%);
+}
+
+.municipal-foundations-world[data-cultural-context="dutch_municipal"] {
+  background: linear-gradient(135deg, #fff7ed 0%, #fed7aa 100%);
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .world-header {
+    flex-direction: column;
+    gap: 16px;
+    text-align: center;
+  }
+  
+  .world-progress {
+    flex-direction: column;
+    gap: 12px;
+  }
+  
+  .progress-bar {
+    width: 150px;
+  }
+  
+  .world-content {
+    padding: 24px 16px;
+  }
+  
+  .scenario-container {
+    padding: 24px 20px;
+  }
+  
+  .scenario-title {
+    font-size: 1.5rem;
+  }
+  
+  .scenario-metadata {
+    gap: 16px;
+  }
+  
+  .competency-indicators {
+    justify-content: center;
+    gap: 12px;
+  }
+}
+
+@media (max-width: 480px) {
+  .scenario-metadata {
+    flex-direction: column;
+    gap: 12px;
+  }
+  
+  .competency-indicators {
+    flex-direction: column;
+    align-items: center;
+  }
+}

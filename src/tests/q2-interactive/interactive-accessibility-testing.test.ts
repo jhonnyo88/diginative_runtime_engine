@@ -10,6 +10,7 @@ import { describe, it, expect, beforeEach, vi } from 'vitest';
 import { render, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { axe, toHaveNoViolations } from 'jest-axe';
+import { InvoiceApprovalWorkflow } from '../../components/q2-interactive/InvoiceApprovalWorkflow';
 
 expect.extend(toHaveNoViolations);
 
@@ -83,11 +84,24 @@ describe('Interactive Accessibility Testing Framework', () => {
     it('should provide keyboard alternatives for drag-drop operations', async () => {
       const user = userEvent.setup();
       
+      const mockInvoices = [
+        {
+          id: 'invoice-001',
+          vendor: 'Test Vendor',
+          amount: 1000,
+          municipality: 'malmö',
+          urgency: 'medium' as const,
+          submittedDate: '2025-06-22',
+          department: 'IT'
+        }
+      ];
+      
       const { container } = render(
-        <AccessibleDragDropInterface 
+        <InvoiceApprovalWorkflow 
           municipality="malmö"
-          keyboardNavigation={true}
-          screenReaderSupport={true}
+          locale="sv"
+          invoices={mockInvoices}
+          onInvoiceStatusChange={vi.fn()}
         />
       );
 

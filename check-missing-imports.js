@@ -7,7 +7,7 @@ const getAllImports = (dir) => {
   const files = fs.readdirSync(dir, { withFileTypes: true });
   
   files.forEach(file => {
-    if (file.isDirectory() && file.name \!== 'node_modules') {
+    if (file.isDirectory() && file.name !== 'node_modules') {
       imports.push(...getAllImports(path.join(dir, file.name)));
     } else if (file.name.endsWith('.ts') || file.name.endsWith('.tsx')) {
       const content = fs.readFileSync(path.join(dir, file.name), 'utf8');
@@ -37,7 +37,7 @@ imports.forEach(({ file, import: imp }) => {
                  fs.existsSync(resolvedPath + '/index.ts') ||
                  fs.existsSync(resolvedPath + '/index.tsx');
   
-  if (\!exists) {
+  if (!exists) {
     broken.push({ file: file.replace('src/', ''), import: imp, resolved: resolvedPath });
   }
 });

@@ -1,0 +1,471 @@
+.progress-visualization {
+  background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+  border-radius: 16px;
+  padding: 24px;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+  border: 1px solid #e2e8f0;
+}
+
+.progress-section {
+  margin-bottom: 32px;
+}
+
+.progress-section:last-child {
+  margin-bottom: 0;
+}
+
+.progress-section h3 {
+  margin: 0 0 20px 0;
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: #1e293b;
+}
+
+/* Overall Progress Circle */
+.overall-progress-container {
+  display: flex;
+  align-items: center;
+  gap: 32px;
+  background: #ffffff;
+  border-radius: 12px;
+  padding: 24px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.08);
+}
+
+.progress-circle-container {
+  position: relative;
+  width: 120px;
+  height: 120px;
+  flex-shrink: 0;
+}
+
+.progress-circle {
+  width: 100%;
+  height: 100%;
+  transform: rotate(-90deg);
+}
+
+.progress-circle-bg {
+  fill: none;
+  stroke: #e2e8f0;
+  stroke-width: 8;
+}
+
+.progress-circle-fill {
+  fill: none;
+  stroke: #3b82f6;
+  stroke-width: 8;
+  stroke-linecap: round;
+  transition: stroke-dasharray 1.5s ease-in-out;
+}
+
+.progress-text {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  text-align: center;
+}
+
+.progress-percentage {
+  display: block;
+  font-size: 1.875rem;
+  font-weight: 700;
+  color: #1e293b;
+  line-height: 1;
+}
+
+.progress-label {
+  font-size: 0.75rem;
+  color: #64748b;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.progress-stats {
+  display: flex;
+  gap: 24px;
+  flex-wrap: wrap;
+}
+
+.stat {
+  text-align: center;
+}
+
+.stat-value {
+  display: block;
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: #1e293b;
+  line-height: 1.2;
+}
+
+.stat-label {
+  font-size: 0.75rem;
+  color: #64748b;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin-top: 4px;
+}
+
+/* Competency Levels */
+.competency-grid {
+  background: #ffffff;
+  border-radius: 12px;
+  padding: 20px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.08);
+}
+
+.competency-item {
+  margin-bottom: 16px;
+}
+
+.competency-item:last-child {
+  margin-bottom: 0;
+}
+
+.competency-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 8px;
+}
+
+.competency-name {
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: #374151;
+}
+
+.competency-level {
+  font-size: 0.875rem;
+  font-weight: 700;
+}
+
+.competency-bar {
+  width: 100%;
+  height: 8px;
+  background-color: #e2e8f0;
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.competency-fill {
+  height: 100%;
+  border-radius: 4px;
+  transition: width 0.8s ease-in-out;
+}
+
+/* World Progression Path */
+.world-progression-path {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: #ffffff;
+  border-radius: 12px;
+  padding: 24px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.08);
+  overflow-x: auto;
+}
+
+.world-progress-node {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  min-width: 80px;
+}
+
+.world-node {
+  position: relative;
+  margin-bottom: 8px;
+}
+
+.world-node-inner {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  background: #e2e8f0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  color: #64748b;
+  position: relative;
+  z-index: 2;
+}
+
+.world-progress-node.available .world-node-inner {
+  background: #dbeafe;
+  color: #1d4ed8;
+}
+
+.world-progress-node.in_progress .world-node-inner {
+  background: #fef3c7;
+  color: #d97706;
+}
+
+.world-progress-node.completed .world-node-inner {
+  background: #d1fae5;
+  color: #065f46;
+}
+
+.world-progress-bar {
+  position: absolute;
+  bottom: -4px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 60px;
+  height: 4px;
+  background-color: #e2e8f0;
+  border-radius: 2px;
+  overflow: hidden;
+}
+
+.world-progress-fill {
+  height: 100%;
+  background: linear-gradient(90deg, #3b82f6 0%, #1d4ed8 100%);
+  border-radius: 2px;
+  transition: width 0.8s ease-in-out;
+}
+
+.world-node-details {
+  text-align: center;
+  font-size: 0.75rem;
+}
+
+.world-completion {
+  font-weight: 600;
+  color: #374151;
+}
+
+.world-score {
+  color: #64748b;
+  margin-top: 2px;
+}
+
+.world-connector {
+  position: absolute;
+  top: 24px;
+  right: -40px;
+  width: 80px;
+  height: 2px;
+  background: #e2e8f0;
+  z-index: 1;
+}
+
+/* Achievement Visualization */
+.achievements-visualization {
+  background: #ffffff;
+  border-radius: 12px;
+  padding: 20px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.08);
+}
+
+.achievements-count {
+  text-align: center;
+  margin-bottom: 16px;
+}
+
+.count-number {
+  display: block;
+  font-size: 2rem;
+  font-weight: 700;
+  color: #1e293b;
+  line-height: 1;
+}
+
+.count-label {
+  font-size: 0.75rem;
+  color: #64748b;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.achievements-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  justify-content: center;
+}
+
+.achievement-badge {
+  padding: 6px 12px;
+  background: #fef3c7;
+  color: #92400e;
+  border-radius: 6px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+/* Certification Visualization */
+.certification-visualization {
+  background: #ffffff;
+  border-radius: 12px;
+  padding: 20px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.08);
+}
+
+.certification-progress {
+  margin-bottom: 16px;
+}
+
+.certification-bar {
+  position: relative;
+  width: 100%;
+  height: 12px;
+  background-color: #e2e8f0;
+  border-radius: 6px;
+  overflow: hidden;
+  margin-bottom: 8px;
+}
+
+.certification-fill {
+  height: 100%;
+  background: linear-gradient(90deg, #10b981 0%, #059669 100%);
+  border-radius: 6px;
+  transition: width 1.2s ease-in-out;
+}
+
+.certification-text {
+  font-size: 0.875rem;
+  color: #374151;
+  font-weight: 500;
+  text-align: center;
+}
+
+.certification-badge {
+  text-align: center;
+  padding: 16px;
+  background: linear-gradient(135deg, #d1fae5 0%, #a7f3d0 100%);
+  border-radius: 8px;
+  color: #065f46;
+  font-weight: 700;
+  font-size: 1.125rem;
+}
+
+/* Progress Insights */
+.progress-insights {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 16px;
+  margin-top: 24px;
+}
+
+.insight-card {
+  background: #ffffff;
+  border-radius: 8px;
+  padding: 16px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.insight-icon {
+  font-size: 1.5rem;
+  flex-shrink: 0;
+}
+
+.insight-content {
+  flex: 1;
+}
+
+.insight-title {
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: #374151;
+  margin-bottom: 4px;
+}
+
+.insight-text {
+  font-size: 0.75rem;
+  color: #64748b;
+  line-height: 1.4;
+}
+
+/* Cultural Adaptations */
+.progress-visualization[data-cultural-context=\"german_municipal\"] {
+  background: linear-gradient(135deg, #fff8f0 0%, #fef3e2 100%);
+}
+
+.progress-visualization[data-cultural-context=\"french_municipal\"] {
+  background: linear-gradient(135deg, #f0f8ff 0%, #e6f3ff 100%);
+}
+
+.progress-visualization[data-cultural-context=\"dutch_municipal\"] {
+  background: linear-gradient(135deg, #fff5f0 0%, #ffe8e1 100%);
+}
+
+/* Mobile Responsive */
+@media (max-width: 768px) {
+  .progress-visualization {
+    padding: 16px;
+  }
+  
+  .overall-progress-container {
+    flex-direction: column;
+    gap: 20px;
+    text-align: center;
+  }
+  
+  .progress-circle-container {
+    width: 100px;
+    height: 100px;
+  }
+  
+  .progress-percentage {
+    font-size: 1.5rem;
+  }
+  
+  .progress-stats {
+    justify-content: center;
+    gap: 16px;
+  }
+  
+  .world-progression-path {
+    padding: 16px;
+    flex-direction: column;
+    gap: 16px;
+  }
+  
+  .world-connector {
+    display: none;
+  }
+  
+  .progress-insights {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 480px) {
+  .competency-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 4px;
+  }
+  
+  .competency-name {
+    font-size: 0.8rem;
+  }
+  
+  .competency-level {
+    font-size: 0.8rem;
+  }
+  
+  .achievements-list {
+    flex-direction: column;
+    align-items: center;
+  }
+  
+  .insight-card {
+    flex-direction: column;
+    text-align: center;
+  }
+}

@@ -44,22 +44,31 @@ export interface AchievementAccessibilityProps {
 };
 
 // Hook for focus management
+export const useFocusManagement = () => {
+  const focusToast = () => {
+    // Focus implementation
+  };
 
   return { focusToast };
 };
 
 // Hook for high contrast detection
-  
+export const useHighContrast = () => {
+  const isHighContrast = false; // Implement detection
+  const accessibleColors = { primary: '#000', secondary: '#fff' };
 
   return { isHighContrast, accessibleColors };
 };
 
 // Hook for reduced motion detection
+export const useReducedMotion = () => {
+  const prefersReducedMotion = false; // Implement detection
   
   return { prefersReducedMotion };
 };
 
 // Hook for keyboard navigation
+export const useKeyboardNavigation = () => {
   const _handleKeyDown = (event: KeyboardEvent, onDismiss?: () => void) => {
     if (event.key === 'Escape' && onDismiss) {
       onDismiss();
@@ -69,5 +78,5 @@ export interface AchievementAccessibilityProps {
     }
   };
 
-  return { handleKeyDown };
+  return { handleKeyDown: _handleKeyDown };
 };

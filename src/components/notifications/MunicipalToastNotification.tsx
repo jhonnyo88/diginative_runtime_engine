@@ -395,4 +395,5 @@ export const MunicipalToastNotification: React.FC<MunicipalToastNotificationProp
     default: // Swedish
       return baseAchievement;
   }
+  return <Box><Text>Component</Text></Box>;
 };

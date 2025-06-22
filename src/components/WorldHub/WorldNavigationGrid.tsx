@@ -188,3 +188,4 @@ const WorldCard: React.FC<WorldCardProps> = ({
   // Determine card interaction state
 
   // Status icon and color
+};

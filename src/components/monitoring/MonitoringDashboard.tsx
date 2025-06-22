@@ -165,4 +165,5 @@ export const MonitoringDashboard: React.FC = () => {
       </Stack>
     </Box>
   );
+  return <Box><Text>Component</Text></Box>;
 };

@@ -33,8 +33,12 @@ export const CharacterAvatar: React.FC<CharacterAvatarProps> = ({
   ...props
 }) => {
   // Game Designer spec: Default professional avatars for different roles
+  const getDefaultAvatar = (type?: string) => {
+    return '/images/default-avatar.png'; // Default implementation
+  };
 
   // Game Designer spec: Size mapping for Anna Svensson mobile optimization
+  const dimensions = { border: '2px' };
 
   
   return (

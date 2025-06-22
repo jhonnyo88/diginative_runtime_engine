@@ -423,6 +423,7 @@ interface DemoSessionMonitorProps {
 
 const DemoSessionMonitor: React.FC<DemoSessionMonitorProps> = ({ session, activeElements }) => {
 
+  const averageEngagement = Math.round(
     (session.engagementMetrics.participation + 
      session.engagementMetrics.satisfaction + 
      session.engagementMetrics.understanding + 

@@ -169,6 +169,11 @@ describe('DevTeam Integration API', () => {
 
   describe('Job Management', () => {
     test('should track multiple concurrent jobs', async () => {
+      const job1 = await devteamIntegration.submitContent({
+        ...mockSubmissionRequest
+      });
+      
+      const job2 = await devteamIntegration.submitContent({
         ...mockSubmissionRequest,
         gameManifest: {
           ...mockGameManifest,

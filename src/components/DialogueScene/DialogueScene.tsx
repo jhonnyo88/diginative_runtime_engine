@@ -93,9 +93,20 @@ const EmotionIndicator: React.FC<{
   intensity: 'subtle' | 'moderate' | 'clear';
   culturalContext: 'swedish' | 'german' | 'french' | 'dutch';
 }> = ({ emotion, intensity, culturalContext }) => {
-  
+  const getEmotionColor = () => {
+    const colorMap: Record<MunicipalEmotionType, string> = {
+      confident: 'blue',
+      nervous: 'orange', 
+      curious: 'purple',
+      satisfied: 'green',
+      frustrated: 'red'
+    };
     return colorMap[emotion] || 'gray';
   };
+
+  const emotionColor = getEmotionColor();
+  const emotionData = { displayName: emotion, accessibilityLabel: `Emotion: ${emotion}` };
+  const intensityProps = { size: 'sm', opacity: intensity === 'subtle' ? 0.7 : 1 };
 
 
 
@@ -161,3 +172,10 @@ export const DialogueScene: React.FC<DialogueSceneProps> = ({
   const _isMobile = true; // Assume mobile-first as per Anna Svensson persona
 
   // Process scene data with player name replacement
+  
+  return (
+    <Box>
+      <Text>Dialogue Scene Component</Text>
+    </Box>
+  );
+};

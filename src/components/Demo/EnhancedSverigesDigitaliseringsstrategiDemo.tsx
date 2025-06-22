@@ -489,6 +489,8 @@ const EnhancedDemoStageDisplay: React.FC<EnhancedDemoStageDisplayProps> = ({
   if (!isActive) return null;
 
   // Get background theme styling
+  const getThemeStyles = () => {
+    switch (currentTheme.name) {
       case 'professional-nordic':
         return {
           background: 'linear-gradient(135deg, #F8F9FA 0%, #E9ECEF 100%)',

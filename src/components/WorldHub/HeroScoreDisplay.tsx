@@ -90,3 +90,4 @@ export const HeroScoreDisplay: React.FC<HeroScoreDisplayProps> = ({
   const { achievements } = useAchievementProgress();
   
   // Determine cultural theme based on current persona
+};

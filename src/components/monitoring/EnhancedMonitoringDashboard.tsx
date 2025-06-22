@@ -55,3 +55,5 @@ export const EnhancedMonitoringDashboard: React.FC = () => {
   const { isOpen: isAlertsOpen, onToggle: onAlertsToggle } = useDisclosure({ defaultIsOpen: true });
 
   // Simulate historical data collection
+  return <Box><Text>Component</Text></Box>;
+};

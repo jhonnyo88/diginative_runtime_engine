@@ -168,13 +168,17 @@ export class Q3ProductionMonitoringExcellence {
     alerts: number;
     recommendations: string[];
   } {
+    const blockers: string[] = [];
+    const nextSteps: string[] = [];
     
+    const readinessScore = this.calculateOverallScore([
       performanceHealth,
       reliabilityHealth,
       municipalHealth,
       complianceHealth
     ]);
     
+    if (readinessScore < 85) {
       nextSteps.push('Optimize hub loading and world transition performance');
     }
     
@@ -182,6 +186,9 @@ export class Q3ProductionMonitoringExcellence {
       blockers.push('Compliance validation required for European deployment');
       nextSteps.push('Complete GDPR and data residency compliance validation');
     }
+    
+    const netherlandsPilotReady = readinessChecks.pilotStandard;
+    const germanMarketReady = readinessChecks.enterpriseStandard;
     
     if (netherlandsPilotReady && !germanMarketReady) {
       nextSteps.push('Final optimization for German market entry preparation');
@@ -571,7 +578,13 @@ export class Q3ProductionMonitoringExcellence {
   private generateAlertId(): string {
     return `alert_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
   }
+
+  private calculateOverallScore(healthScores: number[]): number {
+    return healthScores.reduce((sum, score) => sum + score, 0) / healthScores.length;
+  }
 }
 
 // Export factory function for creating monitoring instances
-  new Q3ProductionMonitoringExcellence(config);
+export function createQ3ProductionMonitoring(config?: Partial<Q3ProductionConfig>) {
+  return new Q3ProductionMonitoringExcellence(config);
+}

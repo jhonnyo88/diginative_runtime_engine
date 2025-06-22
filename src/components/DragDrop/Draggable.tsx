@@ -24,6 +24,11 @@ export const Draggable: React.FC<DraggableProps> = ({
   const [touchPosition, setTouchPosition] = useState<{ x: number; y: number } | null>(null);
   const [isDraggingThis, setIsDraggingThis] = useState(false);
 
-
   // Handle mouse events
 
+  return (
+    <Box>
+      {children}
+    </Box>
+  );
+};

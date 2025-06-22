@@ -465,3 +465,5 @@ describe('Municipal Tenant Isolation', () => {
   describe('Integration Testing', () => {
     it('should maintain tenant isolation across full request cycle', async () => {
       // Simulate full request with tenant context
+};
+};

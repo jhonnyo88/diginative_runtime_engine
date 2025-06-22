@@ -672,17 +672,14 @@ const SwedishDemoScenarioCard: React.FC<SwedishScenarioCardProps> = ({
 // Swedish Demo Portfolio Overview
 const SwedishDemoPortfolioOverview: React.FC = () => {
 
-    swedishDemoScenarios.reduce((sum, scenario) => sum + scenario.culturalAuthenticity, 0) / 
-    swedishDemoScenarios.length
-  );
+  const avgCulturalAuthenticity = swedishDemoScenarios.reduce((sum, scenario) => sum + scenario.culturalAuthenticity, 0) / 
+    swedishDemoScenarios.length;
 
-    swedishDemoScenarios.reduce((sum, scenario) => sum + scenario.governmentImpact, 0) / 
-    swedishDemoScenarios.length
-  );
+  const avgGovernmentImpact = swedishDemoScenarios.reduce((sum, scenario) => sum + scenario.governmentImpact, 0) / 
+    swedishDemoScenarios.length;
 
-    swedishDemoScenarios.reduce((sum, scenario) => sum + scenario.lagomBalance, 0) / 
-    swedishDemoScenarios.length
-  );
+  const avgLagomBalance = swedishDemoScenarios.reduce((sum, scenario) => sum + scenario.lagomBalance, 0) / 
+    swedishDemoScenarios.length;
 
   return (
     <Card bg="blue.50" borderColor="blue.200" borderWidth="2px">
@@ -828,5 +825,16 @@ export const SwedishDemoScenarioPortfolio: React.FC<SwedishDemoScenarioPortfolio
   const [selectedScenario, setSelectedScenario] = useState<SwedishDemoScenario | null>(null);
   const { isOpen, onOpen, onClose } = useDisclosure();
 
+  const handleScenarioSelect = (scenario: SwedishDemoScenario) => {
+    setSelectedScenario(scenario);
+    onScenarioSelect(scenario);
+    onOpen();
+  };
 
-  // Group scenarios by region
+  return (
+    <VStack spacing={6} align="stretch">
+      <SwedishDemoPortfolioOverview />
+      <Text>Swedish Demo Scenario Portfolio</Text>
+    </VStack>
+  );
+};

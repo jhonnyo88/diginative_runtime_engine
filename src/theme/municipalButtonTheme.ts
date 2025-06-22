@@ -4,6 +4,8 @@ import { defineStyleConfig } from '@chakra-ui/react';
  * Municipal Button Theme Configuration
  * Based on Game Designer task-gd-007 professional button design specification
  */
+
+export const municipalButtonTheme = defineStyleConfig({
   // Base styles for all municipal buttons
   baseStyle: {
     borderRadius: '6px',
@@ -218,11 +220,16 @@ import { defineStyleConfig } from '@chakra-ui/react';
   },
 };
 
+}); // Close municipalButtonTheme defineStyleConfig
+
 /**
  * Get button text based on cultural context
  */
+export const getButtonText = (
   key: keyof typeof buttonTranslations.swedish,
   culturalContext: keyof typeof buttonTranslations = 'swedish'
 ): string => {
   return buttonTranslations[culturalContext]?.[key] || buttonTranslations.swedish[key];
 };
+
+export default municipalButtonTheme;

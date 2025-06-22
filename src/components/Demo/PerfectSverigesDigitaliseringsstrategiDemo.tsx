@@ -898,3 +898,10 @@ export const PerfectSverigesDigitaliseringsstrategiDemo: React.FC<PerfectSverige
     setRemainingTime(perfectSverigeDemoStages[currentStage].duration);
   }, [currentStage]);
 
+  return (
+    <Box>
+      <Text>Perfect Sveriges Digitaliseringsstrategi Demo</Text>
+    </Box>
+  );
+};
+

@@ -682,3 +682,4 @@ export const AdvancedCulturalIntelligence: React.FC<AdvancedCulturalIntelligence
     setSelectedContext(culturalContext);
   }, [culturalContext]);
 
+};

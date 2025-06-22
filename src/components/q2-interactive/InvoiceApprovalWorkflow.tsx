@@ -55,3 +55,4 @@ export const InvoiceApprovalWorkflow: React.FC<InvoiceApprovalWorkflowProps> = (
   const { validateFinancialCompliance } = useFinancialCompliance();
   
   // Role-based stage access
+};

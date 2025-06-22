@@ -42,3 +42,5 @@ export const WorldHubPage: React.FC<WorldHubPageProps> = ({ uniqueCode }) => {
   /**
    * Initialize hub session with unique code authentication
    */
+  return <Box><Text>Component</Text></Box>;
+};

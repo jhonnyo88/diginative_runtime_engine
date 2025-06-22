@@ -690,6 +690,7 @@ export const CulturalAuthenticityValidation: React.FC<CulturalAuthenticityValida
     });
 
     // Calculate weighted overall score
+    const overallScore = Math.round(
       validationCategories.reduce((sum, category) => {
         return sum + (categoryScores[category.id] * category.weight / 100);
       }, 0)
@@ -720,4 +721,11 @@ export const CulturalAuthenticityValidation: React.FC<CulturalAuthenticityValida
       improvementAreas
     };
   }, [validationResults]);
+
+  return (
+    <Box>
+      <Text>Cultural Authenticity Validation</Text>
+    </Box>
+  );
+};
 

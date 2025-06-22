@@ -249,4 +249,5 @@ export const ProgressVisualization: React.FC<ProgressVisualizationProps> = ({
       </div>
     </div>
   );
+  return <Box><Text>Component</Text></Box>;
 };

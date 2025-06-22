@@ -223,4 +223,5 @@ export const MunicipalButtonExamples: React.FC = () => {
       </Box>
     </VStack>
   );
+  return <Box><Text>Component</Text></Box>;
 };

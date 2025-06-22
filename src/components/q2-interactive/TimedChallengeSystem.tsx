@@ -94,3 +94,4 @@ export const TimedChallengeSystem: React.FC<TimedChallengeSystemProps> = ({
     checkCulturalAppropriateness
   } = useMunicipalEmergency();
 
+};

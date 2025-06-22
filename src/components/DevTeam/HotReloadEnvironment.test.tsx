@@ -116,6 +116,7 @@ describe('HotReloadEnvironment', () => {
       </TestWrapper>
     );
 
+    const mockContent = {
       gameId: 'test-game',
       version: '1.0.0',
       metadata: {
@@ -126,6 +127,7 @@ describe('HotReloadEnvironment', () => {
         language: 'sv'
       },
       scenes: []
+    };
     });
 
     act(() => {
@@ -254,6 +256,7 @@ describe('HotReloadEnvironment', () => {
       </TestWrapper>
     );
 
+    const anotherMockContent = {
       gameId: 'test-game',
       version: '1.0.0',
       metadata: {
@@ -268,7 +271,7 @@ describe('HotReloadEnvironment', () => {
         type: 'dialogue',
         messages: [{ text: 'Hello', characterId: 'test' }]
       }]
-    });
+    };
 
     act(() => {
       fireEvent.change(editor, { target: { value: validContent } });
@@ -304,6 +307,7 @@ describe('HotReloadEnvironment', () => {
     expect(saveButton).toBeDisabled();
 
     // Add valid content
+    const validTestContent = {
       gameId: 'test-game',
       version: '1.0.0',
       metadata: {
@@ -314,7 +318,7 @@ describe('HotReloadEnvironment', () => {
         language: 'sv'
       },
       scenes: []
-    });
+    };
 
     act(() => {
       fireEvent.change(editor, { target: { value: validContent } });

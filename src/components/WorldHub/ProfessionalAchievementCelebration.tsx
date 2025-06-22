@@ -473,3 +473,4 @@ export const ProfessionalAchievementCelebration: React.FC<ProfessionalAchievemen
 
 
   // Group achievements by category
+};

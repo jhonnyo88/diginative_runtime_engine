@@ -35,7 +35,7 @@ export const SAMLRedirect: React.FC<SAMLRedirectProps> = ({
   const [progress, setProgress] = useState(0);
 
   useEffect(() => {
-    initiateLogin();
+    _initiateLogin();
   }, [tenantId]);
 
   const _initiateLogin = async () => {
@@ -46,6 +46,7 @@ export const SAMLRedirect: React.FC<SAMLRedirectProps> = ({
       // Small delay for better UX
       await new Promise(resolve => setTimeout(resolve, 500));
 
+      const response = await fetch('/api/auth/saml/status', {
         method: 'GET',
         headers: {
           'Accept': 'application/json'
@@ -54,6 +55,8 @@ export const SAMLRedirect: React.FC<SAMLRedirectProps> = ({
 
       setProgress(60);
 
+      const data = await response.json();
+      
       if (!data.success) {
         throw new Error(data.error || 'Failed to initiate SAML login');
       }
@@ -128,10 +131,10 @@ export const SAMLRedirect: React.FC<SAMLRedirectProps> = ({
               {/* Loading Animation */}
               <div className="mb-6">
                 <div className="flex justify-center mb-4">
-                  {getLoadingIcon()}
+                  <RotateCw className="h-8 w-8 animate-spin mx-auto" />
                 </div>
                 <h2 className="text-lg font-semibold text-gray-900 mb-2">
-                  {getLoadingMessage()}
+                  Loading...
                 </h2>
                 <p className="text-gray-600">
                   You will be redirected to your organization's login page in a moment.
@@ -189,7 +192,7 @@ export const SAMLRedirect: React.FC<SAMLRedirectProps> = ({
                 
                 <div className="space-y-3">
                   <button
-                    onClick={retryLogin}
+                    onClick={_initiateLogin}
                     className="w-full px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
                   >
                     Try Again

@@ -527,3 +527,12 @@ export const AchievementBadgeSystem: React.FC<AchievementBadgeSystemProps> = ({
   const { currentPersona } = useCharacterContext();
   
   // Determine cultural context
+  
+  return (
+    <Box>
+      <Text>Achievement Badge System</Text>
+    </Box>
+  );
+};
+
+export default AchievementBadgeSystem;

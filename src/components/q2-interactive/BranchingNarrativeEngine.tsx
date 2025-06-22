@@ -166,3 +166,4 @@ export const BranchingNarrativeEngine: React.FC<BranchingNarrativeEngineProps> =
     };
   }, [gameState.timeRemaining]);
 
+};

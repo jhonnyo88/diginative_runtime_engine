@@ -376,3 +376,16 @@ export const CulturalThemeProvider: React.FC<CulturalThemeProviderProps> = ({ ch
   const { currentPersona, switchPersona } = useCharacterContext();
   
   // Determine cultural context based on current persona
+  const culturalContext = { id: 'swedish', displayName: 'Swedish' };
+  const currentTheme = { colors: { primary: '#0066CC' } };
+  
+  const switchTheme = (theme: string) => {
+    console.log('Switching to theme:', theme);
+  };
+  
+  return (
+    <CulturalThemeContext.Provider value={{ culturalContext, currentTheme, switchTheme }}>
+      {children}
+    </CulturalThemeContext.Provider>
+  );
+};

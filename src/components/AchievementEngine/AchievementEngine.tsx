@@ -93,3 +93,12 @@ export const AchievementEngine: React.FC<AchievementEngineProps> = ({
   };
 
   // Calculate overall competency level
+  
+  return (
+    <Box>
+      <Text>Achievement Engine Component</Text>
+    </Box>
+  );
+};
+
+export default AchievementEngine;

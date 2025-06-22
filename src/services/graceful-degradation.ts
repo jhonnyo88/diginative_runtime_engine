@@ -240,6 +240,8 @@ export class GracefulDegradationService {
    * Validate content with timeout
    */
   private async validateContentWithTimeout(content: Record<string, unknown>, timeout: number): Promise<Record<string, unknown>> {
+    // Implementation placeholder
+    return {};
     return Promise.race([
       new Promise((resolve) => {
         resolve(result);

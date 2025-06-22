@@ -200,6 +200,7 @@ export class Q3PerformanceEnhancer {
    * Handle navigation timing for hub loading performance
    */
   private handleNavigationTiming(entry: PerformanceNavigationTiming): void {
+    const hubLoadTime = entry.loadEventEnd - entry.navigationStart;
     this.performanceMetrics.hubLoadTime = hubLoadTime;
 
     // Alert if exceeding competitive target

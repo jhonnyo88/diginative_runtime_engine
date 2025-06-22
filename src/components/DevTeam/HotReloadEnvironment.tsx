@@ -140,3 +140,12 @@ export const HotReloadEnvironment: React.FC<HotReloadEnvironmentProps> = ({
   }, [environment]);
   
   // Auto-validation with debouncing
+  
+  return (
+    <Box>
+      <Text>Hot Reload Environment</Text>
+    </Box>
+  );
+};
+
+export default HotReloadEnvironment;

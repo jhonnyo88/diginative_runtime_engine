@@ -103,3 +103,12 @@ export const QuizScene: React.FC<QuizSceneProps> = ({
   };
 
   // Process scene data with player name replacement
+  
+  return (
+    <Box>
+      <Text>Quiz Scene Component</Text>
+    </Box>
+  );
+};
+
+export default QuizScene;

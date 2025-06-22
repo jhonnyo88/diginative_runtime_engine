@@ -557,3 +557,4 @@ export const MunicipalBrandingIntegration: React.FC<MunicipalBrandingIntegration
   );
 
   // Filter configurations by cultural context
+};

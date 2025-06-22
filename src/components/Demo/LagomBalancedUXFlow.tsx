@@ -170,6 +170,7 @@ const LagomFlowVisualization: React.FC<LagomFlowVisualizationProps> = ({
     }
   }, [isActive, controls]);
 
+  const lagomScore = Math.round(
     (lagomState.balance + lagomState.inclusivity + lagomState.sustainability + 
      lagomState.moderation + lagomState.consensus + lagomState.transparency) / 6
   );
@@ -613,38 +614,36 @@ export const LagomBalancedUXFlow: React.FC<LagomBalancedUXFlowProps> = ({
   // Calculate Lagom Flow State based on settings
   const _lagomState = useMemo<LagomFlowState>(() => {
     // Calculate balanced scores based on lagom principles
-      (100 - Math.abs(lagomSettings.paceModeration - 75)) * 0.4 +
-      (100 - Math.abs(lagomSettings.informationDensity - 70)) * 0.6
-    );
+    const balanceScore = (100 - Math.abs(lagomSettings.paceModeration - 75)) * 0.4 +
+      (100 - Math.abs(lagomSettings.informationDensity - 70)) * 0.6;
 
-      (lagomSettings.paceModeration * 0.3) + 
-      (lagomSettings.culturalAuthenticity * 0.7)
-    );
-      100 - (Math.abs(lagomSettings.paceModeration - 75) + 
-             Math.abs(lagomSettings.informationDensity - 70)) / 2
-    );
-      (lagomSettings.informationDensity * 0.6) + 
-      (lagomSettings.governmentFormality * 0.4)
-    );
+    const harmonicFlow = (lagomSettings.paceModeration * 0.3) + 
+      (lagomSettings.culturalAuthenticity * 0.7);
+      
+    const moderationIndex = 100 - (Math.abs(lagomSettings.paceModeration - 75) + 
+             Math.abs(lagomSettings.informationDensity - 70)) / 2;
+             
+    const equilibriumState = (lagomSettings.informationDensity * 0.6) + 
+      (lagomSettings.governmentFormality * 0.4);
 
     return {
-      balance: Math.max(0, Math.min(100, balance)),
-      inclusivity: Math.max(0, Math.min(100, inclusivity)),
-      sustainability: Math.max(0, Math.min(100, sustainability)),
-      moderation: Math.max(0, Math.min(100, moderation)),
-      consensus: Math.max(0, Math.min(100, consensus)),
-      transparency: Math.max(0, Math.min(100, transparency))
+      balance: Math.max(0, Math.min(100, balanceScore)),
+      inclusivity: Math.max(0, Math.min(100, harmonicFlow)),
+      sustainability: Math.max(0, Math.min(100, moderationIndex)),
+      moderation: Math.max(0, Math.min(100, equilibriumState)),
+      consensus: Math.max(0, Math.min(100, balanceScore)),
+      transparency: Math.max(0, Math.min(100, harmonicFlow))
     };
   }, [lagomSettings]);
 
 
   useEffect(() => {
-    onFlowStateChange(lagomState);
-  }, [lagomState, onFlowStateChange]);
+    onFlowStateChange(_lagomState);
+  }, [_lagomState, onFlowStateChange]);
 
-    (lagomState.balance + lagomState.inclusivity + lagomState.sustainability + 
-     lagomState.moderation + lagomState.consensus + lagomState.transparency) / 6
-  );
+  // Calculate overall Lagom score
+  const overallLagomScore = (_lagomState.balance + _lagomState.inclusivity + _lagomState.sustainability + 
+     _lagomState.moderation + _lagomState.consensus + _lagomState.transparency) / 6;
 
   return (
     <VStack spacing={8} align="stretch">

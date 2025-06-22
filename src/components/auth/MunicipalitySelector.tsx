@@ -35,14 +35,30 @@ export const MunicipalitySelector: React.FC<MunicipalitySelectorProps> = ({
   const [error, setError] = useState<string>('');
   const [rememberedMunicipality, setRememberedMunicipality] = useState<string>('');
 
+  const _loadRememberedChoice = () => {
+    const remembered = localStorage.getItem('preferredMunicipalityId');
+    if (remembered) {
+      setRememberedMunicipality(remembered);
+    }
+  };
+
+  const _handleSelect = (municipalityId: string, municipalityName: string) => {
+    localStorage.setItem('preferredMunicipalityId', municipalityId);
+    localStorage.setItem('preferredMunicipalityName', municipalityName);
+    onSelect(municipalityId);
+  };
+
   useEffect(() => {
-    loadMunicipalities();
-    loadRememberedChoice();
+    _loadMunicipalities();
+    _loadRememberedChoice();
   }, []);
 
   const _loadMunicipalities = async () => {
     try {
       setIsLoading(true);
+      
+      const response = await fetch('/api/municipalities');
+      const data = await response.json();
       
       if (data.success) {
         setMunicipalities(data.municipalities);
@@ -57,8 +73,9 @@ export const MunicipalitySelector: React.FC<MunicipalitySelectorProps> = ({
     }
   };
 
-
-
+  const filteredMunicipalities = municipalities.filter((municipality) => {
+    const matchesSearch = municipality.name.toLowerCase().includes(searchTerm.toLowerCase());
+    const matchesCountry = selectedCountry === 'all' || municipality.country === selectedCountry;
     return matchesSearch && matchesCountry;
   });
 
@@ -90,7 +107,7 @@ export const MunicipalitySelector: React.FC<MunicipalitySelectorProps> = ({
             <h1 className="text-2xl font-bold text-gray-900 mb-2">Connection Error</h1>
             <p className="text-gray-600 mb-6">{error}</p>
             <button
-              onClick={loadMunicipalities}
+              onClick={_loadMunicipalities}
               className="px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
             >
               Try Again
@@ -137,11 +154,9 @@ export const MunicipalitySelector: React.FC<MunicipalitySelectorProps> = ({
                 className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
               >
                 <option value="">All Countries</option>
-                {countries.map(country => (
-                  <option key={country} value={country}>
-                    {countryNames[country]} ({country})
-                  </option>
-                ))}
+                <option value="SE">Sweden (SE)</option>
+                <option value="NO">Norway (NO)</option>
+                <option value="DK">Denmark (DK)</option>
               </select>
             </div>
           </div>
@@ -165,7 +180,7 @@ export const MunicipalitySelector: React.FC<MunicipalitySelectorProps> = ({
                 </div>
               </div>
               <button
-                onClick={() => handleSelect(rememberedMunicipality, localStorage.getItem('preferredMunicipalityName') || rememberedMunicipality)}
+                onClick={() => _handleSelect(rememberedMunicipality, localStorage.getItem('preferredMunicipalityName') || rememberedMunicipality)}
                 className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors flex items-center space-x-2"
               >
                 <span>Continue</span>
@@ -188,7 +203,7 @@ export const MunicipalitySelector: React.FC<MunicipalitySelectorProps> = ({
                 <div
                   key={municipality.id}
                   className="p-6 hover:bg-gray-50 transition-colors cursor-pointer"
-                  onClick={() => handleSelect(municipality.id, municipality.name)}
+                  onClick={() => _handleSelect(municipality.id, municipality.name)}
                 >
                   <div className="flex items-center justify-between">
                     <div className="flex items-center space-x-4">
@@ -213,11 +228,11 @@ export const MunicipalitySelector: React.FC<MunicipalitySelectorProps> = ({
                         <div className="flex items-center space-x-4 text-sm text-gray-600">
                           <div className="flex items-center space-x-1">
                             <Globe className="h-4 w-4" />
-                            <span>{countryNames[municipality.country]}</span>
+                            <span>{municipality.country}</span>
                           </div>
                           <div className="flex items-center space-x-1">
                             <Shield className="h-4 w-4" />
-                            <span>{idpTypeNames[municipality.idpType]}</span>
+                            <span>{municipality.idpType}</span>
                           </div>
                           {municipality.brandingConfig.customDomain && (
                             <span className="text-blue-600">

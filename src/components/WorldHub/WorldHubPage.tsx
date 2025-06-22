@@ -137,7 +137,25 @@ const WorldHubPageContent: React.FC<WorldHubPageContentProps> = ({
 
   // Initialize loading animation
   useEffect(() => {
+    const timer = setTimeout(() => setIsLoaded(true), 300);
     return () => clearTimeout(timer);
   }, []);
 
   // Cultural welcome message
+  const welcomeMessage = `Welcome to ${culturalContext.displayName} World Hub`;
+  return (
+    <Box>
+      <Text>World Hub Page</Text>
+    </Box>
+  );
+};
+
+export const WorldHubPage: React.FC<WorldHubPageContentProps> = (props) => {
+  return (
+    <CulturalThemeProvider>
+      <WorldHubPageContent {...props} />
+    </CulturalThemeProvider>
+  );
+};
+
+export default WorldHubPage;

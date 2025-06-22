@@ -28,3 +28,4 @@ export const ThemeProvider: React.FC<ThemeProviderProps> = ({
   const [isHighContrast, setIsHighContrast] = React.useState(false);
 
   // Merge custom theme with defaults
+};

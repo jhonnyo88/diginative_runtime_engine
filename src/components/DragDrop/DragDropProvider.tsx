@@ -24,7 +24,8 @@ interface DropZoneData {
   isOver: boolean;
 }
 
-
+export const useDragDrop = () => {
+  const context = useContext(DragDropContext);
   if (!context) {
     throw new Error('useDragDrop must be used within DragDropProvider');
   }
@@ -43,3 +44,9 @@ export const DragDropProvider: React.FC<DragDropProviderProps> = ({
   const [draggedItem, setDraggedItem] = useState<DragItem | null>(null);
   const [dropZones] = useState(new Map<string, DropZoneData>());
 
+  return (
+    <Box>
+      {children}
+    </Box>
+  );
+};

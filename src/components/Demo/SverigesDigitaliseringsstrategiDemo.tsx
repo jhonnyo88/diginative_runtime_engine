@@ -291,6 +291,8 @@ const DemoStageDisplay: React.FC<DemoStageDisplayProps> = ({
   if (!isActive) return null;
 
   // Sample data that changes based on demo stage
+  const getDemoData = (stage: string) => {
+    switch (stage) {
       case 'cultural_intelligence':
         return {
           totalScore: 3150,

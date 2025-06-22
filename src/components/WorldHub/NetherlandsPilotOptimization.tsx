@@ -501,9 +501,8 @@ export const NetherlandsPilotOptimization: React.FC<NetherlandsPilotOptimization
   const { currentTheme } = useCulturalTheme();
 
   // Calculate overall pilot readiness
-    dutchMunicipalScenarios.reduce((sum, scenario) => sum + scenario.pilotSuitability, 0) / 
-    dutchMunicipalScenarios.length
-  );
+  const pilotReadiness = dutchMunicipalScenarios.reduce((sum, scenario) => sum + scenario.pilotSuitability, 0) / 
+    dutchMunicipalScenarios.length;
 
 
   return (

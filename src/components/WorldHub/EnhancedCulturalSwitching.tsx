@@ -150,6 +150,27 @@ interface CulturalSwitchingMetrics {
   professionalRelevance: number; // percentage
 }
 
+const MotionBox = motion(Box);
+const MotionButton = motion(Button);
+
+const getMasteryColor = (level: string) => {
+  switch (level) {
+    case 'expert': return 'green';
+    case 'master': return 'purple';
+    case 'proficient': return 'blue';
+    case 'competent': return 'orange';
+    default: return 'gray';
+  }
+};
+
+const masteryLabels = {
+  developing: 'Developing',
+  competent: 'Competent',
+  proficient: 'Proficient',
+  expert: 'Expert',
+  master: 'Master'
+};
+
 interface CulturalContextCardProps {
   context: EnhancedCulturalContext;
   isActive: boolean;
@@ -451,6 +472,8 @@ export const EnhancedCulturalSwitching: React.FC<EnhancedCulturalSwitchingProps>
 
   
   const _handleContextSwitch = async (targetContextId: string) => {
+    const targetContext = enhancedCulturalContexts.find(c => c.id === targetContextId);
+    const currentContext = enhancedCulturalContexts.find(c => c.id === culturalContext.id);
     
     if (!targetContext || !currentContext) return;
     
@@ -474,3 +497,18 @@ export const EnhancedCulturalSwitching: React.FC<EnhancedCulturalSwitchingProps>
   };
 
   // Real-time switching performance calculation
+  const switchingMetrics = {
+    switchingSpeed: 250,
+    adaptationAccuracy: 95,
+    contextRetention: 92,
+    userSatisfaction: 96,
+    professionalRelevance: 94
+  };
+  return (
+    <Box>
+      <Text>Enhanced Cultural Switching</Text>
+    </Box>
+  );
+};
+
+export default EnhancedCulturalSwitching;

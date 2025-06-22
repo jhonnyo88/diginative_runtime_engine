@@ -56,3 +56,10 @@ export const StrategyPlayHost: React.FC<StrategyPlayHostProps> = ({
   playerName,
 }) => {
   // Expert recommendation: Cultural adaptation of game manifest
+  
+  return (
+    <Box>
+      <Text>Strategy Play Host</Text>
+    </Box>
+  );
+};

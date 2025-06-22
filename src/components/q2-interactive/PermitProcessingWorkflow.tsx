@@ -46,3 +46,4 @@ export const PermitProcessingWorkflow: React.FC<PermitProcessingWorkflowProps> =
   
   const { validateMunicipalCompliance } = useMunicipalCompliance();
   
+};

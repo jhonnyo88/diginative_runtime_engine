@@ -151,4 +151,5 @@ export const MunicipalBrandingHeader: React.FC<MunicipalBrandingHeaderProps> = (
       )}
     </header>
   );
+  return <Box><Text>Component</Text></Box>;
 };

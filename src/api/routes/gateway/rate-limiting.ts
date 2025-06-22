@@ -55,6 +55,7 @@ router.post('/api-keys', requireAPIKey(['admin:api_keys']), async (req: Request,
     }
 
     
+    const newApiKey = await createApiKey({
       municipalityId,
       permissions,
       rateLimit: {

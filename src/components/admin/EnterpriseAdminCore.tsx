@@ -42,6 +42,8 @@ export const EnterpriseAdminCore: React.FC<EnterpriseAdminProps> = ({
   // Expert requirement: Real-time enterprise metrics
 
   // Expert requirement: Cultural adaptation display
+  const getCulturalAdaptation = (context: string) => {
+    switch (context) {
       case 'french_collaborative':
         return {
           title: 'Administration Collaborative',

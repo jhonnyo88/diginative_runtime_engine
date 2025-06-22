@@ -24,6 +24,7 @@ export interface MunicipalButtonProps extends ChakraButtonProps {
  * Implements professional button design system for government services
  * Based on Game Designer task-gd-007 specifications
  */
+export const MunicipalButton = forwardRef<HTMLButtonElement, MunicipalButtonProps>(
   (props, ref) => {
     const {
       variant = 'municipal-primary',

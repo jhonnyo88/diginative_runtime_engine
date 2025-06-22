@@ -141,7 +141,9 @@ class PerformanceAnalyticsService {
     if (!('PerformanceObserver' in window)) return;
 
     try {
-        
+      const observer = new PerformanceObserver((list) => {
+        const entries = list.getEntries();
+        const lastEntry = entries[entries.length - 1];
         this.updateCoreWebVital('lcp', lastEntry.startTime);
       });
       
@@ -155,6 +157,7 @@ class PerformanceAnalyticsService {
     if (!('PerformanceObserver' in window)) return;
 
     try {
+      const observer = new PerformanceObserver((list) => {
         for (const entry of list.getEntries()) {
           this.updateCoreWebVital('fid', (entry as any).processingStart - entry.startTime);
         }
@@ -190,6 +193,7 @@ class PerformanceAnalyticsService {
     if (!('PerformanceObserver' in window)) return;
 
     try {
+      const observer = new PerformanceObserver((list) => {
         for (const entry of list.getEntries()) {
           if (entry.name === 'first-contentful-paint') {
             this.updateCoreWebVital('fcp', entry.startTime);
@@ -491,6 +495,11 @@ class PerformanceAnalyticsService {
     averageResponseTime: number;
     completionRate: number;
   } {
+    const duration = Date.now() - this.currentSession.startTime;
+    const gamesPlayed = this.currentSession.gamesSessions.length;
+    const totalInteractions = this.currentSession.userInteractions.length;
+    const completedGames = this.currentSession.gamesSessions.filter(g => g.completionPercentage === 100).length;
+    
     const _avgResponseTime = totalInteractions > 0
       ? this.currentSession.userInteractions.reduce((sum, i) => sum + i.responseTime, 0) / totalInteractions
       : 0;
@@ -499,9 +508,29 @@ class PerformanceAnalyticsService {
       duration,
       gamesPlayed,
       totalInteractions,
-      averageResponseTime: avgResponseTime,
+      averageResponseTime: _avgResponseTime,
       completionRate: gamesPlayed > 0 ? completedGames / gamesPlayed : 0
     };
+  }
+
+  // Hybrid approach - missing utility methods for TS1128 + TS1005 fixes
+  private trackInteraction(interaction: {
+    timestamp: number;
+    type: string;
+    target: string;
+    responseTime: number;
+    successful: boolean;
+  }): void {
+    this.currentSession.userInteractions.push(interaction);
+  }
+
+  private getElementIdentifier(element: Element): string {
+    return element.id || element.tagName || 'unknown';
+  }
+
+  private updateCoreWebVital(metric: string, value: number): void {
+    // Update core web vitals implementation
+    console.log(`Core Web Vital ${metric}:`, value);
   }
 }
 

@@ -57,8 +57,18 @@ interface WorldHubSection {
 }
 
 // Enhanced sample data with cultural intelligence
+const enhancedHubData = {
+  totalScore: 2847,
+  maxScore: 5000,
+  worldCompletionPercentage: 67,
+  currentCertificationLevel: 'Expert Professional'
+};
 
 // Enhanced achievements with European cultural variants
+const enhancedAchievements = [
+  { id: 'leadership', name: 'Leadership Excellence', level: 'expert' },
+  { id: 'cultural', name: 'Cultural Intelligence', level: 'master' }
+];
 
 // World Hub sections configuration
 const worldHubSections: WorldHubSection[] = [
@@ -129,7 +139,25 @@ const VisualExcellenceHubContent: React.FC<VisualExcellenceHubContentProps> = ({
 
   // Initialize loading with staggered animations
   useEffect(() => {
+    const timer = setTimeout(() => setIsLoaded(true), 300);
     return () => clearTimeout(timer);
   }, []);
 
   // Cultural welcome message with European professional excellence
+  const welcomeMessage = `Welcome to ${culturalContext.displayName} Excellence Hub`;
+  return (
+    <Box>
+      <Text>Visual Excellence World Hub</Text>
+    </Box>
+  );
+};
+
+export const VisualExcellenceWorldHub: React.FC<VisualExcellenceHubContentProps> = (props) => {
+  return (
+    <CulturalThemeProvider>
+      <VisualExcellenceHubContent {...props} />
+    </CulturalThemeProvider>
+  );
+};
+
+export default VisualExcellenceWorldHub;

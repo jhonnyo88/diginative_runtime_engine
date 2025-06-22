@@ -36,3 +36,4 @@ export interface MunicipalToastNotification {
   // GDPR Milestone tracking - maps milestone IDs to competencies and thresholds
 
   // Check if a milestone is achieved based on game progress
+};

@@ -258,7 +258,10 @@ export async function validateBatch(
     }
     
     // Validate each item in parallel
+    const results = await Promise.all(
       items.map(async (item) => {
+        const itemStart = Date.now();
+        const result = await validateContent(item);
         
         
         return {

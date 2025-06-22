@@ -159,4 +159,5 @@ export const HubScoreDisplay: React.FC<HubScoreDisplayProps> = ({
       )}
     </div>
   );
+  return <Box><Text>Component</Text></Box>;
 };

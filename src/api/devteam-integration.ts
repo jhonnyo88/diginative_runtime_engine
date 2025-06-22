@@ -53,6 +53,7 @@ export interface ProcessingResult {
 }
 
 // Content submission request schema
+const ContentSubmissionSchema = z.object({
   gameManifest: z.object({
     gameId: z.string(),
     metadata: z.object({
@@ -145,6 +146,7 @@ async function processContentAsync(jobId: string, request: ContentSubmissionRequ
     
     // Step 3: Municipal branding injection
     updateJobStatus(jobId, ProcessingStatus.BRANDING, 50, 'Applying municipal branding');
+    const brandedManifest = await applyMunicipalBranding(
       processedManifest,
       request.deploymentOptions.municipalityId,
       request.deploymentOptions.brandingLevel
@@ -152,12 +154,14 @@ async function processContentAsync(jobId: string, request: ContentSubmissionRequ
     
     // Step 4: Multi-format packaging
     updateJobStatus(jobId, ProcessingStatus.PACKAGING, 70, 'Creating deployment packages');
+    const packages = await createDeploymentPackages(
       brandedManifest,
       request.deploymentOptions.formats
     );
     
     // Step 5: Deployment
     updateJobStatus(jobId, ProcessingStatus.DEPLOYING, 90, 'Deploying to municipal infrastructure');
+    const deploymentResult = await deployToMunicipalInfrastructure(
       packages,
       request.deploymentOptions
     );

@@ -20,6 +20,9 @@ import {
 
 
 // Middleware for SAML session validation
+const validateSAMLSession = (req: Request, res: Response, next: NextFunction) => {
+  const sessionId = req.headers['x-saml-session-id'];
+  const user = getSAMLUser(sessionId as string);
   
   if (!sessionId || !isValidSAMLSession(sessionId as string)) {
     return res.status(401).json({

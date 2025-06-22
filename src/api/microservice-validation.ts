@@ -134,8 +134,12 @@ router.post('/validate/batch', async (req: Request, res: Response) => {
     }
 
     // Submit all validation requests
-      return requestId;
-    });
+    const requestIds = await Promise.all(
+      items.map(async (item) => {
+        const requestId = await submitValidationRequest(item);
+        return requestId;
+      })
+    );
 
     
     // Poll for all results

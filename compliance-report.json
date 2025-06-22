@@ -1,5 +1,5 @@
 {
-  "timestamp": "2025-06-21T22:15:52.891Z",
+  "timestamp": "2025-06-22T13:13:11.423Z",
   "summary": {
     "totalGates": 11,
     "passedGates": 9,
@@ -17,8 +17,8 @@
     },
     "linting": {
       "passed": false,
-      "warnings": 43,
-      "errors": 1684
+      "warnings": 54,
+      "errors": 2695
     },
     "dataResidency": {
       "compliant": true,

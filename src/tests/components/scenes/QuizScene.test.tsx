@@ -11,9 +11,6 @@ const TestWrapper: React.FC<{ children: React.ReactNode }> = ({ children }) => (
   </ChakraThemeProvider>
 );
 
-const mockAnalytics = {
-  trackEvent: vi.fn()
-};
 
 const sampleQuizScene: QuizSceneType = {
   id: 'gdpr-quiz-1',
@@ -56,7 +53,6 @@ const sampleQuizScene: QuizSceneType = {
   }
 };
 
-const mockOnComplete = vi.fn();
 
 describe('QuizScene', () => {
   beforeEach(() => {
@@ -69,11 +65,6 @@ describe('QuizScene', () => {
     vi.useRealTimers();
   });
 
-  const defaultProps = {
-    scene: sampleQuizScene,
-    onComplete: mockOnComplete,
-    analytics: mockAnalytics
-  };
 
   it('renders quiz scene correctly', () => {
     render(
@@ -117,7 +108,6 @@ describe('QuizScene', () => {
       </TestWrapper>
     );
 
-    const option = screen.getByLabelText('Data collection for any purpose');
     fireEvent.click(option);
 
     expect(option).toBeChecked();
@@ -130,7 +120,6 @@ describe('QuizScene', () => {
       </TestWrapper>
     );
 
-    const submitButton = screen.getByText('Submit Answer');
     expect(submitButton).toBeDisabled();
 
     // Select an option
@@ -361,9 +350,6 @@ describe('QuizScene', () => {
       </TestWrapper>
     );
 
-    const firstOrder = Array.from(screen.getAllByRole('radio')).map(radio => 
-      radio.getAttribute('aria-label')
-    );
 
     // Re-render to trigger randomization
     rerender(
@@ -376,9 +362,6 @@ describe('QuizScene', () => {
       </TestWrapper>
     );
 
-    const secondOrder = Array.from(screen.getAllByRole('radio')).map(radio => 
-      radio.getAttribute('aria-label')
-    );
 
     // Note: This test might occasionally fail due to random chance
     // In a real implementation, we'd use a seeded random function for testing
@@ -393,13 +376,11 @@ describe('QuizScene', () => {
       </TestWrapper>
     );
 
-    const firstOption = screen.getByLabelText('Lawfulness, fairness and transparency');
     firstOption.focus();
 
     // Arrow key navigation
     fireEvent.keyDown(firstOption, { key: 'ArrowDown' });
     
-    const secondOption = screen.getByLabelText('Purpose limitation');
     expect(document.activeElement).toBe(secondOption);
 
     // Space key selection
@@ -419,13 +400,11 @@ describe('QuizScene', () => {
     expect(screen.getByRole('timer')).toBeInTheDocument();
     
     // Radio buttons should be properly labeled
-    const radioButtons = screen.getAllByRole('radio');
     radioButtons.forEach(radio => {
       expect(radio).toHaveAttribute('aria-label');
     });
 
     // Question should be associated with radio group
-    const questionText = screen.getByText('Which of the following is NOT a principle of GDPR?');
     expect(questionText).toHaveAttribute('id');
   });
 
@@ -495,7 +474,6 @@ describe('QuizScene', () => {
       </TestWrapper>
     );
 
-    const hintButton = screen.getByText('Show Hint');
     fireEvent.click(hintButton);
 
     expect(screen.getByText('Think about what GDPR prohibits rather than what it requires.')).toBeInTheDocument();

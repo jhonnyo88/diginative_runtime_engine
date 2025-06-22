@@ -11,115 +11,12 @@ import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 
 // Mock character system integration utilities
-const mockCharacterDragIntegration = {
-  integrateCharacterWithDragDrop: vi.fn(),
-  calculateEmotionImpactOnDrag: vi.fn(),
-  validateRelationshipWorkflowAccess: vi.fn(),
-  monitorCharacterDragPerformance: vi.fn(),
-  optimizeForAnnaSwenssonCharacter: vi.fn()
-};
 
 // Character-Drag Integration Specifications
-const CHARACTER_DRAG_SPECS = {
-  characterEmotionImpacts: {
-    stress: {
-      low: { dragAccuracyModifier: 1.05, decisionSpeed: 1.1 }, // 5% accuracy boost, 10% faster
-      medium: { dragAccuracyModifier: 1.0, decisionSpeed: 1.0 }, // baseline
-      high: { dragAccuracyModifier: 0.93, decisionSpeed: 0.85 }, // 7% accuracy reduction, 15% slower
-      extreme: { dragAccuracyModifier: 0.87, decisionSpeed: 0.7 } // 13% accuracy reduction, 30% slower
-    },
-    confidence: {
-      low: { dragPrecision: 0.91, workflowInitiation: 0.8 },
-      medium: { dragPrecision: 1.0, workflowInitiation: 1.0 },
-      high: { dragPrecision: 1.08, workflowInitiation: 1.2 }
-    },
-    fatigue: {
-      fresh: { touchAccuracy: 1.05, responseTime: 0.9 },
-      normal: { touchAccuracy: 1.0, responseTime: 1.0 },
-      tired: { touchAccuracy: 0.94, responseTime: 1.15 },
-      exhausted: { touchAccuracy: 0.88, responseTime: 1.3 }
-    }
-  },
-  relationshipWorkflowAccess: {
-    mayor: {
-      trust: { high: ['budget-approval', 'emergency-decisions'], medium: ['routine-approvals'], low: ['basic-tasks'] }
-    },
-    citizens: {
-      satisfaction: { high: ['public-workflows', 'citizen-services'], medium: ['standard-services'], low: ['limited-access'] }
-    },
-    colleagues: {
-      cooperation: { high: ['collaborative-workflows'], medium: ['individual-tasks'], low: ['supervised-only'] }
-    }
-  },
-  municipalRoleHierarchy: {
-    'department-head': { workflowAccess: 'advanced', approvalLevel: 'high', dragComplexity: 'expert' },
-    'senior-officer': { workflowAccess: 'standard', approvalLevel: 'medium', dragComplexity: 'intermediate' },
-    'municipal-officer': { workflowAccess: 'basic', approvalLevel: 'low', dragComplexity: 'beginner' },
-    'trainee': { workflowAccess: 'guided', approvalLevel: 'none', dragComplexity: 'tutorial' }
-  }
-};
 
 // Anna Svensson Character Profile
-const ANNA_SVENSSON_CHARACTER = {
-  name: 'Anna Svensson',
-  role: 'department-head',
-  municipality: 'malmö',
-  personality: {
-    conscientiousness: 0.9, // very organized
-    stressResilience: 0.7, // moderate stress handling
-    technicalAptitude: 0.85, // good with technology
-    municipalExperience: 0.95 // very experienced
-  },
-  relationships: {
-    mayor: { trust: 0.8, frequency: 'weekly' },
-    citizens: { satisfaction: 0.85, engagement: 'high' },
-    colleagues: { cooperation: 0.9, leadership: 'respected' }
-  },
-  workPattern: {
-    sessionDuration: 420000, // 7 minutes
-    peakPerformanceTime: 'morning',
-    stressTriggers: ['time-pressure', 'complex-approvals', 'citizen-complaints'],
-    motivators: ['municipal-service', 'efficiency-improvements', 'colleague-support']
-  }
-};
 
 // Municipal Workflow Character Integration Scenarios
-const MUNICIPAL_CHARACTER_SCENARIOS = {
-  budgetCrisisUnderStress: {
-    scenario: 'budget-crisis-high-stress',
-    character: ANNA_SVENSSON_CHARACTER,
-    initialStress: 0.8, // high stress due to budget crisis
-    workflow: 'emergency-budget-cuts',
-    expectedBehavior: {
-      dragAccuracyReduction: 0.07, // 7% reduction
-      decisionSlowing: 0.15, // 15% slower
-      workflowAccessMaintained: true, // still has access due to role
-      municipalProcessesFollowed: true
-    }
-  },
-  citizenComplaintHandling: {
-    scenario: 'citizen-complaint-moderate-stress',
-    character: ANNA_SVENSSON_CHARACTER,
-    initialStress: 0.5, // moderate stress
-    workflow: 'citizen-complaint-resolution',
-    expectedBehavior: {
-      relationshipInfluence: 'citizen-satisfaction-affects-precision',
-      workflowAdaptation: 'empathy-based-adjustments',
-      dragPerformance: 'baseline-maintained'
-    }
-  },
-  colleagueCollaboration: {
-    scenario: 'colleague-collaboration-low-stress',
-    character: ANNA_SVENSSON_CHARACTER,
-    initialStress: 0.2, // low stress
-    workflow: 'inter-departmental-coordination',
-    expectedBehavior: {
-      cooperationBoost: 0.1, // 10% performance boost
-      dragAccuracyImprovement: 0.05, // 5% better accuracy
-      workflowEfficiencyIncrease: 0.15 // 15% more efficient
-    }
-  }
-};
 
 describe('Drag-Drop Workflows + Character System Integration Testing', () => {
   let characterDragHarness: Record<string, unknown>;
@@ -133,10 +30,8 @@ describe('Drag-Drop Workflows + Character System Integration Testing', () => {
 
   describe('Character Emotion Impact on Drag-Drop Performance', () => {
     it('should modify drag accuracy based on Anna Svensson stress levels', async () => {
-      const stressLevels = ['low', 'medium', 'high', 'extreme'];
       
       for (const stressLevel of stressLevels) {
-        const stressImpactTest = await characterDragHarness.testStressImpactOnDragPerformance({
           character: ANNA_SVENSSON_CHARACTER,
           stressLevel,
           workflow: 'invoice-approval',
@@ -150,7 +45,6 @@ describe('Drag-Drop Workflows + Character System Integration Testing', () => {
         expect(stressImpactTest.municipalContextMaintained).toBe(true);
 
         // Verify stress-specific impacts
-        const expectedModifier = CHARACTER_DRAG_SPECS.characterEmotionImpacts.stress[stressLevel].dragAccuracyModifier;
         expect(stressImpactTest.dragAccuracyModifier).toBeCloseTo(expectedModifier, 2);
 
         // Verify Anna Svensson specific optimizations
@@ -172,10 +66,8 @@ describe('Drag-Drop Workflows + Character System Integration Testing', () => {
     });
 
     it('should adjust drag precision based on character confidence levels', async () => {
-      const confidenceLevels = ['low', 'medium', 'high'];
       
       for (const confidenceLevel of confidenceLevels) {
-        const confidenceImpactTest = await characterDragHarness.testConfidenceImpactOnDragPrecision({
           character: ANNA_SVENSSON_CHARACTER,
           confidenceLevel,
           workflow: 'permit-processing',
@@ -189,11 +81,9 @@ describe('Drag-Drop Workflows + Character System Integration Testing', () => {
         expect(confidenceImpactTest.characterAuthenticityMaintained).toBe(true);
 
         // Verify confidence-specific impacts
-        const expectedPrecision = CHARACTER_DRAG_SPECS.characterEmotionImpacts.confidence[confidenceLevel].dragPrecision;
         expect(confidenceImpactTest.dragPrecisionModifier).toBeCloseTo(expectedPrecision, 2);
 
         // Verify workflow initiation behavior
-        const expectedInitiation = CHARACTER_DRAG_SPECS.characterEmotionImpacts.confidence[confidenceLevel].workflowInitiation;
         expect(confidenceImpactTest.workflowInitiationModifier).toBeCloseTo(expectedInitiation, 2);
 
         // High confidence should enable advanced workflows
@@ -205,10 +95,8 @@ describe('Drag-Drop Workflows + Character System Integration Testing', () => {
     });
 
     it('should handle character fatigue impact on touch accuracy and response time', async () => {
-      const fatigueLevels = ['fresh', 'normal', 'tired', 'exhausted'];
       
       for (const fatigueLevel of fatigueLevels) {
-        const fatigueImpactTest = await characterDragHarness.testFatigueImpactOnTouchPerformance({
           character: ANNA_SVENSSON_CHARACTER,
           fatigueLevel,
           device: 'iPhone 12',
@@ -222,8 +110,6 @@ describe('Drag-Drop Workflows + Character System Integration Testing', () => {
         expect(fatigueImpactTest.annaSwenssonCompensationsActive).toBe(true);
 
         // Verify fatigue-specific impacts
-        const expectedAccuracy = CHARACTER_DRAG_SPECS.characterEmotionImpacts.fatigue[fatigueLevel].touchAccuracy;
-        const expectedResponseTime = CHARACTER_DRAG_SPECS.characterEmotionImpacts.fatigue[fatigueLevel].responseTime;
         
         expect(fatigueImpactTest.touchAccuracyModifier).toBeCloseTo(expectedAccuracy, 2);
         expect(fatigueImpactTest.responseTimeModifier).toBeCloseTo(expectedResponseTime, 2);
@@ -247,10 +133,8 @@ describe('Drag-Drop Workflows + Character System Integration Testing', () => {
 
   describe('Relationship-Based Workflow Access Integration', () => {
     it('should modify workflow access based on mayor trust relationship', async () => {
-      const trustLevels = ['low', 'medium', 'high'];
       
       for (const trustLevel of trustLevels) {
-        const mayorTrustTest = await characterDragHarness.testMayorTrustWorkflowAccess({
           character: ANNA_SVENSSON_CHARACTER,
           mayorTrustLevel: trustLevel,
           requestedWorkflows: ['budget-approval', 'emergency-decisions', 'routine-approvals', 'basic-tasks'],
@@ -263,7 +147,6 @@ describe('Drag-Drop Workflows + Character System Integration Testing', () => {
         expect(mayorTrustTest.characterRoleConsidered).toBe(true);
 
         // Verify trust-based workflow access
-        const expectedAccess = CHARACTER_DRAG_SPECS.relationshipWorkflowAccess.mayor.trust[trustLevel];
         expect(mayorTrustTest.accessibleWorkflows).toEqual(expect.arrayContaining(expectedAccess));
 
         // Verify drag-drop integration with workflow access
@@ -289,10 +172,8 @@ describe('Drag-Drop Workflows + Character System Integration Testing', () => {
     });
 
     it('should adjust drag behavior based on citizen satisfaction relationship', async () => {
-      const satisfactionLevels = ['low', 'medium', 'high'];
       
       for (const satisfactionLevel of satisfactionLevels) {
-        const citizenSatisfactionTest = await characterDragHarness.testCitizenSatisfactionDragBehavior({
           character: ANNA_SVENSSON_CHARACTER,
           citizenSatisfactionLevel: satisfactionLevel,
           workflow: 'citizen-service-request',
@@ -336,10 +217,8 @@ describe('Drag-Drop Workflows + Character System Integration Testing', () => {
     });
 
     it('should enable collaborative drag workflows based on colleague cooperation', async () => {
-      const cooperationLevels = ['low', 'medium', 'high'];
       
       for (const cooperationLevel of cooperationLevels) {
-        const colleagueCooperationTest = await characterDragHarness.testColleagueCooperationDragWorkflows({
           character: ANNA_SVENSSON_CHARACTER,
           colleagueCooperationLevel: cooperationLevel,
           collaborativeWorkflow: 'inter-departmental-coordination',
@@ -353,7 +232,6 @@ describe('Drag-Drop Workflows + Character System Integration Testing', () => {
         expect(colleagueCooperationTest.municipalTeamworkEnhanced).toBe(true);
 
         // Verify cooperation-based features
-        const expectedAccess = CHARACTER_DRAG_SPECS.relationshipWorkflowAccess.colleagues.cooperation[cooperationLevel];
         expect(colleagueCooperationTest.collaborativeWorkflowAccess).toEqual(expect.arrayContaining(expectedAccess));
 
         // Verify collaborative drag-drop features
@@ -382,10 +260,8 @@ describe('Drag-Drop Workflows + Character System Integration Testing', () => {
 
   describe('Municipal Role Hierarchy Integration', () => {
     it('should adjust drag complexity and workflow access based on municipal role', async () => {
-      const municipalRoles = ['department-head', 'senior-officer', 'municipal-officer', 'trainee'];
       
       for (const role of municipalRoles) {
-        const roleBasedTest = await characterDragHarness.testMunicipalRoleBasedDragAccess({
           character: { ...ANNA_SVENSSON_CHARACTER, role },
           municipality: 'malmö',
           requestedWorkflows: ['advanced-budget-analysis', 'standard-permit-processing', 'basic-data-entry', 'guided-tutorial'],
@@ -398,7 +274,6 @@ describe('Drag-Drop Workflows + Character System Integration Testing', () => {
         expect(roleBasedTest.municipalHierarchyRespected).toBe(true);
 
         // Verify role-specific access and complexity
-        const expectedSpecs = CHARACTER_DRAG_SPECS.municipalRoleHierarchy[role];
         expect(roleBasedTest.workflowAccessLevel).toBe(expectedSpecs.workflowAccess);
         expect(roleBasedTest.approvalLevel).toBe(expectedSpecs.approvalLevel);
         expect(roleBasedTest.dragComplexity).toBe(expectedSpecs.dragComplexity);
@@ -428,15 +303,8 @@ describe('Drag-Drop Workflows + Character System Integration Testing', () => {
     });
 
     it('should provide appropriate drag-drop tutorials based on municipal role and experience', async () => {
-      const experienceLevels = [
-        { role: 'trainee', experience: 0.1 },
-        { role: 'municipal-officer', experience: 0.5 },
-        { role: 'senior-officer', experience: 0.8 },
-        { role: 'department-head', experience: 0.95 }
-      ];
 
       for (const { role, experience } of experienceLevels) {
-        const tutorialTest = await characterDragHarness.testRoleBasedDragTutorials({
           character: { ...ANNA_SVENSSON_CHARACTER, role, municipalExperience: experience },
           municipality: 'malmö',
           tutorialType: 'workflow-specific',
@@ -483,7 +351,6 @@ describe('Drag-Drop Workflows + Character System Integration Testing', () => {
 
   describe('Municipal Scenario Character Integration', () => {
     it('should handle budget crisis scenario with high stress character integration', async () => {
-      const budgetCrisisTest = await characterDragHarness.testMunicipalScenarioCharacterIntegration({
         scenario: MUNICIPAL_CHARACTER_SCENARIOS.budgetCrisisUnderStress,
         municipality: 'malmö',
         testDuration: 180000, // 3 minutes
@@ -496,7 +363,6 @@ describe('Drag-Drop Workflows + Character System Integration Testing', () => {
       expect(budgetCrisisTest.workflowAccessMaintainedDespiteStress).toBe(true);
 
       // Verify stress-scenario integration
-      const expectedBehavior = MUNICIPAL_CHARACTER_SCENARIOS.budgetCrisisUnderStress.expectedBehavior;
       expect(budgetCrisisTest.observedBehavior.dragAccuracyReduction).toBeCloseTo(expectedBehavior.dragAccuracyReduction, 1);
       expect(budgetCrisisTest.observedBehavior.decisionSlowing).toBeCloseTo(expectedBehavior.decisionSlowing, 1);
       expect(budgetCrisisTest.observedBehavior.workflowAccessMaintained).toBe(expectedBehavior.workflowAccessMaintained);
@@ -519,7 +385,6 @@ describe('Drag-Drop Workflows + Character System Integration Testing', () => {
     });
 
     it('should handle citizen complaint scenario with empathy-based workflow adjustments', async () => {
-      const citizenComplaintTest = await characterDragHarness.testCitizenComplaintScenarioIntegration({
         scenario: MUNICIPAL_CHARACTER_SCENARIOS.citizenComplaintHandling,
         municipality: 'malmö',
         complaintType: 'service-delivery-issue',
@@ -557,7 +422,6 @@ describe('Drag-Drop Workflows + Character System Integration Testing', () => {
     });
 
     it('should handle colleague collaboration scenario with performance enhancement', async () => {
-      const collaborationTest = await characterDragHarness.testColleagueCollaborationScenarioIntegration({
         scenario: MUNICIPAL_CHARACTER_SCENARIOS.colleagueCollaboration,
         municipality: 'malmö',
         collaborationType: 'inter-departmental-project',
@@ -570,7 +434,6 @@ describe('Drag-Drop Workflows + Character System Integration Testing', () => {
       expect(collaborationTest.municipalTeamEfficiencyImproved).toBe(true);
 
       // Verify collaboration performance enhancements
-      const expectedBehavior = MUNICIPAL_CHARACTER_SCENARIOS.colleagueCollaboration.expectedBehavior;
       expect(collaborationTest.performanceEnhancements.cooperationBoost).toBeCloseTo(expectedBehavior.cooperationBoost, 2);
       expect(collaborationTest.performanceEnhancements.dragAccuracyImprovement).toBeCloseTo(expectedBehavior.dragAccuracyImprovement, 2);
       expect(collaborationTest.performanceEnhancements.workflowEfficiencyIncrease).toBeCloseTo(expectedBehavior.workflowEfficiencyIncrease, 2);
@@ -595,7 +458,6 @@ describe('Drag-Drop Workflows + Character System Integration Testing', () => {
 
   describe('Performance Monitoring and Optimization', () => {
     it('should monitor character-drag integration performance continuously', async () => {
-      const performanceMonitoringTest = await characterDragHarness.testCharacterDragPerformanceMonitoring({
         character: ANNA_SVENSSON_CHARACTER,
         monitoringDuration: 420000, // 7 minutes (full session)
         municipality: 'malmö',

@@ -125,7 +125,6 @@ export class DevTeamAPIPipeline {
    * Submit content for processing
    */
   async submitContent(request: ContentProcessingRequest): Promise<string> {
-    const startTime = Date.now();
     
     try {
       // Check for existing processing
@@ -134,23 +133,12 @@ export class DevTeamAPIPipeline {
       }
 
       // Quick content hash for cache lookup
-      const contentHash = this.generateContentHash(request.content);
-      const cacheKey = `pipeline:${contentHash}:${request.metadata.contentType}`;
       
       // Check cache first for identical content
-      const cached = await this.redis.get<ProcessingResult>(cacheKey);
       if (cached && this.isCacheValid(cached, request)) {
         this.updateCacheStats(true);
         
         // Return cached result with new ID
-        const cachedResult = {
-          ...cached,
-          id: request.id,
-          metrics: {
-            ...cached.metrics,
-            totalTime: Date.now() - startTime
-          }
-        };
         
         this.monitoring.recordMetric({
           name: 'devteam_pipeline_cache_hit',
@@ -203,7 +191,6 @@ export class DevTeamAPIPipeline {
    */
   async getResult(id: string): Promise<ProcessingResult | null> {
     // Check if still processing
-    const activeJob = this.activeJobs.get(id);
     if (activeJob) {
       try {
         return await activeJob;
@@ -227,7 +214,6 @@ export class DevTeamAPIPipeline {
     }
 
     // Check cache for completed results
-    const cacheKey = `pipeline:result:${id}`;
     return await this.redis.get<ProcessingResult>(cacheKey);
   }
 
@@ -235,31 +221,22 @@ export class DevTeamAPIPipeline {
    * Process batch of content items
    */
   async processBatch(requests: ContentProcessingRequest[]): Promise<Map<string, ProcessingResult>> {
-    const startTime = Date.now();
-    const results = new Map<string, ProcessingResult>();
 
     try {
       // Group by priority for processing order
-      const priorityGroups = this.groupByPriority(requests);
       
       // Process urgent and high priority first
       for (const priority of ['urgent', 'high', 'normal', 'low'] as const) {
-        const group = priorityGroups.get(priority) || [];
         if (group.length === 0) continue;
 
         // Process in batches to respect concurrency limits
-        const batches = this.createBatches(group, this.config.batchSize);
         
         for (const batch of batches) {
-          const batchPromises = batch.map(request => {
-            this.processingQueue.set(request.id, request);
             return this.processContent(request);
           });
 
-          const batchResults = await Promise.allSettled(batchPromises);
           
           batchResults.forEach((result, index) => {
-            const request = batch[index];
             if (result.status === 'fulfilled') {
               results.set(request.id, result.value);
             } else {
@@ -274,8 +251,6 @@ export class DevTeamAPIPipeline {
         }
       }
 
-      const processingTime = Date.now() - startTime;
-      const successCount = Array.from(results.values()).filter(r => r.success).length;
 
       this.monitoring.recordMetric({
         name: 'devteam_pipeline_batch_processed',
@@ -303,27 +278,21 @@ export class DevTeamAPIPipeline {
    * Core content processing pipeline
    */
   private async processContent(request: ContentProcessingRequest): Promise<ProcessingResult> {
-    const startTime = Date.now();
     const metrics: ProcessingMetrics = this.createEmptyMetrics();
 
     // Create processing promise
-    const processingPromise = this.executeProcessingPipeline(request, metrics);
     this.activeJobs.set(request.id, processingPromise);
 
     try {
-      const result = await processingPromise;
       
       // Cache successful results
       if (result.success) {
-        const contentHash = this.generateContentHash(request.content);
-        const cacheKey = `pipeline:${contentHash}:${request.metadata.contentType}`;
         await this.redis.set(cacheKey, result, { 
           ttl: this.getCacheTTL(request.metadata.contentType),
           tags: ['devteam-pipeline', request.metadata.contentType]
         });
 
         // Also cache by ID for retrieval
-        const resultCacheKey = `pipeline:result:${request.id}`;
         await this.redis.set(resultCacheKey, result, { ttl: 3600 }); // 1 hour
       }
 
@@ -345,19 +314,16 @@ export class DevTeamAPIPipeline {
   ): Promise<ProcessingResult> {
     try {
       // Step 1: Content Validation
-      const validationResult = await this.validateContent(request, metrics);
       if (!validationResult.success) {
         return validationResult;
       }
 
       // Step 2: Asset Optimization
-      const optimizationResult = await this.optimizeAssets(request, metrics);
       if (!optimizationResult.success) {
         return optimizationResult;
       }
 
       // Step 3: Deployment Package Creation
-      const deploymentResult = await this.createDeploymentPackage(request, metrics, optimizationResult);
       if (!deploymentResult.success) {
         return deploymentResult;
       }
@@ -398,17 +364,13 @@ export class DevTeamAPIPipeline {
     request: ContentProcessingRequest, 
     metrics: ProcessingMetrics
   ): Promise<Partial<ProcessingResult> & { success: boolean }> {
-    const startTime = Date.now();
 
     try {
       // Check validation cache
-      const validationHash = this.generateContentHash({
         content: request.content,
         validationRules: this.config.optimizationLevel
       });
-      const validationCacheKey = `validation:${validationHash}`;
       
-      const cachedValidation = await this.redis.get(validationCacheKey);
       if (cachedValidation) {
         metrics.cacheHits++;
         metrics.validationTime = Date.now() - startTime;
@@ -421,23 +383,10 @@ export class DevTeamAPIPipeline {
       metrics.cacheMisses++;
 
       // Perform validation using microservice
-      const validationRequest = {
-        id: `${request.id}_validation`,
-        content: request.content,
-        contentType: 'game' as const,
-        priority: request.metadata.priority,
-        metadata: {
-          userId: request.metadata.userId,
-          teamId: request.metadata.teamId,
-          timestamp: Date.now(),
-          source: 'pipeline' as const
-        }
-      };
 
       await this.validation.submitValidation(validationRequest);
       
       // Poll for result with timeout
-      const validationResult = await this.pollForValidationResult(
         validationRequest.id, 
         this.config.contentValidationTimeout
       );
@@ -451,7 +400,6 @@ export class DevTeamAPIPipeline {
       }
 
       // Apply advanced optimizations based on validation results
-      const optimizedContent = await this.applyContentOptimizations(
         request.content, 
         validationResult.result
       );
@@ -485,10 +433,8 @@ export class DevTeamAPIPipeline {
     request: ContentProcessingRequest,
     metrics: ProcessingMetrics
   ): Promise<Partial<ProcessingResult> & { success: boolean }> {
-    const startTime = Date.now();
 
     try {
-      const scenes = request.content.scenes || [];
       const optimizedScenes: BaseScene[] = [];
       const bundledScripts: string[] = [];
       const optimizedImages: AssetManifest[] = [];
@@ -497,7 +443,6 @@ export class DevTeamAPIPipeline {
 
       // Optimize scenes
       for (const scene of scenes) {
-        const optimizedScene = await this.optimizeScene(scene);
         optimizedScenes.push(optimizedScene.scene);
         totalOriginalSize += optimizedScene.originalSize;
         totalOptimizedSize += optimizedScene.optimizedSize;
@@ -512,10 +457,8 @@ export class DevTeamAPIPipeline {
       }
 
       // Bundle and minify scripts
-      const minifiedScripts = await this.bundleAndMinifyScripts(bundledScripts);
       
       // Generate optimized styles
-      const minifiedStyles = await this.generateOptimizedStyles(request.content);
 
       const optimizedAssets: OptimizedAssets = {
         compressedScenes: optimizedScenes,
@@ -552,7 +495,6 @@ export class DevTeamAPIPipeline {
     metrics: ProcessingMetrics,
     optimizationResult: Partial<ProcessingResult>
   ): Promise<Partial<ProcessingResult> & { success: boolean }> {
-    const startTime = Date.now();
 
     try {
       if (!optimizationResult.optimizedAssets) {
@@ -560,7 +502,6 @@ export class DevTeamAPIPipeline {
       }
 
       // Generate version based on content hash and timestamp
-      const version = `${Date.now()}-${this.generateContentHash(request.content).substring(0, 8)}`;
       
       const deploymentPackage: DeploymentPackage = {
         version,
@@ -612,7 +553,6 @@ export class DevTeamAPIPipeline {
     scripts?: string[];
     images?: AssetManifest[];
   }> {
-    const originalSize = JSON.stringify(scene).length;
     
     // Create optimized copy
     const optimizedScene: BaseScene = {
@@ -632,7 +572,6 @@ export class DevTeamAPIPipeline {
       }));
     }
 
-    const optimizedSize = JSON.stringify(optimizedScene).length;
 
     return {
       scene: optimizedScene,
@@ -664,10 +603,8 @@ export class DevTeamAPIPipeline {
   }
 
   private generateContentHash(content: Record<string, unknown>): string {
-    const str = JSON.stringify(content);
     let hash = 0;
     for (let i = 0; i < str.length; i++) {
-      const char = str.charCodeAt(i);
       hash = ((hash << 5) - hash) + char;
       hash = hash & hash;
     }
@@ -688,10 +625,8 @@ export class DevTeamAPIPipeline {
   }
 
   private groupByPriority(requests: ContentProcessingRequest[]): Map<string, ContentProcessingRequest[]> {
-    const groups = new Map<string, ContentProcessingRequest[]>();
     
     for (const request of requests) {
-      const priority = request.metadata.priority;
       if (!groups.has(priority)) {
         groups.set(priority, []);
       }
@@ -710,11 +645,8 @@ export class DevTeamAPIPipeline {
   }
 
   private async pollForValidationResult(id: string, timeout: number): Promise<Record<string, unknown>> {
-    const startTime = Date.now();
-    const pollInterval = 100;
     
     while (Date.now() - startTime < timeout) {
-      const result = await this.validation.getValidationResult(id);
       if (result) {
         return result;
       }
@@ -747,7 +679,6 @@ export class DevTeamAPIPipeline {
     }
     
     // Validate package size for municipal networks
-    const maxSize = this.getMaxPackageSize();
     if (result.deploymentPackage.assets.totalSize > maxSize) {
       throw new Error(`Package size ${result.deploymentPackage.assets.totalSize} exceeds municipal network limit`);
     }
@@ -779,7 +710,6 @@ export class DevTeamAPIPipeline {
   }
 
   private async getPreviousVersion(gameId: string): Promise<string | undefined> {
-    const versionKey = `game:version:${gameId}`;
     return await this.redis.get<string>(versionKey);
   }
 
@@ -806,7 +736,6 @@ export class DevTeamAPIPipeline {
       this.batchStats.failedRequests++;
     }
     
-    const totalTime = this.batchStats.averageProcessingTime * (this.batchStats.processedRequests + this.batchStats.failedRequests - 1);
     this.batchStats.averageProcessingTime = (totalTime + result.metrics.totalTime) / (this.batchStats.processedRequests + this.batchStats.failedRequests);
   }
 
@@ -817,15 +746,11 @@ export class DevTeamAPIPipeline {
   }
 
   private async processPendingQueue(): Promise<void> {
-    const availableSlots = this.config.maxConcurrentProcessing - this.activeJobs.size;
     if (availableSlots <= 0) return;
 
-    const pending = Array.from(this.processingQueue.values())
+    const _pending = Array.from(this.processingQueue.values())
       .sort((a, b) => {
         // Sort by priority, then by timestamp
-        const priorityOrder = { urgent: 0, high: 1, normal: 2, low: 3 };
-        const aPriority = priorityOrder[a.metadata.priority];
-        const bPriority = priorityOrder[b.metadata.priority];
         
         if (aPriority !== bPriority) {
           return aPriority - bPriority;
@@ -881,8 +806,6 @@ export class DevTeamAPIPipeline {
    */
   getStats(): BatchProcessingStats & { activeJobs: number; queueSize: number } {
     // Calculate throughput
-    const now = Date.now();
-    const oneMinuteAgo = now - 60000;
     
     this.batchStats.throughputPerMinute = this.batchStats.processedRequests; // Simplified for demo
 
@@ -900,8 +823,6 @@ export class DevTeamAPIPipeline {
     console.log('Shutting down DevTeam API Pipeline...');
     
     // Wait for active jobs to complete (with timeout)
-    const shutdownTimeout = 60000; // 60 seconds
-    const startTime = Date.now();
     
     while (this.activeJobs.size > 0 && (Date.now() - startTime) < shutdownTimeout) {
       await new Promise(resolve => setTimeout(resolve, 1000));

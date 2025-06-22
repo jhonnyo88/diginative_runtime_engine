@@ -784,7 +784,6 @@ export class SwedishCulturalIntelligenceTesting extends EventEmitter {
     this.testResults.clear();
     
     // Initialize cultural dimension testing
-    const dimensions = Object.keys(this.culturalSpecs.culturalDimensions);
     for (const dimension of dimensions) {
       this.testResults.set(`dimension_${dimension}`, []);
     }
@@ -852,7 +851,6 @@ export class SwedishCulturalIntelligenceTesting extends EventEmitter {
     };
 
     // Store results
-    const dimensionResults = this.testResults.get(`dimension_${dimensionName}`) || [];
     dimensionResults.push(result);
     this.testResults.set(`dimension_${dimensionName}`, dimensionResults);
 
@@ -965,8 +963,6 @@ export class SwedishCulturalIntelligenceTesting extends EventEmitter {
    * Evaluate Cultural Authenticity
    */
   private async evaluateAuthenticity(spec: CulturalDimensionSpec): Promise<number> {
-    const baseScore = spec.acceptanceThreshold;
-    const criticalBonus = spec.criticalForDemo ? 2 : 0;
     return Math.min(baseScore + criticalBonus, 99);
   }
 
@@ -974,8 +970,6 @@ export class SwedishCulturalIntelligenceTesting extends EventEmitter {
    * Evaluate Government Appropriateness
    */
   private async evaluateGovernmentAppropriateness(spec: CulturalDimensionSpec): Promise<number> {
-    const baseScore = 96;
-    const criticalBonus = spec.criticalForDemo ? 2 : 0;
     return Math.min(baseScore + criticalBonus, 99);
   }
 
@@ -1048,8 +1042,6 @@ export class SwedishCulturalIntelligenceTesting extends EventEmitter {
    * Generate Cultural Validation Summary
    */
   private async generateCulturalValidationSummary(): Promise<void> {
-    const dimensions = Object.keys(this.culturalSpecs.culturalDimensions);
-    const totalDimensions = dimensions.length;
     
     const summary: CulturalIntelligenceTestResult = {
       testType: 'cultural_validation_summary',
@@ -1082,8 +1074,6 @@ export class SwedishCulturalIntelligenceTesting extends EventEmitter {
    * Get Cultural Intelligence Testing Summary
    */
   getCulturalTestingSummary(): Record<string, unknown> {
-    const summary = this.testResults.get('cultural_validation_summary')?.[0];
-    const dimensions = Object.keys(this.culturalSpecs.culturalDimensions);
     
     return {
       cultural_testing_active: this.testingActive,

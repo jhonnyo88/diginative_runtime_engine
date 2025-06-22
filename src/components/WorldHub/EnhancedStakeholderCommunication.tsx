@@ -61,8 +61,6 @@ import {
 
 import { useCulturalTheme } from './CulturalThemeProvider';
 
-const MotionBox = motion(Box);
-const MotionCard = motion(Card);
 
 // Stakeholder Management System
 interface Stakeholder {
@@ -314,22 +312,8 @@ DigiNativa Finance Team`,
 ];
 
 // Stakeholder Role Colors
-const roleColors = {
-  executive: { bg: 'purple.50', border: 'purple.200', color: 'purple.700' },
-  hr_director: { bg: 'green.50', border: 'green.200', color: 'green.700' },
-  technical_leader: { bg: 'blue.50', border: 'blue.200', color: 'blue.700' },
-  budget_committee: { bg: 'orange.50', border: 'orange.200', color: 'orange.700' },
-  citizen_representative: { bg: 'gray.50', border: 'gray.200', color: 'gray.700' }
-};
 
 // Support Level Colors
-const supportColors = {
-  champion: 'green',
-  supporter: 'blue',
-  neutral: 'yellow',
-  skeptic: 'orange',
-  blocker: 'red'
-};
 
 // Stakeholder Card Component
 interface StakeholderCardProps {
@@ -338,8 +322,6 @@ interface StakeholderCardProps {
 }
 
 const StakeholderCard: React.FC<StakeholderCardProps> = ({ stakeholder, onSelect = () => {} }) => {
-  const roleColor = roleColors[stakeholder.role];
-  const supportColor = supportColors[stakeholder.support];
 
   return (
     <MotionCard
@@ -444,16 +426,7 @@ const CommunicationBuilder: React.FC<CommunicationBuilderProps> = ({ stakeholder
   const [customContent, setCustomContent] = useState('');
 
   // Filter templates by stakeholder role and cultural context
-  const relevantTemplates = communicationTemplates.filter(
-    template => 
-      template.stakeholderRole === stakeholder.role && 
-      template.culturalContext === stakeholder.culturalContext
-  );
 
-  const handleTemplateSelect = (template: CommunicationTemplate) => {
-    setSelectedTemplate(template);
-    setCustomContent(template.content.replace('{name}', stakeholder.name));
-  };
 
   return (
     <VStack spacing={6} align="stretch">
@@ -585,7 +558,6 @@ const StakeholderDetailModal: React.FC<StakeholderDetailModalProps> = ({
 }) => {
   if (!stakeholder) return null;
 
-  const roleColor = roleColors[stakeholder.role];
 
   return (
     <Modal isOpen={isOpen} onClose={onClose} size="6xl">
@@ -785,15 +757,8 @@ export const EnhancedStakeholderCommunication: React.FC<EnhancedStakeholderCommu
   const { isOpen, onOpen, onClose } = useDisclosure();
   const [selectedStakeholder, setSelectedStakeholder] = useState<Stakeholder | null>(null);
 
-  const handleStakeholderSelect = (stakeholder: Stakeholder) => {
-    setSelectedStakeholder(stakeholder);
-    onOpen();
-  };
 
   // Calculate stakeholder engagement statistics
-  const avgEngagement = Math.round(stakeholders.reduce((sum, s) => sum + s.engagementScore, 0) / stakeholders.length);
-  const highInfluenceStakeholders = stakeholders.filter(s => s.influence === 'high').length;
-  const championStakeholders = stakeholders.filter(s => s.support === 'champion').length;
 
   return (
     <VStack spacing={8} align="stretch">

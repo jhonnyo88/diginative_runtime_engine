@@ -11,193 +11,12 @@ import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 
 // Mock cultural adaptation testing utilities
-const mockCulturalAdaptationTesting = {
-  validateCulturalAppropriateness: vi.fn(),
-  testLocalizedMunicipalContexts: vi.fn(),
-  validateProfessionalTone: vi.fn(),
-  testCulturalSensitivity: vi.fn(),
-  optimizeForLocalMunicipalCulture: vi.fn()
-};
 
 // Cultural Adaptation Testing Specifications
-const CULTURAL_ADAPTATION_SPECS = {
-  europeanCulturalContexts: {
-    'swedish-municipal-culture': {
-      municipality: 'malmö',
-      culturalCharacteristics: ['consensus-building', 'transparency-emphasis', 'egalitarian-approach', 'environmental-consciousness'],
-      communicationStyle: 'collaborative-professional',
-      decisionMakingStyle: 'consultative-consensus',
-      stakeholderEngagement: 'inclusive-participatory',
-      professionalTone: 'respectful-direct',
-      municipalValues: ['equality', 'sustainability', 'citizen-participation', 'transparency']
-    },
-    'german-municipal-culture': {
-      municipality: 'berlin',
-      culturalCharacteristics: ['efficiency-focused', 'process-orientation', 'thorough-analysis', 'regulatory-compliance'],
-      communicationStyle: 'formal-precise',
-      decisionMakingStyle: 'analytical-structured',
-      stakeholderEngagement: 'organized-systematic',
-      professionalTone: 'formal-competent',
-      municipalValues: ['efficiency', 'orderliness', 'expertise', 'legal-compliance']
-    },
-    'french-municipal-culture': {
-      municipality: 'paris',
-      culturalCharacteristics: ['administrative-excellence', 'intellectual-rigor', 'cultural-sophistication', 'centralized-coordination'],
-      communicationStyle: 'refined-articulate',
-      decisionMakingStyle: 'centralized-expert',
-      stakeholderEngagement: 'formal-hierarchical',
-      professionalTone: 'sophisticated-authoritative',
-      municipalValues: ['excellence', 'culture', 'expertise', 'republican-values']
-    },
-    'dutch-municipal-culture': {
-      municipality: 'amsterdam',
-      culturalCharacteristics: ['pragmatic-innovation', 'open-communication', 'collaborative-problem-solving', 'sustainability-focus'],
-      communicationStyle: 'direct-open',
-      decisionMakingStyle: 'pragmatic-collaborative',
-      stakeholderEngagement: 'informal-inclusive',
-      professionalTone: 'straightforward-friendly',
-      municipalValues: ['innovation', 'sustainability', 'collaboration', 'pragmatism']
-    }
-  },
-  culturalValidationCriteria: {
-    culturalSensitivity: {
-      minimumScore: 0.9, // 90% cultural appropriateness required
-      validationAreas: ['language-tone', 'cultural-references', 'social-norms', 'professional-etiquette'],
-      expertValidation: 'native-cultural-expert-required'
-    },
-    professionalAppropriate: {
-      minimumScore: 0.95, // 95% professional appropriateness required
-      validationAreas: ['municipal-terminology', 'governmental-protocols', 'citizen-interaction-standards', 'inter-agency-communication'],
-      complianceStandard: 'government-professional-standards'
-    },
-    localCompliance: {
-      minimumScore: 0.98, // 98% local compliance required
-      validationAreas: ['legal-requirements', 'regulatory-standards', 'cultural-regulations', 'municipal-policies'],
-      auditStandard: 'local-government-audit-compliance'
-    }
-  },
-  mechanicsCulturalIntegration: {
-    'drag-drop-workflows': {
-      culturalAdaptations: ['workflow-terminology', 'process-visualization', 'interaction-metaphors', 'completion-feedback'],
-      validationFocus: 'municipal-workflow-cultural-authenticity'
-    },
-    'character-system': {
-      culturalAdaptations: ['character-names', 'professional-relationships', 'emotional-expressions', 'cultural-backgrounds'],
-      validationFocus: 'character-cultural-authenticity-and-representation'
-    },
-    'timed-challenges': {
-      culturalAdaptations: ['time-pressure-realism', 'decision-making-styles', 'stakeholder-expectations', 'urgency-communication'],
-      validationFocus: 'culturally-appropriate-time-pressure-scenarios'
-    },
-    'branching-narratives': {
-      culturalAdaptations: ['narrative-scenarios', 'cultural-contexts', 'decision-options', 'consequence-realism'],
-      validationFocus: 'culturally-authentic-municipal-storytelling'
-    },
-    'achievement-system': {
-      culturalAdaptations: ['achievement-types', 'recognition-styles', 'progression-paths', 'competency-definitions'],
-      validationFocus: 'culturally-appropriate-professional-recognition'
-    },
-    'municipal-compliance': {
-      culturalAdaptations: ['regulatory-frameworks', 'compliance-standards', 'audit-procedures', 'transparency-requirements'],
-      validationFocus: 'local-municipal-regulatory-accuracy'
-    }
-  }
-};
 
 // Municipal Cultural Scenarios
-const MUNICIPAL_CULTURAL_SCENARIOS = {
-  swedishConsensusBuilding: {
-    scenario: 'malmö-consensus-building-municipal-decision',
-    culturalContext: 'swedish-municipal-culture',
-    culturalValidation: [
-      'consensus-building-authentic',
-      'transparency-requirements-respected',
-      'egalitarian-approach-maintained',
-      'environmental-consciousness-integrated'
-    ],
-    mechanicsInvolved: ['branching-narratives', 'timed-challenges', 'character-system', 'achievement-system'],
-    expectedCulturalBehaviors: {
-      decisionMaking: 'consultative-consensus-seeking',
-      stakeholderEngagement: 'inclusive-all-voices-heard',
-      timeManagement: 'thorough-but-efficient',
-      communicationStyle: 'respectful-collaborative'
-    }
-  },
-  germanEfficiencyStandards: {
-    scenario: 'berlin-efficiency-process-optimization',
-    culturalContext: 'german-municipal-culture',
-    culturalValidation: [
-      'efficiency-standards-maintained',
-      'process-orientation-respected',
-      'thorough-analysis-conducted',
-      'regulatory-compliance-prioritized'
-    ],
-    mechanicsInvolved: ['drag-drop-workflows', 'municipal-compliance', 'achievement-system', 'timed-challenges'],
-    expectedCulturalBehaviors: {
-      decisionMaking: 'analytical-structured-approach',
-      processManagement: 'systematic-thorough',
-      qualityStandards: 'precision-excellence',
-      communicationStyle: 'formal-precise'
-    }
-  },
-  frenchAdministrativeExcellence: {
-    scenario: 'paris-administrative-excellence-service-delivery',
-    culturalContext: 'french-municipal-culture',
-    culturalValidation: [
-      'administrative-excellence-demonstrated',
-      'intellectual-rigor-applied',
-      'cultural-sophistication-maintained',
-      'centralized-coordination-respected'
-    ],
-    mechanicsInvolved: ['character-system', 'branching-narratives', 'achievement-system', 'municipal-compliance'],
-    expectedCulturalBehaviors: {
-      serviceDelivery: 'refined-high-quality',
-      intellectualApproach: 'rigorous-analytical',
-      culturalAwareness: 'sophisticated-respectful',
-      authorityStructure: 'hierarchical-respectful'
-    }
-  },
-  dutchPragmaticInnovation: {
-    scenario: 'amsterdam-pragmatic-innovation-digital-transformation',
-    culturalContext: 'dutch-municipal-culture',
-    culturalValidation: [
-      'pragmatic-innovation-approach',
-      'open-communication-maintained',
-      'collaborative-problem-solving-applied',
-      'sustainability-focus-integrated'
-    ],
-    mechanicsInvolved: ['drag-drop-workflows', 'timed-challenges', 'character-system', 'branching-narratives'],
-    expectedCulturalBehaviors: {
-      innovationApproach: 'pragmatic-user-focused',
-      communicationStyle: 'direct-open-honest',
-      problemSolving: 'collaborative-inclusive',
-      sustainabilityIntegration: 'environmental-social-consciousness'
-    }
-  }
-};
 
 // Anna Svensson Cultural Profile
-const ANNA_SVENSSON_CULTURAL_PROFILE = {
-  primaryCulture: 'swedish-municipal-culture',
-  culturalCompetencies: {
-    'swedish-culture': { expertise: 'native', confidence: 1.0, authenticity: 'lived-experience' },
-    'german-culture': { expertise: 'advanced', confidence: 0.8, authenticity: 'professional-experience' },
-    'french-culture': { expertise: 'intermediate', confidence: 0.7, authenticity: 'educational-cultural-exposure' },
-    'dutch-culture': { expertise: 'intermediate', confidence: 0.75, authenticity: 'regional-collaboration-experience' }
-  },
-  crossCulturalSkills: {
-    culturalSensitivity: 0.9,
-    adaptationAbility: 0.85,
-    languageCompetency: { swedish: 1.0, english: 0.95, german: 0.7, french: 0.6, dutch: 0.65 },
-    municipalCulturalKnowledge: { nordic: 0.95, central_european: 0.8, western_european: 0.75 }
-  },
-  culturalPreferences: {
-    communicationStyle: 'consensus-building-with-cultural-awareness',
-    decisionMaking: 'inclusive-but-culturally-informed',
-    conflictResolution: 'cultural-bridge-building',
-    professionalInteraction: 'culturally-adaptive-respectful'
-  }
-};
 
 describe('Cultural Adaptation Testing Across All Q2 Interactive Mechanics', () => {
   let culturalAdaptationHarness: Record<string, unknown>;
@@ -211,7 +30,6 @@ describe('Cultural Adaptation Testing Across All Q2 Interactive Mechanics', () =
 
   describe('Swedish Municipal Culture Adaptation', () => {
     it('should adapt all Q2 mechanics for Swedish consensus-building municipal culture', async () => {
-      const swedishCulturalAdaptation = await culturalAdaptationHarness.testSwedishCulturalAdaptation({
         culturalContext: CULTURAL_ADAPTATION_SPECS.europeanCulturalContexts['swedish-municipal-culture'],
         mechanicsToTest: Object.keys(CULTURAL_ADAPTATION_SPECS.mechanicsCulturalIntegration),
         culturalScenario: MUNICIPAL_CULTURAL_SCENARIOS.swedishConsensusBuilding,
@@ -280,7 +98,6 @@ describe('Cultural Adaptation Testing Across All Q2 Interactive Mechanics', () =
     });
 
     it('should validate Swedish consensus-building in complex municipal scenarios', async () => {
-      const swedishConsensusValidation = await culturalAdaptationHarness.testSwedishConsensusBuilding({
         consensusScenario: MUNICIPAL_CULTURAL_SCENARIOS.swedishConsensusBuilding,
         stakeholderTypes: ['mayor', 'citizens', 'department-heads', 'environmental-groups', 'business-community'],
         culturalValidation: 'native-swedish-municipal-expert',
@@ -321,7 +138,6 @@ describe('Cultural Adaptation Testing Across All Q2 Interactive Mechanics', () =
 
   describe('German Municipal Culture Adaptation', () => {
     it('should adapt all Q2 mechanics for German efficiency-focused municipal culture', async () => {
-      const germanCulturalAdaptation = await culturalAdaptationHarness.testGermanCulturalAdaptation({
         culturalContext: CULTURAL_ADAPTATION_SPECS.europeanCulturalContexts['german-municipal-culture'],
         mechanicsToTest: Object.keys(CULTURAL_ADAPTATION_SPECS.mechanicsCulturalIntegration),
         culturalScenario: MUNICIPAL_CULTURAL_SCENARIOS.germanEfficiencyStandards,
@@ -392,7 +208,6 @@ describe('Cultural Adaptation Testing Across All Q2 Interactive Mechanics', () =
 
   describe('French Municipal Culture Adaptation', () => {
     it('should adapt all Q2 mechanics for French administrative excellence culture', async () => {
-      const frenchCulturalAdaptation = await culturalAdaptationHarness.testFrenchCulturalAdaptation({
         culturalContext: CULTURAL_ADAPTATION_SPECS.europeanCulturalContexts['french-municipal-culture'],
         mechanicsToTest: Object.keys(CULTURAL_ADAPTATION_SPECS.mechanicsCulturalIntegration),
         culturalScenario: MUNICIPAL_CULTURAL_SCENARIOS.frenchAdministrativeExcellence,
@@ -463,7 +278,6 @@ describe('Cultural Adaptation Testing Across All Q2 Interactive Mechanics', () =
 
   describe('Dutch Municipal Culture Adaptation', () => {
     it('should adapt all Q2 mechanics for Dutch pragmatic innovation culture', async () => {
-      const dutchCulturalAdaptation = await culturalAdaptationHarness.testDutchCulturalAdaptation({
         culturalContext: CULTURAL_ADAPTATION_SPECS.europeanCulturalContexts['dutch-municipal-culture'],
         mechanicsToTest: Object.keys(CULTURAL_ADAPTATION_SPECS.mechanicsCulturalIntegration),
         culturalScenario: MUNICIPAL_CULTURAL_SCENARIOS.dutchPragmaticInnovation,
@@ -534,7 +348,6 @@ describe('Cultural Adaptation Testing Across All Q2 Interactive Mechanics', () =
 
   describe('Cross-Cultural Integration and Switching', () => {
     it('should handle dynamic cultural context switching across all Q2 mechanics', async () => {
-      const culturalContextSwitching = await culturalAdaptationHarness.testCulturalContextSwitching({
         culturalSequence: [
           { culture: 'swedish-municipal-culture', duration: 300000, scenario: 'consensus-building' }, // 5 minutes
           { culture: 'german-municipal-culture', duration: 240000, scenario: 'efficiency-optimization' }, // 4 minutes
@@ -580,7 +393,6 @@ describe('Cultural Adaptation Testing Across All Q2 Interactive Mechanics', () =
     });
 
     it('should optimize Anna Svensson cultural competency across European municipal contexts', async () => {
-      const annaSwenssonCulturalOptimization = await culturalAdaptationHarness.testAnnaSwenssonCulturalOptimization({
         culturalProfile: ANNA_SVENSSON_CULTURAL_PROFILE,
         culturalContexts: Object.keys(CULTURAL_ADAPTATION_SPECS.europeanCulturalContexts),
         device: 'iPhone 12',
@@ -626,7 +438,6 @@ describe('Cultural Adaptation Testing Across All Q2 Interactive Mechanics', () =
 
   describe('Cultural Quality Assurance and Validation', () => {
     it('should validate cultural appropriateness with native cultural experts', async () => {
-      const nativeCulturalExpertValidation = await culturalAdaptationHarness.testNativeCulturalExpertValidation({
         culturalContexts: Object.keys(CULTURAL_ADAPTATION_SPECS.europeanCulturalContexts),
         mechanicsToValidate: Object.keys(CULTURAL_ADAPTATION_SPECS.mechanicsCulturalIntegration),
         validationExperts: {
@@ -665,7 +476,6 @@ describe('Cultural Adaptation Testing Across All Q2 Interactive Mechanics', () =
     });
 
     it('should generate comprehensive cultural adaptation integration reports', async () => {
-      const culturalAdaptationReporting = await culturalAdaptationHarness.generateCulturalAdaptationIntegrationReport({
         culturalContextsTested: Object.keys(CULTURAL_ADAPTATION_SPECS.europeanCulturalContexts),
         mechanicsAdapted: Object.keys(CULTURAL_ADAPTATION_SPECS.mechanicsCulturalIntegration),
         culturalScenarios: Object.keys(MUNICIPAL_CULTURAL_SCENARIOS),

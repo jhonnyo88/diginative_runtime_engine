@@ -21,8 +21,6 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { EnhancedErrorBoundary } from './EnhancedErrorBoundary';
 
 // Motion components for animations
-const MotionBox = motion(Box);
-const MotionContainer = motion(Container);
 
 // Container variant types
 export type GameContainerVariant = 'default' | 'fullscreen' | 'modal' | 'sidebar';
@@ -57,65 +55,10 @@ export interface GameContainerProps {
 }
 
 // Responsive breakpoint configuration
-const BREAKPOINTS = {
-  xs: '0px',      // Ultra-small devices
-  sm: '375px',    // Anna Svensson iPhone 12 (PRIMARY TARGET)
-  md: '768px',    // Tablets and small laptops
-  lg: '1024px',   // Klaus Mueller desktop
-  xl: '1200px'    // Enterprise municipal workstations
-};
 
 // Container configurations by variant
-const CONTAINER_CONFIGS = {
-  default: {
-    maxWidth: { base: '100%', sm: '100%', md: '768px', lg: '1024px', xl: '1200px' },
-    padding: { base: '1rem', md: '2rem', lg: '3rem', xl: '4rem auto' },
-    centerOnLoad: true
-  },
-  fullscreen: {
-    maxWidth: '100vw',
-    padding: 0,
-    centerOnLoad: false
-  },
-  modal: {
-    maxWidth: '600px',
-    padding: '2rem',
-    centerOnLoad: true
-  },
-  sidebar: {
-    maxWidth: '1400px',
-    padding: { base: '1rem', lg: '2rem' },
-    centerOnLoad: true
-  }
-};
 
 // Municipal color schemes
-const MUNICIPAL_COLORS = {
-  sweden: {
-    primary: '#005293',
-    secondary: '#E6F3FF',
-    background: '#FFFFFF',
-    accent: '#64748B'
-  },
-  germany: {
-    primary: '#1F2937',
-    secondary: '#F3F4F6',
-    background: '#FFFFFF',
-    accent: '#6B7280'
-  },
-  france: {
-    primary: '#7C3AED',
-    secondary: '#F3E8FF',
-    background: '#FFFFFF',
-    accent: '#8B5CF6'
-  },
-  netherlands: {
-    primary: '#EA580C',
-    secondary: '#FFF7ED',
-    background: '#FFFFFF',
-    accent: '#FB923C'
-  }
-};
 
 /**
  * GameContainer Component
@@ -137,69 +80,28 @@ export const GameContainer: React.FC<GameContainerProps> = ({
   ...props
 }) => {
   // Get container configuration
-  const config = CONTAINER_CONFIGS[variant];
-  const municipalColors = MUNICIPAL_COLORS[municipalTheme];
   
   // Responsive values for Anna Svensson iPhone 12 optimization
-  const containerMaxWidth = maxWidth || config.maxWidth;
-  const containerPadding = config.padding;
   
   // Background color with municipal theming
-  const backgroundColor = useColorModeValue(
+  const _backgroundColor = useColorModeValue(
     bg || municipalColors.background,
     bg || '#1A202C'
   );
   
   // Container spacing based on branding level
-  const spacing = useBreakpointValue({
+  const _spacing = useBreakpointValue({
     base: brandingLevel === 'minimal' ? 4 : 6,
     md: brandingLevel === 'minimal' ? 6 : 8,
     lg: brandingLevel === 'minimal' ? 8 : 10
   });
   
   // Animation variants for smooth container entrance
-  const containerVariants = {
-    hidden: {
-      opacity: 0,
-      y: variant === 'modal' ? 50 : 20,
-      scale: variant === 'modal' ? 0.95 : 1
-    },
-    visible: {
-      opacity: 1,
-      y: 0,
-      scale: 1,
-      transition: {
-        duration: 0.3,
-        ease: 'easeOut',
-        staggerChildren: 0.1
-      }
-    },
-    exit: {
-      opacity: 0,
-      y: variant === 'modal' ? 50 : -20,
-      scale: variant === 'modal' ? 0.95 : 1,
-      transition: {
-        duration: 0.2,
-        ease: 'easeIn'
-      }
-    }
-  };
   
   // Content animation variants
-  const contentVariants = {
-    hidden: { opacity: 0, y: 20 },
-    visible: {
-      opacity: 1,
-      y: 0,
-      transition: {
-        duration: 0.2,
-        ease: 'easeOut'
-      }
-    }
-  };
   
   // Main container content
-  const containerContent = (
+  const _containerContent = (
     <MotionContainer
       maxW={containerMaxWidth}
       p={containerPadding}
@@ -243,79 +145,6 @@ export const GameContainer: React.FC<GameContainerProps> = ({
   );
   
   // Variant-specific wrappers
-  const renderVariantContent = () => {
-    switch (variant) {
-      case 'fullscreen':
-        return (
-          <Box
-            position="fixed"
-            top={0}
-            left={0}
-            right={0}
-            bottom={0}
-            bg={backgroundColor}
-            zIndex="modal"
-            overflow="auto"
-            // Smooth scrolling for Anna Svensson mobile
-            sx={{
-              scrollBehavior: 'smooth',
-              WebkitOverflowScrolling: 'touch'
-            }}
-          >
-            {containerContent}
-          </Box>
-        );
-        
-      case 'modal':
-        return (
-          <Box
-            position="fixed"
-            top={0}
-            left={0}
-            right={0}
-            bottom={0}
-            bg="blackAlpha.500"
-            zIndex="modal"
-            display="flex"
-            alignItems="center"
-            justifyContent="center"
-            p={4}
-          >
-            <MotionBox
-              bg={backgroundColor}
-              borderRadius="lg"
-              shadow="2xl"
-              maxH="90vh"
-              overflow="auto"
-              variants={{
-                hidden: { opacity: 0, scale: 0.9 },
-                visible: { opacity: 1, scale: 1 }
-              }}
-            >
-              {containerContent}
-            </MotionBox>
-          </Box>
-        );
-        
-      case 'sidebar':
-        return (
-          <HStack
-            maxW={containerMaxWidth}
-            mx="auto"
-            spacing={spacing}
-            align="stretch"
-            p={containerPadding}
-          >
-            <Box flex="1">
-              {containerContent}
-            </Box>
-          </HStack>
-        );
-        
-      default:
-        return containerContent;
-    }
-  };
   
   // Wrap with Enhanced ErrorBoundary if enabled
   if (errorBoundary) {

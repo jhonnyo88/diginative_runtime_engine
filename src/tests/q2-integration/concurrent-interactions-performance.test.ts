@@ -11,137 +11,10 @@ import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 
 // Mock concurrent performance testing utilities
-const mockConcurrentPerformanceTesting = {
-  simulateConcurrentUsers: vi.fn(),
-  measurePerformanceUnderLoad: vi.fn(),
-  validateMunicipalNetworkConditions: vi.fn(),
-  optimizeForConcurrentInteractions: vi.fn(),
-  monitorScalabilityMetrics: vi.fn()
-};
 
 // Concurrent Performance Testing Specifications
-const CONCURRENT_PERFORMANCE_SPECS = {
-  concurrentUserProfiles: [
-    {
-      profile: 'anna-svensson-department-head',
-      device: 'iPhone 12',
-      municipality: 'malmö',
-      workflowComplexity: 'expert',
-      sessionDuration: 420000, // 7 minutes
-      interactionFrequency: 'high'
-    },
-    {
-      profile: 'municipal-officer-standard',
-      device: 'desktop-chrome',
-      municipality: 'göteborg',
-      workflowComplexity: 'intermediate',
-      sessionDuration: 300000, // 5 minutes
-      interactionFrequency: 'medium'
-    },
-    {
-      profile: 'trainee-guided',
-      device: 'tablet-safari',
-      municipality: 'stockholm',
-      workflowComplexity: 'basic',
-      sessionDuration: 600000, // 10 minutes
-      interactionFrequency: 'low'
-    }
-  ],
-  concurrentLoadScenarios: {
-    'peak-municipal-hours': {
-      description: 'Peak municipal working hours load simulation',
-      concurrentUsers: 150,
-      testDuration: 1800000, // 30 minutes
-      municipalContext: 'morning-peak-government-office-hours',
-      networkConditions: 'municipal-3G-mixed',
-      expectedWorkflows: ['invoice-approval', 'permit-processing', 'citizen-services', 'emergency-preparedness']
-    },
-    'emergency-response-surge': {
-      description: 'Emergency response concurrent usage surge',
-      concurrentUsers: 75,
-      testDuration: 900000, // 15 minutes
-      municipalContext: 'emergency-flood-response',
-      networkConditions: 'stressed-municipal-networks',
-      expectedWorkflows: ['emergency-coordination', 'resource-allocation', 'stakeholder-communication']
-    },
-    'budget-season-intensive': {
-      description: 'Budget planning season concurrent usage',
-      concurrentUsers: 100,
-      testDuration: 2700000, // 45 minutes
-      municipalContext: 'annual-budget-planning',
-      networkConditions: 'stable-government-networks',
-      expectedWorkflows: ['budget-analysis', 'stakeholder-consultation', 'financial-compliance']
-    },
-    'digital-transformation-training': {
-      description: 'Municipal staff digital transformation training',
-      concurrentUsers: 200,
-      testDuration: 3600000, // 60 minutes
-      municipalContext: 'citywide-training-initiative',
-      networkConditions: 'mixed-municipal-access',
-      expectedWorkflows: ['accessibility-training', 'cultural-competency', 'digital-service-design']
-    }
-  },
-  performanceTargets: {
-    frameRate: { minimum: 55, target: 60, critical_threshold: 45 },
-    responseTime: { average: 100, peak: 250, critical_threshold: 500 },
-    memoryUsage: { individual: 150, total: 8000, critical_threshold: 12000 }, // MB
-    networkLatency: { municipal_3G: 150, government_wifi: 50, critical_threshold: 300 },
-    concurrentThroughput: { operations_per_second: 500, critical_threshold: 250 }
-  },
-  municipalRealism: {
-    networkConditions: ['municipal-3G', 'government-wifi', 'rural-municipal-connection', 'emergency-network'],
-    workingHours: ['morning-peak', 'afternoon-steady', 'emergency-response', 'evening-wind-down'],
-    deviceDistribution: {
-      'iPhone 12': 0.3, // 30% Anna Svensson-style users
-      'desktop-chrome': 0.4, // 40% office desktop users
-      'tablet-safari': 0.2, // 20% mobile municipal users
-      'android-municipal': 0.1 // 10% android municipal devices
-    }
-  }
-};
 
 // Municipal Concurrent Usage Patterns
-const MUNICIPAL_CONCURRENT_USAGE_PATTERNS = {
-  morningPeakMunicipalOperations: {
-    pattern: 'morning-municipal-peak-operations',
-    timeWindow: '08:00-10:00',
-    concurrentActivities: [
-      { activity: 'daily-planning-review', users: 45, complexity: 'medium', priority: 'high' },
-      { activity: 'citizen-service-preparation', users: 35, complexity: 'medium', priority: 'high' },
-      { activity: 'email-correspondence-processing', users: 25, complexity: 'low', priority: 'medium' },
-      { activity: 'meeting-preparation', users: 20, complexity: 'high', priority: 'high' },
-      { activity: 'urgent-issue-handling', users: 15, complexity: 'high', priority: 'critical' }
-    ],
-    municipalRealism: 'authentic-government-morning-routine',
-    expectedPerformance: 'optimal-during-peak-productivity-hours'
-  },
-  emergencyResponseCoordination: {
-    pattern: 'emergency-municipal-coordination',
-    timeWindow: 'immediate-emergency-response',
-    concurrentActivities: [
-      { activity: 'emergency-assessment', users: 15, complexity: 'critical', priority: 'emergency' },
-      { activity: 'resource-mobilization', users: 12, complexity: 'high', priority: 'emergency' },
-      { activity: 'stakeholder-communication', users: 18, complexity: 'medium', priority: 'emergency' },
-      { activity: 'media-coordination', users: 8, complexity: 'high', priority: 'emergency' },
-      { activity: 'citizen-safety-communication', users: 25, complexity: 'medium', priority: 'emergency' }
-    ],
-    municipalRealism: 'authentic-emergency-response-coordination',
-    expectedPerformance: 'priority-performance-under-extreme-pressure'
-  },
-  budgetPlanningIntensive: {
-    pattern: 'municipal-budget-planning-intensive',
-    timeWindow: 'budget-season-concentrated-work',
-    concurrentActivities: [
-      { activity: 'departmental-budget-analysis', users: 30, complexity: 'high', priority: 'high' },
-      { activity: 'stakeholder-consultation', users: 20, complexity: 'high', priority: 'high' },
-      { activity: 'financial-compliance-validation', users: 15, complexity: 'expert', priority: 'critical' },
-      { activity: 'transparency-documentation', users: 12, complexity: 'medium', priority: 'high' },
-      { activity: 'inter-departmental-coordination', users: 18, complexity: 'high', priority: 'medium' }
-    ],
-    municipalRealism: 'authentic-municipal-budget-season-intensity',
-    expectedPerformance: 'sustained-high-performance-during-critical-planning'
-  }
-};
 
 describe('Performance Testing Under Multiple Concurrent Interactions for Q2 Interactive Mechanics', () => {
   let concurrentPerformanceHarness: Record<string, unknown>;
@@ -155,7 +28,6 @@ describe('Performance Testing Under Multiple Concurrent Interactions for Q2 Inte
 
   describe('Peak Municipal Hours Concurrent Performance', () => {
     it('should maintain optimal performance with 150 concurrent municipal users during peak hours', async () => {
-      const peakHoursPerformanceTest = await concurrentPerformanceHarness.testPeakMunicipalHoursPerformance({
         loadScenario: CONCURRENT_PERFORMANCE_SPECS.concurrentLoadScenarios['peak-municipal-hours'],
         userProfiles: CONCURRENT_PERFORMANCE_SPECS.concurrentUserProfiles,
         municipalUsagePattern: MUNICIPAL_CONCURRENT_USAGE_PATTERNS.morningPeakMunicipalOperations,
@@ -206,7 +78,6 @@ describe('Performance Testing Under Multiple Concurrent Interactions for Q2 Inte
     });
 
     it('should handle concurrent municipal activities with realistic municipal workflow distribution', async () => {
-      const concurrentActivitiesTest = await concurrentPerformanceHarness.testConcurrentMunicipalActivities({
         municipalActivities: MUNICIPAL_CONCURRENT_USAGE_PATTERNS.morningPeakMunicipalOperations.concurrentActivities,
         testDuration: 1800000, // 30 minutes
         municipality: 'malmö',
@@ -251,7 +122,6 @@ describe('Performance Testing Under Multiple Concurrent Interactions for Q2 Inte
 
   describe('Emergency Response Surge Performance', () => {
     it('should maintain critical performance during emergency response concurrent usage surge', async () => {
-      const emergencyResponseSurgeTest = await concurrentPerformanceHarness.testEmergencyResponseSurgePerformance({
         loadScenario: CONCURRENT_PERFORMANCE_SPECS.concurrentLoadScenarios['emergency-response-surge'],
         emergencyUsagePattern: MUNICIPAL_CONCURRENT_USAGE_PATTERNS.emergencyResponseCoordination,
         emergencyNetworkConditions: 'stressed-municipal-networks',
@@ -302,7 +172,6 @@ describe('Performance Testing Under Multiple Concurrent Interactions for Q2 Inte
     });
 
     it('should handle emergency coordination with authentic Swedish emergency protocols', async () => {
-      const emergencyCoordinationTest = await concurrentPerformanceHarness.testEmergencyCoordinationRealism({
         emergencyType: 'flood-emergency-göteborg',
         emergencyActivities: MUNICIPAL_CONCURRENT_USAGE_PATTERNS.emergencyResponseCoordination.concurrentActivities,
         swedishEmergencyProtocols: ['municipal-emergency-law', 'multi-agency-coordination', 'citizen-safety-communication'],
@@ -346,7 +215,6 @@ describe('Performance Testing Under Multiple Concurrent Interactions for Q2 Inte
 
   describe('Budget Planning Intensive Concurrent Performance', () => {
     it('should handle sustained high-performance during intensive budget planning concurrent usage', async () => {
-      const budgetPlanningIntensiveTest = await concurrentPerformanceHarness.testBudgetPlanningIntensivePerformance({
         loadScenario: CONCURRENT_PERFORMANCE_SPECS.concurrentLoadScenarios['budget-season-intensive'],
         budgetUsagePattern: MUNICIPAL_CONCURRENT_USAGE_PATTERNS.budgetPlanningIntensive,
         testDuration: 2700000, // 45 minutes
@@ -399,7 +267,6 @@ describe('Performance Testing Under Multiple Concurrent Interactions for Q2 Inte
 
   describe('Digital Transformation Training Concurrent Performance', () => {
     it('should support 200 concurrent municipal staff during digital transformation training', async () => {
-      const digitalTrainingConcurrentTest = await concurrentPerformanceHarness.testDigitalTransformationTrainingPerformance({
         loadScenario: CONCURRENT_PERFORMANCE_SPECS.concurrentLoadScenarios['digital-transformation-training'],
         trainingComplexity: 'municipal-digital-competency-development',
         testDuration: 3600000, // 60 minutes
@@ -452,7 +319,6 @@ describe('Performance Testing Under Multiple Concurrent Interactions for Q2 Inte
 
   describe('Scalability and Performance Optimization', () => {
     it('should demonstrate scalability for enterprise municipal deployment with 500+ concurrent users', async () => {
-      const enterpriseScalabilityTest = await concurrentPerformanceHarness.testEnterpriseMunicipalScalability({
         concurrentUsers: 500,
         municipalDeploymentScope: 'multi-municipality-enterprise',
         municipalities: ['malmö', 'göteborg', 'stockholm', 'uppsala', 'västerås'],
@@ -501,7 +367,6 @@ describe('Performance Testing Under Multiple Concurrent Interactions for Q2 Inte
     });
 
     it('should optimize concurrent interaction performance for Anna Svensson iPhone 12 municipal workflows', async () => {
-      const annaSwenssonConcurrentOptimization = await concurrentPerformanceHarness.testAnnaSwenssonConcurrentOptimization({
         device: 'iPhone 12',
         concurrentInteractions: {
           municipalWorkflows: 5, // 5 simultaneous municipal workflows
@@ -551,7 +416,6 @@ describe('Performance Testing Under Multiple Concurrent Interactions for Q2 Inte
 
   describe('Concurrent Performance Quality Assurance', () => {
     it('should generate comprehensive concurrent performance integration reports', async () => {
-      const concurrentPerformanceReporting = await concurrentPerformanceHarness.generateConcurrentPerformanceIntegrationReport({
         loadScenariosTestedCount: Object.keys(CONCURRENT_PERFORMANCE_SPECS.concurrentLoadScenarios).length,
         maxConcurrentUsersValidated: 500,
         municipalUsagePatternsValidated: Object.keys(MUNICIPAL_CONCURRENT_USAGE_PATTERNS).length,

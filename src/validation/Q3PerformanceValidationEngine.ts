@@ -123,30 +123,22 @@ export class Q3PerformanceValidationEngine {
   async executePerformanceValidation(): Promise<ValidationResult> {
     console.log('🚀 Executing Q3 Performance Validation for Swedish Municipal Networks');
     
-    const sessionId = this.generateValidationSessionId();
     this.currentValidation = this.createValidationSession(sessionId);
     
     try {
       // Phase 1: Network Performance Validation
-      const networkResults = await this.validateNetworkPerformance();
       
       // Phase 2: Device Performance Validation
-      const deviceResults = await this.validateDevicePerformance();
       
       // Phase 3: Cross-Device Synchronization Validation
-      const syncResults = await this.validateCrossDeviceSync();
       
       // Phase 4: Load Testing Validation
-      const loadResults = await this.validatePerformanceUnderLoad();
       
       // Phase 5: Anna Svensson iPhone 12 Validation
-      const annaSvenssonResults = await this.validateAnnaSvenssonPerformance();
       
       // Phase 6: Government Demo Scenario Validation
-      const demoResults = await this.validateGovernmentDemoScenarios();
       
       // Compile comprehensive validation result
-      const validationResult = this.compileValidationResults([
         networkResults,
         deviceResults,
         syncResults,
@@ -178,20 +170,16 @@ export class Q3PerformanceValidationEngine {
     console.log(`🇸🇪 Validating ${networkProfile.municipality} municipal network`);
     console.log(`🌐 Network Type: ${networkProfile.networkType}`);
     
-    const startTime = Date.now();
     const measurements: PerformanceMeasurement[] = [];
     
     // Execute multiple test runs for statistical significance
     for (let i = 0; i < 10; i++) {
-      const measurement = await this.measureNetworkPerformance(networkProfile);
       measurements.push(measurement);
       
       // Brief pause between measurements
       await new Promise(resolve => setTimeout(resolve, 1000));
     }
     
-    const validationDuration = Date.now() - startTime;
-    const analysis = this.analyzeNetworkMeasurements(measurements, networkProfile);
     
     console.log(`📊 ${networkProfile.municipality}: Hub ${Math.round(analysis.averageHubLoading)}ms, Latency ${Math.round(analysis.averageLatency)}ms`);
     
@@ -258,8 +246,6 @@ export class Q3PerformanceValidationEngine {
       ]
     };
     
-    const measurements = await this.executeDeviceValidation(annaSvenssonProfile);
-    const analysis = this.analyzeDeviceMeasurements(measurements, annaSvenssonProfile);
     
     console.log(`📱 Anna Svensson iPhone 12: Hub ${Math.round(analysis.averageHubLoading)}ms, Transitions ${Math.round(analysis.averageWorldTransition)}ms`);
     
@@ -289,7 +275,6 @@ export class Q3PerformanceValidationEngine {
    * Generate comprehensive validation report
    */
   generateValidationReport(): PerformanceValidationReport {
-    const latestResult = this.validationResults[this.validationResults.length - 1];
     
     return {
       executiveSummary: this.generateExecutiveSummary(),
@@ -356,7 +341,6 @@ export class Q3PerformanceValidationEngine {
     const results: NetworkValidationResult[] = [];
     
     for (const profile of this.validationConfig.networkProfiles) {
-      const result = await this.validateSwedishMunicipalNetwork(profile);
       results.push(result);
     }
     
@@ -369,8 +353,6 @@ export class Q3PerformanceValidationEngine {
     const results: DeviceValidationResult[] = [];
     
     for (const deviceProfile of this.validationConfig.deviceProfiles) {
-      const measurements = await this.executeDeviceValidation(deviceProfile);
-      const analysis = this.analyzeDeviceMeasurements(measurements, deviceProfile);
       
       results.push({
         deviceProfile,
@@ -388,7 +370,6 @@ export class Q3PerformanceValidationEngine {
     console.log('🔄 Phase 3: Cross-Device Synchronization Validation');
     
     // Simulate cross-device sync testing
-    const syncMeasurements = await this.measureCrossDeviceSync();
     
     return {
       measurements: syncMeasurements,
@@ -402,7 +383,6 @@ export class Q3PerformanceValidationEngine {
     console.log('⚡ Phase 4: Load Testing Validation');
     
     // Simulate load testing
-    const loadMeasurements = await this.measurePerformanceUnderLoad();
     
     return {
       measurements: loadMeasurements,
@@ -415,27 +395,10 @@ export class Q3PerformanceValidationEngine {
   private async validateGovernmentDemoScenarios(): Promise<DemoScenarioResult[]> {
     console.log('🏛️ Phase 6: Government Demo Scenario Validation');
     
-    const demoScenarios = [
-      {
-        scenarioId: 'government_presentation',
-        name: 'Government Presentation Scenario',
-        description: 'Full government demonstration walkthrough',
-        expectedDuration: 900000, // 15 minutes
-        criticalPath: true
-      },
-      {
-        scenarioId: 'stakeholder_interaction',
-        name: 'Stakeholder Interaction Scenario',
-        description: 'Interactive stakeholder demonstration',
-        expectedDuration: 600000, // 10 minutes
-        criticalPath: true
-      }
-    ];
     
     const results: DemoScenarioResult[] = [];
     
     for (const scenario of demoScenarios) {
-      const measurement = await this.measureDemoScenario(scenario);
       results.push({
         scenario,
         measurement,
@@ -449,8 +412,6 @@ export class Q3PerformanceValidationEngine {
 
   private async measureNetworkPerformance(profile: SwedishMunicipalNetworkProfile): Promise<PerformanceMeasurement> {
     // Simulate network performance measurement
-    const baseLatency = profile.expectedLatency;
-    const latencyVariance = baseLatency * 0.2;
     
     return {
       timestamp: Date.now(),
@@ -465,9 +426,6 @@ export class Q3PerformanceValidationEngine {
   }
 
   private analyzeNetworkMeasurements(measurements: PerformanceMeasurement[], profile: SwedishMunicipalNetworkProfile): NetworkAnalysis {
-    const avgHubLoading = measurements.reduce((sum, m) => sum + m.hubLoading, 0) / measurements.length;
-    const avgLatency = measurements.reduce((sum, m) => sum + m.networkLatency, 0) / measurements.length;
-    const avgWorldTransition = measurements.reduce((sum, m) => sum + m.worldTransition, 0) / measurements.length;
     
     return {
       averageHubLoading: avgHubLoading,
@@ -501,7 +459,6 @@ export class Q3PerformanceValidationEngine {
     const measurements: PerformanceMeasurement[] = [];
     
     for (const scenario of deviceProfile.testScenarios) {
-      const measurement = await this.measureDeviceScenario(deviceProfile, scenario);
       measurements.push(measurement);
     }
     
@@ -510,7 +467,6 @@ export class Q3PerformanceValidationEngine {
 
   private async measureDeviceScenario(deviceProfile: DeviceProfile, scenario: TestScenario): Promise<PerformanceMeasurement> {
     // Simulate device-specific performance measurement
-    const basePerformance = deviceProfile.expectedPerformance;
     
     return {
       timestamp: Date.now(),
@@ -525,8 +481,6 @@ export class Q3PerformanceValidationEngine {
   }
 
   private analyzeDeviceMeasurements(measurements: PerformanceMeasurement[], deviceProfile: DeviceProfile): DeviceAnalysis {
-    const avgHubLoading = measurements.reduce((sum, m) => sum + m.hubLoading, 0) / measurements.length;
-    const avgWorldTransition = measurements.reduce((sum, m) => sum + m.worldTransition, 0) / measurements.length;
     
     return {
       averageHubLoading: avgHubLoading,
@@ -595,7 +549,6 @@ export class Q3PerformanceValidationEngine {
 
   private compileValidationResults(phaseResults: Record<string, unknown>[]): ValidationResult {
     // Compile all phase results into comprehensive validation result
-    const score = this.calculateOverallScore(phaseResults);
     
     return {
       overall: score >= 95 ? 'excellent' : score >= 85 ? 'passed' : score >= 70 ? 'warning' : 'failed',
@@ -805,4 +758,3 @@ interface GovernmentReadinessAssessment {
 }
 
 // Export singleton instance
-export const q3PerformanceValidationEngine = new Q3PerformanceValidationEngine();

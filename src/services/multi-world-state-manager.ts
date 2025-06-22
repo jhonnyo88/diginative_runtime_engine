@@ -34,7 +34,7 @@ export class MultiWorldStateManager {
    * Generate unique 8-character code for hub session authentication
    */
   generateUniqueCode(): string {
-    const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789'; // Exclude confusing characters
+    const _chars = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789'; // Exclude confusing characters
     let result = '';
     for (let i = 0; i < this.UNIQUE_CODE_LENGTH; i++) {
       result += chars.charAt(Math.floor(Math.random() * chars.length));
@@ -50,11 +50,7 @@ export class MultiWorldStateManager {
     tenantId: string,
     culturalContext: 'swedish_municipal' | 'german_municipal' | 'french_municipal' | 'dutch_municipal'
   ): Promise<{ hubState: WorldHubState; uniqueCode: string }> {
-    const uniqueCode = this.generateUniqueCode();
-    const hubSessionId = `hub_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
     
-    const now = new Date();
-    const expiresAt = new Date(now.getTime() + this.HUB_SESSION_DURATION);
     
     // Initialize world completion status for all 5 worlds
     const worldCompletionStatus: WorldCompletionStatus[] = [1, 2, 3, 4, 5].map(worldIndex => ({
@@ -118,8 +114,6 @@ export class MultiWorldStateManager {
       }
 
       // Check if session has expired
-      const now = new Date();
-      const expiresAt = new Date(data.expires_at);
       if (now > expiresAt) {
         // Clean up expired session
         await this.cleanupExpiredSession(data.hub_session_id);
@@ -172,13 +166,11 @@ export class MultiWorldStateManager {
       throw new Error(`Invalid world index: ${worldIndex}`);
     }
 
-    const hubState = await this.getHubSession(hubSessionId);
     if (!hubState) {
       return null;
     }
 
     // Update world completion status
-    const worldStatus = hubState.worldCompletionStatus.find(w => w.worldIndex === worldIndex);
     if (!worldStatus) {
       throw new Error(`World ${worldIndex} not found in hub session`);
     }
@@ -223,13 +215,11 @@ export class MultiWorldStateManager {
       throw new Error(`Invalid world index: ${worldIndex}`);
     }
 
-    const hubState = await this.getHubSession(hubSessionId);
     if (!hubState) {
       return null;
     }
 
     // Check if world is unlocked
-    const worldStatus = hubState.worldCompletionStatus.find(w => w.worldIndex === worldIndex);
     if (!worldStatus || worldStatus.status === 'locked') {
       throw new Error(`World ${worldIndex} is not available`);
     }
@@ -278,7 +268,6 @@ export class MultiWorldStateManager {
    */
   async getHubSession(hubSessionId: string): Promise<WorldHubState | null> {
     // Check cache first
-    const cached = this.hubSessionCache.get(hubSessionId);
     if (cached) {
       return cached;
     }
@@ -393,7 +382,6 @@ export class MultiWorldStateManager {
    */
   private updateWorldUnlockStatus(hubState: WorldHubState): void {
     for (let worldIndex = 1; worldIndex <= 5; worldIndex++) {
-      const worldStatus = hubState.worldCompletionStatus.find(w => w.worldIndex === worldIndex);
       if (!worldStatus || worldStatus.status !== 'locked') {
         continue;
       }
@@ -411,7 +399,6 @@ export class MultiWorldStateManager {
     // This will be implemented with specific cross-world achievement logic
     // For now, we'll add basic completion achievements
     
-    const completedWorlds = hubState.worldCompletionStatus.filter(w => w.status === 'completed').length;
     
     // Achievement for completing first world
     if (completedWorlds >= 1 && !hubState.hubProgressData.unlockedAchievements.includes('first_world_complete')) {
@@ -435,16 +422,11 @@ export class MultiWorldStateManager {
    */
   private startAutosave(hubSessionId: string): void {
     // Clear existing timer if any
-    const existingTimer = this.autosaveTimers.get(hubSessionId);
     if (existingTimer) {
       clearInterval(existingTimer);
     }
 
     // Start new autosave timer
-    const timer = setInterval(async () => {
-      const hubState = this.hubSessionCache.get(hubSessionId);
-      if (hubState) {
-        hubState.lastActiveAt = new Date();
         await this.updateHubSession(hubState);
       }
     }, this.AUTOSAVE_INTERVAL);
@@ -467,7 +449,6 @@ export class MultiWorldStateManager {
       this.hubSessionCache.delete(hubSessionId);
 
       // Clear autosave timer
-      const timer = this.autosaveTimers.get(hubSessionId);
       if (timer) {
         clearInterval(timer);
         this.autosaveTimers.delete(hubSessionId);
@@ -563,7 +544,6 @@ export class MultiWorldStateManager {
           this.hubSessionCache.delete(sessionId);
           
           // Clear autosave timer
-          const timer = this.autosaveTimers.get(sessionId);
           if (timer) {
             clearInterval(timer);
             this.autosaveTimers.delete(sessionId);
@@ -578,4 +558,3 @@ export class MultiWorldStateManager {
 }
 
 // Export singleton instance
-export const multiWorldStateManager = new MultiWorldStateManager();

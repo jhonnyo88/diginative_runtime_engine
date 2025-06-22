@@ -412,29 +412,23 @@ export const municipalEmotions: Record<MunicipalEmotionType, MunicipalEmotionSta
 };
 
 // Emotion utility functions
-export const getEmotionVisualization = (
   emotionType: MunicipalEmotionType,
   culture: 'swedish' | 'german' | 'french' | 'dutch' = 'swedish'
 ): MunicipalEmotionState => {
-  const emotion = municipalEmotions[emotionType];
   return emotion;
 };
 
-export const getEmotionAccessibilityLabel = (
   emotionType: MunicipalEmotionType,
   context?: string
 ): string => {
-  const emotion = municipalEmotions[emotionType];
   return context 
     ? `${emotion.accessibilityLabel} in context: ${context}`
     : emotion.accessibilityLabel;
 };
 
-export const getCulturalEmotionVariant = (
   emotionType: MunicipalEmotionType,
   culture: 'swedish' | 'german' | 'french' | 'dutch'
 ): CulturalEmotionVariant | undefined => {
-  const emotion = municipalEmotions[emotionType];
   return emotion.culturalVariations.find(variant => variant.culture === culture);
 };
 
@@ -446,6 +440,5 @@ export const legacyEmotionMapping: Record<string, MunicipalEmotionType> = {
   'questioning': 'questioning'
 };
 
-export const mapLegacyEmotion = (legacyEmotion: string): MunicipalEmotionType => {
   return legacyEmotionMapping[legacyEmotion] || 'neutral';
 };

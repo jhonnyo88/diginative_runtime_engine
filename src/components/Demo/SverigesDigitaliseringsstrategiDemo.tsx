@@ -34,8 +34,6 @@ import { HeroScoreDisplay } from '../WorldHub/HeroScoreDisplay';
 import { WorldNavigationGrid } from '../WorldHub/WorldNavigationGrid';
 import { CulturalThemeProvider, useCulturalTheme } from '../WorldHub/CulturalThemeProvider';
 
-const MotionBox = motion(Box);
-const MotionContainer = motion(Container);
 
 // Demo Flow Stages for Sveriges Digitaliseringsstrategi Presentation
 interface DemoStage {
@@ -293,15 +291,6 @@ const DemoStageDisplay: React.FC<DemoStageDisplayProps> = ({
   if (!isActive) return null;
 
   // Sample data that changes based on demo stage
-  const getDemoData = () => {
-    switch (stage.visualFocus) {
-      case 'hub_overview':
-        return {
-          totalScore: 2847,
-          worldCompletion: 67,
-          achievements: 8,
-          teamRanking: 15
-        };
       case 'cultural_intelligence':
         return {
           totalScore: 3150,
@@ -333,7 +322,6 @@ const DemoStageDisplay: React.FC<DemoStageDisplayProps> = ({
     }
   };
 
-  const demoData = getDemoData();
 
   return (
     <MotionContainer
@@ -669,22 +657,8 @@ export const SverigesDigitaliseringsstrategiDemo: React.FC<SverigesDigitaliserin
     setRemainingTime(sverigeDemoFlow[currentStage].duration);
   }, [currentStage]);
 
-  const handleStageSelect = (stageIndex: number) => {
-    setCurrentStage(stageIndex);
-    setRemainingTime(sverigeDemoFlow[stageIndex].duration);
-  };
 
-  const handleNext = () => {
-    if (currentStage < sverigeDemoFlow.length - 1) {
-      setCurrentStage(prev => prev + 1);
-    }
-  };
 
-  const handlePrevious = () => {
-    if (currentStage > 0) {
-      setCurrentStage(prev => prev - 1);
-    }
-  };
 
   return (
     <CulturalThemeProvider>

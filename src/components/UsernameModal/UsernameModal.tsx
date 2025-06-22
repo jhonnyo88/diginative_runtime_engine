@@ -39,24 +39,6 @@ export interface UsernameModalProps {
 }
 
 // Municipal theme colors
-const MUNICIPAL_COLORS = {
-  sweden: {
-    primary: '#0066CC',
-    secondary: '#E6F3FF'
-  },
-  germany: {
-    primary: '#1F2937',
-    secondary: '#F3F4F6'
-  },
-  france: {
-    primary: '#004494',
-    secondary: '#E3F2FD'
-  },
-  netherlands: {
-    primary: '#EC0000',
-    secondary: '#FFEBEE'
-  }
-};
 
 export const UsernameModal: React.FC<UsernameModalProps> = ({
   isOpen,
@@ -69,11 +51,7 @@ export const UsernameModal: React.FC<UsernameModalProps> = ({
 }) => {
   const [name, setName] = useState('');
   const [error, setError] = useState('');
-  const inputRef = useRef<HTMLInputElement>(null);
 
-  const themeColors = MUNICIPAL_COLORS[municipalTheme];
-  const bgColor = useColorModeValue('white', 'gray.800');
-  const overlayColor = useColorModeValue('blackAlpha.600', 'blackAlpha.800');
 
   // Focus management - focus input when modal opens
   useEffect(() => {
@@ -92,8 +70,7 @@ export const UsernameModal: React.FC<UsernameModalProps> = ({
     }
   }, [isOpen]);
 
-  const validateName = (inputName: string): boolean => {
-    const trimmedName = inputName.trim();
+  const _validateName = (inputName: string): boolean => {
     
     if (isRequired && trimmedName.length === 0) {
       setError('Namn krävs för att fortsätta');
@@ -106,7 +83,6 @@ export const UsernameModal: React.FC<UsernameModalProps> = ({
     }
     
     // Basic validation - only letters, spaces, hyphens, apostrophes
-    const nameRegex = /^[a-zA-ZåäöÅÄÖ\s\-\'\.]+$/;
     if (trimmedName.length > 0 && !nameRegex.test(trimmedName)) {
       setError('Namnet får endast innehålla bokstäver, mellanslag och bindestreck');
       return false;
@@ -116,37 +92,9 @@ export const UsernameModal: React.FC<UsernameModalProps> = ({
     return true;
   };
 
-  const handleNameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const newName = e.target.value;
-    setName(newName);
-    
-    // Clear error when user starts typing
-    if (error) {
-      setError('');
-    }
-  };
 
-  const handleSubmit = () => {
-    const trimmedName = name.trim();
-    
-    if (validateName(trimmedName)) {
-      onSubmit(trimmedName);
-      onClose();
-    }
-  };
 
-  const handleKeyPress = (e: React.KeyboardEvent) => {
-    if (e.key === 'Enter') {
-      e.preventDefault();
-      handleSubmit();
-    }
-  };
 
-  const handleCancel = () => {
-    setName('');
-    setError('');
-    onClose();
-  };
 
   return (
     <Modal 

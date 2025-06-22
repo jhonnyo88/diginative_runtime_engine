@@ -173,7 +173,6 @@ export class Q3PerformanceEnhancer {
    * Monitor Q3 hub loading performance with competitive targets
    */
   private setupPerformanceMonitoring(): void {
-    const performanceObserver = new PerformanceObserver((list) => {
       for (const entry of list.getEntries()) {
         switch (entry.entryType) {
           case 'navigation':
@@ -201,7 +200,6 @@ export class Q3PerformanceEnhancer {
    * Handle navigation timing for hub loading performance
    */
   private handleNavigationTiming(entry: PerformanceNavigationTiming): void {
-    const hubLoadTime = entry.loadEventEnd - entry.navigationStart;
     this.performanceMetrics.hubLoadTime = hubLoadTime;
 
     // Alert if exceeding competitive target
@@ -211,7 +209,6 @@ export class Q3PerformanceEnhancer {
     }
 
     // Track Anna Svensson total experience
-    const totalExperienceTime = this.calculateAnnasvenssonExperience();
     if (totalExperienceTime > this.ANNA_SVENSSON_TARGET) {
       console.error(`🚨 Anna Svensson experience ${totalExperienceTime}ms exceeds ${this.ANNA_SVENSSON_TARGET}ms target`);
       this.escalatePerformanceIssue();
@@ -225,7 +222,6 @@ export class Q3PerformanceEnhancer {
     // Largest Contentful Paint (LCP) - Target: <2.5s
     new PerformanceObserver((list) => {
       for (const entry of list.getEntries()) {
-        const lcp = entry.startTime;
         if (lcp > 2500) {
           console.warn(`⚠️ LCP ${lcp}ms exceeds government target 2.5s`);
         }
@@ -235,7 +231,6 @@ export class Q3PerformanceEnhancer {
     // First Input Delay (FID) - Target: <100ms
     new PerformanceObserver((list) => {
       for (const entry of list.getEntries()) {
-        const fid = (entry as any).processingStart - entry.startTime;
         this.performanceMetrics.interactionDelay = fid;
         if (fid > 100) {
           console.warn(`⚠️ FID ${fid}ms exceeds government target 100ms`);
@@ -261,11 +256,8 @@ export class Q3PerformanceEnhancer {
    * Initialize advanced bundle splitting for Q3 multi-world architecture
    */
   private async initializeBundleSplitting(): Promise<void> {
-    const bundleConfig = this.optimizationStrategy.bundleSplitting;
     
     // Dynamic imports for Q3 components
-    const hubComponents = await this.createDynamicImports(bundleConfig.q3Hub);
-    const culturalComponents = await this.createDynamicImports(bundleConfig.culturalAdaptation);
     
     // Vendor chunk optimization
     this.optimizeVendorChunks(bundleConfig.vendorLibs);
@@ -280,11 +272,9 @@ export class Q3PerformanceEnhancer {
    * Create dynamic imports for performance optimization
    */
   private async createDynamicImports(components: string[]): Promise<Map<string, any>> {
-    const importMap = new Map();
     
     for (const component of components) {
       try {
-        const module = await import(`../components/${component}`);
         importMap.set(component, module);
       } catch (error) {
         console.warn(`Failed to load component ${component}:`, error);
@@ -298,7 +288,6 @@ export class Q3PerformanceEnhancer {
    * Setup intelligent caching with municipal compliance
    */
   private setupIntelligentCaching(): void {
-    const cacheConfig = this.optimizationStrategy.caching;
     
     // Service Worker caching strategy
     if ('serviceWorker' in navigator) {
@@ -321,7 +310,6 @@ export class Q3PerformanceEnhancer {
    * Initialize preloading strategy for competitive advantage
    */
   private async initializePreloading(): Promise<void> {
-    const preloadConfig = this.optimizationStrategy.preloading;
     
     if (preloadConfig.criticalWorldData) {
       await this.preloadCriticalWorldData();
@@ -346,12 +334,10 @@ export class Q3PerformanceEnhancer {
    * Setup memory management for sustained performance
    */
   private setupMemoryManagement(): void {
-    const memoryConfig = this.optimizationStrategy.memoryManagement;
     
     // Monitor memory usage
     setInterval(() => {
       if ((performance as any).memory) {
-        const memoryInfo = (performance as any).memory;
         this.performanceMetrics.memoryUsage = memoryInfo.usedJSHeapSize;
         
         if (memoryInfo.usedJSHeapSize > this.MEMORY_TARGET) {
@@ -373,7 +359,6 @@ export class Q3PerformanceEnhancer {
    * Setup render optimization for smooth Q3 experience
    */
   private setupRenderOptimization(): void {
-    const renderConfig = this.optimizationStrategy.renderOptimization;
     
     if (renderConfig.componentMemoization) {
       this.enableComponentMemoization();
@@ -462,8 +447,6 @@ export class Q3PerformanceEnhancer {
    * Validate performance against targets
    */
   validatePerformance(): boolean {
-    const metrics = this.performanceMetrics;
-    const targets = this.getPerformanceTargets();
     
     return metrics.hubLoadTime <= targets.hubLoading &&
            metrics.worldTransitionTime <= targets.worldTransition &&
@@ -574,4 +557,3 @@ export class Q3PerformanceEnhancer {
 }
 
 // Export singleton instance
-export const q3PerformanceEnhancer = new Q3PerformanceEnhancer();

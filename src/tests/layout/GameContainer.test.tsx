@@ -31,27 +31,6 @@ const MockGameContainer: React.FC<{
   breakpoint = 'sm'
 }) => {
   // Mock implementation based on specification
-  const containerStyles = {
-    default: {
-      maxWidth: '1200px',
-      margin: '0 auto',
-      padding: breakpoint === 'xs' ? '0.75rem' : breakpoint === 'sm' ? '1rem' : '1.5rem'
-    },
-    fullscreen: {
-      maxWidth: '100vw',
-      padding: '0'
-    },
-    modal: {
-      maxWidth: '600px',
-      margin: '0 auto',
-      padding: '1.5rem'
-    },
-    sidebar: {
-      maxWidth: '1400px',
-      margin: '0 auto',
-      padding: '1.5rem'
-    }
-  };
 
   return (
     <div
@@ -82,13 +61,8 @@ const MockGameContainer: React.FC<{
 };
 
 // Test data for GameContainer validation
-const mockMunicipalBranding = {
-  primaryColor: '#005293',
-  logoUrl: 'https://example.se/municipal-logo.svg',
-  municipality: 'Test Municipality'
-};
 
-const mockTestContent = (
+const _mockTestContent = (
   <div data-testid="test-content">
     <h1>Test Game Content</h1>
     <p>This is test content for GameContainer layout validation.</p>
@@ -120,7 +94,6 @@ describe('GameContainer Layout System Tests', () => {
         </TestWrapper>
       );
 
-      const container = screen.getByTestId('game-container');
       expect(container).toBeInTheDocument();
       expect(container).toHaveAttribute('data-variant', 'default');
       expect(screen.getByTestId('test-content')).toBeInTheDocument();
@@ -135,8 +108,6 @@ describe('GameContainer Layout System Tests', () => {
         </TestWrapper>
       );
 
-      const container = screen.getByTestId('game-container');
-      const computedStyle = window.getComputedStyle(container);
       
       // Container should be centered (margin: 0 auto)
       expect(computedStyle.margin).toContain('auto');
@@ -147,7 +118,6 @@ describe('GameContainer Layout System Tests', () => {
     });
 
     it('applies correct max-width for different variants', () => {
-      const variants = ['default', 'fullscreen', 'modal', 'sidebar'] as const;
       
       variants.forEach(variant => {
         const { rerender } = render(
@@ -158,8 +128,6 @@ describe('GameContainer Layout System Tests', () => {
           </TestWrapper>
         );
 
-        const container = screen.getByTestId('game-container');
-        const computedStyle = window.getComputedStyle(container);
 
         switch (variant) {
           case 'default':
@@ -200,8 +168,6 @@ describe('GameContainer Layout System Tests', () => {
         </TestWrapper>
       );
 
-      const container = screen.getByTestId('game-container');
-      const computedStyle = window.getComputedStyle(container);
       
       // Anna Svensson mobile padding should be 1rem
       expect(computedStyle.padding).toBe('1rem');
@@ -218,8 +184,6 @@ describe('GameContainer Layout System Tests', () => {
         </TestWrapper>
       );
 
-      const touchTarget = screen.getByTestId('interactive-element');
-      const computedStyle = window.getComputedStyle(touchTarget);
       
       expect(computedStyle.minHeight).toBe('48px');
       expect(computedStyle.minWidth).toBe('48px');
@@ -234,7 +198,6 @@ describe('GameContainer Layout System Tests', () => {
         </TestWrapper>
       );
 
-      const container = screen.getByTestId('game-container');
       expect(container).toHaveAttribute('data-breakpoint', 'sm');
       
       // Container should be efficient for quick mobile access
@@ -253,14 +216,11 @@ describe('GameContainer Layout System Tests', () => {
         </TestWrapper>
       );
 
-      const container = screen.getByTestId('game-container');
-      const computedStyle = window.getComputedStyle(container);
       
       expect(computedStyle.boxSizing).toBe('border-box');
     });
 
     it('maintains layout integrity across different screen sizes', () => {
-      const screenSizes = [320, 375, 768, 1024, 1200, 1920];
       
       screenSizes.forEach(width => {
         Object.defineProperty(window, 'innerWidth', {
@@ -277,11 +237,9 @@ describe('GameContainer Layout System Tests', () => {
           </TestWrapper>
         );
 
-        const container = screen.getByTestId('game-container');
         expect(container).toBeInTheDocument();
         
         // Layout should remain stable at all screen sizes
-        const computedStyle = window.getComputedStyle(container);
         expect(computedStyle.display).toBe('flex');
         expect(computedStyle.flexDirection).toBe('column');
       });
@@ -304,8 +262,6 @@ describe('GameContainer Layout System Tests', () => {
         </TestWrapper>
       );
 
-      const container = screen.getByTestId('game-container');
-      const computedStyle = window.getComputedStyle(container);
       
       // Should not cause horizontal overflow
       expect(computedStyle.overflowX).not.toBe('scroll');
@@ -331,7 +287,6 @@ describe('GameContainer Layout System Tests', () => {
       expect(screen.getByText('Test Municipality')).toBeInTheDocument();
 
       // Layout should remain intact
-      const container = screen.getByTestId('game-container');
       expect(container).toBeInTheDocument();
       expect(screen.getByTestId('test-content')).toBeInTheDocument();
     });
@@ -348,7 +303,6 @@ describe('GameContainer Layout System Tests', () => {
         </TestWrapper>
       );
 
-      const container = screen.getByTestId('game-container');
       
       // Should maintain professional appearance
       expect(container).toHaveAttribute('data-variant', 'default');
@@ -369,7 +323,6 @@ describe('GameContainer Layout System Tests', () => {
         </TestWrapper>
       );
 
-      const results = await axe(container);
       expect(results).toHaveNoViolations();
     });
 
@@ -401,8 +354,6 @@ describe('GameContainer Layout System Tests', () => {
         </TestWrapper>
       );
 
-      const button = screen.getByRole('button');
-      const link = screen.getByRole('link');
 
       // Should be focusable
       button.focus();
@@ -416,7 +367,6 @@ describe('GameContainer Layout System Tests', () => {
 
   describe('Performance Requirements', () => {
     it('renders within performance budget (<5KB container system)', () => {
-      const startTime = performance.now();
       
       render(
         <TestWrapper>
@@ -426,8 +376,6 @@ describe('GameContainer Layout System Tests', () => {
         </TestWrapper>
       );
       
-      const endTime = performance.now();
-      const renderTime = endTime - startTime;
       
       // Should render quickly
       expect(renderTime).toBeLessThan(50); // <50ms requirement
@@ -443,8 +391,6 @@ describe('GameContainer Layout System Tests', () => {
         </TestWrapper>
       );
 
-      const container = screen.getByTestId('game-container');
-      const initialBounds = container.getBoundingClientRect();
 
       // Simulate content change that should not cause layout shift
       rerender(
@@ -458,8 +404,6 @@ describe('GameContainer Layout System Tests', () => {
         </TestWrapper>
       );
 
-      const updatedContainer = screen.getByTestId('game-container');
-      const updatedBounds = updatedContainer.getBoundingClientRect();
 
       // Container position should remain stable
       expect(updatedBounds.x).toBe(initialBounds.x);
@@ -477,7 +421,6 @@ describe('GameContainer Layout System Tests', () => {
         </TestWrapper>
       );
 
-      const container = screen.getByTestId('game-container');
       expect(container).toHaveAttribute('data-variant', 'fullscreen');
       expect(screen.getByTestId('fullscreen-content')).toBeInTheDocument();
     });
@@ -491,10 +434,8 @@ describe('GameContainer Layout System Tests', () => {
         </TestWrapper>
       );
 
-      const container = screen.getByTestId('game-container');
       expect(container).toHaveAttribute('data-variant', 'modal');
       
-      const computedStyle = window.getComputedStyle(container);
       expect(computedStyle.justifyContent).toBe('center');
       expect(screen.getByTestId('modal-content')).toBeInTheDocument();
     });
@@ -511,7 +452,6 @@ describe('GameContainer Layout System Tests', () => {
         </TestWrapper>
       );
 
-      const container = screen.getByTestId('game-container');
       expect(container).toHaveAttribute('data-variant', 'sidebar');
       expect(screen.getByTestId('sidebar-content')).toBeInTheDocument();
     });
@@ -536,7 +476,6 @@ describe('GameContainer Layout System Tests', () => {
         </TestWrapper>
       );
 
-      const results = await axe(container, {
         rules: {
           'color-contrast': { enabled: true },
           'heading-order': { enabled: true },
@@ -549,7 +488,6 @@ describe('GameContainer Layout System Tests', () => {
     });
 
     it('supports multi-market European layouts', () => {
-      const europeanContexts = ['swedish', 'german', 'french', 'dutch'];
       
       europeanContexts.forEach(context => {
         render(

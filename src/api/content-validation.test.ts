@@ -69,11 +69,6 @@ describe('Content Validation API', () => {
 
   describe('validateContent', () => {
     it('should validate game content successfully', async () => {
-      const testContent = {
-        title: 'Test Game',
-        description: 'Test Description',
-        scenes: []
-      };
 
       mockRequest.body = {
         content: testContent,
@@ -125,11 +120,6 @@ describe('Content Validation API', () => {
     });
 
     it('should validate quiz scene content', async () => {
-      const quizContent = {
-        id: 'quiz-1',
-        type: 'quiz',
-        questions: []
-      };
 
       mockRequest.body = {
         content: quizContent,
@@ -191,10 +181,6 @@ describe('Content Validation API', () => {
     });
 
     it('should use cache for repeated validations', async () => {
-      const testContent = {
-        title: 'Cached Game',
-        scenes: []
-      };
 
       mockRequest.body = {
         content: testContent,
@@ -283,11 +269,6 @@ describe('Content Validation API', () => {
 
   describe('validateBatch', () => {
     it('should validate multiple items', async () => {
-      const items = [
-        { content: { title: 'Game 1' } },
-        { content: { title: 'Game 2' } },
-        { content: { title: 'Game 3' } }
-      ];
 
       mockRequest.body = { items };
 

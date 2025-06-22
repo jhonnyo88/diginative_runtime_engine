@@ -20,7 +20,6 @@ test.describe('WebSocket Real-time Validation', () => {
     
     // Monitor WebSocket connections
     await page.addInitScript(() => {
-      const OriginalWebSocket = window.WebSocket;
       window.WebSocket = class extends OriginalWebSocket {
         constructor(...args) {
           super(...args);
@@ -48,9 +47,7 @@ test.describe('WebSocket Real-time Validation', () => {
     await page.waitForTimeout(2000);
 
     // Verify WebSocket connection
-    const messages = await page.evaluate(() => {
       return new Promise(resolve => {
-        const msgs = [];
         window.addEventListener('message', (e) => {
           if (e.data.type?.startsWith('ws-')) {
             msgs.push(e.data);
@@ -102,7 +99,6 @@ test.describe('WebSocket Real-time Validation', () => {
           // Echo back validation request
           setTimeout(() => {
             if (this.onmessage) {
-              const request = JSON.parse(data);
               this.onmessage({
                 data: JSON.stringify({
                   type: 'validation_response',
@@ -227,16 +223,12 @@ test.describe('WebSocket Real-time Validation', () => {
 
   test('should synchronize validation state across multiple tabs', async ({ browser }) => {
     // Open two tabs
-    const context = await browser.newContext();
-    const page1 = await context.newPage();
-    const page2 = await context.newPage();
 
     // Mock shared validation state
-    const setupPage = async (page) => {
+    const _setupPage = async (page) => {
       await page.goto('http://localhost:5173');
       await page.addInitScript(() => {
         // Use BroadcastChannel for cross-tab communication
-        const channel = new BroadcastChannel('validation-sync');
         
         window.WebSocket = class {
           constructor() {
@@ -252,7 +244,6 @@ test.describe('WebSocket Real-time Validation', () => {
           
           send(data) {
             // Broadcast validation to other tabs
-            const parsed = JSON.parse(data);
             channel.postMessage({ ...parsed, type: 'validation' });
           }
           
@@ -272,15 +263,12 @@ test.describe('WebSocket Real-time Validation', () => {
     await page2.click('text=Se Digitaliseringsstrategi Demo');
     
     // Both tabs should show consistent state
-    const container1 = page1.locator('[data-testid="game-container"]');
-    const container2 = page2.locator('[data-testid="game-container"]');
     
     // Clean up
     await context.close();
   });
 
   test('should handle high-frequency validation updates efficiently', async ({ page }) => {
-    const updateTimestamps = [];
     
     await page.addInitScript(() => {
       window.validationUpdates = [];
@@ -293,12 +281,6 @@ test.describe('WebSocket Real-time Validation', () => {
           let count = 0;
           this.interval = setInterval(() => {
             if (this.onmessage && count < 50) {
-              const update = {
-                type: 'validation_burst',
-                timestamp: Date.now(),
-                index: count++,
-                valid: true
-              };
               
               window.validationUpdates.push(update);
               this.onmessage({ data: JSON.stringify(update) });
@@ -319,13 +301,11 @@ test.describe('WebSocket Real-time Validation', () => {
     await page.waitForTimeout(2000);
 
     // Check update handling
-    const updates = await page.evaluate(() => window.validationUpdates);
     
     // Should handle all updates without dropping
     expect(updates.length).toBeGreaterThan(40);
     
     // Should not cause performance issues
-    const metrics = await page.evaluate(() => ({
       memory: (performance as any).memory?.usedJSHeapSize || 0
     }));
     
@@ -336,7 +316,6 @@ test.describe('WebSocket Real-time Validation', () => {
   });
 
   test('should prioritize critical validation messages', async ({ page }) => {
-    const messageOrder = [];
     
     await page.addInitScript(() => {
       window.messageOrder = [];
@@ -356,8 +335,7 @@ test.describe('WebSocket Real-time Validation', () => {
             ];
             
             // Process by priority
-            const sorted = [...this.messageQueue].sort((a, b) => {
-              const priorities = { critical: 0, normal: 1, low: 2 };
+            const _sorted = [...this.messageQueue].sort((a, b) => {
               return priorities[a.priority] - priorities[b.priority];
             });
             
@@ -380,7 +358,6 @@ test.describe('WebSocket Real-time Validation', () => {
     await page.click('text=Se Digitaliseringsstrategi Demo');
     await page.waitForTimeout(1000);
 
-    const order = await page.evaluate(() => window.messageOrder);
     
     // Critical messages should be processed first
     expect(order[0]).toBe(2); // First critical
@@ -421,7 +398,6 @@ test.describe('WebSocket Real-time Validation', () => {
         }
         
         send(data) {
-          const parsed = JSON.parse(data);
           if (parsed.type === 'content_edit' && this.onmessage) {
             // Echo back with validation
             setTimeout(() => {
@@ -447,7 +423,6 @@ test.describe('WebSocket Real-time Validation', () => {
     await page.waitForTimeout(2000);
 
     // Check for collaborative indicators
-    const collaboratorIndicator = page.locator('[data-testid="collaborator-indicator"]');
     if (await collaboratorIndicator.count() > 0) {
       await expect(collaboratorIndicator).toContainText('Erik');
     }
@@ -463,22 +438,8 @@ test.describe('WebSocket Real-time Validation', () => {
           // Simulate compressed message
           setTimeout(() => {
             if (this.onmessage) {
-              const largePayload = {
-                type: 'bulk_validation',
-                results: Array.from({ length: 100 }, (_, i) => ({
-                  contentId: `content-${i}`,
-                  valid: true,
-                  metadata: {
-                    timestamp: Date.now(),
-                    validator: 'ai-content-validator',
-                    confidence: 0.95 + Math.random() * 0.05
-                  }
-                }))
-              };
               
               // Simulate compression ratio
-              const originalSize = JSON.stringify(largePayload).length;
-              const compressedSize = Math.floor(originalSize * 0.3);
               
               this.onmessage({
                 data: JSON.stringify({
@@ -510,7 +471,6 @@ test.describe('WebSocket Real-time Validation', () => {
   });
 
   test('should implement exponential backoff for failed validations', async ({ page }) => {
-    const retryDelays = [];
     
     await page.addInitScript(() => {
       window.retryDelays = [];
@@ -534,7 +494,6 @@ test.describe('WebSocket Real-time Validation', () => {
                   })
                 });
                 
-                const delay = this.baseDelay * Math.pow(2, this.retryCount);
                 window.retryDelays.push(delay);
                 this.retryCount++;
                 
@@ -565,7 +524,6 @@ test.describe('WebSocket Real-time Validation', () => {
     await page.click('text=Se Digitaliseringsstrategi Demo');
     await page.waitForTimeout(8000); // Wait for retries
 
-    const delays = await page.evaluate(() => window.retryDelays);
     
     // Should implement exponential backoff
     expect(delays).toEqual([1000, 2000, 4000]);

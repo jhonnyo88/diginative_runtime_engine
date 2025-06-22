@@ -16,13 +16,6 @@ import Avatar from '../../../components/common/Avatar.tsx';
 // Mock dependencies if needed
 
 
-const renderWithChakra = (component: React.ReactElement) => {
-  return render(
-    <ChakraProvider>
-      {component}
-    </ChakraProvider>
-  );
-};
 
 describe('Avatar', () => {
   beforeEach(() => {
@@ -33,14 +26,10 @@ describe('Avatar', () => {
     it('renders without crashing', () => {
       renderWithChakra(<Avatar />);
       
-      const component = screen.getByTestId('-avatar');
       expect(component).toBeInTheDocument();
     });
 
     it('handles props correctly', () => {
-      const testProps = {
-        // Add relevant props based on component analysis
-      };
       
       renderWithChakra(<Avatar {...testProps} />);
       
@@ -60,7 +49,6 @@ describe('Avatar', () => {
     it('provides proper ARIA attributes', () => {
       renderWithChakra(<Avatar />);
       
-      const element = screen.getByTestId('-avatar');
       
       // Check for appropriate ARIA attributes
       expect(element).toHaveAttribute('role');
@@ -69,7 +57,6 @@ describe('Avatar', () => {
     it('supports keyboard navigation', () => {
       renderWithChakra(<Avatar />);
       
-      const element = screen.getByTestId('-avatar');
       
       // Test tab navigation
       element.focus();
@@ -80,7 +67,6 @@ describe('Avatar', () => {
       renderWithChakra(<Avatar />);
       
       // Basic contrast check
-      const element = screen.getByTestId('-avatar');
       expect(element).toBeInTheDocument();
     });
   });

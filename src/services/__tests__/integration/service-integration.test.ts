@@ -65,8 +65,6 @@ describe('Service Integration Tests - Critical Authentication Flow', () => {
   describe('Complete Authentication Flow with Monitoring', () => {
     it('should track authentication metrics through monitoring service', async () => {
       // Arrange
-      const mockSAMLResponse = 'valid-saml-response';
-      const mockProfile = MockProvider.getAuthenticatedUserMock();
       
       // Mock SAML validation
       const { SAML } = await import('@node-saml/node-saml');
@@ -79,9 +77,6 @@ describe('Service Integration Tests - Critical Authentication Flow', () => {
       }));
       
       // Act
-      const startTime = Date.now();
-      const authenticatedUser = await ssoService.authenticateUser('malmo_stad', 'saml', mockSAMLResponse);
-      const authDuration = Date.now() - startTime;
       
       // Assert - Authentication successful
       expect(authenticatedUser).toBeDefined();
@@ -123,12 +118,8 @@ describe('Service Integration Tests - Critical Authentication Flow', () => {
   describe('Session Isolation with GDPR Compliance', () => {
     it('should ensure GDPR compliance during session creation', async () => {
       // Arrange
-      const gdprMock = ServiceMockFactory.get('MockGDPRComplianceFramework') as MockGDPRComplianceFramework;
-      const userId = 'anna.svensson';
-      const tenantId = 'malmo_stad';
       
       // Act
-      const sessionIsolation = await isolationManager.isolateUserSession(userId, tenantId);
       
       // Assert - Session created
       expect(sessionIsolation.namespace).toBe(`tenant:${tenantId}:user:${userId}`);
@@ -160,7 +151,6 @@ describe('Service Integration Tests - Critical Authentication Flow', () => {
       }));
       
       // Act - Should still authenticate despite monitoring failure
-      const result = await ssoService.authenticateUser('malmo_stad', 'saml', 'valid-response');
       
       // Assert
       expect(result).toBeDefined();
@@ -178,8 +168,6 @@ describe('Service Integration Tests - Critical Authentication Flow', () => {
   describe('Performance Testing Across Services', () => {
     it('should complete full authentication + session isolation within performance budget', async () => {
       // Arrange
-      const iterations = 100;
-      const maxDurationMs = 50; // 50ms per operation
       
       // Mock SAML validation
       const { SAML } = await import('@node-saml/node-saml');
@@ -194,10 +182,7 @@ describe('Service Integration Tests - Critical Authentication Flow', () => {
       const durations: number[] = [];
       
       for (let i = 0; i < iterations; i++) {
-        const start = Date.now();
         
-        const user = await ssoService.authenticateUser('malmo_stad', 'saml', `response-${i}`);
-        const session = await isolationManager.isolateUserSession(
           user.id.split(':')[1],
           user.tenantId
         );
@@ -206,8 +191,6 @@ describe('Service Integration Tests - Critical Authentication Flow', () => {
       }
       
       // Assert - Performance metrics
-      const avgDuration = durations.reduce((a, b) => a + b, 0) / durations.length;
-      const maxDuration = Math.max(...durations);
       
       expect(avgDuration).toBeLessThan(maxDurationMs);
       expect(maxDuration).toBeLessThan(maxDurationMs * 2); // Allow some variance
@@ -220,18 +203,13 @@ describe('Service Integration Tests - Critical Authentication Flow', () => {
   describe('Tenant Data Isolation Verification', () => {
     it('should prevent cross-tenant data access', async () => {
       // Arrange - Create sessions for multiple tenants
-      const tenants = ['malmo_stad', 'berlin_de', 'paris_fr'];
-      const sessions = new Map();
       
       // Act - Create isolated sessions
       for (const tenantId of tenants) {
-        const session = await isolationManager.isolateUserSession('shared-user', tenantId);
         sessions.set(tenantId, session);
       }
       
       // Assert - Each session has unique namespace
-      const namespaces = Array.from(sessions.values()).map(s => s.namespace);
-      const uniqueNamespaces = new Set(namespaces);
       expect(uniqueNamespaces.size).toBe(tenants.length);
       
       // Assert - Data scopes are properly isolated
@@ -251,37 +229,25 @@ describe('Service Integration Tests - Critical Authentication Flow', () => {
 describe('Service Health Check Integration', () => {
   it('should verify all critical services are operational', async () => {
     // Arrange
-    const criticalServices = [
-      'enterprise-sso',
-      'infrastructure-monitoring',
-      'error-monitoring',
-      'gdpr-compliance'
-    ];
     
-    const healthChecks = new Map();
     
     // Act - Check each service
     for (const service of criticalServices) {
       try {
         switch (service) {
           case 'enterprise-sso':
-            const sso = new EnterpriseSSO();
             healthChecks.set(service, { status: 'healthy', instance: !!sso });
             break;
             
           case 'infrastructure-monitoring':
-            const monitoring = InfrastructureMonitoring.getInstance();
-            const health = monitoring.getHealthStatus();
             healthChecks.set(service, { status: health.status, data: health });
             break;
             
           case 'error-monitoring':
-            const errorMon = ServiceMockFactory.get('MockErrorMonitoring');
             healthChecks.set(service, { status: errorMon ? 'healthy' : 'unhealthy' });
             break;
             
           case 'gdpr-compliance':
-            const gdpr = ServiceMockFactory.get('MockGDPRComplianceFramework');
             healthChecks.set(service, { status: gdpr ? 'healthy' : 'unhealthy' });
             break;
         }
@@ -298,42 +264,10 @@ describe('Service Health Check Integration', () => {
 });
 
 describe('Municipal Integration Scenarios', () => {
-  const municipalScenarios = [
-    {
-      municipality: 'Malmö Stad',
-      tenantId: 'malmo_stad',
-      expectedCulture: 'swedish_mobile',
-      authMethod: 'saml',
-      language: 'sv-SE'
-    },
-    {
-      municipality: 'Stadt Berlin',
-      tenantId: 'berlin_de',
-      expectedCulture: 'german_systematic',
-      authMethod: 'saml',
-      language: 'de-DE'
-    },
-    {
-      municipality: 'Ville de Paris',
-      tenantId: 'paris_fr',
-      expectedCulture: 'french_collaborative',
-      authMethod: 'oauth',
-      language: 'fr-FR'
-    },
-    {
-      municipality: 'Gemeente Amsterdam',
-      tenantId: 'amsterdam_nl',
-      expectedCulture: 'dutch_progressive',
-      authMethod: 'saml',
-      language: 'nl-NL'
-    }
-  ];
   
   municipalScenarios.forEach(scenario => {
     it(`should handle ${scenario.municipality} integration correctly`, async () => {
       // Arrange
-      const ssoService = new EnterpriseSSO();
-      const isolationManager = new TenantIsolationManager();
       
       // Mock authentication based on method
       if (scenario.authMethod === 'saml') {
@@ -363,7 +297,6 @@ describe('Municipal Integration Scenarios', () => {
         throw error;
       }
       
-      const session = await isolationManager.isolateUserSession(
         user.id.split(':')[1],
         user.tenantId
       );

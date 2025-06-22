@@ -154,8 +154,6 @@ export class Q3DevTeamAIScaler {
   async generateMultiWorldExperience(
     request: MultiWorldGenerationRequest
   ): Promise<DevTeamGenerationResult> {
-    const startTime = Date.now();
-    const sessionId = this.createGenerationSession(request);
     
     try {
       console.log(`🚀 Starting multi-world generation for ${request.hubSessionId}`);
@@ -164,29 +162,23 @@ export class Q3DevTeamAIScaler {
       await this.validateGenerationCapacity();
       
       // Initialize cultural adaptation
-      const culturalAdaptations = await this.initializeCulturalAdaptation(
         request.culturalAdaptation,
         request.municipalContext
       );
       
       // Generate worlds in optimized sequence
-      const worldContent = await this.generateWorldsOptimized(request);
       
       // Apply cultural intelligence enhancements
-      const enhancedContent = await this.applyCulturalIntelligence(
         worldContent,
         culturalAdaptations,
         request
       );
       
       // Validate quality and compliance
-      const qualityMetrics = await this.validateQualityAndCompliance(enhancedContent, request);
       
       // Calculate performance metrics
-      const performanceMetrics = this.calculatePerformanceMetrics(sessionId, startTime);
       
       // Validate compliance requirements
-      const complianceValidation = await this.validateMunicipalCompliance(
         enhancedContent,
         request
       );
@@ -226,20 +218,17 @@ export class Q3DevTeamAIScaler {
     municipalContext: MunicipalContext,
     difficulty: number
   ): Promise<WorldContent> {
-    const startTime = Date.now();
     
     try {
       console.log(`🎯 Generating single world: ${worldTheme} (${culturalContext})`);
       
       // Check quality cache first
-      const cachedContent = await this.checkQualityCache(worldTheme, culturalContext, difficulty);
       if (cachedContent) {
         console.log(`📦 Using cached content for ${worldTheme}`);
         return cachedContent;
       }
       
       // Generate world content
-      const worldContent = await this.generateWorldContent(
         worldTheme,
         culturalContext,
         municipalContext,
@@ -247,14 +236,12 @@ export class Q3DevTeamAIScaler {
       );
       
       // Apply cultural intelligence
-      const culturallyAdaptedContent = await this.culturalIntelligence.adaptContent(
         worldContent,
         culturalContext,
         municipalContext
       );
       
       // Validate generation time against Q2 target
-      const generationTime = Date.now() - startTime;
       if (generationTime > this.DEFAULT_SINGLE_WORLD_TARGET) {
         console.warn(`⚠️ Single world generation ${generationTime}ms exceeds ${this.DEFAULT_SINGLE_WORLD_TARGET}ms target`);
         await this.optimizeGenerationPerformance();
@@ -300,8 +287,6 @@ export class Q3DevTeamAIScaler {
    * Validate generation capacity before starting
    */
   private async validateGenerationCapacity(): Promise<void> {
-    const activeGenerations = this.activeGenerations.size;
-    const maxCapacity = this.scalingConfig.concurrentCapacity;
     
     if (activeGenerations >= maxCapacity) {
       console.warn(`⚠️ Generation capacity at limit: ${activeGenerations}/${maxCapacity}`);
@@ -315,14 +300,6 @@ export class Q3DevTeamAIScaler {
   private async generateWorldsOptimized(
     request: MultiWorldGenerationRequest
   ): Promise<WorldContent[]> {
-    const worldPromises = request.worldThemes.map((theme, index) => {
-      const difficulty = this.getDifficultyForWorld(index + 1, request.difficultyProgression);
-      return this.generateSingleWorld(
-        theme,
-        request.culturalAdaptation,
-        request.municipalContext,
-        difficulty
-      );
     });
     
     // Use Promise.all for concurrent generation
@@ -365,8 +342,6 @@ export class Q3DevTeamAIScaler {
    * Monitor generation performance metrics
    */
   private monitorGenerationPerformance(): void {
-    const activeGenerations = this.activeGenerations.size;
-    const capacityUtilization = (activeGenerations / this.scalingConfig.concurrentCapacity) * 100;
     
     console.log(`📊 DevTeam AI Performance: ${activeGenerations} active, ${capacityUtilization.toFixed(1)}% capacity`);
     
@@ -404,15 +379,12 @@ export class Q3DevTeamAIScaler {
     averageGenerationTime: number;
     qualityScore: number;
   } {
-    const activeGenerations = this.activeGenerations.size;
-    const capacityUtilization = (activeGenerations / this.scalingConfig.concurrentCapacity) * 100;
     
-    const recentMetrics = Array.from(this.performanceMetrics.values()).slice(-10);
-    const averageGenerationTime = recentMetrics.length > 0 
+    const _averageGenerationTime = recentMetrics.length > 0 
       ? recentMetrics.reduce((sum, m) => sum + m.totalGenerationTime, 0) / recentMetrics.length
       : 0;
     
-    const qualityScore = recentMetrics.length > 0
+    const _qualityScore = recentMetrics.length > 0
       ? recentMetrics.reduce((sum, m) => sum + m.qualityScore, 0) / recentMetrics.length
       : 0;
     
@@ -426,7 +398,6 @@ export class Q3DevTeamAIScaler {
 
   // Private helper methods (implementation details)
   private createGenerationSession(request: MultiWorldGenerationRequest): string {
-    const sessionId = `gen_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
     this.activeGenerations.set(sessionId, {
       request,
       startTime: Date.now(),
@@ -440,9 +411,6 @@ export class Q3DevTeamAIScaler {
   }
 
   private calculatePerformanceMetrics(sessionId: string, startTime: number): GenerationPerformanceMetrics {
-    const totalTime = Date.now() - startTime;
-    const session = this.activeGenerations.get(sessionId);
-    const worldCount = session?.request.worldThemes.length || 5;
     
     const metrics: GenerationPerformanceMetrics = {
       totalGenerationTime: totalTime,
@@ -554,4 +522,3 @@ interface WorldCulturalAdaptation {
 }
 
 // Export singleton instance
-export const q3DevTeamAIScaler = new Q3DevTeamAIScaler();

@@ -70,15 +70,7 @@ const DEFAULT_BRANDING: Record<string, MunicipalBranding> = {
 };
 
 // Anna Svensson mobile-first optimization
-const MOBILE_BRANDING_CONSTRAINTS = {
-  minTouchTarget: 48, // 48px minimum for iPhone 12
-  maxLogoWidth: 120, // Prevent logo overflow on mobile
-  maxLogoHeight: 60,
-  colorContrastRatio: 4.5, // WCAG AA compliance
-  loadingBudget: 100 // 100ms max for branding assets
-};
 
-export const validateMunicipalBranding = (branding?: Partial<MunicipalBranding>): BrandingValidationResult => {
   const errors: string[] = [];
   const warnings: string[] = [];
 
@@ -115,13 +107,11 @@ export const validateMunicipalBranding = (branding?: Partial<MunicipalBranding>)
   }
 
   // Cultural context validation
-  const culturalContext = branding.culturalContext || 'swedish';
   if (!DEFAULT_BRANDING[culturalContext]) {
     warnings.push(`Unknown cultural context: ${culturalContext}. Using Swedish default.`);
   }
 
   // Create sanitized branding with fallbacks
-  const baseBranding = DEFAULT_BRANDING[culturalContext] || DEFAULT_BRANDING.swedish;
   const sanitizedBranding: MunicipalBranding = {
     municipality: branding.municipality?.trim() || baseBranding.municipality,
     primaryColor: isValidHexColor(branding.primaryColor) ? branding.primaryColor! : baseBranding.primaryColor,
@@ -142,7 +132,6 @@ export const validateMunicipalBranding = (branding?: Partial<MunicipalBranding>)
   };
 };
 
-export const injectMunicipalBranding = (branding: MunicipalBranding): React.CSSProperties => {
   return {
     '--municipal-primary': branding.primaryColor,
     '--municipal-secondary': branding.secondaryColor || lightenColor(branding.primaryColor, 0.9),
@@ -152,7 +141,6 @@ export const injectMunicipalBranding = (branding: MunicipalBranding): React.CSSP
   } as React.CSSProperties;
 };
 
-export const getMunicipalThemeOverrides = (branding: MunicipalBranding) => {
   return {
     colors: {
       brand: {
@@ -181,37 +169,11 @@ export const getMunicipalThemeOverrides = (branding: MunicipalBranding) => {
 };
 
 // Utility functions
-const isValidHexColor = (color?: string): boolean => {
-  if (!color) return false;
-  return /^#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})$/.test(color);
-};
 
-const isValidUrl = (url?: string): boolean => {
-  if (!url) return false;
-  try {
-    new URL(url);
-    return true;
-  } catch {
-    return false;
-  }
-};
 
-const isSupportedImageFormat = (url: string): boolean => {
-  const supportedFormats = ['.svg', '.png', '.jpg', '.jpeg', '.webp'];
-  return supportedFormats.some(format => url.toLowerCase().includes(format));
-};
 
-const meetsContrastRequirements = (color: string): boolean => {
-  // Basic contrast check - in production use proper contrast calculation
-  const rgb = hexToRgb(color);
-  if (!rgb) return false;
-  
-  const luminance = (0.299 * rgb.r + 0.587 * rgb.g + 0.114 * rgb.b) / 255;
-  return luminance > 0.3 && luminance < 0.7; // Reasonable contrast range
-};
 
-const hexToRgb = (hex: string): { r: number; g: number; b: number } | null => {
-  const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
+const _hexToRgb = (hex: string): { r: number; g: number; b: number } | null => {
   return result ? {
     r: parseInt(result[1], 16),
     g: parseInt(result[2], 16),
@@ -219,72 +181,13 @@ const hexToRgb = (hex: string): { r: number; g: number; b: number } | null => {
   } : null;
 };
 
-const lightenColor = (color: string, amount: number): string => {
-  const rgb = hexToRgb(color);
-  if (!rgb) return color;
-  
-  const lighten = (channel: number) => Math.min(255, Math.round(channel + (255 - channel) * amount));
-  
-  return `#${lighten(rgb.r).toString(16).padStart(2, '0')}${lighten(rgb.g).toString(16).padStart(2, '0')}${lighten(rgb.b).toString(16).padStart(2, '0')}`;
-};
 
-const darkenColor = (color: string, amount: number): string => {
-  const rgb = hexToRgb(color);
-  if (!rgb) return color;
-  
-  const darken = (channel: number) => Math.max(0, Math.round(channel * (1 - amount)));
-  
-  return `#${darken(rgb.r).toString(16).padStart(2, '0')}${darken(rgb.g).toString(16).padStart(2, '0')}${darken(rgb.b).toString(16).padStart(2, '0')}`;
-};
 
-const getSpacingValue = (spacing: string): string => {
-  const spacingMap = {
-    compact: '0.75rem',
-    standard: '1rem',
-    spacious: '1.5rem'
-  };
-  return spacingMap[spacing as keyof typeof spacingMap] || spacingMap.standard;
-};
 
-const getSpacingScale = (spacing: string) => {
-  const scales = {
-    compact: {
-      1: '0.25rem',
-      2: '0.5rem',
-      3: '0.75rem',
-      4: '1rem',
-      5: '1.25rem',
-      6: '1.5rem',
-      8: '2rem'
-    },
-    standard: {
-      1: '0.25rem',
-      2: '0.5rem',
-      3: '0.75rem',
-      4: '1rem',
-      5: '1.25rem',
-      6: '1.5rem',
-      8: '2rem'
-    },
-    spacious: {
-      1: '0.5rem',
-      2: '0.75rem',
-      3: '1rem',
-      4: '1.5rem',
-      5: '2rem',
-      6: '2.5rem',
-      8: '3rem'
-    }
-  };
-  
-  return scales[spacing as keyof typeof scales] || scales.standard;
-};
 
 // Municipal context utilities
-export const getMunicipalContext = (tenantId?: string): 'swedish' | 'german' | 'french' | 'dutch' => {
   if (!tenantId) return 'swedish';
   
-  const tenantLower = tenantId.toLowerCase();
   
   if (tenantLower.includes('de') || tenantLower.includes('german') || tenantLower.includes('deutschland')) {
     return 'german';
@@ -299,7 +202,6 @@ export const getMunicipalContext = (tenantId?: string): 'swedish' | 'german' | '
   return 'swedish';
 };
 
-export const getDefaultBranding = (culturalContext: 'swedish' | 'german' | 'french' | 'dutch'): MunicipalBranding => {
   return DEFAULT_BRANDING[culturalContext] || DEFAULT_BRANDING.swedish;
 };
 
@@ -307,11 +209,9 @@ export const getDefaultBranding = (culturalContext: 'swedish' | 'german' | 'fren
  * DevTeam Integration: Apply municipal branding to game manifest
  * Used by automated deployment pipeline
  */
-export const applyMunicipalBrandingToManifest = (
   gameManifest: Record<string, unknown>,
   branding: MunicipalBranding & { brandingLevel?: string }
 ): Record<string, unknown> => {
-  const brandedManifest = JSON.parse(JSON.stringify(gameManifest)); // Deep clone
   
   // Initialize theme if not exists
   if (!brandedManifest.theme) {

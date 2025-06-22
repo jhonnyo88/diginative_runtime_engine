@@ -20,14 +20,12 @@ test.describe('Performance Regression Tests', () => {
       };
       
       // Override performance.mark
-      const originalMark = performance.mark.bind(performance);
       performance.mark = function(name) {
         window.performanceMetrics.marks.push({ name, time: performance.now() });
         return originalMark(name);
       };
       
       // Override performance.measure
-      const originalMeasure = performance.measure.bind(performance);
       performance.measure = function(name, start, end) {
         window.performanceMetrics.measures.push({ name, start, end });
         return originalMeasure(name, start, end);
@@ -37,7 +35,6 @@ test.describe('Performance Regression Tests', () => {
 
   test('should load initial page within 3 seconds on municipal network', async ({ page }) => {
     // Simulate municipal network conditions
-    const client = await page.context().newCDPSession(page);
     await client.send('Network.emulateNetworkConditions', {
       offline: false,
       downloadThroughput: 1.5 * 1024 * 1024 / 8, // 1.5 Mbps
@@ -45,17 +42,12 @@ test.describe('Performance Regression Tests', () => {
       latency: 50 // 50ms latency
     });
 
-    const startTime = Date.now();
     await page.goto('/');
     await page.waitForLoadState('networkidle');
-    const loadTime = Date.now() - startTime;
 
     expect(loadTime).toBeLessThan(3000);
 
     // Check Core Web Vitals
-    const metrics = await page.evaluate(() => {
-      const navigation = performance.getEntriesByType('navigation')[0] as PerformanceNavigationTiming;
-      const paint = performance.getEntriesByType('paint');
       
       return {
         FCP: paint.find(p => p.name === 'first-contentful-paint')?.startTime || 0,
@@ -79,22 +71,15 @@ test.describe('Performance Regression Tests', () => {
     await page.waitForSelector('[data-testid="game-container"]');
 
     // Simulate 7-minute session with interactions
-    const interactionMetrics = [];
-    const sessionDuration = 7 * 60 * 1000; // 7 minutes
-    const interactionInterval = 30 * 1000; // Every 30 seconds
-    const interactions = Math.floor(sessionDuration / interactionInterval);
 
     for (let i = 0; i < Math.min(interactions, 5); i++) { // Limit to 5 interactions for test speed
-      const startTime = Date.now();
       
       // Interact with quiz options
-      const quizOptions = page.locator('[data-testid="quiz-option"]');
       if (await quizOptions.count() > 0) {
         await quizOptions.first().click();
         
         // Measure interaction response time
         await page.waitForSelector('button:has-text("Nästa")', { timeout: 5000 });
-        const responseTime = Date.now() - startTime;
         interactionMetrics.push(responseTime);
         
         await page.click('button:has-text("Nästa")');
@@ -110,7 +95,6 @@ test.describe('Performance Regression Tests', () => {
     });
 
     // Check memory usage hasn't grown excessively
-    const memoryUsage = await page.evaluate(() => {
       return (performance as any).memory?.usedJSHeapSize || 0;
     });
 
@@ -130,29 +114,24 @@ test.describe('Performance Regression Tests', () => {
     await page.waitForSelector('[data-testid="game-container"]');
 
     // Measure scene transition times
-    const transitionTimes = [];
 
     for (let i = 0; i < 3; i++) {
       // Mark transition start
       await page.evaluate(() => performance.mark('transition-start'));
 
       // Click quiz option
-      const quizOptions = page.locator('[data-testid="quiz-option"]');
       if (await quizOptions.count() > 0) {
         await quizOptions.first().click();
         await page.click('button:has-text("Nästa")');
 
         // Wait for new scene
         await page.waitForFunction(() => {
-          const container = document.querySelector('[data-testid="game-container"]');
           return container && !container.classList.contains('transitioning');
         }, { timeout: 5000 });
 
         // Mark transition end and measure
-        const transitionTime = await page.evaluate(() => {
           performance.mark('transition-end');
           performance.measure('scene-transition', 'transition-start', 'transition-end');
-          const measures = performance.getEntriesByName('scene-transition');
           return measures[measures.length - 1]?.duration || 0;
         });
 
@@ -168,13 +147,10 @@ test.describe('Performance Regression Tests', () => {
 
   test('should efficiently load and cache game assets', async ({ page }) => {
     // First visit - measure cold cache
-    const firstVisitStart = Date.now();
     await page.goto('/');
     await page.waitForLoadState('networkidle');
-    const firstVisitTime = Date.now() - firstVisitStart;
 
     // Get resource timing
-    const firstVisitResources = await page.evaluate(() => {
       return performance.getEntriesByType('resource').map(r => ({
         name: r.name,
         duration: r.duration,
@@ -186,7 +162,6 @@ test.describe('Performance Regression Tests', () => {
     await page.reload();
     await page.waitForLoadState('networkidle');
 
-    const secondVisitResources = await page.evaluate(() => {
       return performance.getEntriesByType('resource').map(r => ({
         name: r.name,
         duration: r.duration,
@@ -195,10 +170,6 @@ test.describe('Performance Regression Tests', () => {
     });
 
     // Cached resources should load faster
-    const cachedResources = secondVisitResources.filter(r => {
-      const firstResource = firstVisitResources.find(fr => fr.name === r.name);
-      return firstResource && r.transferSize === 0; // transferSize 0 indicates cache hit
-    });
 
     expect(cachedResources.length).toBeGreaterThan(0);
   });
@@ -218,7 +189,6 @@ test.describe('Performance Regression Tests', () => {
       };
       
       function measureFPS() {
-        const currentTime = performance.now();
         frameCount++;
         
         if (currentTime >= lastTime + 1000) {
@@ -238,29 +208,14 @@ test.describe('Performance Regression Tests', () => {
     await page.click('text=Se Digitaliseringsstrategi Demo');
     await page.waitForTimeout(3000); // Monitor for 3 seconds
 
-    const fpsData = await page.evaluate(() => window.fpsMonitor);
     
     // Average FPS should be close to 60
-    const avgFps = fpsData.samples.reduce((a, b) => a + b, 0) / fpsData.samples.length;
     expect(avgFps).toBeGreaterThan(50);
   });
 
   test('should handle large quiz datasets efficiently', async ({ page }) => {
     // Mock large quiz data
     await page.route('/api/content/*', route => {
-      const largeQuizData = {
-        scenes: Array.from({ length: 100 }, (_, i) => ({
-          id: `scene-${i}`,
-          type: 'quiz',
-          content: {
-            question: `Question ${i}`,
-            options: Array.from({ length: 6 }, (_, j) => ({
-              text: `Option ${j}`,
-              isCorrect: j === 0
-            }))
-          }
-        }))
-      };
       
       route.fulfill({
         status: 200,
@@ -269,22 +224,18 @@ test.describe('Performance Regression Tests', () => {
       });
     });
 
-    const startTime = Date.now();
     await page.goto('/');
     await page.click('text=Se Digitaliseringsstrategi Demo');
     
     // Should handle large dataset without timeout
     await page.waitForSelector('button:has-text("Börja spela")', { timeout: 10000 });
-    const loadTime = Date.now() - startTime;
     
     expect(loadTime).toBeLessThan(10000);
   });
 
   test('should optimize bundle size and loading', async ({ page }) => {
-    const resources = [];
     
     page.on('response', response => {
-      const url = response.url();
       if (url.includes('.js') || url.includes('.css')) {
         resources.push({
           url,
@@ -298,11 +249,11 @@ test.describe('Performance Regression Tests', () => {
     await page.waitForLoadState('networkidle');
 
     // Calculate total bundle size
-    const jsSize = resources
+    const _jsSize = resources
       .filter(r => r.type === 'javascript')
       .reduce((sum, r) => sum + r.size, 0);
     
-    const cssSize = resources
+    const _cssSize = resources
       .filter(r => r.type === 'css')
       .reduce((sum, r) => sum + r.size, 0);
 
@@ -319,18 +270,15 @@ test.describe('Performance Regression Tests', () => {
     await page.click('button:has-text("Starta")');
 
     // Get initial memory usage
-    const initialMemory = await page.evaluate(() => {
       return (performance as any).memory?.usedJSHeapSize || 0;
     });
 
     // Simulate extended interaction
     for (let i = 0; i < 10; i++) {
-      const quizOptions = page.locator('[data-testid="quiz-option"]');
       if (await quizOptions.count() > 0) {
         await quizOptions.first().click();
         await page.waitForTimeout(100);
         
-        const nextButton = page.locator('button:has-text("Nästa")');
         if (await nextButton.isVisible()) {
           await nextButton.click();
           await page.waitForTimeout(100);
@@ -344,17 +292,14 @@ test.describe('Performance Regression Tests', () => {
     });
 
     // Check final memory usage
-    const finalMemory = await page.evaluate(() => {
       return (performance as any).memory?.usedJSHeapSize || 0;
     });
 
     // Memory growth should be limited
-    const memoryGrowth = finalMemory - initialMemory;
     expect(memoryGrowth).toBeLessThan(50 * 1024 * 1024); // Max 50MB growth
   });
 
   test('should optimize API response times', async ({ page }) => {
-    const apiCalls = [];
     
     page.on('response', async response => {
       if (response.url().includes('/api/')) {
@@ -373,7 +318,6 @@ test.describe('Performance Regression Tests', () => {
     // Check API response times
     apiCalls.forEach(call => {
       if (call.timing) {
-        const responseTime = call.timing.responseEnd - call.timing.requestStart;
         // API calls should respond within 500ms
         expect(responseTime).toBeLessThan(500);
       }
@@ -381,7 +325,6 @@ test.describe('Performance Regression Tests', () => {
   });
 
   test('should implement efficient lazy loading', async ({ page }) => {
-    const loadedResources = new Set();
     
     page.on('response', response => {
       if (response.status() === 200) {
@@ -391,13 +334,11 @@ test.describe('Performance Regression Tests', () => {
 
     // Initial page load
     await page.goto('/');
-    const initialResourceCount = loadedResources.size;
 
     // Navigate to game
     await page.click('text=Se Digitaliseringsstrategi Demo');
     await page.waitForTimeout(1000);
     
-    const afterNavigationCount = loadedResources.size;
 
     // Should load additional resources only when needed
     expect(afterNavigationCount).toBeGreaterThan(initialResourceCount);

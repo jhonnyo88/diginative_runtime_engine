@@ -22,19 +22,7 @@ interface MunicipalityOption extends Omit<MunicipalTenant, 'samlConfig'> {
   };
 }
 
-const countryNames = {
-  SE: 'Sweden',
-  DE: 'Germany', 
-  FR: 'France',
-  NL: 'Netherlands'
-};
 
-const idpTypeNames = {
-  'azure-ad': 'Microsoft Azure AD',
-  'okta': 'Okta',
-  'adfs': 'Active Directory FS',
-  'custom': 'Custom SAML'
-};
 
 export const MunicipalitySelector: React.FC<MunicipalitySelectorProps> = ({
   onSelect,
@@ -52,11 +40,9 @@ export const MunicipalitySelector: React.FC<MunicipalitySelectorProps> = ({
     loadRememberedChoice();
   }, []);
 
-  const loadMunicipalities = async () => {
+  const _loadMunicipalities = async () => {
     try {
       setIsLoading(true);
-      const response = await fetch('/auth/saml/municipalities');
-      const data = await response.json();
       
       if (data.success) {
         setMunicipalities(data.municipalities);
@@ -71,29 +57,11 @@ export const MunicipalitySelector: React.FC<MunicipalitySelectorProps> = ({
     }
   };
 
-  const loadRememberedChoice = () => {
-    const remembered = localStorage.getItem('preferredMunicipality');
-    if (remembered) {
-      setRememberedMunicipality(remembered);
-    }
-  };
 
-  const handleSelect = (tenantId: string, municipalityName: string) => {
-    // Remember choice for next time
-    localStorage.setItem('preferredMunicipality', tenantId);
-    localStorage.setItem('preferredMunicipalityName', municipalityName);
-    
-    onSelect(tenantId);
-  };
 
-  const filteredMunicipalities = municipalities.filter(municipality => {
-    const matchesSearch = municipality.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                         municipality.id.toLowerCase().includes(searchTerm.toLowerCase());
-    const matchesCountry = !selectedCountry || municipality.country === selectedCountry;
     return matchesSearch && matchesCountry;
   });
 
-  const countries = Array.from(new Set(municipalities.map(m => m.country)));
 
   if (isLoading) {
     return (

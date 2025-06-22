@@ -4,7 +4,6 @@ import { defineStyleConfig } from '@chakra-ui/react';
  * Municipal Button Theme Configuration
  * Based on Game Designer task-gd-007 professional button design specification
  */
-export const municipalButtonTheme = defineStyleConfig({
   // Base styles for all municipal buttons
   baseStyle: {
     borderRadius: '6px',
@@ -165,7 +164,6 @@ export const municipalButtonTheme = defineStyleConfig({
 /**
  * Button text translations for different cultural contexts
  */
-export const buttonTranslations = {
   swedish: {
     start: 'Starta utbildningen',
     continue: 'Fortsätt',
@@ -223,7 +221,6 @@ export const buttonTranslations = {
 /**
  * Get button text based on cultural context
  */
-export const getButtonText = (
   key: keyof typeof buttonTranslations.swedish,
   culturalContext: keyof typeof buttonTranslations = 'swedish'
 ): string => {

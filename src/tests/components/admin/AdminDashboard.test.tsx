@@ -16,13 +16,6 @@ import AdminDashboard from '../../../components/admin/AdminDashboard.tsx';
 // Mock dependencies if needed
 
 
-const renderWithChakra = (component: React.ReactElement) => {
-  return render(
-    <ChakraProvider>
-      {component}
-    </ChakraProvider>
-  );
-};
 
 describe('AdminDashboard', () => {
   beforeEach(() => {
@@ -33,14 +26,10 @@ describe('AdminDashboard', () => {
     it('renders without crashing', () => {
       renderWithChakra(<AdminDashboard />);
       
-      const component = screen.getByTestId('-admin-dashboard');
       expect(component).toBeInTheDocument();
     });
 
     it('handles props correctly', () => {
-      const testProps = {
-        // Add relevant props based on component analysis
-      };
       
       renderWithChakra(<AdminDashboard {...testProps} />);
       
@@ -60,7 +49,6 @@ describe('AdminDashboard', () => {
     it('provides proper ARIA attributes', () => {
       renderWithChakra(<AdminDashboard />);
       
-      const element = screen.getByTestId('-admin-dashboard');
       
       // Check for appropriate ARIA attributes
       expect(element).toHaveAttribute('role');
@@ -69,7 +57,6 @@ describe('AdminDashboard', () => {
     it('supports keyboard navigation', () => {
       renderWithChakra(<AdminDashboard />);
       
-      const element = screen.getByTestId('-admin-dashboard');
       
       // Test tab navigation
       element.focus();
@@ -80,7 +67,6 @@ describe('AdminDashboard', () => {
       renderWithChakra(<AdminDashboard />);
       
       // Basic contrast check
-      const element = screen.getByTestId('-admin-dashboard');
       expect(element).toBeInTheDocument();
     });
   });
@@ -88,12 +74,9 @@ describe('AdminDashboard', () => {
 
   describe('Performance and Municipal Network Optimization', () => {
     it('renders efficiently', () => {
-      const startTime = performance.now();
       
       renderWithChakra(<AdminDashboard />);
       
-      const endTime = performance.now();
-      const renderTime = endTime - startTime;
       
       // Should render within performance budget
       expect(renderTime).toBeLessThan(100); // 100ms budget
@@ -102,7 +85,6 @@ describe('AdminDashboard', () => {
     it('handles frequent updates efficiently', () => {
       const { rerender } = renderWithChakra(<AdminDashboard />);
       
-      const startTime = performance.now();
       
       // Simulate multiple re-renders
       for (let i = 0; i < 10; i++) {
@@ -113,8 +95,6 @@ describe('AdminDashboard', () => {
         );
       }
       
-      const endTime = performance.now();
-      const updateTime = endTime - startTime;
       
       // Should handle updates efficiently
       expect(updateTime).toBeLessThan(200); // 200ms for 10 updates

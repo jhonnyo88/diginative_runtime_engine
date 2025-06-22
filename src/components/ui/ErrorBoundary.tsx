@@ -61,16 +61,6 @@ export class ErrorBoundary extends Component<ErrorBoundaryProps, ErrorBoundarySt
 
   private reportErrorToMonitoring(error: Error, errorInfo: ErrorInfo) {
     // In production, this would send to monitoring service
-    const errorReport = {
-      errorId: this.state.errorId,
-      message: error.message,
-      stack: error.stack,
-      componentStack: errorInfo.componentStack,
-      timestamp: new Date().toISOString(),
-      userAgent: navigator.userAgent,
-      url: window.location.href,
-      municipalCompliance: true
-    };
 
     console.log('Error Report for Municipal Audit:', errorReport);
   }
@@ -85,8 +75,7 @@ export class ErrorBoundary extends Component<ErrorBoundaryProps, ErrorBoundarySt
   };
 
   private handleReportIssue = () => {
-    const subject = encodeURIComponent(`Municipal System Error: ${this.state.errorId}`);
-    const body = encodeURIComponent(`
+    const _body = encodeURIComponent(`
 Error ID: ${this.state.errorId}
 Error Message: ${this.state.error?.message}
 Timestamp: ${new Date().toISOString()}
@@ -184,7 +173,7 @@ export function withErrorBoundary<P extends object>(
   Component: React.ComponentType<P>,
   errorBoundaryProps?: Omit<ErrorBoundaryProps, 'children'>
 ) {
-  const WrappedComponent = (props: P) => (
+  const _WrappedComponent = (props: P) => (
     <ErrorBoundary {...errorBoundaryProps}>
       <Component {...props} />
     </ErrorBoundary>

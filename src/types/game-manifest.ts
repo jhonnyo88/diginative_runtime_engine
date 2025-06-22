@@ -255,17 +255,12 @@ export interface GameManifest {
 }
 
 // Type guards for runtime checking
-export const isDialogueScene = (scene: Scene): scene is DialogueScene => 
   scene.type === 'dialogue';
 
-export const isQuizScene = (scene: Scene): scene is QuizScene => 
   scene.type === 'quiz';
 
-export const isAssessmentScene = (scene: Scene): scene is AssessmentScene => 
   scene.type === 'assessment';
 
-export const isResourceScene = (scene: Scene): scene is ResourceScene => 
   scene.type === 'resource';
 
-export const isSummaryScene = (scene: Scene): scene is SummaryScene => 
   scene.type === 'summary';

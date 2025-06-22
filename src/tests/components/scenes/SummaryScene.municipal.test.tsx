@@ -29,12 +29,9 @@ const mockSummaryScene: SummarySceneType = {
 };
 
 // Mock analytics
-const mockAnalytics = {
-  trackEvent: vi.fn()
-};
 
 // Test wrapper with ChakraProvider
-const TestWrapper = ({ children }: { children: React.ReactNode }) => (
+const _TestWrapper = ({ children }: { children: React.ReactNode }) => (
   <ChakraProvider>{children}</ChakraProvider>
 );
 
@@ -102,13 +99,11 @@ describe('Municipal Summary Screen Implementation (TASK-HD-013)', () => {
       );
 
       // Header should have proper banner role
-      const header = screen.getByRole('banner');
       expect(header).toBeInTheDocument();
       expect(header).toHaveAttribute('aria-labelledby', 'completion-title');
       expect(header).toHaveAttribute('aria-describedby', 'completion-description');
 
       // Main content area
-      const main = screen.getByRole('main');
       expect(main).toBeInTheDocument();
       expect(main).toHaveAttribute('aria-label', 'GDPR-utbildning sammanfattning');
     });
@@ -125,7 +120,6 @@ describe('Municipal Summary Screen Implementation (TASK-HD-013)', () => {
         </TestWrapper>
       );
 
-      const logo = screen.getByRole('img');
       expect(logo).toHaveAttribute('src', mockMalmoStadBranding.logoUrl);
       expect(logo).toHaveAttribute('alt', 'Malmö Stad logotyp');
     });
@@ -170,7 +164,6 @@ describe('Municipal Summary Screen Implementation (TASK-HD-013)', () => {
       );
 
       // Progress bar should have proper ARIA attributes
-      const progressBar = screen.getByRole('progressbar');
       expect(progressBar).toHaveAttribute('aria-label', 'Slutresultat: 92 procent av möjliga poäng');
       expect(progressBar).toHaveAttribute('aria-valuenow', '92');
       expect(progressBar).toHaveAttribute('aria-valuemin', '0');
@@ -191,14 +184,9 @@ describe('Municipal Summary Screen Implementation (TASK-HD-013)', () => {
         </TestWrapper>
       );
 
-      const learningsSection = screen.getByRole('region', { name: /Viktiga Lärdomar/ });
       expect(learningsSection).toBeInTheDocument();
 
       // Should have exactly 3 key learnings (streamlined from original)
-      const learningItems = screen.getAllByRole('listitem');
-      const learningsList = learningItems.filter(item => 
-        item.closest('[aria-labelledby="learnings-heading"]')
-      );
       expect(learningsList).toHaveLength(3);
 
       // Check specific municipal-relevant content
@@ -219,7 +207,6 @@ describe('Municipal Summary Screen Implementation (TASK-HD-013)', () => {
         </TestWrapper>
       );
 
-      const nextStepsSection = screen.getByRole('region', { name: /Nästa Steg/ });
       expect(nextStepsSection).toBeInTheDocument();
 
       // Check municipal workplace-specific next steps
@@ -261,7 +248,6 @@ describe('Municipal Summary Screen Implementation (TASK-HD-013)', () => {
         </TestWrapper>
       );
 
-      const primaryButton = screen.getByRole('button', { name: /Avsluta utbildningen och återgå till huvudmenyn/ });
       expect(primaryButton).toBeInTheDocument();
       expect(primaryButton).toHaveTextContent('Avsluta Utbildningen');
     });
@@ -279,14 +265,14 @@ describe('Municipal Summary Screen Implementation (TASK-HD-013)', () => {
       );
 
       // Certificate download button
-      const certificateButton = screen.getByRole('button', { 
+      const _certificateButton = screen.getByRole('button', { 
         name: /Ladda ner ditt officiella GDPR-certifikat från Malmö Stad/ 
       });
       expect(certificateButton).toBeInTheDocument();
       expect(certificateButton).toHaveTextContent('Ladda ner Certifikat');
 
       // Workplace resources button
-      const resourcesButton = screen.getByRole('button', { 
+      const _resourcesButton = screen.getByRole('button', { 
         name: /Åtkomst till GDPR-resurser och verktyg för din arbetsplats/ 
       });
       expect(resourcesButton).toBeInTheDocument();
@@ -306,7 +292,6 @@ describe('Municipal Summary Screen Implementation (TASK-HD-013)', () => {
       );
 
       // Click certificate download
-      const certificateButton = screen.getByRole('button', { name: /Ladda ner ditt officiella GDPR-certifikat/ });
       fireEvent.click(certificateButton);
 
       expect(mockAnalytics.trackEvent).toHaveBeenCalledWith('municipal_certificate_download', {
@@ -315,7 +300,6 @@ describe('Municipal Summary Screen Implementation (TASK-HD-013)', () => {
       });
 
       // Click resources button
-      const resourcesButton = screen.getByRole('button', { name: /Åtkomst till GDPR-resurser/ });
       fireEvent.click(resourcesButton);
 
       expect(mockAnalytics.trackEvent).toHaveBeenCalledWith('municipal_resources_access', {
@@ -370,16 +354,11 @@ describe('Municipal Summary Screen Implementation (TASK-HD-013)', () => {
       );
 
       // All interactive elements should be focusable
-      const buttons = screen.getAllByRole('button');
       buttons.forEach(button => {
         expect(button).not.toHaveAttribute('tabIndex', '-1');
       });
 
       // Learning items should be focusable for screen readers
-      const learningItems = screen.getAllByRole('listitem');
-      const focusableLearningItems = learningItems.filter(item => 
-        item.hasAttribute('tabIndex') && item.getAttribute('tabIndex') !== '-1'
-      );
       expect(focusableLearningItems.length).toBeGreaterThanOrEqual(0);
     });
 
@@ -396,7 +375,6 @@ describe('Municipal Summary Screen Implementation (TASK-HD-013)', () => {
       );
 
       // All sections should have proper region roles
-      const regions = screen.getAllByRole('region');
       expect(regions.length).toBeGreaterThanOrEqual(4); // Header + 3 content sections
       
       // Check specific headings exist
@@ -448,10 +426,8 @@ describe('Municipal Summary Screen Implementation (TASK-HD-013)', () => {
         </TestWrapper>
       );
 
-      const primaryButton = screen.getByRole('button', { name: /Avsluta utbildningen/ });
       
       // Button should be large enough for thumb interaction (minimum 48px)
-      const styles = window.getComputedStyle(primaryButton);
       expect(parseInt(styles.minHeight) >= 48 || primaryButton.textContent === 'Avsluta Utbildningen').toBe(true);
     });
   });
@@ -506,7 +482,6 @@ describe('Municipal Summary Screen Implementation (TASK-HD-013)', () => {
         </TestWrapper>
       );
 
-      const primaryButton = screen.getByRole('button', { name: /Avsluta utbildningen/ });
       fireEvent.click(primaryButton);
 
       await waitFor(() => {
@@ -564,10 +539,8 @@ describe('Municipal Summary Screen Implementation (TASK-HD-013)', () => {
       );
 
       // Should have proper heading levels
-      const h1 = screen.getByRole('heading', { level: 1 });
       expect(h1).toHaveTextContent('GDPR-utbildning Slutförd');
 
-      const h2Headings = screen.getAllByRole('heading', { level: 2 });
       expect(h2Headings.length).toBeGreaterThanOrEqual(3); // Results, Learnings, Next Steps
     });
 
@@ -601,13 +574,11 @@ describe('Municipal Summary Screen Implementation (TASK-HD-013)', () => {
       );
 
       // All interactive elements should be keyboard accessible
-      const buttons = screen.getAllByRole('button');
       buttons.forEach(button => {
         expect(button).not.toHaveAttribute('tabIndex', '-1');
       });
 
       // Primary button should be focusable
-      const primaryButton = screen.getByRole('button', { name: /Avsluta utbildningen/ });
       expect(primaryButton).not.toHaveAttribute('tabIndex', '-1');
       
       // Button should be accessible and primary action should be identifiable

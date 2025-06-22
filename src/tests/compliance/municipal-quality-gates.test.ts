@@ -12,28 +12,8 @@ import fs from 'fs';
 import path from 'path';
 
 // Mock municipal compliance checker
-const mockComplianceChecker = {
-  checkGDPRCompliance: vi.fn(),
-  validateMunicipalBranding: vi.fn(),
-  verifyAccessibilityStandards: vi.fn(),
-  checkSwedishLanguageSupport: vi.fn(),
-  validateSecurityStandards: vi.fn(),
-  checkPerformanceTargets: vi.fn(),
-  verifyDataResidency: vi.fn(),
-  validateNetworkCompliance: vi.fn()
-};
 
 // Municipal compliance thresholds
-const COMPLIANCE_THRESHOLDS = {
-  testCoverage: 90,           // 90% minimum test coverage
-  performanceScore: 85,       // 85% Lighthouse performance score
-  accessibilityScore: 95,     // 95% accessibility compliance
-  securityScore: 100,         // 100% security compliance
-  codeQuality: 80,           // 80% code quality score
-  municipalBrandingCoverage: 100, // 100% municipal branding coverage
-  swedishLanguageCoverage: 95,    // 95% Swedish language support
-  gdprComplianceScore: 100        // 100% GDPR compliance
-};
 
 describe('Municipal Compliance Quality Gates', () => {
   const complianceReport: Record<string, unknown> = {};
@@ -54,13 +34,11 @@ describe('Municipal Compliance Quality Gates', () => {
       
       // Run test coverage analysis
       try {
-        const coverageOutput = execSync('npm run test:coverage -- --reporter=json', { 
+        const _coverageOutput = execSync('npm run test:coverage -- --reporter=json', { 
           encoding: 'utf8',
           timeout: 60000 
         });
         
-        const coverage = JSON.parse(coverageOutput);
-        const totalCoverage = coverage.total?.lines?.pct || 0;
         
         complianceReport.testCoverage = {
           actual: totalCoverage,
@@ -75,7 +53,6 @@ describe('Municipal Compliance Quality Gates', () => {
         console.warn('⚠️ Could not run coverage analysis, using mock data');
         
         // Mock coverage for demonstration
-        const mockCoverage = 92;
         complianceReport.testCoverage = {
           actual: mockCoverage,
           threshold: COMPLIANCE_THRESHOLDS.testCoverage,
@@ -104,8 +81,6 @@ describe('Municipal Compliance Quality Gates', () => {
         console.log('✅ TypeScript type checking passed');
         
       } catch (error) {
-        const errorOutput = error.stdout || error.stderr || '';
-        const errorCount = (errorOutput.match(/error TS/g) || []).length;
         
         complianceReport.typeChecking = {
           passed: false,
@@ -136,9 +111,6 @@ describe('Municipal Compliance Quality Gates', () => {
         console.log('✅ Linting passed');
         
       } catch (error) {
-        const errorOutput = error.stdout || error.stderr || '';
-        const warningCount = (errorOutput.match(/warning/g) || []).length;
-        const errorCount = (errorOutput.match(/error/g) || []).length;
         
         complianceReport.linting = {
           passed: errorCount === 0,
@@ -160,7 +132,6 @@ describe('Municipal Compliance Quality Gates', () => {
     it('should validate municipal branding consistency', async () => {
       console.log('🏛️ Validating municipal branding...');
       
-      const brandingResults = await checkMunicipalBranding();
       
       complianceReport.municipalBranding = {
         score: brandingResults.score,
@@ -176,7 +147,6 @@ describe('Municipal Compliance Quality Gates', () => {
     it('should verify Swedish language support', async () => {
       console.log('🇸🇪 Checking Swedish language support...');
       
-      const swedishResults = await checkSwedishLanguageSupport();
       
       complianceReport.swedishLanguage = {
         score: swedishResults.score,
@@ -194,7 +164,6 @@ describe('Municipal Compliance Quality Gates', () => {
     it('should validate GDPR data handling compliance', async () => {
       console.log('🔒 Checking GDPR compliance...');
       
-      const gdprResults = await checkGDPRCompliance();
       
       complianceReport.gdprCompliance = {
         score: gdprResults.score,
@@ -210,7 +179,6 @@ describe('Municipal Compliance Quality Gates', () => {
     it('should verify data residency requirements', async () => {
       console.log('🌍 Checking data residency compliance...');
       
-      const residencyResults = await checkDataResidency();
       
       complianceReport.dataResidency = {
         compliant: residencyResults.compliant,
@@ -227,7 +195,6 @@ describe('Municipal Compliance Quality Gates', () => {
     it('should meet WCAG 2.1 AA accessibility standards', async () => {
       console.log('♿ Checking accessibility compliance...');
       
-      const accessibilityResults = await checkAccessibilityStandards();
       
       complianceReport.accessibility = {
         score: accessibilityResults.score,
@@ -243,7 +210,6 @@ describe('Municipal Compliance Quality Gates', () => {
     it('should validate keyboard navigation support', async () => {
       console.log('⌨️ Checking keyboard navigation...');
       
-      const keyboardResults = await checkKeyboardNavigation();
       
       complianceReport.keyboardNavigation = {
         supported: keyboardResults.supported,
@@ -262,14 +228,11 @@ describe('Municipal Compliance Quality Gates', () => {
       
       try {
         // Run npm audit
-        const auditOutput = execSync('npm audit --json', { 
+        const _auditOutput = execSync('npm audit --json', { 
           encoding: 'utf8',
           timeout: 30000 
         });
         
-        const auditResults = JSON.parse(auditOutput);
-        const criticalVulns = auditResults.vulnerabilities?.filter((v: Record<string, unknown>) => v.severity === 'critical')?.length || 0;
-        const highVulns = auditResults.vulnerabilities?.filter((v: Record<string, unknown>) => v.severity === 'high')?.length || 0;
         
         complianceReport.security = {
           criticalVulnerabilities: criticalVulns,
@@ -296,7 +259,6 @@ describe('Municipal Compliance Quality Gates', () => {
     it('should validate content security policies', async () => {
       console.log('🛡️ Checking Content Security Policy...');
       
-      const cspResults = await checkContentSecurityPolicy();
       
       complianceReport.contentSecurityPolicy = {
         compliant: cspResults.compliant,
@@ -313,7 +275,6 @@ describe('Municipal Compliance Quality Gates', () => {
     it('should meet municipal network performance targets', async () => {
       console.log('⚡ Checking performance targets...');
       
-      const performanceResults = await checkPerformanceTargets();
       
       complianceReport.performance = {
         score: performanceResults.score,
@@ -329,7 +290,6 @@ describe('Municipal Compliance Quality Gates', () => {
     it('should validate Anna Svensson 7-minute session performance', async () => {
       console.log('👩‍💼 Checking Anna Svensson session performance...');
       
-      const sessionResults = await checkAnnaSvenssonSession();
       
       complianceReport.annaSvenssonSession = {
         completionTime: sessionResults.completionTime,
@@ -347,7 +307,6 @@ describe('Municipal Compliance Quality Gates', () => {
     it('should validate 3G network performance', async () => {
       console.log('📶 Checking 3G network performance...');
       
-      const networkResults = await checkNetworkCompliance();
       
       complianceReport.networkCompliance = {
         threeGPerformance: networkResults.threeG,
@@ -364,23 +323,13 @@ describe('Municipal Compliance Quality Gates', () => {
 // Helper functions for compliance checking
 async function checkMunicipalBranding() {
   // Scan for municipal branding compliance
-  const files = findFiles(['src/**/*.tsx', 'src/**/*.ts'], ['**/*.test.*']);
   let totalElements = 0;
   let compliantElements = 0;
-  const violations = [];
 
   for (const file of files) {
-    const content = fs.readFileSync(file, 'utf8');
     
     // Check for municipal branding patterns
-    const brandingPatterns = [
-      /municipality/gi,
-      /malmö|stockholm|göteborg/gi,
-      /kommun/gi,
-      /municipal-/gi
-    ];
     
-    const elements = content.match(/<[^>]*>/g) || [];
     totalElements += elements.length;
     
     for (const element of elements) {
@@ -390,7 +339,6 @@ async function checkMunicipalBranding() {
     }
   }
 
-  const score = totalElements > 0 ? Math.round((compliantElements / totalElements) * 100) : 100;
   
   return {
     score,
@@ -401,20 +349,16 @@ async function checkMunicipalBranding() {
 }
 
 async function checkSwedishLanguageSupport() {
-  const files = findFiles(['src/**/*.tsx', 'src/**/*.ts'], ['**/*.test.*']);
   let totalStrings = 0;
   let swedishStrings = 0;
-  const missingTranslations = [];
 
   for (const file of files) {
-    const content = fs.readFileSync(file, 'utf8');
     
     // Find string literals
-    const strings = content.match(/"[^"]*"|'[^']*'/g) || [];
     totalStrings += strings.length;
     
     for (const str of strings) {
-      const cleanStr = str.slice(1, -1); // Remove quotes
+      const _cleanStr = str.slice(1, -1); // Remove quotes
       
       // Check if string contains Swedish characters or words
       if (/[åäöÅÄÖ]/.test(cleanStr) || 
@@ -426,7 +370,6 @@ async function checkSwedishLanguageSupport() {
     }
   }
 
-  const score = totalStrings > 0 ? Math.round((swedishStrings / totalStrings) * 100) : 100;
   
   return {
     score,
@@ -437,17 +380,7 @@ async function checkSwedishLanguageSupport() {
 }
 
 async function checkGDPRCompliance() {
-  const complianceChecks = [
-    checkDataProcessingConsent(),
-    checkDataRetentionPolicies(),
-    checkRightToErasure(),
-    checkDataPortability(),
-    checkPrivacyByDesign()
-  ];
 
-  const results = await Promise.all(complianceChecks);
-  const violations = results.filter(r => !r.compliant);
-  const score = Math.round(((results.length - violations.length) / results.length) * 100);
 
   return {
     score,
@@ -457,10 +390,8 @@ async function checkGDPRCompliance() {
 
 async function checkDataProcessingConsent() {
   // Check for consent management implementation
-  const files = findFiles(['src/**/*.tsx', 'src/**/*.ts'], ['**/*.test.*']);
   
   for (const file of files) {
-    const content = fs.readFileSync(file, 'utf8');
     if (/consent|gdpr|cookie.*accept/gi.test(content)) {
       return { compliant: true, description: 'Consent management found' };
     }
@@ -584,19 +515,8 @@ async function generateComplianceReport(report: Record<string, unknown>) {
   console.log('\n🏛️ Municipal Compliance Quality Gates Report');
   console.log('=============================================');
   
-  const reportContent = {
-    timestamp: new Date().toISOString(),
-    summary: {
-      totalGates: Object.keys(report).length,
-      passedGates: Object.values(report).filter((gate: Record<string, unknown>) => gate.passed !== false).length,
-      overallCompliance: calculateOverallCompliance(report)
-    },
-    details: report,
-    recommendations: generateRecommendations(report)
-  };
   
   // Write report to file
-  const reportPath = 'compliance-report.json';
   fs.writeFileSync(reportPath, JSON.stringify(reportContent, null, 2));
   
   console.log(`\n📋 Report Summary:`);
@@ -611,7 +531,7 @@ async function generateComplianceReport(report: Record<string, unknown>) {
 }
 
 function calculateOverallCompliance(report: Record<string, unknown>): number {
-  const scores = Object.values(report)
+  const _scores = Object.values(report)
     .filter((gate: Record<string, unknown>) => gate.score !== undefined)
     .map((gate: Record<string, unknown>) => gate.score);
   
@@ -619,7 +539,6 @@ function calculateOverallCompliance(report: Record<string, unknown>): number {
 }
 
 function generateRecommendations(report: Record<string, unknown>): string[] {
-  const recommendations = [];
   
   if (report.testCoverage?.actual < 95) {
     recommendations.push('Increase test coverage to 95% for better code quality assurance');

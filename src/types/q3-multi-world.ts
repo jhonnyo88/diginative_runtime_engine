@@ -321,11 +321,9 @@ export function isWorldCompleted(status: WorldCompletionStatus): boolean {
 }
 
 export function canUnlockWorld(worldIndex: number, hubState: WorldHubState): boolean {
-  const worldDef = getWorldDefinition(worldIndex);
   if (!worldDef) return false;
   
   return worldDef.prerequisiteWorlds.every(prereqIndex => {
-    const prereqStatus = hubState.worldCompletionStatus.find(w => w.worldIndex === prereqIndex);
     return prereqStatus && isWorldCompleted(prereqStatus);
   });
 }
@@ -336,7 +334,7 @@ export function calculateTotalScore(hubState: WorldHubState): number {
 }
 
 export function calculateOverallProgress(hubState: WorldHubState): number {
-  const totalProgress = hubState.worldCompletionStatus.reduce(
+  const _totalProgress = hubState.worldCompletionStatus.reduce(
     (total, world) => total + world.completionPercentage, 0
   );
   return totalProgress / 5; // Average across 5 worlds

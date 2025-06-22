@@ -14,8 +14,7 @@ import { ErrorBoundary } from '../components/ui/ErrorBoundary';
 // World route component
 const WorldRoute: React.FC = () => {
   const { code, worldIndex } = useParams<{ code: string; worldIndex: string }>();
-  const location = useLocation();
-  const worldIdx = parseInt(worldIndex || '1', 10);
+  const worldIdx = parseInt(worldIndex || '0', 10);
 
   useEffect(() => {
     // Start performance monitoring for world transition
@@ -27,15 +26,13 @@ const WorldRoute: React.FC = () => {
   }
 
   // Get cultural context from location state or default to Swedish
-  const culturalContext = location.state?.culturalContext || 'swedish_municipal';
-  const hubSessionId = location.state?.hubSessionId || '';
 
   if (!hubSessionId) {
     // Redirect to hub if no session
     return <Navigate to={`/hub/${code}`} replace />;
   }
 
-  const worldComponent = WorldFactory.createWorldByIndex(
+  const _worldComponent = WorldFactory.createWorldByIndex(
     worldIdx,
     hubSessionId,
     code,
@@ -115,12 +112,10 @@ export const Q3MultiWorldRouter: React.FC = () => {
 // Legacy Q2 game route for backwards compatibility
 const LegacyGameRoute: React.FC = () => {
   const { sessionId } = useParams<{ sessionId: string }>();
-  const location = useLocation();
 
   // Check if this is a Q3 hub session
   if (sessionId?.startsWith('hub_')) {
     // Extract unique code and redirect to hub
-    const uniqueCode = location.state?.uniqueCode || 'DEMO1234';
     return <Navigate to={`/hub/${uniqueCode}`} replace />;
   }
 

@@ -162,7 +162,6 @@ describe('GameContainer', () => {
   describe('Error Boundary Integration', () => {
     test('catches and handles errors when errorBoundary is enabled', () => {
       // Suppress console.error for this test
-      const originalError = console.error;
       console.error = jest.fn();
 
       render(
@@ -181,7 +180,6 @@ describe('GameContainer', () => {
 
     test('does not use error boundary when disabled', () => {
       // This test verifies that errors bubble up when errorBoundary is false
-      const originalError = console.error;
       console.error = jest.fn();
 
       expect(() => {
@@ -210,7 +208,6 @@ describe('GameContainer', () => {
         </TestWrapper>
       );
 
-      const container = screen.getByRole('main');
       expect(container).toHaveAttribute('aria-label', 'Test game container');
     });
 
@@ -223,7 +220,6 @@ describe('GameContainer', () => {
         </TestWrapper>
       );
 
-      const button = screen.getByTestId('focus-button');
       button.focus();
       expect(button).toHaveFocus();
     });
@@ -237,7 +233,6 @@ describe('GameContainer', () => {
         </TestWrapper>
       );
 
-      const button = screen.getByTestId('keyboard-button');
       fireEvent.keyDown(button, { key: 'Enter' });
       
       // Should maintain proper keyboard interaction
@@ -352,7 +347,6 @@ describe('GameContainer', () => {
 
 describe('EnhancedErrorBoundary', () => {
   test('displays Swedish error message for Swedish theme', () => {
-    const originalError = console.error;
     console.error = jest.fn();
 
     render(
@@ -370,7 +364,6 @@ describe('EnhancedErrorBoundary', () => {
   });
 
   test('displays German error message for German theme', () => {
-    const originalError = console.error;
     console.error = jest.fn();
 
     render(
@@ -388,7 +381,6 @@ describe('EnhancedErrorBoundary', () => {
   });
 
   test('provides retry functionality', () => {
-    const originalError = console.error;
     console.error = jest.fn();
 
     render(
@@ -399,7 +391,6 @@ describe('EnhancedErrorBoundary', () => {
       </TestWrapper>
     );
 
-    const retryButton = screen.getByText(/Försök igen/i);
     expect(retryButton).toBeInTheDocument();
 
     fireEvent.click(retryButton);
@@ -409,7 +400,6 @@ describe('EnhancedErrorBoundary', () => {
   });
 
   test('shows contact information', () => {
-    const originalError = console.error;
     console.error = jest.fn();
 
     render(
@@ -427,7 +417,6 @@ describe('EnhancedErrorBoundary', () => {
   });
 
   test('toggles technical details', () => {
-    const originalError = console.error;
     console.error = jest.fn();
 
     render(
@@ -438,7 +427,6 @@ describe('EnhancedErrorBoundary', () => {
       </TestWrapper>
     );
 
-    const detailsButton = screen.getByText(/Visa tekniska detaljer/i);
     fireEvent.click(detailsButton);
 
     // Technical details should be visible after clicking
@@ -459,7 +447,6 @@ describe('Layout Integration', () => {
     );
 
     // Container should be properly centered
-    const gameContainer = container.firstChild;
     expect(gameContainer).toBeInTheDocument();
     expect(screen.getByTestId('centered-content')).toBeInTheDocument();
   });
@@ -491,7 +478,6 @@ describe('Layout Integration', () => {
       </TestWrapper>
     );
 
-    const button = screen.getByTestId('touch-target');
     expect(button).toHaveStyle({ minHeight: '48px' });
   });
 });

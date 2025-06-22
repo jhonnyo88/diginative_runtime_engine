@@ -81,7 +81,6 @@ describe('APIGateway', () => {
       mockRedis.zadd.mockResolvedValue(1);
       mockRedis.expire.mockResolvedValue(1);
 
-      const middleware = apiGateway.createRateLimitMiddleware('api');
       await middleware(mockReq as Request, mockRes as Response, mockNext);
 
       expect(mockNext).toHaveBeenCalled();
@@ -99,7 +98,6 @@ describe('APIGateway', () => {
       mockRedis.zcard.mockResolvedValue(1000); // At limit
       mockRedis.zrange.mockResolvedValue(['1000000000', '1000000000']);
 
-      const middleware = apiGateway.createRateLimitMiddleware('api');
       await middleware(mockReq as Request, mockRes as Response, mockNext);
 
       expect(mockNext).not.toHaveBeenCalled();
@@ -118,7 +116,6 @@ describe('APIGateway', () => {
       mockRedis.zremrangebyscore.mockResolvedValue(0);
       mockRedis.zcard.mockResolvedValue(450);
 
-      const middleware = apiGateway.createRateLimitMiddleware('api');
       await middleware(mockReq as Request, mockRes as Response, mockNext);
 
       expect(mockNext).toHaveBeenCalled();
@@ -133,7 +130,6 @@ describe('APIGateway', () => {
       mockRedis.zremrangebyscore.mockResolvedValue(0);
       mockRedis.zcard.mockResolvedValue(50);
 
-      const middleware = apiGateway.createRateLimitMiddleware('validation');
       await middleware(mockReq as Request, mockRes as Response, mockNext);
 
       expect(mockNext).toHaveBeenCalled();
@@ -148,7 +144,6 @@ describe('APIGateway', () => {
       mockRedis.zcard.mockResolvedValue(1000);
       mockRedis.zrange.mockResolvedValue(['1000000000', '1000000000']);
 
-      const middleware = apiGateway.createRateLimitMiddleware('api');
       await middleware(mockReq as Request, mockRes as Response, mockNext);
 
       expect(mockMonitoring.recordMetric).toHaveBeenCalledWith(
@@ -170,7 +165,6 @@ describe('APIGateway', () => {
       mockRedis.zrangebyscore.mockResolvedValue(new Array(50)); // Normal traffic
       mockRedis.get.mockResolvedValue(null); // Not blocked
 
-      const middleware = apiGateway.createDDoSProtectionMiddleware();
       await middleware(mockReq as Request, mockRes as Response, mockNext);
 
       expect(mockNext).toHaveBeenCalled();
@@ -182,7 +176,6 @@ describe('APIGateway', () => {
       mockRedis.zrangebyscore.mockResolvedValue(new Array(250)); // Suspicious traffic
       mockRedis.get.mockResolvedValue(null);
 
-      const middleware = apiGateway.createDDoSProtectionMiddleware();
       await middleware(mockReq as Request, mockRes as Response, mockNext);
 
       expect(mockNext).not.toHaveBeenCalled();
@@ -203,7 +196,6 @@ describe('APIGateway', () => {
       mockRedis.get.mockResolvedValue('blocked');
       mockRedis.ttl.mockResolvedValue(300);
 
-      const middleware = apiGateway.createDDoSProtectionMiddleware();
       await middleware(mockReq as Request, mockRes as Response, mockNext);
 
       expect(mockNext).not.toHaveBeenCalled();
@@ -219,7 +211,6 @@ describe('APIGateway', () => {
       mockReq.headers = { 'x-municipality-id': 'berlin_de' };
       mockRedis.zrangebyscore.mockResolvedValue(new Array(150)); // Exceeds Berlin's threshold
 
-      const middleware = apiGateway.createDDoSProtectionMiddleware();
       await middleware(mockReq as Request, mockRes as Response, mockNext);
 
       expect(mockMonitoring.recordMetric).toHaveBeenCalledWith(
@@ -239,7 +230,6 @@ describe('APIGateway', () => {
       mockReq.headers = { authorization: 'Bearer development_key_hash' };
       mockRedis.zcard.mockResolvedValue(10);
 
-      const middleware = apiGateway.createAPIKeyMiddleware(['content:validate']);
       await middleware(mockReq as Request, mockRes as Response, mockNext);
 
       expect(mockNext).toHaveBeenCalled();
@@ -249,7 +239,6 @@ describe('APIGateway', () => {
     it('should reject invalid API key', async () => {
       mockReq.headers = { authorization: 'Bearer invalid_key' };
 
-      const middleware = apiGateway.createAPIKeyMiddleware();
       await middleware(mockReq as Request, mockRes as Response, mockNext);
 
       expect(mockNext).not.toHaveBeenCalled();
@@ -265,7 +254,6 @@ describe('APIGateway', () => {
       mockReq.headers = { authorization: 'Bearer development_key_hash' };
       mockRedis.zcard.mockResolvedValue(5);
 
-      const middleware = apiGateway.createAPIKeyMiddleware(['admin:security']);
       await middleware(mockReq as Request, mockRes as Response, mockNext);
 
       expect(mockNext).not.toHaveBeenCalled();
@@ -281,7 +269,6 @@ describe('APIGateway', () => {
       mockReq.headers = { authorization: 'Bearer development_key_hash' };
       mockRedis.zcard.mockResolvedValue(1001); // Exceeds DevTeam limit
 
-      const middleware = apiGateway.createAPIKeyMiddleware();
       await middleware(mockReq as Request, mockRes as Response, mockNext);
 
       expect(mockNext).not.toHaveBeenCalled();
@@ -297,7 +284,6 @@ describe('APIGateway', () => {
       mockReq.headers = { 'x-api-key': 'development_key_hash' };
       mockRedis.zcard.mockResolvedValue(10);
 
-      const middleware = apiGateway.createAPIKeyMiddleware();
       await middleware(mockReq as Request, mockRes as Response, mockNext);
 
       expect(mockNext).toHaveBeenCalled();
@@ -307,7 +293,6 @@ describe('APIGateway', () => {
       mockReq.query = { apiKey: 'development_key_hash' };
       mockRedis.zcard.mockResolvedValue(10);
 
-      const middleware = apiGateway.createAPIKeyMiddleware();
       await middleware(mockReq as Request, mockRes as Response, mockNext);
 
       expect(mockNext).toHaveBeenCalled();
@@ -319,7 +304,6 @@ describe('APIGateway', () => {
       mockReq.headers = { 'x-municipality-id': 'stockholm_stad' };
       mockRedis.zcard.mockResolvedValue(10);
 
-      const middleware = apiGateway.createRateLimitMiddleware('api');
       await middleware(mockReq as Request, mockRes as Response, mockNext);
 
       expect(mockRedis.zadd).toHaveBeenCalledWith(
@@ -333,7 +317,6 @@ describe('APIGateway', () => {
       mockReq.query = { municipalityId: 'goteborg_stad' };
       mockRedis.zcard.mockResolvedValue(10);
 
-      const middleware = apiGateway.createRateLimitMiddleware('api');
       await middleware(mockReq as Request, mockRes as Response, mockNext);
 
       expect(mockRedis.zadd).toHaveBeenCalledWith(
@@ -347,7 +330,6 @@ describe('APIGateway', () => {
       mockReq.headers = { 'x-municipality-id': 'unknown_municipality' };
       mockRedis.zcard.mockResolvedValue(50);
 
-      const middleware = apiGateway.createRateLimitMiddleware('api');
       await middleware(mockReq as Request, mockRes as Response, mockNext);
 
       expect(mockRes.set).toHaveBeenCalledWith(
@@ -372,7 +354,6 @@ describe('APIGateway', () => {
         .mockResolvedValueOnce(10) // validation requests
         .mockResolvedValueOnce(50); // devteam requests
 
-      const stats = await apiGateway.getRateLimitStats('malmo_stad');
 
       expect(stats).toEqual({
         requests: 35,
@@ -383,7 +364,6 @@ describe('APIGateway', () => {
     });
 
     it('should create new API keys', async () => {
-      const result = await apiGateway.createAPIKey({
         permissions: ['content:validate'],
         isActive: true,
         rateLimit: {
@@ -400,7 +380,7 @@ describe('APIGateway', () => {
     });
 
     it('should update municipality profiles', async () => {
-      const result = apiGateway.updateMunicipalityProfile('malmo_stad', {
+      const _result = apiGateway.updateMunicipalityProfile('malmo_stad', {
         tier: 'premium'
       });
 
@@ -408,7 +388,7 @@ describe('APIGateway', () => {
     });
 
     it('should reject updates for unknown municipalities', async () => {
-      const result = apiGateway.updateMunicipalityProfile('unknown_municipality', {
+      const _result = apiGateway.updateMunicipalityProfile('unknown_municipality', {
         tier: 'premium'
       });
 
@@ -420,7 +400,6 @@ describe('APIGateway', () => {
     it('should handle Redis connection errors gracefully', async () => {
       mockRedis.zcard.mockRejectedValue(new Error('Redis connection failed'));
 
-      const middleware = apiGateway.createRateLimitMiddleware('api');
       await middleware(mockReq as Request, mockRes as Response, mockNext);
 
       expect(mockNext).toHaveBeenCalled(); // Should allow request on error
@@ -430,7 +409,6 @@ describe('APIGateway', () => {
     it('should handle DDoS protection errors gracefully', async () => {
       mockRedis.zrangebyscore.mockRejectedValue(new Error('Redis error'));
 
-      const middleware = apiGateway.createDDoSProtectionMiddleware();
       await middleware(mockReq as Request, mockRes as Response, mockNext);
 
       expect(mockNext).toHaveBeenCalled(); // Should allow request on error
@@ -443,7 +421,6 @@ describe('APIGateway', () => {
       mockReq.headers = { 'x-municipality-id': 'malmo_stad' };
       mockRedis.zcard.mockResolvedValue(500);
 
-      const middleware = apiGateway.createRateLimitMiddleware('api');
       await middleware(mockReq as Request, mockRes as Response, mockNext);
 
       expect(mockRes.set).toHaveBeenCalledWith(
@@ -457,7 +434,6 @@ describe('APIGateway', () => {
       mockReq.headers = { 'x-municipality-id': 'berlin_de' };
       mockRedis.zcard.mockResolvedValue(250);
 
-      const middleware = apiGateway.createRateLimitMiddleware('api');
       await middleware(mockReq as Request, mockRes as Response, mockNext);
 
       expect(mockRes.set).toHaveBeenCalledWith(
@@ -473,7 +449,6 @@ describe('APIGateway', () => {
       mockRedis.zrangebyscore.mockResolvedValue(new Array(105)); // Just over Berlin's threshold
       mockRedis.get.mockResolvedValue(null);
 
-      const middleware = apiGateway.createDDoSProtectionMiddleware();
       await middleware(mockReq as Request, mockRes as Response, mockNext);
 
       expect(mockNext).not.toHaveBeenCalled();

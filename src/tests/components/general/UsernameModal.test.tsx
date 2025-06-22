@@ -16,13 +16,6 @@ import UsernameModal from '../../../components/UsernameModal/UsernameModal.tsx';
 // Mock dependencies if needed
 
 
-const renderWithChakra = (component: React.ReactElement) => {
-  return render(
-    <ChakraProvider>
-      {component}
-    </ChakraProvider>
-  );
-};
 
 describe('UsernameModal', () => {
   beforeEach(() => {
@@ -33,14 +26,10 @@ describe('UsernameModal', () => {
     it('renders without crashing', () => {
       renderWithChakra(<UsernameModal />);
       
-      const component = screen.getByTestId('-username-modal');
       expect(component).toBeInTheDocument();
     });
 
     it('handles props correctly', () => {
-      const testProps = {
-        // Add relevant props based on component analysis
-      };
       
       renderWithChakra(<UsernameModal {...testProps} />);
       
@@ -60,7 +49,6 @@ describe('UsernameModal', () => {
     it('provides proper ARIA attributes', () => {
       renderWithChakra(<UsernameModal />);
       
-      const element = screen.getByTestId('-username-modal');
       
       // Check for appropriate ARIA attributes
       expect(element).toHaveAttribute('role');
@@ -69,7 +57,6 @@ describe('UsernameModal', () => {
     it('supports keyboard navigation', () => {
       renderWithChakra(<UsernameModal />);
       
-      const element = screen.getByTestId('-username-modal');
       
       // Test tab navigation
       element.focus();
@@ -80,7 +67,6 @@ describe('UsernameModal', () => {
       renderWithChakra(<UsernameModal />);
       
       // Basic contrast check
-      const element = screen.getByTestId('-username-modal');
       expect(element).toBeInTheDocument();
     });
   });

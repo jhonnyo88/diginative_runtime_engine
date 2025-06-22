@@ -11,88 +11,12 @@ import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 
 // Mock touch gesture utilities
-const mockTouchUtils = {
-  measureTouchAccuracy: vi.fn(),
-  validateGestureRecognition: vi.fn(),
-  trackTouchPoints: vi.fn(),
-  monitorTouchLatency: vi.fn(),
-  calculatePrecisionMetrics: vi.fn()
-};
 
 // Touch gesture accuracy specifications for Anna Svensson iPhone 12
-const TOUCH_ACCURACY_SPECS = {
-  minimumAccuracy: 0.95, // 95% touch accuracy required
-  maximumTouchLatency: 50, // ms
-  gestureRecognitionThreshold: 0.98, // 98% gesture recognition
-  falsePositiveLimit: 0.02, // <2% false positives
-  iphone12Calibration: {
-    touchSensitivity: 'optimal',
-    displayDensity: 460, // PPI
-    touchAreaMinimum: 44 // points (Apple HIG)
-  }
-};
 
 // Municipal workflow touch scenarios
-const MUNICIPAL_TOUCH_SCENARIOS = {
-  invoiceApprovalWorkflow: {
-    workflowType: 'invoice-approval',
-    touchInteractions: [
-      { type: 'drag-start', targetAccuracy: 0.98, criticalPath: true },
-      { type: 'drag-move', targetAccuracy: 0.96, criticalPath: true },
-      { type: 'drag-end', targetAccuracy: 0.99, criticalPath: true },
-      { type: 'approval-tap', targetAccuracy: 0.97, criticalPath: true },
-      { type: 'currency-selection', targetAccuracy: 0.95, criticalPath: false }
-    ],
-    approvalStages: ['department', 'finance', 'supervisor', 'mayor'],
-    expectedCompletionTime: 180000 // 3 minutes
-  },
-  permitProcessingWorkflow: {
-    workflowType: 'permit-processing',
-    touchInteractions: [
-      { type: 'permit-selection', targetAccuracy: 0.96, criticalPath: true },
-      { type: 'document-drag', targetAccuracy: 0.97, criticalPath: true },
-      { type: 'compliance-validation', targetAccuracy: 0.94, criticalPath: false },
-      { type: 'cultural-check', targetAccuracy: 0.93, criticalPath: false },
-      { type: 'final-approval', targetAccuracy: 0.98, criticalPath: true }
-    ],
-    permitTypes: ['building', 'business', 'event', 'parking'],
-    expectedCompletionTime: 150000 // 2.5 minutes
-  }
-};
 
 // Touch gesture patterns for municipal operations
-const MUNICIPAL_TOUCH_PATTERNS = {
-  documentDragGesture: {
-    pattern: 'drag-document',
-    startPosition: { x: 120, y: 200 },
-    endPosition: { x: 280, y: 200 },
-    duration: 800, // ms
-    touchPressure: 'medium',
-    gestureComplexity: 'standard'
-  },
-  approvalTapGesture: {
-    pattern: 'approval-tap',
-    position: { x: 200, y: 350 },
-    duration: 150, // ms
-    touchPressure: 'firm',
-    gestureComplexity: 'simple'
-  },
-  multiSelectGesture: {
-    pattern: 'multi-select',
-    positions: [{ x: 100, y: 180 }, { x: 150, y: 220 }, { x: 200, y: 260 }],
-    duration: 1200, // ms
-    touchPressure: 'light',
-    gestureComplexity: 'complex'
-  },
-  culturalValidationSwipe: {
-    pattern: 'cultural-swipe',
-    startPosition: { x: 80, y: 300 },
-    endPosition: { x: 320, y: 300 },
-    duration: 600, // ms
-    touchPressure: 'medium',
-    gestureComplexity: 'standard'
-  }
-};
 
 describe('Touch Gesture Accuracy Testing for Q2 Municipal Workflows', () => {
   let touchAccuracyHarness: Record<string, unknown>;
@@ -123,10 +47,8 @@ describe('Touch Gesture Accuracy Testing for Q2 Municipal Workflows', () => {
 
   describe('Invoice Approval Workflow Touch Accuracy', () => {
     it('should achieve high touch accuracy for invoice approval drag operations', async () => {
-      const invoiceWorkflow = MUNICIPAL_TOUCH_SCENARIOS.invoiceApprovalWorkflow;
       
       for (const interaction of invoiceWorkflow.touchInteractions) {
-        const touchAccuracyTest = await touchAccuracyHarness.testTouchAccuracy({
           interactionType: interaction.type,
           targetAccuracy: interaction.targetAccuracy,
           criticalPath: interaction.criticalPath,
@@ -164,10 +86,8 @@ describe('Touch Gesture Accuracy Testing for Q2 Municipal Workflows', () => {
     });
 
     it('should maintain accuracy across all invoice approval stages', async () => {
-      const approvalStages = MUNICIPAL_TOUCH_SCENARIOS.invoiceApprovalWorkflow.approvalStages;
       
       for (const stage of approvalStages) {
-        const stageAccuracyTest = await touchAccuracyHarness.testApprovalStageAccuracy({
           approvalStage: stage,
           workflowType: 'invoice-approval',
           municipality: 'malmö',
@@ -202,10 +122,8 @@ describe('Touch Gesture Accuracy Testing for Q2 Municipal Workflows', () => {
     });
 
     it('should handle multi-currency invoice touch interactions accurately', async () => {
-      const currencies = ['SEK', 'EUR', 'DKK'];
       
       for (const currency of currencies) {
-        const currencyTouchTest = await touchAccuracyHarness.testCurrencySelectionAccuracy({
           currency,
           workflowType: 'invoice-approval',
           municipality: 'malmö',
@@ -233,10 +151,8 @@ describe('Touch Gesture Accuracy Testing for Q2 Municipal Workflows', () => {
 
   describe('Permit Processing Workflow Touch Accuracy', () => {
     it('should achieve high touch accuracy for permit document handling', async () => {
-      const permitWorkflow = MUNICIPAL_TOUCH_SCENARIOS.permitProcessingWorkflow;
       
       for (const interaction of permitWorkflow.touchInteractions) {
-        const permitTouchTest = await touchAccuracyHarness.testPermitTouchAccuracy({
           interactionType: interaction.type,
           targetAccuracy: interaction.targetAccuracy,
           criticalPath: interaction.criticalPath,
@@ -274,10 +190,8 @@ describe('Touch Gesture Accuracy Testing for Q2 Municipal Workflows', () => {
     });
 
     it('should maintain accuracy for different permit types', async () => {
-      const permitTypes = MUNICIPAL_TOUCH_SCENARIOS.permitProcessingWorkflow.permitTypes;
       
       for (const permitType of permitTypes) {
-        const permitTypeAccuracy = await touchAccuracyHarness.testPermitTypeAccuracy({
           permitType,
           workflowType: 'permit-processing',
           municipality: 'malmö',
@@ -312,7 +226,6 @@ describe('Touch Gesture Accuracy Testing for Q2 Municipal Workflows', () => {
     });
 
     it('should handle cultural appropriateness validation with touch accuracy', async () => {
-      const culturalValidationTest = await touchAccuracyHarness.testCulturalValidationTouchAccuracy({
         workflowType: 'permit-processing',
         municipality: 'malmö',
         culturalContext: 'swedish-municipal',
@@ -348,9 +261,7 @@ describe('Touch Gesture Accuracy Testing for Q2 Municipal Workflows', () => {
 
   describe('Touch Gesture Pattern Recognition', () => {
     it('should accurately recognize municipal document drag gestures', async () => {
-      const documentDragPattern = MUNICIPAL_TOUCH_PATTERNS.documentDragGesture;
       
-      const gestureRecognitionTest = await gestureValidator.testGestureRecognition({
         gesturePattern: documentDragPattern.pattern,
         startPosition: documentDragPattern.startPosition,
         endPosition: documentDragPattern.endPosition,
@@ -377,9 +288,7 @@ describe('Touch Gesture Accuracy Testing for Q2 Municipal Workflows', () => {
     });
 
     it('should recognize approval tap gestures with high precision', async () => {
-      const approvalTapPattern = MUNICIPAL_TOUCH_PATTERNS.approvalTapGesture;
       
-      const tapRecognitionTest = await gestureValidator.testTapGestureRecognition({
         gesturePattern: approvalTapPattern.pattern,
         position: approvalTapPattern.position,
         duration: approvalTapPattern.duration,
@@ -406,9 +315,7 @@ describe('Touch Gesture Accuracy Testing for Q2 Municipal Workflows', () => {
     });
 
     it('should handle complex multi-select gestures accurately', async () => {
-      const multiSelectPattern = MUNICIPAL_TOUCH_PATTERNS.multiSelectGesture;
       
-      const multiSelectTest = await gestureValidator.testMultiSelectGestureRecognition({
         gesturePattern: multiSelectPattern.pattern,
         positions: multiSelectPattern.positions,
         duration: multiSelectPattern.duration,
@@ -437,7 +344,6 @@ describe('Touch Gesture Accuracy Testing for Q2 Municipal Workflows', () => {
 
   describe('Anna Svensson iPhone 12 Touch Optimization', () => {
     it('should optimize touch accuracy for Anna Svensson device specifications', async () => {
-      const annaSwenssonTouchTest = await touchAccuracyHarness.testAnnaSwenssonTouchOptimization({
         device: 'iPhone 12',
         viewport: { width: 390, height: 844 },
         municipality: 'malmö',
@@ -483,7 +389,6 @@ describe('Touch Gesture Accuracy Testing for Q2 Municipal Workflows', () => {
     });
 
     it('should maintain touch accuracy during municipal network conditions', async () => {
-      const networkTouchTest = await touchAccuracyHarness.testTouchAccuracyUnderNetworkConditions({
         networkConditions: 'municipal-3G',
         municipality: 'malmö',
         device: 'iPhone 12',
@@ -519,7 +424,6 @@ describe('Touch Gesture Accuracy Testing for Q2 Municipal Workflows', () => {
 
   describe('Touch Accessibility and Inclusivity', () => {
     it('should maintain touch accuracy for accessibility requirements', async () => {
-      const accessibilityTouchTest = await touchAccuracyHarness.testAccessibilityTouchAccuracy({
         accessibilityFeatures: ['larger-touch-targets', 'touch-hold-timing', 'gesture-alternatives'],
         municipality: 'malmö',
         complianceStandards: ['WCAG 2.1 AA', 'Swedish Accessibility Law']
@@ -617,8 +521,6 @@ function createTouchAccuracyHarness() {
       }
     }),
     testPermitTypeAccuracy: vi.fn().mockImplementation(({ permitType }) => {
-      const baseAccuracy = permitType === 'building' ? 0.965 : 0.943;
-      const culturalValidation = permitType === 'event';
       
       return Promise.resolve({
         permitTypeAccuracy: baseAccuracy,

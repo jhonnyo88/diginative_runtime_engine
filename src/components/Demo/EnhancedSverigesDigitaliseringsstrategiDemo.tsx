@@ -48,9 +48,6 @@ import { ExecutiveMunicipalDashboard } from '../WorldHub/ExecutiveMunicipalDashb
 import { VisualExcellenceWorldHub } from '../WorldHub/VisualExcellenceWorldHub';
 import { EnhancedCulturalSwitching } from '../WorldHub/EnhancedCulturalSwitching';
 
-const MotionBox = motion(Box);
-const MotionContainer = motion(Container);
-const MotionCard = motion(Card);
 
 // Enhanced Demo Flow Stages with Visual Excellence
 interface EnhancedDemoStage {
@@ -492,13 +489,6 @@ const EnhancedDemoStageDisplay: React.FC<EnhancedDemoStageDisplayProps> = ({
   if (!isActive) return null;
 
   // Get background theme styling
-  const getBackgroundStyle = () => {
-    switch (stage.visualEnhancements.backgroundTheme) {
-      case 'gradient-blue-green':
-        return {
-          background: 'linear-gradient(135deg, #4A90A4 0%, #7FB069 100%)',
-          color: 'white'
-        };
       case 'professional-nordic':
         return {
           background: 'linear-gradient(135deg, #F8F9FA 0%, #E9ECEF 100%)',
@@ -537,7 +527,6 @@ const EnhancedDemoStageDisplay: React.FC<EnhancedDemoStageDisplayProps> = ({
     }
   };
 
-  const backgroundStyle = getBackgroundStyle();
 
   return (
     <MotionContainer
@@ -822,24 +811,9 @@ export const EnhancedSverigesDigitaliseringsstrategiDemo: React.FC<EnhancedSveri
     setRemainingTime(enhancedSverigeDemoFlow[currentStage].duration);
   }, [currentStage]);
 
-  const handleStageSelect = (stageIndex: number) => {
-    setCurrentStage(stageIndex);
-    setRemainingTime(enhancedSverigeDemoFlow[stageIndex].duration);
-  };
 
-  const handleNext = () => {
-    if (currentStage < enhancedSverigeDemoFlow.length - 1) {
-      setCurrentStage(prev => prev + 1);
-    }
-  };
 
-  const handlePrevious = () => {
-    if (currentStage > 0) {
-      setCurrentStage(prev => prev - 1);
-    }
-  };
 
-  const currentStageData = enhancedSverigeDemoFlow[currentStage];
 
   return (
     <CulturalThemeProvider>

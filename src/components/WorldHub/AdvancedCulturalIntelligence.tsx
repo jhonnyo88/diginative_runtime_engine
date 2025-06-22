@@ -42,8 +42,6 @@ import {
 
 import { useCulturalTheme } from './CulturalThemeProvider';
 
-const MotionBox = motion(Box);
-const MotionCard = motion(Card);
 
 // Advanced Cultural Intelligence Interfaces
 interface CulturalContextData {
@@ -331,15 +329,9 @@ const CulturalIntelligenceMetrics: React.FC<CulturalIntelligenceMetricsProps> = 
   selectedContext
 }) => {
   const { currentTheme } = useCulturalTheme();
-  const currentContext = contextData.find(ctx => ctx.name === selectedContext);
 
   if (!currentContext) return null;
 
-  const metricCategories = [
-    { label: 'Cultural Adaptation', value: currentContext.adaptationScore, color: 'blue' },
-    { label: 'Authenticity', value: currentContext.authenticity, color: 'green' },
-    { label: 'Professional Relevance', value: currentContext.professionalRelevance, color: 'purple' }
-  ];
 
   return (
     <MotionBox
@@ -464,7 +456,6 @@ const MunicipalScenarioAdaptationView: React.FC<MunicipalScenarioAdaptationViewP
   selectedContext
 }) => {
   const { currentTheme } = useCulturalTheme();
-  const adaptation = scenario.culturalAdaptations[selectedContext];
 
   if (!adaptation) return null;
 
@@ -581,9 +572,6 @@ const CrossCulturalInsightsView: React.FC<CrossCulturalInsightsViewProps> = ({
 }) => {
   const { currentTheme } = useCulturalTheme();
   
-  const relevantInsights = insights.filter(insight =>
-    insight.applicableContexts.some(context => activeContexts.includes(context))
-  );
 
   return (
     <VStack spacing={4} align="stretch">
@@ -694,178 +682,3 @@ export const AdvancedCulturalIntelligence: React.FC<AdvancedCulturalIntelligence
     setSelectedContext(culturalContext);
   }, [culturalContext]);
 
-  const availableContexts = useMemo(() => {
-    return advancedCulturalContexts.map(ctx => ctx.name);
-  }, []);
-
-  return (
-    <Container maxW="7xl" py={8}>
-      <VStack spacing={8} align="stretch">
-        
-        {/* Header */}
-        <MotionBox
-          initial={{ opacity: 0, y: -20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6 }}
-        >
-          <Card bg={currentTheme.colors.surface} borderColor={currentTheme.colors.primary + '30'}>
-            <CardHeader>
-              <HStack justify="space-between" flexWrap="wrap" gap={4}>
-                
-                <VStack align="start" spacing={2}>
-                  <HStack spacing={3}>
-                    <Icon as={FiGlobe} w={8} h={8} color={currentTheme.colors.primary} />
-                    <Text fontSize="2xl" fontWeight="800" color={currentTheme.colors.primary}>
-                      Advanced European Cultural Intelligence
-                    </Text>
-                  </HStack>
-                  <Text fontSize="md" color={currentTheme.colors.text.secondary}>
-                    Competitive differentiation through sophisticated cultural adaptation
-                  </Text>
-                </VStack>
-
-                <VStack spacing={3}>
-                  <HStack spacing={3}>
-                    <FormControl display="flex" alignItems="center">
-                      <FormLabel htmlFor="advanced-metrics" mb="0" fontSize="sm">
-                        Advanced Metrics
-                      </FormLabel>
-                      <Switch
-                        id="advanced-metrics"
-                        isChecked={showAdvancedMetrics}
-                        onChange={(e) => setShowAdvancedMetrics(e.target.checked)}
-                        colorScheme="blue"
-                      />
-                    </FormControl>
-                    
-                    <Select
-                      value={selectedContext}
-                      onChange={(e) => setSelectedContext(e.target.value)}
-                      size="sm"
-                      w="200px"
-                    >
-                      {advancedCulturalContexts.map(context => (
-                        <option key={context.name} value={context.name}>
-                          {context.displayName}
-                        </option>
-                      ))}
-                    </Select>
-                  </HStack>
-
-                  <HStack spacing={2}>
-                    <Text fontSize="sm" color={currentTheme.colors.text.secondary}>
-                      Adaptation Intensity:
-                    </Text>
-                    <Box w="150px">
-                      <Slider
-                        aria-label="adaptation-intensity"
-                        value={adaptationIntensity}
-                        onChange={setAdaptationIntensity}
-                        min={50}
-                        max={100}
-                        step={5}
-                        colorScheme="blue"
-                      >
-                        <SliderTrack>
-                          <SliderFilledTrack />
-                        </SliderTrack>
-                        <SliderThumb boxSize={6}>
-                          <Box color={currentTheme.colors.primary} as={FiSettings} />
-                        </SliderThumb>
-                      </Slider>
-                    </Box>
-                    <Text fontSize="sm" fontWeight="600" color={currentTheme.colors.primary}>
-                      {adaptationIntensity}%
-                    </Text>
-                  </HStack>
-                </VStack>
-
-              </HStack>
-            </CardHeader>
-          </Card>
-        </MotionBox>
-
-        {/* Cultural Intelligence Metrics */}
-        {showAdvancedMetrics && (
-          <CulturalIntelligenceMetrics
-            contextData={advancedCulturalContexts}
-            selectedContext={selectedContext}
-          />
-        )}
-
-        {/* Municipal Scenario Adaptation */}
-        <MotionBox
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6, delay: 0.2 }}
-        >
-          <VStack spacing={4} align="stretch">
-            <HStack justify="space-between">
-              <Text fontSize="xl" fontWeight="700" color={currentTheme.colors.primary}>
-                Municipal Scenario Cultural Adaptation
-              </Text>
-              <Select
-                value={selectedScenario.scenarioId}
-                onChange={(e) => {
-                  const scenario = sampleMunicipalScenarios.find(s => s.scenarioId === e.target.value);
-                  if (scenario) setSelectedScenario(scenario);
-                }}
-                size="sm"
-                w="300px"
-              >
-                {sampleMunicipalScenarios.map(scenario => (
-                  <option key={scenario.scenarioId} value={scenario.scenarioId}>
-                    {scenario.scenarioName}
-                  </option>
-                ))}
-              </Select>
-            </HStack>
-            
-            <MunicipalScenarioAdaptationView
-              scenario={selectedScenario}
-              selectedContext={selectedContext}
-            />
-          </VStack>
-        </MotionBox>
-
-        {/* Cross-Cultural Insights */}
-        <MotionBox
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6, delay: 0.4 }}
-        >
-          <CrossCulturalInsightsView
-            insights={crossCulturalInsights}
-            activeContexts={[selectedContext]}
-          />
-        </MotionBox>
-
-        {/* Action Buttons */}
-        <MotionBox
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6, delay: 0.6 }}
-        >
-          <HStack spacing={4} justify="center">
-            <Button
-              leftIcon={<FiStar />}
-              colorScheme="blue"
-              variant="outline"
-              onClick={() => onCulturalInsightGenerated(crossCulturalInsights[0])}
-            >
-              Generate Cultural Insight
-            </Button>
-            <Button
-              leftIcon={<FiTarget />}
-              colorScheme="blue"
-              onClick={() => onScenarioAdaptationComplete(selectedScenario.scenarioId, selectedContext)}
-            >
-              Complete Scenario Adaptation
-            </Button>
-          </HStack>
-        </MotionBox>
-
-      </VStack>
-    </Container>
-  );
-};

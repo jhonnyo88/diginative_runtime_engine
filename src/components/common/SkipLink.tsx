@@ -33,7 +33,6 @@ export const SkipLink: React.FC<SkipLinkProps> = ({ href, children }) => {
       }}
       onClick={(e) => {
         e.preventDefault();
-        const target = document.querySelector(href);
         if (target && target instanceof HTMLElement) {
           target.focus();
           target.scrollIntoView({ behavior: 'smooth', block: 'start' });

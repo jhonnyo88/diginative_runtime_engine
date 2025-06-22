@@ -21,13 +21,6 @@ vi.mock('framer-motion', () => ({
   AnimatePresence: vi.fn(({ children }) => children),
 }));
 
-const renderWithChakra = (component: React.ReactElement) => {
-  return render(
-    <ChakraProvider>
-      {component}
-    </ChakraProvider>
-  );
-};
 
 describe('MunicipalProgressIndicator', () => {
   describe('Municipal Branding Compliance', () => {
@@ -41,7 +34,6 @@ describe('MunicipalProgressIndicator', () => {
       );
 
       // Check for municipal progress container
-      const progressContainer = screen.getByTestId('municipal-progress-indicator');
       expect(progressContainer).toBeInTheDocument();
       
       // Verify Malmö branding elements
@@ -57,7 +49,6 @@ describe('MunicipalProgressIndicator', () => {
         />
       );
 
-      const progressBar = screen.getByRole('progressbar');
       expect(progressBar).toBeInTheDocument();
       
       // Verify progress value
@@ -123,12 +114,10 @@ describe('MunicipalProgressIndicator', () => {
         />
       );
 
-      const progressBar = screen.getByRole('progressbar');
       expect(progressBar).toHaveAttribute('aria-label', 'GDPR Compliance Training framsteg');
       expect(progressBar).toHaveAttribute('aria-describedby');
       
       // Check for description
-      const description = screen.getByText('Modul 4 av 8 komplett');
       expect(description).toBeInTheDocument();
     });
 
@@ -142,7 +131,6 @@ describe('MunicipalProgressIndicator', () => {
         />
       );
 
-      const progressContainer = screen.getByTestId('municipal-progress-indicator');
       
       // Should be focusable if interactive
       expect(progressContainer).toHaveAttribute('tabIndex', '0');
@@ -163,7 +151,6 @@ describe('MunicipalProgressIndicator', () => {
       );
 
       // Check for live region
-      const liveRegion = screen.getByRole('status');
       expect(liveRegion).toBeInTheDocument();
       expect(liveRegion).toHaveAttribute('aria-live', 'polite');
 
@@ -192,7 +179,6 @@ describe('MunicipalProgressIndicator', () => {
         />
       );
 
-      const progressBar = screen.getByRole('progressbar');
       
       // Progress bar should have high contrast styling
       expect(progressBar).toHaveStyle({
@@ -226,14 +212,12 @@ describe('MunicipalProgressIndicator', () => {
         />
       );
 
-      const progressContainer = screen.getByTestId('municipal-progress-indicator');
       expect(progressContainer).toHaveAttribute('data-reduced-motion', 'true');
     });
   });
 
   describe('Interactive Features', () => {
     it('handles click events when interactive', () => {
-      const onClickMock = vi.fn();
       
       renderWithChakra(
         <MunicipalProgressIndicator 
@@ -245,7 +229,6 @@ describe('MunicipalProgressIndicator', () => {
         />
       );
 
-      const progressContainer = screen.getByTestId('municipal-progress-indicator');
       fireEvent.click(progressContainer);
       
       expect(onClickMock).toHaveBeenCalledWith(35);
@@ -263,7 +246,6 @@ describe('MunicipalProgressIndicator', () => {
         />
       );
 
-      const progressContainer = screen.getByTestId('municipal-progress-indicator');
       
       // Hover to show details
       fireEvent.mouseEnter(progressContainer);
@@ -274,7 +256,6 @@ describe('MunicipalProgressIndicator', () => {
     });
 
     it('supports step-by-step navigation', () => {
-      const onStepClickMock = vi.fn();
       
       renderWithChakra(
         <MunicipalProgressIndicator 
@@ -289,7 +270,6 @@ describe('MunicipalProgressIndicator', () => {
       );
 
       // Should show individual step indicators
-      const steps = screen.getAllByTestId(/progress-step-/);
       expect(steps).toHaveLength(5);
       
       // Test clicking on a specific step
@@ -300,7 +280,6 @@ describe('MunicipalProgressIndicator', () => {
 
   describe('Municipal Network Performance', () => {
     it('renders efficiently with large datasets', () => {
-      const startTime = performance.now();
       
       renderWithChakra(
         <MunicipalProgressIndicator 
@@ -313,14 +292,11 @@ describe('MunicipalProgressIndicator', () => {
         />
       );
 
-      const endTime = performance.now();
-      const renderTime = endTime - startTime;
       
       // Should render within performance budget for municipal networks
       expect(renderTime).toBeLessThan(100); // 100ms budget
       
       // Verify all steps are rendered
-      const progressContainer = screen.getByTestId('municipal-progress-indicator');
       expect(progressContainer).toBeInTheDocument();
     });
 
@@ -333,7 +309,6 @@ describe('MunicipalProgressIndicator', () => {
         />
       );
 
-      const startTime = performance.now();
       
       // Simulate frequent updates
       for (let i = 1; i <= 100; i += 10) {
@@ -348,8 +323,6 @@ describe('MunicipalProgressIndicator', () => {
         );
       }
 
-      const endTime = performance.now();
-      const updateTime = endTime - startTime;
       
       // Should handle rapid updates efficiently
       expect(updateTime).toBeLessThan(500); // 500ms for 10 updates
@@ -366,7 +339,6 @@ describe('MunicipalProgressIndicator', () => {
         />
       );
 
-      const progressBar = screen.getByRole('progressbar');
       
       // Should clamp to valid range
       expect(progressBar).toHaveAttribute('aria-valuenow', '100');
@@ -381,7 +353,6 @@ describe('MunicipalProgressIndicator', () => {
         />
       );
 
-      const progressBar = screen.getByRole('progressbar');
       
       // Should clamp to minimum value
       expect(progressBar).toHaveAttribute('aria-valuenow', '0');
@@ -395,7 +366,6 @@ describe('MunicipalProgressIndicator', () => {
         />
       );
 
-      const progressContainer = screen.getByTestId('municipal-progress-indicator');
       
       // Should use default styling
       expect(progressContainer).toHaveAttribute('data-municipality', 'default');
@@ -409,7 +379,6 @@ describe('MunicipalProgressIndicator', () => {
         />
       );
 
-      const progressBar = screen.getByRole('progressbar');
       
       // Should have default accessible label
       expect(progressBar).toHaveAttribute('aria-label', 'Framsteg indikator');
@@ -427,7 +396,6 @@ describe('MunicipalProgressIndicator', () => {
         />
       );
 
-      const progressContainer = screen.getByTestId('municipal-progress-indicator');
       
       // Should meet minimum touch target size
       expect(progressContainer).toHaveStyle({
@@ -437,7 +405,6 @@ describe('MunicipalProgressIndicator', () => {
     });
 
     it('handles touch gestures appropriately', () => {
-      const onTouchMock = vi.fn();
       
       renderWithChakra(
         <MunicipalProgressIndicator 
@@ -449,7 +416,6 @@ describe('MunicipalProgressIndicator', () => {
         />
       );
 
-      const progressContainer = screen.getByTestId('municipal-progress-indicator');
       
       // Simulate touch events
       fireEvent.touchStart(progressContainer);

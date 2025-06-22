@@ -16,13 +16,6 @@ import ProtectedRoute from '../../../components/auth/ProtectedRoute.tsx';
 // Mock dependencies if needed
 
 
-const renderWithChakra = (component: React.ReactElement) => {
-  return render(
-    <ChakraProvider>
-      {component}
-    </ChakraProvider>
-  );
-};
 
 describe('ProtectedRoute', () => {
   beforeEach(() => {
@@ -33,14 +26,10 @@ describe('ProtectedRoute', () => {
     it('renders without crashing', () => {
       renderWithChakra(<ProtectedRoute />);
       
-      const component = screen.getByTestId('-protected-route');
       expect(component).toBeInTheDocument();
     });
 
     it('handles props correctly', () => {
-      const testProps = {
-        // Add relevant props based on component analysis
-      };
       
       renderWithChakra(<ProtectedRoute {...testProps} />);
       
@@ -60,7 +49,6 @@ describe('ProtectedRoute', () => {
     it('provides proper ARIA attributes', () => {
       renderWithChakra(<ProtectedRoute />);
       
-      const element = screen.getByTestId('-protected-route');
       
       // Check for appropriate ARIA attributes
       expect(element).toHaveAttribute('role');
@@ -69,7 +57,6 @@ describe('ProtectedRoute', () => {
     it('supports keyboard navigation', () => {
       renderWithChakra(<ProtectedRoute />);
       
-      const element = screen.getByTestId('-protected-route');
       
       // Test tab navigation
       element.focus();
@@ -80,7 +67,6 @@ describe('ProtectedRoute', () => {
       renderWithChakra(<ProtectedRoute />);
       
       // Basic contrast check
-      const element = screen.getByTestId('-protected-route');
       expect(element).toBeInTheDocument();
     });
   });

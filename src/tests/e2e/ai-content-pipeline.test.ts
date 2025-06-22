@@ -34,11 +34,9 @@ test.describe('AI Content Pipeline Integration', () => {
     await expect(page.locator('h2')).toContainText('GDPR-utbildning');
     
     // Step 5: Test quiz interaction with AI-generated content
-    const quizOptions = page.locator('[data-testid="quiz-option"]');
     await expect(quizOptions.first()).toBeVisible();
     
     // Verify that quiz options contain text (not empty due to AI content issues)
-    const firstOptionText = await quizOptions.first().textContent();
     expect(firstOptionText).toBeTruthy();
     expect(firstOptionText?.length).toBeGreaterThan(0);
     
@@ -70,7 +68,6 @@ test.describe('AI Content Pipeline Integration', () => {
     await page.click('text=Se Digitaliseringsstrategi Demo');
     
     // Should show error handling UI without crashing
-    const errorElement = page.locator('[data-testid="content-error"]');
     if (await errorElement.isVisible()) {
       await expect(errorElement).toContainText('validering');
     }
@@ -117,7 +114,6 @@ test.describe('AI Content Pipeline Integration', () => {
     // Start performance monitoring
     await page.goto('/');
     
-    const startTime = Date.now();
     
     // Navigate through AI content workflow
     await page.click('text=Se Digitaliseringsstrategi Demo');
@@ -128,17 +124,14 @@ test.describe('AI Content Pipeline Integration', () => {
     // Wait for content to load
     await page.waitForSelector('[data-testid="game-container"]');
     
-    const loadTime = Date.now() - startTime;
     
     // Should load within 5 seconds (municipal network requirement)
     expect(loadTime).toBeLessThan(5000);
     
     // Verify no JavaScript errors
-    const errors = [];
     page.on('pageerror', error => errors.push(error));
     
     // Interact with AI content
-    const quizOptions = page.locator('[data-testid="quiz-option"]');
     if (await quizOptions.count() > 0) {
       await quizOptions.first().click();
     }
@@ -150,20 +143,6 @@ test.describe('AI Content Pipeline Integration', () => {
   test('should handle large AI content payloads efficiently', async ({ page }) => {
     // Mock large content response
     await page.route('/api/content/*', route => {
-      const largeContent = {
-        scenes: Array.from({ length: 50 }, (_, i) => ({
-          id: `scene-${i}`,
-          type: 'quiz',
-          title: `Quiz Scene ${i}`,
-          content: {
-            question: `This is a very long question for scene ${i} that tests how the application handles large content payloads from AI generation systems.`,
-            options: Array.from({ length: 6 }, (_, j) => ({
-              text: `Option ${j} for scene ${i} with detailed explanation about municipal processes and GDPR compliance requirements`,
-              isCorrect: j === 0
-            }))
-          }
-        }))
-      };
       
       route.fulfill({
         status: 200,
@@ -179,7 +158,6 @@ test.describe('AI Content Pipeline Integration', () => {
     await page.waitForSelector('button:has-text("Börja spela")', { timeout: 10000 });
     
     // Memory usage should remain reasonable
-    const metrics = await page.evaluate(() => {
       return {
         memory: (performance as any).memory?.usedJSHeapSize || 0,
         timing: performance.timing.loadEventEnd - performance.timing.navigationStart

@@ -40,76 +40,6 @@ import { measureProductionMetrics, validateGovernmentCompliance } from '../../..
  * - 100% GDPR compliance across all European markets
  * - Government-grade security standards (ISO 27001, NIS Directive)
  */
-const Q3_PRODUCTION_QUALITY_GATES = {
-  reliability: {
-    uptimeRequirement: 0.999, // 99.9% - government standard
-    maxDowntimePerYear: 8.77, // hours
-    meanTimeBetweenFailures: 8760, // hours (1 year)
-    meanTimeToRecovery: 5, // minutes maximum
-    systemAvailability: '24/7/365'
-  },
-  performance: {
-    responseTimeTarget: 2000, // ms - Anna Svensson standard maintained
-    hubLoadingProduction: 800, // ms - demo excellence maintained in production
-    worldTransitionProduction: 1500, // ms - enhanced standard maintained
-    concurrentUserCapacity: 10000, // per instance
-    loadTestingDuration: 48, // hours continuous
-    stressTestingMultiplier: 1.5 // 150% expected load
-  },
-  security: {
-    encryptionStandard: 'AES-256-GCM',
-    keyManagement: 'HSM-backed',
-    accessControl: 'zero-trust-architecture',
-    auditLogging: 'comprehensive-immutable',
-    penetrationTestingFrequency: 'quarterly',
-    vulnerabilityManagement: 'continuous'
-  },
-  compliance: {
-    gdprCompliance: '100%',
-    accessibilityCompliance: 'WCAG-2.1-AA',
-    securityCompliance: ['ISO-27001', 'NIS-Directive', 'SOC-2-Type-II'],
-    municipalCompliance: 'government-grade',
-    crossBorderCompliance: 'schrems-ii-compliant'
-  },
-  qualityGates: [
-    {
-      gate: 'functional-completeness',
-      criteria: 'all-features-operational',
-      threshold: '100%',
-      blocking: true
-    },
-    {
-      gate: 'performance-validation',
-      criteria: 'load-testing-passed',
-      threshold: 'anna-svensson-maintained',
-      blocking: true
-    },
-    {
-      gate: 'security-certification',
-      criteria: 'penetration-testing-passed',
-      threshold: 'zero-critical-vulnerabilities',
-      blocking: true
-    },
-    {
-      gate: 'compliance-verification',
-      criteria: 'gdpr-audit-passed',
-      threshold: '100%-compliance',
-      blocking: true
-    },
-    {
-      gate: 'reliability-demonstration',
-      criteria: 'stability-testing-passed',
-      threshold: '99.9%-uptime',
-      blocking: true
-    },
-    {
-      gate: 'european-readiness',
-      criteria: 'multi-market-validation',
-      threshold: '4-markets-certified',
-      blocking: true
-    }
-  ]
-};
 
 describe('Q3 Production Quality Gates - European Municipal Deployment Excellence', () => {
   let qualityGateValidator: Q3ProductionQualityGateValidator;
@@ -148,7 +78,6 @@ describe('Q3 Production Quality Gates - European Municipal Deployment Excellence
   describe('Functional Completeness Quality Gate', () => {
     test('Complete Q3 Multi-World System Functionality Validation', async () => {
       // Test complete system functionality under production conditions
-      const functionalValidation = await qualityGateValidator.validateFunctionalCompleteness({
         includeAllWorlds: true,
         includeAllMarkets: ['swedish', 'german', 'french', 'dutch'],
         validateCrossWorldIntegration: true,
@@ -193,7 +122,6 @@ describe('Q3 Production Quality Gates - European Municipal Deployment Excellence
 
     test('Feature Integration and Cross-Component Validation', async () => {
       // Test feature integration across all system components
-      const integrationValidation = await qualityGateValidator.validateFeatureIntegration({
         testAllCombinations: true,
         validateDataFlow: true,
         checkErrorHandling: true,
@@ -220,7 +148,6 @@ describe('Q3 Production Quality Gates - European Municipal Deployment Excellence
 
     test('Municipal Professional Features Validation', async () => {
       // Test municipal professional features completeness
-      const municipalValidation = await qualityGateValidator.validateMunicipalProfessionalFeatures({
         includeAllRoles: ['employee', 'supervisor', 'manager', 'director'],
         validateWorkplaceIntegration: true,
         checkProfessionalDevelopment: true,
@@ -256,7 +183,6 @@ describe('Q3 Production Quality Gates - European Municipal Deployment Excellence
   describe('Performance Validation Quality Gate', () => {
     test('Production Load Testing - Anna Svensson Standards Maintained', async () => {
       // Test performance under production load conditions
-      const loadTesting = await loadTestingFramework.executeProductionLoadTest({
         duration: Q3_PRODUCTION_QUALITY_GATES.performance.loadTestingDuration, // 48 hours
         concurrentUsers: Q3_PRODUCTION_QUALITY_GATES.performance.concurrentUserCapacity, // 10,000 users
         userBehaviorPattern: 'realistic-municipal-training',
@@ -292,7 +218,6 @@ describe('Q3 Production Quality Gates - European Municipal Deployment Excellence
 
     test('Stress Testing - 150% Expected Load Capacity', async () => {
       // Test system behavior under stress conditions
-      const stressTesting = await loadTestingFramework.executeStressTest({
         loadMultiplier: Q3_PRODUCTION_QUALITY_GATES.performance.stressTestingMultiplier, // 150%
         duration: '4-hours',
         includeFailureScenarios: true,
@@ -322,7 +247,6 @@ describe('Q3 Production Quality Gates - European Municipal Deployment Excellence
 
     test('European Municipal Network Performance Validation', async () => {
       // Test performance across diverse European municipal networks
-      const municipalNetworkTesting = await loadTestingFramework.testEuropeanMunicipalNetworks({
         includeAllCountries: true,
         testDiverseInfrastructure: true,
         validateNetworkOptimization: true,
@@ -349,7 +273,6 @@ describe('Q3 Production Quality Gates - European Municipal Deployment Excellence
 
     test('Long-term Performance Stability Validation', async () => {
       // Test performance stability over extended periods
-      const stabilityTesting = await loadTestingFramework.executeLongTermStabilityTest({
         duration: '7-days',
         includeVariableLoad: true,
         monitorPerformanceTrends: true,
@@ -378,7 +301,6 @@ describe('Q3 Production Quality Gates - European Municipal Deployment Excellence
   describe('Security Certification Quality Gate', () => {
     test('Government-Grade Security Standards Validation', async () => {
       // Test government-grade security implementation
-      const securityValidation = await governmentQualityValidator.validateGovernmentGradeSecurity({
         includeAllSecurityLayers: true,
         testPenetrationResistance: true,
         validateEncryptionStandards: true,
@@ -411,7 +333,6 @@ describe('Q3 Production Quality Gates - European Municipal Deployment Excellence
 
     test('Penetration Testing and Vulnerability Assessment', async () => {
       // Test penetration resistance and vulnerability management
-      const penetrationTesting = await governmentQualityValidator.executePenetrationTesting({
         scope: 'comprehensive',
         includeMultiWorldSystem: true,
         testAuthenticationSecurity: true,
@@ -443,7 +364,6 @@ describe('Q3 Production Quality Gates - European Municipal Deployment Excellence
 
     test('Security Compliance Certification Validation', async () => {
       // Test security compliance certifications
-      const complianceCertification = await governmentQualityValidator.validateSecurityCompliance({
         certifications: Q3_PRODUCTION_QUALITY_GATES.compliance.securityCompliance,
         includeAuditEvidence: true,
         validateOngoingCompliance: true,
@@ -469,7 +389,6 @@ describe('Q3 Production Quality Gates - European Municipal Deployment Excellence
 
     test('Municipal Data Security and Sovereignty', async () => {
       // Test municipal data security and sovereignty requirements
-      const municipalDataSecurity = await governmentQualityValidator.validateMunicipalDataSecurity({
         includeAllMarkets: true,
         testDataSovereignty: true,
         validateGovernmentAccess: true,
@@ -504,7 +423,6 @@ describe('Q3 Production Quality Gates - European Municipal Deployment Excellence
   describe('Reliability Demonstration Quality Gate', () => {
     test('99.9% Uptime Requirement Validation', async () => {
       // Test system reliability and uptime achievement
-      const reliabilityTesting = await readinessAssessor.validateSystemReliability({
         testDuration: '30-days',
         uptimeTarget: Q3_PRODUCTION_QUALITY_GATES.reliability.uptimeRequirement,
         includeFailureScenarios: true,
@@ -536,7 +454,6 @@ describe('Q3 Production Quality Gates - European Municipal Deployment Excellence
 
     test('Fault Tolerance and Recovery Validation', async () => {
       // Test fault tolerance and automatic recovery capabilities
-      const faultToleranceTesting = await readinessAssessor.validateFaultTolerance({
         includeAllFailureTypes: true,
         testCascadingFailures: true,
         validateGracefulDegradation: true,
@@ -563,7 +480,6 @@ describe('Q3 Production Quality Gates - European Municipal Deployment Excellence
 
     test('System Monitoring and Health Validation', async () => {
       // Test comprehensive system monitoring and health management
-      const monitoringValidation = await productionMonitor.validateMonitoringComprehensiveness({
         includeAllSystemComponents: true,
         testAlertingSystem: true,
         validateHealthChecks: true,
@@ -601,7 +517,6 @@ describe('Q3 Production Quality Gates - European Municipal Deployment Excellence
   describe('European Readiness Quality Gate', () => {
     test('4-Market Certification Validation', async () => {
       // Test certification readiness across all European markets
-      const marketCertification = await municipalDeploymentValidator.validateMarketCertification({
         markets: ['swedish', 'german', 'french', 'dutch'],
         includeRegulatoryCompliance: true,
         validateCulturalAdaptation: true,
@@ -631,7 +546,6 @@ describe('Q3 Production Quality Gates - European Municipal Deployment Excellence
 
     test('European Municipal Deployment Readiness', async () => {
       // Test deployment readiness för European municipal environments
-      const deploymentReadiness = await municipalDeploymentValidator.validateDeploymentReadiness({
         includeInfrastructureValidation: true,
         testScalabilityRequirements: true,
         validateSupportCapabilities: true,
@@ -661,7 +575,6 @@ describe('Q3 Production Quality Gates - European Municipal Deployment Excellence
 
     test('Cross-Border Compliance and Cooperation Validation', async () => {
       // Test cross-border compliance and cooperation capabilities
-      const crossBorderValidation = await municipalDeploymentValidator.validateCrossBorderCompliance({
         includeDataSovereignty: true,
         testCrossBorderTransfers: true,
         validateGovernmentCooperation: true,

@@ -236,9 +236,6 @@ export class MunicipalAchievementEngine {
     totalSections: number;
   }): MunicipalAchievement[] {
     const newAchievements: MunicipalAchievement[] = [];
-    const scorePercentage = (sessionData.totalScore / sessionData.maxScore) * 100;
-    const correctPercentage = (sessionData.correctAnswers / sessionData.totalQuestions) * 100;
-    const completionRate = (sessionData.sectionsCompleted / sessionData.totalSections) * 100;
 
     // Evaluate each achievement criteria
     Object.values(this.criteria).forEach(criteria => {
@@ -269,7 +266,6 @@ export class MunicipalAchievementEngine {
       }
 
       if (achieved) {
-        const achievement = this.createMunicipalAchievement(criteria.id);
         if (achievement) {
           newAchievements.push(achievement);
           this.awardAchievement(achievement);
@@ -282,26 +278,12 @@ export class MunicipalAchievementEngine {
 
   private createMunicipalAchievement(achievementId: string): MunicipalAchievement | null {
     // Map achievement IDs to the correct keys
-    const achievementKeyMap = {
-      'gdpr_specialist': 'GDPR_SPECIALIST',
-      'compliance_champion': 'COMPLIANCE_CHAMPION', 
-      'efficiency_expert': 'EFFICIENCY_EXPERT',
-      'municipal_certified': 'MUNICIPAL_CERTIFIED'
-    };
 
-    const achievementKey = achievementKeyMap[achievementId as keyof typeof achievementKeyMap];
     if (!achievementKey) return null;
 
     // Create achievement from criteria
-    const baseAchievement = {
-      id: achievementId,
-      title: `Achievement: ${achievementId}`,
-      description: 'Municipal achievement earned',
-      municipalValue: 'Workplace competence developed'
-    };
     if (!baseAchievement) return null;
 
-    const criteria = this.criteria[achievementId];
     if (!criteria) return null;
 
     // Create culturally adapted achievement
@@ -313,12 +295,6 @@ export class MunicipalAchievementEngine {
   }
 
   private getNextStepsForAchievement(achievementId: string): string {
-    const nextSteps = {
-      gdpr_specialist: 'Tillämpa GDPR-kunskaper i dina dagliga arbetsuppgifter',
-      compliance_champion: 'Dela din kunskap med kollegor och stöd teamets utveckling',
-      efficiency_expert: 'Kontakta din chef för att diskutera tillämpning på arbetsplatsen',
-      municipal_certified: 'Ladda ner ditt certifikat och uppdatera din kompetensprofil'
-    };
 
     return nextSteps[achievementId as keyof typeof nextSteps] || 'Diskutera tillämpning med din närmaste chef';
   }
@@ -333,14 +309,12 @@ export class MunicipalAchievementEngine {
     );
 
     // Add competency
-    const criteria = this.criteria[achievement.id];
     if (criteria) {
       this.state.competencies.developed.push(criteria.municipalValue.competenceDevelopment);
     }
 
     // Queue for toast notification if enabled
     if (this.config.recognitionSettings.enableToastNotifications) {
-      const shouldShowToast = this.shouldShowToastForAchievement(achievement.id);
       if (shouldShowToast) {
         this.state.session.toastQueue.push(achievement);
       }
@@ -363,11 +337,9 @@ export class MunicipalAchievementEngine {
   }
 
   private shouldShowToastForAchievement(achievementId: string): boolean {
-    const criteria = this.criteria[achievementId];
     if (!criteria) return false;
 
     // Critical achievements always show toast
-    const criticalAchievements = ['municipal_certified', 'compliance_champion'];
     if (criticalAchievements.includes(achievementId)) {
       return true;
     }
@@ -478,7 +450,6 @@ export class MunicipalAchievementEngine {
 }
 
 // Factory function for creating municipal achievement engines
-export const createMunicipalAchievementEngine = (
   config: Partial<MunicipalAchievementEngineConfig>
 ): MunicipalAchievementEngine => {
   const defaultConfig: MunicipalAchievementEngineConfig = {
@@ -504,6 +475,5 @@ export const createMunicipalAchievementEngine = (
     }
   };
 
-  const mergedConfig = { ...defaultConfig, ...config };
   return new MunicipalAchievementEngine(mergedConfig);
 };

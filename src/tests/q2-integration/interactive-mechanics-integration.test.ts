@@ -11,99 +11,12 @@ import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 
 // Mock Q2 interactive mechanics integration utilities
-const mockQ2Integration = {
-  testMechanicsIntegration: vi.fn(),
-  validateDataFlow: vi.fn(),
-  measureConcurrentPerformance: vi.fn(),
-  testCulturalAdaptation: vi.fn(),
-  validateAccessibilityCompliance: vi.fn(),
-  monitorMemoryUsage: vi.fn()
-};
 
 // Q2 Interactive Mechanics Integration Specifications
-const Q2_INTEGRATION_SPECS = {
-  interactiveMechanics: [
-    'drag-drop-workflows', 'character-system', 'timed-challenges', 
-    'branching-narratives', 'achievement-system', 'municipal-compliance'
-  ],
-  integrationPoints: [
-    'cross-component-data-flow', 'shared-state-management', 'event-coordination',
-    'performance-optimization', 'cultural-adaptation', 'accessibility-compliance'
-  ],
-  performanceRequirements: {
-    concurrentMechanicsLatency: 100, // max 100ms with multiple mechanics active
-    memoryUsageLimit: 150, // max 150MB total for all Q2 mechanics
-    frameRateTarget: 60, // maintain 60fps with all mechanics running
-    stateUpdateLatency: 50 // max 50ms for cross-mechanic state updates
-  },
-  annaSwenssonOptimization: {
-    device: 'iPhone 12',
-    touchAccuracy: 0.95, // 95% across all mechanics
-    sessionDuration: 420000, // 7 minutes
-    batteryUsageTarget: 5 // max 5% battery per session
-  }
-};
 
 // Q2 Mechanics Integration Scenarios
-const Q2_MECHANICS_SCENARIOS = {
-  municipalBudgetCrisisWithDragDrop: {
-    scenario: 'municipal-budget-crisis-drag-drop',
-    mechanics: ['branching-narratives', 'drag-drop-workflows', 'character-system'],
-    municipalContext: 'malmö-winter-service-cuts',
-    culturalRequirements: ['swedish-municipal-processes', 'stakeholder-sensitivity'],
-    expectedOutcomes: {
-      narrativeChoicesAffectDragWorkflows: true,
-      characterEmotionsInfluenceDragAccuracy: true,
-      municipalComplianceValidated: true
-    }
-  },
-  emergencyResponseTimedChallenge: {
-    scenario: 'emergency-response-timed-challenge',
-    mechanics: ['timed-challenges', 'achievement-system', 'municipal-compliance'],
-    municipalContext: 'göteborg-flood-emergency',
-    culturalRequirements: ['swedish-emergency-protocols', 'multi-agency-coordination'],
-    expectedOutcomes: {
-      timedChallengeTriggersAchievements: true,
-      complianceChecksDuringTimePress: true,
-      emergencyProtocolsFollowed: true
-    }
-  },
-  comprehensiveMunicipalTraining: {
-    scenario: 'comprehensive-municipal-training',
-    mechanics: ['drag-drop-workflows', 'timed-challenges', 'branching-narratives', 'character-system', 'achievement-system'],
-    municipalContext: 'stockholm-digital-transformation',
-    culturalRequirements: ['inclusion-strategies', 'accessibility-compliance', 'transparency-requirements'],
-    expectedOutcomes: {
-      allMechanicsWorkSeamlessly: true,
-      culturalContextMaintained: true,
-      learningObjectivesAchieved: true
-    }
-  }
-};
 
 // Cross-Component Data Flow Specifications
-const CROSS_COMPONENT_DATA_FLOW = {
-  characterSystemToDragDrop: {
-    dataFlow: 'character-emotions → drag-accuracy-modifier',
-    validation: 'character stress levels affect drag-drop precision',
-    performanceImpact: 15 // max 15ms latency
-  },
-  narrativesToTimedChallenges: {
-    dataFlow: 'narrative-choices → challenge-difficulty-adjustment',
-    validation: 'player narrative decisions modify subsequent challenge complexity',
-    performanceImpact: 20 // max 20ms latency
-  },
-  achievementSystemToCompliance: {
-    dataFlow: 'achievement-progress → compliance-validation-triggers',
-    validation: 'achievements unlock advanced compliance scenarios',
-    performanceImpact: 10 // max 10ms latency
-  },
-  allMechanicsToGameState: {
-    dataFlow: 'all-mechanics → unified-game-state',
-    validation: 'all Q2 mechanics sync to single source of truth',
-    performanceImpact: 30 // max 30ms for full sync
-  }
-};
 
 describe('Q2 Integration Testing Suite for Interactive Mechanics', () => {
   let q2IntegrationHarness: Record<string, unknown>;
@@ -117,7 +30,6 @@ describe('Q2 Integration Testing Suite for Interactive Mechanics', () => {
 
   describe('Drag-Drop Workflows + Character System Integration', () => {
     it('should integrate character emotions with drag-drop workflow performance', async () => {
-      const characterDragIntegration = await q2IntegrationHarness.testCharacterDragDropIntegration({
         characterState: {
           name: 'Anna Svensson',
           currentStress: 0.7, // high stress
@@ -156,7 +68,6 @@ describe('Q2 Integration Testing Suite for Interactive Mechanics', () => {
     });
 
     it('should maintain drag-drop performance while processing character interactions', async () => {
-      const performanceWithCharacters = await q2IntegrationHarness.testDragDropCharacterPerformance({
         concurrentCharacters: 5, // Anna Svensson + 4 colleagues
         dragDropOperations: 50, // 50 simultaneous operations
         municipality: 'malmö',
@@ -183,7 +94,6 @@ describe('Q2 Integration Testing Suite for Interactive Mechanics', () => {
 
   describe('Timed Challenges + Branching Narratives Integration', () => {
     it('should seamlessly integrate timed challenges within branching narrative scenarios', async () => {
-      const timedNarrativeIntegration = await q2IntegrationHarness.testTimedChallengeNarrativeIntegration({
         narrativeScenario: 'municipal-budget-crisis',
         timedChallengeType: 'stakeholder-meeting-preparation',
         municipality: 'malmö',
@@ -217,7 +127,6 @@ describe('Q2 Integration Testing Suite for Interactive Mechanics', () => {
     });
 
     it('should handle complex narrative branching triggered by timed challenge outcomes', async () => {
-      const challengeTriggeredBranching = await q2IntegrationHarness.testChallengeTriggeredNarrativeBranching({
         initialNarrative: 'emergency-response-göteborg',
         timedChallenge: 'resource-allocation-decision',
         challengeOutcomes: ['success', 'partial-success', 'failure'],
@@ -246,7 +155,6 @@ describe('Q2 Integration Testing Suite for Interactive Mechanics', () => {
 
   describe('Achievement System + Municipal Compliance Integration', () => {
     it('should trigger achievements based on municipal compliance milestones', async () => {
-      const complianceAchievementIntegration = await q2IntegrationHarness.testComplianceAchievementIntegration({
         municipalComplianceScenarios: ['gdpr-perfect-score', 'accessibility-excellence', 'cultural-sensitivity-mastery'],
         achievementCategories: ['compliance-expert', 'municipal-master', 'cultural-diplomat'],
         municipality: 'malmö',
@@ -276,7 +184,6 @@ describe('Q2 Integration Testing Suite for Interactive Mechanics', () => {
     });
 
     it('should validate achievement prerequisites through municipal compliance checks', async () => {
-      const achievementPrerequisites = await q2IntegrationHarness.testAchievementCompliancePrerequisites({
         targetAchievement: 'municipal-department-head-certified',
         prerequisiteCompliance: [
           'gdpr-data-handling-expert',
@@ -305,7 +212,6 @@ describe('Q2 Integration Testing Suite for Interactive Mechanics', () => {
 
   describe('Cross-Component Data Flow Integration', () => {
     it('should maintain consistent data flow across all Q2 interactive mechanics', async () => {
-      const crossComponentDataFlow = await q2IntegrationHarness.testCrossComponentDataFlow({
         activeComponents: Q2_INTEGRATION_SPECS.interactiveMechanics,
         dataFlowPatterns: Object.keys(CROSS_COMPONENT_DATA_FLOW),
         municipality: 'malmö',
@@ -327,7 +233,6 @@ describe('Q2 Integration Testing Suite for Interactive Mechanics', () => {
           performanceImpactMinimal: true
         });
 
-        const expectedLatency = CROSS_COMPONENT_DATA_FLOW[flowKey].performanceImpact;
         expect(crossComponentDataFlow.dataFlowValidation[flowKey].actualLatency).toBeLessThan(expectedLatency);
       });
 
@@ -343,7 +248,6 @@ describe('Q2 Integration Testing Suite for Interactive Mechanics', () => {
     });
 
     it('should handle concurrent data flow updates without conflicts', async () => {
-      const concurrentDataFlowTest = await q2IntegrationHarness.testConcurrentDataFlowUpdates({
         simultaneousUpdates: 20, // 20 concurrent cross-component updates
         updateTypes: ['character-emotion-change', 'narrative-choice', 'achievement-unlock', 'compliance-validation'],
         municipality: 'malmö',
@@ -371,7 +275,6 @@ describe('Q2 Integration Testing Suite for Interactive Mechanics', () => {
 
   describe('Performance Under Multiple Concurrent Interactions', () => {
     it('should maintain 60fps performance with all Q2 mechanics running concurrently', async () => {
-      const concurrentPerformanceTest = await q2IntegrationHarness.testConcurrentMechanicsPerformance({
         activeMechanics: Q2_INTEGRATION_SPECS.interactiveMechanics,
         concurrentUsers: 25, // 25 Anna Svensson-style users
         municipality: 'malmö',
@@ -411,7 +314,6 @@ describe('Q2 Integration Testing Suite for Interactive Mechanics', () => {
     });
 
     it('should handle performance degradation gracefully during peak load', async () => {
-      const peakLoadPerformance = await q2IntegrationHarness.testPeakLoadPerformanceGracefulDegradation({
         peakLoad: {
           concurrentUsers: 100, // stress test
           mechanicsIntensity: 'maximum',
@@ -438,7 +340,6 @@ describe('Q2 Integration Testing Suite for Interactive Mechanics', () => {
 
   describe('Cultural Adaptation Testing Across All Q2 Mechanics', () => {
     it('should maintain cultural appropriateness across all Q2 mechanics integration', async () => {
-      const culturalAdaptationTest = await q2IntegrationHarness.testCulturalAdaptationIntegration({
         culturalContexts: ['malmö-swedish', 'berlin-german', 'paris-french', 'amsterdam-dutch'],
         mechanicsToTest: Q2_INTEGRATION_SPECS.interactiveMechanics,
         culturalRequirements: [
@@ -479,7 +380,6 @@ describe('Q2 Integration Testing Suite for Interactive Mechanics', () => {
 
   describe('Anna Svensson iPhone 12 Touch Gesture Integration Testing', () => {
     it('should optimize touch gestures across all Q2 mechanics for Anna Svensson iPhone 12', async () => {
-      const annaSwenssonTouchIntegration = await q2IntegrationHarness.testAnnaSwenssonTouchIntegration({
         device: Q2_INTEGRATION_SPECS.annaSwenssonOptimization.device,
         sessionDuration: Q2_INTEGRATION_SPECS.annaSwenssonOptimization.sessionDuration,
         targetAccuracy: Q2_INTEGRATION_SPECS.annaSwenssonOptimization.touchAccuracy,
@@ -519,7 +419,6 @@ describe('Q2 Integration Testing Suite for Interactive Mechanics', () => {
 
   describe('Memory Usage Optimization and Game State Management Integration', () => {
     it('should maintain optimal memory usage with all Q2 mechanics integrated', async () => {
-      const memoryOptimizationTest = await q2IntegrationHarness.testMemoryOptimizationIntegration({
         activeMechanics: Q2_INTEGRATION_SPECS.interactiveMechanics,
         memoryTarget: Q2_INTEGRATION_SPECS.performanceRequirements.memoryUsageLimit,
         gameStateComplexity: 'maximum',
@@ -553,7 +452,6 @@ describe('Q2 Integration Testing Suite for Interactive Mechanics', () => {
     });
 
     it('should handle complex game state scenarios with all Q2 mechanics', async () => {
-      const complexStateTest = await q2IntegrationHarness.testComplexGameStateIntegration({
         stateComplexity: {
           activeCharacters: 10, // 10 municipal characters
           narrativeBranches: 50, // 50 active narrative paths
@@ -585,7 +483,6 @@ describe('Q2 Integration Testing Suite for Interactive Mechanics', () => {
 
   describe('Q2 Mechanics Integration Reporting and Analysis', () => {
     it('should generate comprehensive integration reports for all Q2 mechanics', async () => {
-      const integrationReporting = await q2IntegrationHarness.generateQ2IntegrationReport({
         mechanicsTested: Q2_INTEGRATION_SPECS.interactiveMechanics,
         integrationScenarios: Object.keys(Q2_MECHANICS_SCENARIOS),
         performanceMetrics: 'comprehensive',

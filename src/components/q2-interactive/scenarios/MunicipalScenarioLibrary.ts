@@ -501,19 +501,14 @@ export const MUNICIPAL_SCENARIOS: MunicipalScenario[] = [
   }
 ];
 
-export const getScenariosByDifficulty = (difficulty: number): MunicipalScenario[] => {
   return MUNICIPAL_SCENARIOS.filter(scenario => scenario.difficulty === difficulty);
 };
 
-export const getScenariosByCategory = (category: string): MunicipalScenario[] => {
   return MUNICIPAL_SCENARIOS.filter(scenario => scenario.category === category);
 };
 
-export const getScenariosByMunicipality = (municipality: string): MunicipalScenario[] => {
   return MUNICIPAL_SCENARIOS.filter(scenario => scenario.municipality === municipality);
 };
 
-export const getRandomScenario = (): MunicipalScenario => {
-  const randomIndex = Math.floor(Math.random() * MUNICIPAL_SCENARIOS.length);
   return MUNICIPAL_SCENARIOS[randomIndex];
 };

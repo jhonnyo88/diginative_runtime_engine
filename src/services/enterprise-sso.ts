@@ -104,13 +104,10 @@ export class EnterpriseSSO {
   }
 
   private async authenticateSAML(tenantId: string, samlResponse: string): Promise<AuthenticatedUser> {
-    const config = this.samlConfigs.get(tenantId);
     if (!config) {
       throw new Error(`SAML configuration not found for tenant: ${tenantId}`);
     }
 
-    const saml = new SAML(config);
-    const profile = await saml.validatePostResponse(samlResponse);
     
     // Expert requirement: Multi-tenant user mapping
     return this.mapToTenantUser(profile, tenantId);
@@ -119,7 +116,6 @@ export class EnterpriseSSO {
   private async authenticateOAuth(tenantId: string, oauthToken: string): Promise<AuthenticatedUser> {
     // OAuth implementation placeholder
     // Expert note: Implement based on municipal OAuth provider
-    const userProfile = await this.validateOAuthToken(oauthToken, tenantId);
     return this.mapToTenantUser(userProfile, tenantId);
   }
 
@@ -236,7 +232,6 @@ export class TenantIsolationManager {
 
   private getCulturalPreferences(tenantId: string): CulturalPreferences {
     // Expert requirement: Cultural adaptation per tenant
-    const culturalContext = this.determineCulturalContext(tenantId);
     
     return {
       language: this.getLanguageForContext(culturalContext),

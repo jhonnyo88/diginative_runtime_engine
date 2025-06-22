@@ -23,13 +23,6 @@ vi.mock('framer-motion', () => ({
   AnimatePresence: vi.fn(({ children }) => children),
 }));
 
-const renderWithChakra = (component: React.ReactElement) => {
-  return render(
-    <ChakraProvider>
-      {component}
-    </ChakraProvider>
-  );
-};
 
 describe('SceneTransition', () => {
   beforeEach(() => {
@@ -40,14 +33,10 @@ describe('SceneTransition', () => {
     it('renders without crashing', () => {
       renderWithChakra(<SceneTransition />);
       
-      const component = screen.getByTestId('-scene-transition');
       expect(component).toBeInTheDocument();
     });
 
     it('handles props correctly', () => {
-      const testProps = {
-        // Add relevant props based on component analysis
-      };
       
       renderWithChakra(<SceneTransition {...testProps} />);
       
@@ -67,7 +56,6 @@ describe('SceneTransition', () => {
     it('provides proper ARIA attributes', () => {
       renderWithChakra(<SceneTransition />);
       
-      const element = screen.getByTestId('-scene-transition');
       
       // Check for appropriate ARIA attributes
       expect(element).toHaveAttribute('role');
@@ -76,7 +64,6 @@ describe('SceneTransition', () => {
     it('supports keyboard navigation', () => {
       renderWithChakra(<SceneTransition />);
       
-      const element = screen.getByTestId('-scene-transition');
       
       // Test tab navigation
       element.focus();
@@ -87,7 +74,6 @@ describe('SceneTransition', () => {
       renderWithChakra(<SceneTransition />);
       
       // Basic contrast check
-      const element = screen.getByTestId('-scene-transition');
       expect(element).toBeInTheDocument();
     });
   });
@@ -95,12 +81,9 @@ describe('SceneTransition', () => {
 
   describe('Performance and Municipal Network Optimization', () => {
     it('renders efficiently', () => {
-      const startTime = performance.now();
       
       renderWithChakra(<SceneTransition />);
       
-      const endTime = performance.now();
-      const renderTime = endTime - startTime;
       
       // Should render within performance budget
       expect(renderTime).toBeLessThan(100); // 100ms budget
@@ -109,7 +92,6 @@ describe('SceneTransition', () => {
     it('handles frequent updates efficiently', () => {
       const { rerender } = renderWithChakra(<SceneTransition />);
       
-      const startTime = performance.now();
       
       // Simulate multiple re-renders
       for (let i = 0; i < 10; i++) {
@@ -120,8 +102,6 @@ describe('SceneTransition', () => {
         );
       }
       
-      const endTime = performance.now();
-      const updateTime = endTime - startTime;
       
       // Should handle updates efficiently
       expect(updateTime).toBeLessThan(200); // 200ms for 10 updates

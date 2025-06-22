@@ -201,9 +201,6 @@ export class Q2AdvancedAnalyticsSystem {
     interaction: UserInteraction,
     municipalContext: MunicipalContext
   ): Q2InteractiveMechanicsAnalytics {
-    const culturalAdaptation = this.calculateCulturalAdaptation(interaction, municipalContext);
-    const performanceMetrics = this.calculatePerformanceMetrics(mechanicType, interaction);
-    const engagementScore = this.calculateEngagementScore(interaction);
 
     // Store for municipal dashboard and optimization insights
     this.updateMunicipalDashboard(mechanicType, performanceMetrics, culturalAdaptation);
@@ -219,8 +216,6 @@ export class Q2AdvancedAnalyticsSystem {
     culturalContext: 'swedish' | 'german' | 'french' | 'dutch',
     userInteractions: UserInteraction[]
   ): EuropeanCulturalAnalytics {
-    const culturalMetrics = this.calculateCulturalMetrics(culturalContext, userInteractions);
-    const marketSpecificAnalytics = this.generateMarketSpecificAnalytics(culturalContext, culturalMetrics);
     
     return marketSpecificAnalytics;
   }
@@ -234,10 +229,6 @@ export class Q2AdvancedAnalyticsSystem {
     trainingPeriod: { start: Date; end: Date },
     participantData: GameSession[]
   ): MunicipalROIAnalytics {
-    const trainingEffectiveness = this.measureTrainingEffectiveness(participantData);
-    const employeeEngagement = this.measureEmployeeEngagement(participantData);
-    const operationalImpact = this.measureOperationalImpact(municipalId, trainingPeriod);
-    const europeanExpansion = this.measureEuropeanExpansionPotential(participantData);
 
     return {
       trainingEffectiveness,
@@ -257,10 +248,6 @@ export class Q2AdvancedAnalyticsSystem {
     q2MechanicsPerformance: Record<string, number>;
     culturalAdaptationSpeed: number;
   } {
-    const loadingTimes = this.measureLoadingTimes();
-    const networkOptimization = this.calculateNetworkOptimization();
-    const mechanicsPerformance = this.measureQ2MechanicsPerformance();
-    const culturalSpeed = this.measureCulturalAdaptationSpeed();
 
     // Alert if Anna Svensson <2s requirement is at risk
     if (loadingTimes.average > 1800) { // 1.8s warning threshold

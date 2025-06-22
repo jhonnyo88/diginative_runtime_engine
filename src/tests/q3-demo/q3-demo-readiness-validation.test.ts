@@ -39,72 +39,6 @@ import { measureDemoMetrics, validateVisualExcellence } from '../../../src/tests
  * - European expansion readiness proof (4-market capability)
  * - Innovation leadership demonstration (competitive advantage)
  */
-const SVERIGES_DIGITALISERINGSSTRATEGI_DEMO_SPECS = {
-  presentation: {
-    reliability: 1.0, // 100% - zero tolerance för demo failures
-    performanceTargets: {
-      hubLoading: 600, // ms - even more aggressive than production <800ms
-      worldTransitions: 1000, // ms - demo excellence standard
-      visualRendering: 16.67, // ms per frame - 60fps locked
-      userInteraction: 50 // ms - instant responsiveness
-    },
-    environmentConditions: [
-      { name: 'conference-presentation', projector: '4K', network: 'conference-wifi', audience: 'government-officials' },
-      { name: 'ministerial-demo', projector: '1080p', network: 'government-secure', audience: 'ministers-directors' },
-      { name: 'eu-showcase', projector: '4K-HDR', network: 'eu-parliament', audience: 'eu-commissioners' },
-      { name: 'municipal-roadshow', projector: 'portable', network: 'municipal-wifi', audience: 'municipal-leaders' }
-    ]
-  },
-  demoScenarios: {
-    technicalExcellence: {
-      name: 'Q3 Multi-World Technical Superiority',
-      duration: '8-minutes',
-      keyPoints: ['hub-performance', 'world-transitions', 'cross-world-state', 'european-adaptation'],
-      successCriteria: 'flawless-technical-demonstration'
-    },
-    municipalValue: {
-      name: 'Municipal Training Transformation',
-      duration: '6-minutes', 
-      keyPoints: ['professional-development', 'competency-tracking', 'roi-measurement', 'supervisor-dashboard'],
-      successCriteria: 'compelling-value-proposition'
-    },
-    europeanExpansion: {
-      name: 'European Market Readiness',
-      duration: '5-minutes',
-      keyPoints: ['cultural-adaptation', 'gdpr-compliance', 'cross-border-cooperation', 'scalability'],
-      successCriteria: 'confident-expansion-capability'
-    },
-    innovationLeadership: {
-      name: 'Innovation och Competitive Advantage',
-      duration: '4-minutes',
-      keyPoints: ['ai-content-generation', 'multi-world-architecture', 'performance-excellence', 'quality-standards'],
-      successCriteria: 'undeniable-technical-leadership'
-    }
-  },
-  qualityGates: {
-    preDemoValidation: [
-      'complete-system-functionality',
-      'performance-targets-exceeded',
-      'visual-excellence-confirmed',
-      'demo-scenarios-rehearsed',
-      'fallback-systems-ready'
-    ],
-    duringDemoMonitoring: [
-      'real-time-performance-tracking',
-      'system-health-monitoring',
-      'automatic-optimization',
-      'graceful-degradation-ready',
-      'instant-recovery-capability'
-    ],
-    postDemoAnalysis: [
-      'demo-performance-analysis',
-      'audience-engagement-metrics',
-      'technical-excellence-validation',
-      'improvement-opportunities-identification',
-      'success-measurement-confirmation'
-    ]
-  }
-};
 
 describe('Q3 Demo Readiness Validation - Sveriges Digitaliseringsstrategi Excellence', () => {
   let demoValidator: Q3DemoValidator;
@@ -152,9 +86,7 @@ describe('Q3 Demo Readiness Validation - Sveriges Digitaliseringsstrategi Excell
   describe('Technical Excellence Demo Validation', () => {
     test('Q3 Multi-World Technical Superiority Demo Scenario', async () => {
       // Test complete technical excellence demo scenario
-      const technicalDemo = SVERIGES_DIGITALISERINGSSTRATEGI_DEMO_SPECS.demoScenarios.technicalExcellence;
       
-      const demoExecution = await scenarioTester.executeDemoScenario({
         scenario: technicalDemo,
         user: demoUser,
         presentationMode: true,
@@ -169,7 +101,6 @@ describe('Q3 Demo Readiness Validation - Sveriges Digitaliseringsstrategi Excell
       expect(demoExecution.userExperienceRating).toBe(5.0); // Perfect UX
 
       // Validate key demonstration points
-      const keyPoints = demoExecution.keyPointsValidation;
       
       // Hub Performance Excellence
       expect(keyPoints.hubPerformance.loadTime).toBeLessThan(SVERIGES_DIGITALISERINGSSTRATEGI_DEMO_SPECS.presentation.performanceTargets.hubLoading);
@@ -200,12 +131,9 @@ describe('Q3 Demo Readiness Validation - Sveriges Digitaliseringsstrategi Excell
 
     test('Presentation Environment Adaptation Excellence', async () => {
       // Test demo performance across different presentation environments
-      const presentationEnvironments = SVERIGES_DIGITALISERINGSSTRATEGI_DEMO_SPECS.presentation.environmentConditions;
 
       for (const environment of presentationEnvironments) {
-        const envSimulation = await presentationSimulator.simulateEnvironment(environment);
         
-        const demoPerformance = await demoValidator.validateDemoUnderConditions({
           environment: envSimulation,
           demoUser: demoUser,
           fullSystemDemo: true,
@@ -241,7 +169,6 @@ describe('Q3 Demo Readiness Validation - Sveriges Digitaliseringsstrategi Excell
 
     test('Real-time Demo Performance Monitoring', async () => {
       // Test real-time monitoring during demo execution
-      const realTimeMonitoring = await demoValidator.establishRealTimeMonitoring({
         monitoringGranularity: 'millisecond',
         alertThresholds: 'demo-excellence',
         automaticOptimization: true,
@@ -253,7 +180,6 @@ describe('Q3 Demo Readiness Validation - Sveriges Digitaliseringsstrategi Excell
       expect(realTimeMonitoring.automaticOptimization.enabled).toBe(true);
 
       // Execute demo with intensive monitoring
-      const monitoredDemo = await scenarioTester.executeWithRealTimeMonitoring({
         scenario: SVERIGES_DIGITALISERINGSSTRATEGI_DEMO_SPECS.demoScenarios.technicalExcellence,
         monitoring: realTimeMonitoring,
         user: demoUser
@@ -266,7 +192,6 @@ describe('Q3 Demo Readiness Validation - Sveriges Digitaliseringsstrategi Excell
       expect(monitoredDemo.systemHealth.perfect).toBe(true);
 
       // Validate predictive failure prevention
-      const failurePrevention = monitoredDemo.failurePrevention;
       expect(failurePrevention.riskFactors.detected).toBe(0);
       expect(failurePrevention.preventiveActions.taken).toBeGreaterThanOrEqual(0);
       expect(failurePrevention.demoSuccess.guaranteed).toBe(true);
@@ -274,7 +199,6 @@ describe('Q3 Demo Readiness Validation - Sveriges Digitaliseringsstrategi Excell
 
     test('Visual Excellence Under Presentation Conditions', async () => {
       // Test visual excellence specifically för presentation impact
-      const visualExcellenceTest = await validateVisualExcellence.testDemoVisuals({
         resolutions: ['1080p', '4K', '4K-HDR'],
         projectorTypes: ['business', 'conference', 'professional'],
         lightingConditions: ['dim', 'normal', 'bright'],
@@ -312,9 +236,7 @@ describe('Q3 Demo Readiness Validation - Sveriges Digitaliseringsstrategi Excell
   describe('Municipal Training Value Demo Validation', () => {
     test('Municipal Training Transformation Demo Scenario', async () => {
       // Test municipal value proposition demonstration
-      const municipalDemo = SVERIGES_DIGITALISERINGSSTRATEGI_DEMO_SPECS.demoScenarios.municipalValue;
       
-      const valueDemo = await scenarioTester.executeMunicipalValueDemo({
         scenario: municipalDemo,
         user: demoUser,
         includeSupervisorDashboard: true,
@@ -329,14 +251,12 @@ describe('Q3 Demo Readiness Validation - Sveriges Digitaliseringsstrategi Excell
       expect(valueDemo.supervisorBenefitsObvious).toBe(true);
 
       // Validate professional development showcase
-      const professionalDevelopment = valueDemo.professionalDevelopment;
       expect(professionalDevelopment.competencyGainVisible).toBe(true);
       expect(professionalDevelopment.skillDevelopmentTracked).toBe(true);
       expect(professionalDevelopment.careerProgressionSupported).toBe(true);
       expect(professionalDevelopment.municipalRelevanceHigh).toBe(true);
 
       // Validate ROI metrics demonstration
-      const roiMetrics = valueDemo.roiMetrics;
       expect(roiMetrics.trainingEfficiencyImprovement).toBeGreaterThan(0.25); // 25%+ improvement
       expect(roiMetrics.competencyDevelopmentSpeed).toBeGreaterThan(0.30); // 30%+ faster
       expect(roiMetrics.employeeEngagement.increased).toBe(true);
@@ -344,7 +264,6 @@ describe('Q3 Demo Readiness Validation - Sveriges Digitaliseringsstrategi Excell
       expect(roiMetrics.municipalServiceQuality.enhanced).toBe(true);
 
       // Validate supervisor dashboard demonstration
-      const supervisorDashboard = valueDemo.supervisorDashboard;
       expect(supervisorDashboard.progressVisibility.clear).toBe(true);
       expect(supervisorDashboard.competencyTracking.accurate).toBe(true);
       expect(supervisorDashboard.teamDevelopment.supported).toBe(true);
@@ -355,7 +274,6 @@ describe('Q3 Demo Readiness Validation - Sveriges Digitaliseringsstrategi Excell
 
     test('Cross-European Municipal Readiness Demonstration', async () => {
       // Test readiness för European municipal deployment
-      const europeanReadiness = await scenarioTester.demonstrateEuropeanReadiness({
         markets: ['swedish', 'german', 'french', 'dutch'],
         includeComplianceDemo: true,
         showCulturalAdaptation: true,
@@ -383,7 +301,6 @@ describe('Q3 Demo Readiness Validation - Sveriges Digitaliseringsstrategi Excell
 
     test('Professional Development Impact Showcase', async () => {
       // Test demonstration of professional development impact
-      const professionalImpact = await scenarioTester.showcaseProfessionalDevelopment({
         userProgression: demoUser,
         timeframe: '6-months',
         includeBeforeAfter: true,
@@ -419,7 +336,6 @@ describe('Q3 Demo Readiness Validation - Sveriges Digitaliseringsstrategi Excell
   describe('Innovation Leadership Demo Validation', () => {
     test('AI Content Generation Excellence Demonstration', async () => {
       // Test AI content generation superiority showcase
-      const aiDemo = await scenarioTester.demonstrateAIExcellence({
         generateInRealTime: true,
         showDiverseContent: true,
         validateMunicipalRelevance: true,
@@ -452,7 +368,6 @@ describe('Q3 Demo Readiness Validation - Sveriges Digitaliseringsstrategi Excell
 
     test('Multi-World Architecture Superiority Showcase', async () => {
       // Test multi-world architecture innovation demonstration
-      const architectureDemo = await scenarioTester.showcaseArchitecturalInnovation({
         demonstrateComplexity: true,
         showScalability: true,
         validatePerformance: true,
@@ -480,7 +395,6 @@ describe('Q3 Demo Readiness Validation - Sveriges Digitaliseringsstrategi Excell
 
     test('Quality Excellence och Standards Demonstration', async () => {
       // Test quality excellence and standards showcase
-      const qualityDemo = await scenarioTester.demonstrateQualityExcellence({
         showTestingRigor: true,
         validateComplianceStandards: true,
         demonstrateReliability: true,
@@ -516,7 +430,6 @@ describe('Q3 Demo Readiness Validation - Sveriges Digitaliseringsstrategi Excell
   describe('Demo Failure Prevention and Recovery', () => {
     test('Comprehensive Failure Prevention System', async () => {
       // Test proactive failure prevention during demo
-      const failurePrevention = await demoValidator.establishFailurePrevention({
         monitoringGranularity: 'real-time',
         predictiveAnalysis: true,
         automaticPrevention: true,
@@ -529,15 +442,8 @@ describe('Q3 Demo Readiness Validation - Sveriges Digitaliseringsstrategi Excell
       expect(failurePrevention.failureToleranceLevel).toBe(0); // Zero tolerance
 
       // Test failure scenario prevention
-      const preventionScenarios = [
-        { type: 'network-interruption', probability: 0.1, severity: 'high' },
-        { type: 'memory-pressure', probability: 0.05, severity: 'medium' },
-        { type: 'performance-degradation', probability: 0.08, severity: 'high' },
-        { type: 'visual-rendering-issue', probability: 0.03, severity: 'critical' }
-      ];
 
       for (const scenario of preventionScenarios) {
-        const preventionTest = await failurePrevention.testPreventionCapability(scenario);
         
         expect(preventionTest.detectionSpeed).toBeLessThan(100); // ms
         expect(preventionTest.preventionSuccess).toBe(true);
@@ -548,7 +454,6 @@ describe('Q3 Demo Readiness Validation - Sveriges Digitaliseringsstrategi Excell
 
     test('Instant Recovery and Graceful Degradation', async () => {
       // Test instant recovery capabilities
-      const recoverySystem = await demoValidator.testRecoveryCapabilities({
         recoveryScenarios: ['system-freeze', 'network-loss', 'memory-exhaustion', 'rendering-failure'],
         requireInstantRecovery: true,
         maintainDemoFlow: true
@@ -563,7 +468,6 @@ describe('Q3 Demo Readiness Validation - Sveriges Digitaliseringsstrategi Excell
       });
 
       // Test graceful degradation
-      const gracefulDegradation = await demoValidator.testGracefulDegradation({
         degradationScenarios: ['reduced-performance', 'limited-features', 'fallback-mode'],
         maintainCoreDemo: true,
         preserveImpact: true
@@ -577,7 +481,6 @@ describe('Q3 Demo Readiness Validation - Sveriges Digitaliseringsstrategi Excell
 
     test('Demo Environment Redundancy Validation', async () => {
       // Test redundant systems för demo reliability
-      const redundancyValidation = await demoValidator.validateRedundantSystems({
         primarySystem: 'production',
         backupSystems: ['hot-standby', 'cold-backup'],
         switchoverTesting: true,
@@ -591,7 +494,6 @@ describe('Q3 Demo Readiness Validation - Sveriges Digitaliseringsstrategi Excell
       expect(redundancyValidation.coldBackup.activationTime).toBeLessThan(5000); // ms
 
       // Test seamless switchover
-      const switchoverTest = await redundancyValidation.testSeamlessSwitchover();
       expect(switchoverTest.audienceAwareness).toBe(false); // Transparent
       expect(switchoverTest.demoFlow.uninterrupted).toBe(true);
       expect(switchoverTest.performanceImpact.none).toBe(true);

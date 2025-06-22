@@ -27,14 +27,10 @@ export const DialogueScene: React.FC<DialogueSceneProps> = ({
   const [showChoices, setShowChoices] = useState(false);
   const [selectedChoice, setSelectedChoice] = useState<string | null>(null);
 
-  const currentMessage = scene.messages[currentMessageIndex];
-  const isLastMessage = currentMessageIndex === scene.messages.length - 1;
 
   // Auto-advance messages with delay
   useEffect(() => {
     if (currentMessage?.delay && currentMessageIndex < scene.messages.length - 1) {
-      const timer = setTimeout(() => {
-        setCurrentMessageIndex(prev => prev + 1);
       }, currentMessage.delay);
       return () => clearTimeout(timer);
     }
@@ -47,58 +43,12 @@ export const DialogueScene: React.FC<DialogueSceneProps> = ({
     }
   }, [isLastMessage, scene.choices]);
 
-  const handleNext = () => {
-    analytics?.trackEvent('dialogue_next', {
-      sceneId: scene.id,
-      messageIndex: currentMessageIndex,
-    });
 
-    if (currentMessageIndex < scene.messages.length - 1) {
-      setCurrentMessageIndex(prev => prev + 1);
-    } else if (scene.choices) {
-      setShowChoices(true);
-    } else {
-      // No choices, complete scene
-      onComplete({
-        nextScene: scene.navigation?.next,
-        answers: { messagesSeen: scene.messages.length },
-      });
-    }
-  };
-
-  const handleChoiceSelect = (choiceId: string) => {
-    const choice = scene.choices?.find(c => c.id === choiceId);
-    if (!choice) return;
-
-    setSelectedChoice(choiceId);
-    
-    analytics?.trackEvent('dialogue_choice', {
-      sceneId: scene.id,
-      choiceId,
-      choiceText: choice.text,
-    });
-
-    // Complete scene with choice results
-    setTimeout(() => {
-      onComplete({
-        nextScene: choice.nextScene || scene.navigation?.next,
-        score: choice.points || 0,
-        answers: { 
-          choiceId,
-          choiceText: choice.text,
-          messagesSeen: scene.messages.length,
-        },
       });
     }, 500); // Brief delay for visual feedback
   };
 
-  const getCharacterInfo = (characterId?: string) => {
-    if (!characterId) return scene.character;
-    // In the future, we might have a character lookup
-    return scene.character;
-  };
 
-  const character = getCharacterInfo(currentMessage?.characterId);
 
   return (
     <Box p={4} h="100vh" display="flex" flexDirection="column">

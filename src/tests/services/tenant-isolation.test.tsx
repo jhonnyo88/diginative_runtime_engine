@@ -75,7 +75,6 @@ describe('Municipal Tenant Isolation', () => {
       });
 
       it('should reject invalid municipality IDs', async () => {
-        const invalidIds = ['MALMO_STAD', 'malmö-stad', 'malmo stad', 'a'.repeat(51), '123'];
         
         for (const invalidId of invalidIds) {
           await expect(tenantRedis.get(invalidId, 'test_key'))
@@ -85,7 +84,6 @@ describe('Municipal Tenant Isolation', () => {
 
       it('should accept valid municipality IDs', async () => {
         mockRedis.get.mockResolvedValue('test_value');
-        const validIds = ['malmo_stad', 'berlin_de', 'test123', 'a_b_c'];
         
         for (const validId of validIds) {
           await expect(tenantRedis.get(validId, 'test_key'))
@@ -121,7 +119,6 @@ describe('Municipal Tenant Isolation', () => {
       it('should perform bulk GET operations with tenant isolation', async () => {
         mockRedis.mget.mockResolvedValue(['value1', 'value2', null]);
         
-        const results = await tenantRedis.mget('berlin_de', ['key1', 'key2', 'key3']);
         
         expect(mockRedis.mget).toHaveBeenCalledWith(
           'tenant:berlin_de:key1',
@@ -140,7 +137,6 @@ describe('Municipal Tenant Isolation', () => {
           'tenant:malmo_stad:ai_content_456'
         ]);
         
-        const keys = await tenantRedis.getTenantKeys('malmo_stad');
         
         expect(keys).toEqual([
           'session_123',
@@ -150,11 +146,9 @@ describe('Municipal Tenant Isolation', () => {
       });
 
       it('should delete all tenant data in batches', async () => {
-        const tenantKeys = Array(250).fill(0).map((_, i) => `tenant:test_municipality:key_${i}`);
         mockRedis.keys.mockResolvedValue(tenantKeys);
         mockRedis.del.mockResolvedValue(100); // Mock 100 keys deleted per batch
         
-        const deletedCount = await tenantRedis.deleteTenantData('test_municipality');
         
         expect(mockRedis.keys).toHaveBeenCalledWith('tenant:test_municipality:*');
         expect(mockRedis.del).toHaveBeenCalledTimes(3); // 250 keys / 100 batch size = 3 batches
@@ -164,7 +158,6 @@ describe('Municipal Tenant Isolation', () => {
       it('should handle empty tenant data deletion', async () => {
         mockRedis.keys.mockResolvedValue([]);
         
-        const deletedCount = await tenantRedis.deleteTenantData('empty_municipality');
         
         expect(deletedCount).toBe(0);
         expect(mockRedis.del).not.toHaveBeenCalled();
@@ -175,22 +168,12 @@ describe('Municipal Tenant Isolation', () => {
   describe('TenantSecurityValidator', () => {
     describe('Response Data Validation', () => {
       it('should allow single object with correct municipality ID', async () => {
-        const data = {
-          id: 'content_123',
-          municipality_id: 'malmo_stad',
-          content: 'test data'
-        };
         
         await expect(securityValidator.validateResponseData(data, 'malmo_stad'))
           .resolves.toBe(true);
       });
 
       it('should reject single object with different municipality ID', async () => {
-        const data = {
-          id: 'content_123',
-          municipality_id: 'berlin_de',
-          content: 'test data'
-        };
         
         await expect(securityValidator.validateResponseData(data, 'malmo_stad'))
           .rejects.toThrow('Response contains cross-tenant data');
@@ -206,29 +189,18 @@ describe('Municipal Tenant Isolation', () => {
       });
 
       it('should validate array data for tenant isolation', async () => {
-        const validData = [
-          { id: '1', municipality_id: 'goteborg_stad' },
-          { id: '2', municipality_id: 'goteborg_stad' },
-          { id: '3', municipality_id: 'goteborg_stad' }
-        ];
         
         await expect(securityValidator.validateResponseData(validData, 'goteborg_stad'))
           .resolves.toBe(true);
       });
 
       it('should reject array containing cross-tenant data', async () => {
-        const invalidData = [
-          { id: '1', municipality_id: 'goteborg_stad' },
-          { id: '2', municipality_id: 'stockholm_stad' }, // Cross-tenant violation
-          { id: '3', municipality_id: 'goteborg_stad' }
-        ];
         
         await expect(securityValidator.validateResponseData(invalidData, 'goteborg_stad'))
           .rejects.toThrow('Response contains cross-tenant data');
       });
 
       it('should allow data without municipality_id field', async () => {
-        const data = { id: 'content_123', content: 'test data' };
         
         await expect(securityValidator.validateResponseData(data, 'malmo_stad'))
           .resolves.toBe(true);
@@ -237,11 +209,6 @@ describe('Municipal Tenant Isolation', () => {
 
     describe('File Access Validation', () => {
       it('should allow file paths with correct municipality isolation', async () => {
-        const validPaths = [
-          '/uploads/malmo_stad/documents/file.pdf',
-          '/cache/malmo_stad/images/logo.png',
-          '/data/malmo_stad/export.json'
-        ];
         
         for (const path of validPaths) {
           await expect(securityValidator.validateFileAccess(path, 'malmo_stad'))
@@ -250,11 +217,6 @@ describe('Municipal Tenant Isolation', () => {
       });
 
       it('should reject file paths without municipality isolation', async () => {
-        const invalidPaths = [
-          '/uploads/berlin_de/documents/file.pdf',
-          '/shared/documents/file.pdf',
-          '/cache/file.png'
-        ];
         
         for (const path of invalidPaths) {
           await expect(securityValidator.validateFileAccess(path, 'malmo_stad'))
@@ -288,7 +250,6 @@ describe('Municipal Tenant Isolation', () => {
     it('should extract municipality ID from headers', async () => {
       req.headers = { 'x-municipality-id': 'malmo_stad' };
       
-      const middleware = tenantContextMiddleware();
       await middleware(req as Request, res as Response, next);
       
       expect((req as any).tenantContext).toEqual(
@@ -303,7 +264,6 @@ describe('Municipal Tenant Isolation', () => {
     it('should extract municipality ID from query parameters', async () => {
       req.query = { municipalityId: 'berlin_de' };
       
-      const middleware = tenantContextMiddleware();
       await middleware(req as Request, res as Response, next);
       
       expect((req as any).tenantContext).toEqual(
@@ -317,7 +277,6 @@ describe('Municipal Tenant Isolation', () => {
     it('should extract municipality ID from SAML user context', async () => {
       (req as any).samlUser = { municipalityId: 'stockholm_stad' };
       
-      const middleware = tenantContextMiddleware();
       await middleware(req as Request, res as Response, next);
       
       expect((req as any).tenantContext).toEqual(
@@ -329,7 +288,6 @@ describe('Municipal Tenant Isolation', () => {
     });
 
     it('should reject requests without municipality context', async () => {
-      const middleware = tenantContextMiddleware();
       await middleware(req as Request, res as Response, next);
       
       expect(res.status).toHaveBeenCalledWith(400);
@@ -345,7 +303,6 @@ describe('Municipal Tenant Isolation', () => {
     it('should reject invalid municipality ID formats', async () => {
       req.headers = { 'x-municipality-id': 'INVALID-FORMAT!' };
       
-      const middleware = tenantContextMiddleware();
       await middleware(req as Request, res as Response, next);
       
       expect(res.status).toHaveBeenCalledWith(400);
@@ -359,7 +316,6 @@ describe('Municipal Tenant Isolation', () => {
     it('should reject unknown municipalities', async () => {
       req.headers = { 'x-municipality-id': 'unknown_municipality' };
       
-      const middleware = tenantContextMiddleware();
       await middleware(req as Request, res as Response, next);
       
       expect(res.status).toHaveBeenCalledWith(404);
@@ -418,24 +374,19 @@ describe('Municipal Tenant Isolation', () => {
     });
 
     it('should validate queries include municipality_id filter', () => {
-      const validQuery = 'SELECT * FROM ai_content WHERE municipality_id = ? AND content_id = ?';
-      const params = ['malmo_stad', 'content_123'];
       
       expect(() => testService.testValidateQuery(validQuery, params, 'malmo_stad'))
         .not.toThrow();
     });
 
     it('should reject queries without municipality_id filter', () => {
-      const invalidQuery = 'SELECT * FROM ai_content WHERE content_id = ?';
-      const params = ['content_123'];
       
       expect(() => testService.testValidateQuery(invalidQuery, params, 'malmo_stad'))
         .toThrow('Database query missing required tenant isolation filter');
     });
 
     it('should validate municipality parameter matches expected', () => {
-      const query = 'SELECT * FROM ai_content WHERE municipality_id = ? AND content_id = ?';
-      const invalidParams = ['berlin_de', 'content_123']; // Wrong municipality
+      const _invalidParams = ['berlin_de', 'content_123']; // Wrong municipality
       
       expect(() => testService.testValidateQuery(query, invalidParams, 'malmo_stad'))
         .toThrow('Municipality ID parameter missing or invalid in query');
@@ -451,7 +402,6 @@ describe('Municipal Tenant Isolation', () => {
         ]);
         mockRedis.get.mockResolvedValueOnce('session_data').mockResolvedValueOnce('content_data');
         
-        const result = await gdprManager.processTenantDataRequest('malmo_stad', 'export');
         
         expect(result.success).toBe(true);
         expect(result.exportedRecords).toBe(2);
@@ -459,7 +409,6 @@ describe('Municipal Tenant Isolation', () => {
       });
 
       it('should handle export for specific subject', async () => {
-        const result = await gdprManager.processTenantDataRequest(
           'berlin_de', 
           'export', 
           'user123'
@@ -482,7 +431,6 @@ describe('Municipal Tenant Isolation', () => {
         mockRedis.keys.mockResolvedValue(['tenant:test_municipality:key1', 'tenant:test_municipality:key2']);
         mockRedis.del.mockResolvedValue(2);
         
-        const result = await gdprManager.processTenantDataRequest('test_municipality', 'delete');
         
         expect(result.success).toBe(true);
         expect(result.deletedCacheKeys).toBe(2);
@@ -493,7 +441,6 @@ describe('Municipal Tenant Isolation', () => {
       it('should handle errors gracefully and report them', async () => {
         mockRedis.keys.mockRejectedValue(new Error('Redis connection failed'));
         
-        const result = await gdprManager.processTenantDataRequest('malmo_stad', 'export');
         
         expect(result.success).toBe(false);
         expect(result.message).toContain('Failed to process export request');
@@ -511,7 +458,6 @@ describe('Municipal Tenant Isolation', () => {
     });
 
     it('should generate date-based metric keys', () => {
-      const today = new Date().toISOString().split('T')[0];
       expect(TenantCacheKeys.METRICS('performance')).toBe(`metrics:performance:${today}`);
     });
   });
@@ -519,37 +465,3 @@ describe('Municipal Tenant Isolation', () => {
   describe('Integration Testing', () => {
     it('should maintain tenant isolation across full request cycle', async () => {
       // Simulate full request with tenant context
-      const req = {
-        headers: { 'x-municipality-id': 'malmo_stad' },
-        params: { contentId: 'content_123' }
-      } as any;
-      
-      const res = {
-        status: jest.fn().mockReturnThis(),
-        json: jest.fn().mockReturnThis(),
-        set: jest.fn().mockReturnThis()
-      } as any;
-      
-      const next = jest.fn();
-      
-      // Apply tenant middleware
-      const middleware = tenantContextMiddleware();
-      await middleware(req, res, next);
-      
-      // Verify tenant context is properly set
-      expect(req.tenantContext).toEqual(
-        expect.objectContaining({
-          municipalityId: 'malmo_stad',
-          municipalityName: 'Malmö Stad'
-        })
-      );
-      
-      // Verify response headers include tenant information
-      expect(res.set).toHaveBeenCalledWith(
-        expect.objectContaining({
-          'X-Tenant-Municipality': 'malmo_stad'
-        })
-      );
-    });
-  });
-});

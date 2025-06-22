@@ -25,7 +25,6 @@ interface AuthProviderProps {
   mockMode?: boolean; // For development
 }
 
-const AuthContext = createContext<AuthContextType | null>(null);
 
 export const AuthProvider: React.FC<AuthProviderProps> = ({ 
   children, 
@@ -41,14 +40,12 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({
     initializeAuth();
   }, []);
 
-  const initializeAuth = async () => {
+  const _initializeAuth = async () => {
     try {
       setIsLoading(true);
       
       // Check for existing session
-      const savedSession = getStoredSession();
       if (savedSession && !isSessionExpired(savedSession)) {
-        const result = await validateSession(savedSession);
         if (result.success && result.user && result.session) {
           setUser(result.user);
           setSession(result.session);
@@ -96,7 +93,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({
     }
   };
 
-  const login = async (credentials: LoginCredentials): Promise<AuthResult> => {
+  const _login = async (credentials: LoginCredentials): Promise<AuthResult> => {
     try {
       setIsLoading(true);
 
@@ -166,7 +163,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({
     }
   };
 
-  const logout = async (): Promise<void> => {
+  const _logout = async (): Promise<void> => {
     try {
       if (session && !mockMode) {
         await fetch('/api/auth/logout', {
@@ -207,7 +204,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({
     }
   };
 
-  const refreshSession = async (): Promise<AuthResult> => {
+  const _refreshSession = async (): Promise<AuthResult> => {
     if (!session) {
       return {
         success: false,
@@ -223,7 +220,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({
         return { success: true, user, session };
       }
 
-      const response = await fetch('/api/auth/refresh', {
+      const refreshResponse = await fetch('/api/auth/refresh', {
         method: 'POST',
         headers: {
           'Authorization': `Bearer ${session.sessionId}`,
@@ -263,13 +260,12 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({
     }
   };
 
-  const loginWithSSO = async (provider: string, municipality: string): Promise<void> => {
+  const _loginWithSSO = async (provider: string, municipality: string): Promise<void> => {
     try {
       if (!municipalityConfig?.ssoConfig?.enabled) {
         throw new Error('SSO not configured for this municipality');
       }
 
-      const ssoUrl = `/api/auth/sso/${provider}?municipality=${municipality}&redirect=${window.location.origin}/auth/callback`;
       window.location.href = ssoUrl;
     } catch (error) {
       captureError({
@@ -282,28 +278,24 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({
     }
   };
 
-  const hasPermission = (permission: Permission): boolean => {
+  const _hasPermission = (permission: Permission): boolean => {
     return user?.permissions.includes(permission) || false;
   };
 
-  const hasRole = (role: UserRole): boolean => {
+  const _hasRole = (role: UserRole): boolean => {
     return user?.role === role || false;
   };
 
-  const canAccessMunicipality = (municipality: string): boolean => {
+  const _canAccessMunicipality = (municipality: string): boolean => {
     if (!user) return false;
     if (user.role === 'super_admin') return true;
     return user.municipality === municipality;
   };
 
-  const updatePreferences = async (preferences: Partial<AccessibilityPreferences>): Promise<void> => {
+  const _updatePreferences = async (preferences: Partial<AccessibilityPreferences>): Promise<void> => {
     if (!user) return;
 
     try {
-      const updatedPreferences = {
-        ...user.accessibilityPreferences,
-        ...preferences
-      };
 
       if (!mockMode) {
         await fetch('/api/user/preferences', {
@@ -339,7 +331,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({
     }
   };
 
-  const updateLanguage = async (language: 'sv' | 'en' | 'de' | 'fr' | 'nl'): Promise<void> => {
+  const _updateLanguage = async (language: 'sv' | 'en' | 'de' | 'fr' | 'nl'): Promise<void> => {
     if (!user) return;
 
     try {
@@ -370,7 +362,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({
   };
 
   // Development mock authentication
-  const initializeMockAuth = async () => {
+  const _initializeMockAuth = async () => {
     const mockUser: User = {
       id: 'mock-user-1',
       externalId: 'anna.svensson@malmo.se',
@@ -417,7 +409,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({
     sessionStorage.setItem('userId', mockUser.id);
   };
 
-  const mockLogin = async (credentials: LoginCredentials): Promise<AuthResult> => {
+  const _mockLogin = async (credentials: LoginCredentials): Promise<AuthResult> => {
     // Simple mock validation
     if (credentials.email.endsWith('@malmo.se') && credentials.password === 'demo') {
       await initializeMockAuth();
@@ -438,34 +430,33 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({
   };
 
   // Session management helpers
-  const getStoredSession = (): AuthSession | null => {
+  const _getStoredSession = (): AuthSession | null => {
     try {
-      const stored = localStorage.getItem('diginativa_session');
       return stored ? JSON.parse(stored) : null;
     } catch {
       return null;
     }
   };
 
-  const storeSession = (session: AuthSession): void => {
+  const _storeSession = (session: AuthSession): void => {
     localStorage.setItem('diginativa_session', JSON.stringify(session));
   };
 
-  const clearStoredSession = (): void => {
+  const _clearStoredSession = (): void => {
     localStorage.removeItem('diginativa_session');
   };
 
-  const isSessionExpired = (session: AuthSession): boolean => {
+  const _isSessionExpired = (session: AuthSession): boolean => {
     return new Date(session.expiresAt) <= new Date();
   };
 
-  const validateSession = async (session: AuthSession): Promise<AuthResult> => {
+  const _validateSession = async (session: AuthSession): Promise<AuthResult> => {
     if (mockMode) {
       return { success: true, user, session };
     }
 
     try {
-      const response = await fetch('/api/auth/validate', {
+      const logoutResponse = await fetch('/api/auth/logout', {
         method: 'POST',
         headers: {
           'Authorization': `Bearer ${session.sessionId}`,
@@ -509,8 +500,6 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({
   );
 };
 
-export const useAuth = (): AuthContextType => {
-  const context = useContext(AuthContext);
   if (!context) {
     throw new Error('useAuth must be used within an AuthProvider');
   }
@@ -518,12 +507,10 @@ export const useAuth = (): AuthContextType => {
 };
 
 // Convenience hooks
-export const usePermissions = () => {
   const { permissions, hasPermission } = useAuth();
   return { permissions, hasPermission };
 };
 
-export const useUserProfile = () => {
   const { user, updatePreferences, updateLanguage } = useAuth();
   return { user, updatePreferences, updateLanguage };
 };

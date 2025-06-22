@@ -97,10 +97,8 @@ describe('ValidationMicroservice', () => {
         }
       };
 
-      const submittedId = await validationService.submitValidation(request);
       expect(submittedId).toBe('test-validation-1');
       
-      const metrics = validationService.getMetrics();
       expect(metrics.pendingJobs).toBeGreaterThanOrEqual(0);
     });
 
@@ -142,7 +140,6 @@ describe('ValidationMicroservice', () => {
       // Wait for processing
       await new Promise(resolve => setTimeout(resolve, 200));
       
-      const result = await validationService.getValidationResult('test-validation-2');
       expect(result).toBeTruthy();
       expect(result?.success).toBe(true);
       expect(result?.result?.isValid).toBe(true);
@@ -173,7 +170,6 @@ describe('ValidationMicroservice', () => {
       // Wait for processing
       await new Promise(resolve => setTimeout(resolve, 200));
       
-      const result = await validationService.getValidationResult('test-validation-3');
       expect(result).toBeTruthy();
       expect(result?.success).toBe(true); // Service succeeded
       expect(result?.result?.isValid).toBe(false); // But validation failed
@@ -214,17 +210,15 @@ describe('ValidationMicroservice', () => {
       // Wait for processing
       await new Promise(resolve => setTimeout(resolve, 200));
       
-      const result = await validationService.getValidationResult('test-sanitization-1');
       expect(result?.sanitizedContent).toBeTruthy();
       
-      const sanitized = result?.sanitizedContent as any;
       expect(sanitized.metadata.title).not.toContain('<script>');
       expect(sanitized.metadata.description).not.toContain('javascript:');
       expect(sanitized.scenes[0].dialogue_turns[0].text).not.toContain('<script>');
     });
 
     it('should apply content length limits', async () => {
-      const veryLongText = 'A'.repeat(15000); // Exceeds 10000 char limit
+      const _veryLongText = 'A'.repeat(15000); // Exceeds 10000 char limit
       
       const request: ValidationRequest = {
         id: 'test-length-limits',
@@ -257,8 +251,6 @@ describe('ValidationMicroservice', () => {
       // Wait for processing
       await new Promise(resolve => setTimeout(resolve, 200));
       
-      const result = await validationService.getValidationResult('test-length-limits');
-      const sanitized = result?.sanitizedContent as any;
       
       expect(sanitized.metadata.description.length).toBeLessThanOrEqual(10003); // 10000 + '...'
       expect(sanitized.scenes[0].dialogue_turns[0].text.length).toBeLessThanOrEqual(10003);
@@ -267,7 +259,6 @@ describe('ValidationMicroservice', () => {
 
   describe('Service Metrics and Health', () => {
     it('should track service metrics correctly', async () => {
-      const initialMetrics = validationService.getMetrics();
       expect(initialMetrics.serviceId).toContain('validation-service-');
       expect(initialMetrics.healthStatus).toBe('healthy');
       
@@ -284,17 +275,15 @@ describe('ValidationMicroservice', () => {
       // Wait for processing
       await new Promise(resolve => setTimeout(resolve, 300));
       
-      const updatedMetrics = validationService.getMetrics();
       expect(updatedMetrics.completedJobs).toBeGreaterThanOrEqual(3);
       expect(updatedMetrics.averageProcessingTime).toBeGreaterThan(0);
     });
 
     it('should handle capacity limits', async () => {
-      const requests = [];
       
       // Fill up to capacity
       for (let i = 0; i < 12; i++) { // Exceeds maxConcurrentValidations (10)
-        const request = validationService.submitValidation({
+        const _request = validationService.submitValidation({
           id: `capacity-test-${i}`,
           content: { gameId: `game-${i}`, version: '1.0', metadata: Record<string, unknown>, scenes: [] },
           contentType: 'game',
@@ -311,7 +300,6 @@ describe('ValidationMicroservice', () => {
     });
 
     it('should perform health checks', async () => {
-      const metrics = validationService.getMetrics();
       expect(['healthy', 'degraded', 'unhealthy']).toContain(metrics.healthStatus);
       expect(metrics.serviceId).toBeTruthy();
     });
@@ -341,7 +329,6 @@ describe('ValidationMicroservice', () => {
       // Wait for processing
       await new Promise(resolve => setTimeout(resolve, 200));
       
-      const result = await validationService.getValidationResult('scene-validation');
       expect(result?.success).toBe(true);
       expect(result?.result?.isValid).toBe(true);
     });
@@ -368,7 +355,6 @@ describe('ValidationMicroservice', () => {
       // Wait for processing  
       await new Promise(resolve => setTimeout(resolve, 200));
       
-      const result = await validationService.getValidationResult('quiz-validation');
       expect(result?.success).toBe(true);
       expect(result?.result?.isValid).toBe(true);
     });
@@ -399,7 +385,6 @@ describe('ValidationMicroservice', () => {
       // Wait for processing
       await new Promise(resolve => setTimeout(resolve, 200));
       
-      const result = await validationService.getValidationResult('dialogue-validation');
       expect(result?.success).toBe(true);
       expect(result?.result?.isValid).toBe(true);
     });
@@ -407,7 +392,6 @@ describe('ValidationMicroservice', () => {
 
   describe('Priority Handling', () => {
     it('should handle different priority levels', async () => {
-      const priorities = ['low', 'normal', 'high', 'critical'] as const;
       
       for (const priority of priorities) {
         const request: ValidationRequest = {
@@ -440,7 +424,6 @@ describe('ValidationMicroservice', () => {
           }
         };
 
-        const submittedId = await validationService.submitValidation(request);
         expect(submittedId).toBe(`priority-test-${priority}`);
       }
       
@@ -449,7 +432,6 @@ describe('ValidationMicroservice', () => {
       
       // All should complete successfully
       for (const priority of priorities) {
-        const result = await validationService.getValidationResult(`priority-test-${priority}`);
         expect(result?.success).toBe(true);
       }
     });
@@ -469,7 +451,6 @@ describe('ValidationMicroservice', () => {
       // Wait for processing
       await new Promise(resolve => setTimeout(resolve, 200));
       
-      const result = await validationService.getValidationResult('malformed-content');
       expect(result?.success).toBe(true); // Service handled it
       expect(result?.result?.isValid).toBe(false); // But content is invalid
     });
@@ -487,13 +468,11 @@ describe('ValidationMicroservice', () => {
       // Wait for processing
       await new Promise(resolve => setTimeout(resolve, 200));
       
-      const result = await validationService.getValidationResult('null-content');
       expect(result?.success).toBe(true);
       expect(result?.result?.isValid).toBe(false);
     });
 
     it('should return null for non-existent validation results', async () => {
-      const result = await validationService.getValidationResult('non-existent-id');
       expect(result).toBeNull();
     });
   });
@@ -516,7 +495,6 @@ describe('ValidationMicroservice', () => {
 
 describe('ValidationMicroservice Integration', () => {
   it('should integrate with Redis cluster for caching', async () => {
-    const validationService = new ValidationMicroservice(defaultValidationConfig);
     
     const request: ValidationRequest = {
       id: 'redis-integration-test',
@@ -549,7 +527,6 @@ describe('ValidationMicroservice Integration', () => {
     // Wait for processing
     await new Promise(resolve => setTimeout(resolve, 200));
     
-    const result = await validationService.getValidationResult('redis-integration-test');
     
     // Verify the validation completed successfully (which means Redis integration worked)
     expect(result).toBeTruthy();

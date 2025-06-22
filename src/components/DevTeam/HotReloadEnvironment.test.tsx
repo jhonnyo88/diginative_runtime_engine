@@ -109,7 +109,6 @@ describe('HotReloadEnvironment', () => {
   });
 
   it('should handle content changes and trigger validation', async () => {
-    const mockOnContentChange = vi.fn();
     
     render(
       <TestWrapper>
@@ -117,8 +116,6 @@ describe('HotReloadEnvironment', () => {
       </TestWrapper>
     );
 
-    const editor = screen.getByPlaceholderText('Paste your DevTeam JSON content here...');
-    const validJsonContent = JSON.stringify({
       gameId: 'test-game',
       version: '1.0.0',
       metadata: {
@@ -150,8 +147,6 @@ describe('HotReloadEnvironment', () => {
       </TestWrapper>
     );
 
-    const editor = screen.getByPlaceholderText('Paste your DevTeam JSON content here...');
-    const invalidJson = '{ invalid json }';
 
     act(() => {
       fireEvent.change(editor, { target: { value: invalidJson } });
@@ -169,8 +164,6 @@ describe('HotReloadEnvironment', () => {
       </TestWrapper>
     );
 
-    const editor = screen.getByPlaceholderText('Paste your DevTeam JSON content here...');
-    const invalidJson = '{ invalid json }';
 
     act(() => {
       fireEvent.change(editor, { target: { value: invalidJson } });
@@ -180,7 +173,6 @@ describe('HotReloadEnvironment', () => {
       expect(screen.getByText('Validation Errors')).toBeInTheDocument();
     });
 
-    const toggleButton = screen.getByLabelText('Toggle details');
     fireEvent.click(toggleButton);
 
     await waitFor(() => {
@@ -195,7 +187,6 @@ describe('HotReloadEnvironment', () => {
       </TestWrapper>
     );
 
-    const validateButton = screen.getByText('Validate');
     fireEvent.click(validateButton);
 
     expect(validateButton).toBeDisabled();
@@ -212,10 +203,8 @@ describe('HotReloadEnvironment', () => {
       </TestWrapper>
     );
 
-    const exampleButton = screen.getByText('Example');
     fireEvent.click(exampleButton);
 
-    const editor = screen.getByPlaceholderText('Paste your DevTeam JSON content here...');
     expect(editor.value).toContain('GDPR Training Example');
   });
 
@@ -226,7 +215,6 @@ describe('HotReloadEnvironment', () => {
       </TestWrapper>
     );
 
-    const autoValidationButton = screen.getByLabelText('Toggle auto-validation');
     expect(autoValidationButton).toHaveAttribute('aria-pressed', 'true');
 
     fireEvent.click(autoValidationButton);
@@ -241,21 +229,18 @@ describe('HotReloadEnvironment', () => {
     );
 
     // Test preview-only mode
-    const previewButton = screen.getByText('Preview');
     fireEvent.click(previewButton);
 
     expect(screen.queryByText('JSON Editor')).not.toBeInTheDocument();
     expect(screen.getByText('Live Preview')).toBeInTheDocument();
 
     // Test editor-only mode
-    const editorButton = screen.getByText('Editor');
     fireEvent.click(editorButton);
 
     expect(screen.getByText('JSON Editor')).toBeInTheDocument();
     expect(screen.queryByText('Live Preview')).not.toBeInTheDocument();
 
     // Test split mode
-    const splitButton = screen.getByText('Split');
     fireEvent.click(splitButton);
 
     expect(screen.getByText('JSON Editor')).toBeInTheDocument();
@@ -269,8 +254,6 @@ describe('HotReloadEnvironment', () => {
       </TestWrapper>
     );
 
-    const editor = screen.getByPlaceholderText('Paste your DevTeam JSON content here...');
-    const validContent = JSON.stringify({
       gameId: 'test-game',
       version: '1.0.0',
       metadata: {
@@ -316,14 +299,11 @@ describe('HotReloadEnvironment', () => {
       </TestWrapper>
     );
 
-    const saveButton = screen.getByText('Save');
     
     // Should be disabled initially
     expect(saveButton).toBeDisabled();
 
     // Add valid content
-    const editor = screen.getByPlaceholderText('Paste your DevTeam JSON content here...');
-    const validContent = JSON.stringify({
       gameId: 'test-game',
       version: '1.0.0',
       metadata: {
@@ -356,8 +336,6 @@ describe('HotReloadEnvironment', () => {
       </TestWrapper>
     );
 
-    const editor = screen.getByPlaceholderText('Paste your DevTeam JSON content here...');
-    const validContent = JSON.stringify({ gameId: 'test' });
 
     act(() => {
       fireEvent.change(editor, { target: { value: validContent } });
@@ -389,16 +367,13 @@ describe('HotReloadEnvironment', () => {
       </TestWrapper>
     );
 
-    const initialTime = screen.getByText(/Last updated:/);
     
-    const editor = screen.getByPlaceholderText('Paste your DevTeam JSON content here...');
     
     act(() => {
       fireEvent.change(editor, { target: { value: 'new content' } });
     });
 
     await waitFor(() => {
-      const newTime = screen.getByText(/Last updated:/);
       expect(newTime.textContent).not.toBe(initialTime.textContent);
     });
   });
@@ -422,7 +397,6 @@ describe('HotReloadEnvironment', () => {
 
     expect(screen.getByText('0 characters')).toBeInTheDocument();
 
-    const editor = screen.getByPlaceholderText('Paste your DevTeam JSON content here...');
     
     act(() => {
       fireEvent.change(editor, { target: { value: 'test content' } });

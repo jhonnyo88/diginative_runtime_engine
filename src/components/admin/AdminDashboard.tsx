@@ -48,61 +48,6 @@ interface AdminDashboardProps {
 }
 
 // Mock data - in production this comes from real APIs
-const mockDashboardData = {
-  totalUsers: 1247,
-  activeGames: 23,
-  completionRate: 87.3,
-  avgSessionTime: '6m 34s',
-  recentActivity: [
-    {
-      id: '1',
-      user: 'Anna Svensson',
-      action: 'Completed GDPR Training',
-      timestamp: '2 minutes ago',
-      score: 92
-    },
-    {
-      id: '2', 
-      user: 'Lars Eriksson',
-      action: 'Started Workplace Safety',
-      timestamp: '5 minutes ago',
-      progress: 45
-    },
-    {
-      id: '3',
-      user: 'Maria Andersson', 
-      action: 'Achieved Certificate',
-      timestamp: '12 minutes ago',
-      score: 95
-    }
-  ],
-  gamePerformance: [
-    {
-      id: 'gdpr-training',
-      name: 'GDPR Training - Malmö',
-      participants: 342,
-      avgScore: 89.2,
-      completionRate: 94.1,
-      status: 'active'
-    },
-    {
-      id: 'safety-training',
-      name: 'Workplace Safety',
-      participants: 198,
-      avgScore: 91.7,
-      completionRate: 88.3,
-      status: 'active'
-    },
-    {
-      id: 'ethics-training',
-      name: 'Municipal Ethics',
-      participants: 156,
-      avgScore: 86.4,
-      completionRate: 92.8,
-      status: 'draft'
-    }
-  ]
-};
 
 export const AdminDashboard: React.FC<AdminDashboardProps> = ({
   tenantId,
@@ -111,7 +56,6 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
   onLogout
 }) => {
   // Use onLogout in a logout button when needed
-  const handleLogout = onLogout;
   const [selectedTimeframe, setSelectedTimeframe] = useState('30d');
   
   // Real-time analytics integration
@@ -131,7 +75,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
   });
 
   // Fallback to mock data if metrics not loaded
-  const realTimeData = metrics ? {
+  const _realTimeData = metrics ? {
     totalUsers: metrics.totalUsers,
     activeGames: metrics.activeGames,
     completionRate: metrics.completionRate,
@@ -150,23 +94,16 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
     gamePerformance: mockDashboardData.gamePerformance // Use mock for now
   } : mockDashboardData;
 
-  const formatTimestamp = (timestamp: Date): string => {
-    const now = new Date();
-    const diff = now.getTime() - new Date(timestamp).getTime();
-    const minutes = Math.floor(diff / 60000);
+  const _formatTimestamp = (timestamp: Date): string => {
     
     if (minutes < 1) return 'Just now';
     if (minutes < 60) return `${minutes} minute${minutes === 1 ? '' : 's'} ago`;
     
-    const hours = Math.floor(minutes / 60);
     if (hours < 24) return `${hours} hour${hours === 1 ? '' : 's'} ago`;
     
-    const days = Math.floor(hours / 24);
     return `${days} day${days === 1 ? '' : 's'} ago`;
   };
 
-  const canManageContent = userRole === 'super_admin' || userRole === 'content_manager';
-  const canViewAnalytics = userRole !== 'content_manager';
 
   return (
     <Box p={6} bg="gray.50" minH="100vh">

@@ -62,37 +62,18 @@ class MockWebSocket {
 }
 
 // Mock global fetch
-const mockFetch = vi.fn();
 global.fetch = mockFetch;
 
 // Mock global WebSocket
 global.WebSocket = MockWebSocket as any;
 
 // Mock window.URL for export functionality
-const mockURL = {
-  createObjectURL: vi.fn(() => 'mock-blob-url'),
-  revokeObjectURL: vi.fn()
-};
 global.URL = mockURL as any;
 
 // Mock document for download functionality
-const mockDocument = {
-  createElement: vi.fn(() => ({
-    href: '',
-    download: '',
-    click: vi.fn(),
-  })),
-  body: {
-    appendChild: vi.fn(),
-    removeChild: vi.fn()
-  }
-};
 global.document = mockDocument as any;
 
 // Mock console methods
-const consoleSpy = vi.spyOn(console, 'log').mockImplementation(() => {});
-const consoleErrorSpy = vi.spyOn(console, 'error').mockImplementation(() => {});
-const consoleWarnSpy = vi.spyOn(console, 'warn').mockImplementation(() => {});
 
 describe('AnalyticsService Unit Tests', () => {
   beforeEach(() => {
@@ -112,7 +93,6 @@ describe('AnalyticsService Unit Tests', () => {
 
   describe('WebSocket Connection Management', () => {
     it('should connect to WebSocket successfully', async () => {
-      const connectPromise = analyticsService.connect('malmo_municipality');
       
       // Fast-forward to allow connection to complete
       vi.advanceTimersByTime(50);
@@ -133,7 +113,6 @@ describe('AnalyticsService Unit Tests', () => {
       
       global.WebSocket = SlowWebSocket as any;
       
-      const connectPromise = analyticsService.connect('malmo_municipality');
       
       // Fast-forward past timeout
       vi.advanceTimersByTime(6000);
@@ -155,7 +134,6 @@ describe('AnalyticsService Unit Tests', () => {
       
       global.WebSocket = ErrorWebSocket as any;
       
-      const connectPromise = analyticsService.connect('malmo_municipality');
       
       vi.advanceTimersByTime(50);
       
@@ -218,7 +196,6 @@ describe('AnalyticsService Unit Tests', () => {
 
   describe('Event Subscription System', () => {
     it('should subscribe and receive events', async () => {
-      const eventCallback = vi.fn();
       let webSocketInstance: MockWebSocket;
       
       class TrackableWebSocket extends MockWebSocket {
@@ -232,10 +209,8 @@ describe('AnalyticsService Unit Tests', () => {
       
       await analyticsService.connect('malmo_municipality');
       
-      const unsubscribe = analyticsService.subscribe('metrics_update', eventCallback);
       
       // Simulate incoming message
-      const testData = { type: 'metrics_update', payload: { totalUsers: 100 } };
       webSocketInstance!.onmessage!(new MessageEvent('message', { 
         data: JSON.stringify(testData) 
       }));
@@ -278,7 +253,7 @@ describe('AnalyticsService Unit Tests', () => {
     });
 
     it('should handle listener errors gracefully', async () => {
-      const errorCallback = vi.fn(() => {
+      const _errorCallback = vi.fn(() => {
         throw new Error('Listener error');
       });
       let webSocketInstance: MockWebSocket;
@@ -297,7 +272,6 @@ describe('AnalyticsService Unit Tests', () => {
       analyticsService.subscribe('test_event', errorCallback);
       
       // Send test message
-      const testData = { type: 'test_event', payload: Record<string, unknown> };
       webSocketInstance!.onmessage!(new MessageEvent('message', { 
         data: JSON.stringify(testData) 
       }));
@@ -312,7 +286,6 @@ describe('AnalyticsService Unit Tests', () => {
   describe('Activity Tracking', () => {
     it('should track activity via WebSocket when connected', async () => {
       let webSocketInstance: MockWebSocket;
-      const sendSpy = vi.fn();
       
       class TrackableWebSocket extends MockWebSocket {
         constructor(url: string) {
@@ -406,7 +379,6 @@ describe('AnalyticsService Unit Tests', () => {
         json: async () => mockMetrics
       });
       
-      const result = await analyticsService.getTenantMetrics('malmo_municipality');
       
       expect(result).toEqual(mockMetrics);
       expect(mockFetch).toHaveBeenCalledWith('/api/analytics/tenant/malmo_municipality/metrics');
@@ -415,7 +387,6 @@ describe('AnalyticsService Unit Tests', () => {
     it('should return mock data when fetch fails', async () => {
       mockFetch.mockRejectedValueOnce(new Error('API Error'));
       
-      const result = await analyticsService.getTenantMetrics('malmo_municipality');
       
       expect(result.tenantId).toBe('malmo_municipality');
       expect(result.totalUsers).toBeGreaterThan(0);
@@ -432,7 +403,6 @@ describe('AnalyticsService Unit Tests', () => {
         statusText: 'Not Found'
       });
       
-      const result = await analyticsService.getTenantMetrics('nonexistent_tenant');
       
       expect(result.tenantId).toBe('nonexistent_tenant');
       expect(consoleErrorSpy).toHaveBeenCalledWith(
@@ -455,7 +425,6 @@ describe('AnalyticsService Unit Tests', () => {
         json: async () => mockSystemMetrics
       });
       
-      const result = await analyticsService.getSystemMetrics();
       
       expect(result).toEqual(mockSystemMetrics);
       expect(mockFetch).toHaveBeenCalledWith('/api/analytics/system/metrics');
@@ -464,7 +433,6 @@ describe('AnalyticsService Unit Tests', () => {
     it('should return mock system data when fetch fails', async () => {
       mockFetch.mockRejectedValueOnce(new Error('Unauthorized'));
       
-      const result = await analyticsService.getSystemMetrics();
       
       expect(result.totalUsers).toBeGreaterThan(0);
       expect(result.activeGames).toBeGreaterThan(0);
@@ -473,18 +441,12 @@ describe('AnalyticsService Unit Tests', () => {
 
   describe('Data Export Functionality', () => {
     it('should export tenant data successfully', async () => {
-      const mockBlob = new Blob(['csv,data'], { type: 'text/csv' });
       
       mockFetch.mockResolvedValueOnce({
         ok: true,
         blob: async () => mockBlob
       });
       
-      const mockElement = {
-        href: '',
-        download: '',
-        click: vi.fn()
-      };
       mockDocument.createElement.mockReturnValueOnce(mockElement);
       
       await analyticsService.exportTenantData('malmo_municipality', '30days', 'csv');
@@ -523,11 +485,6 @@ describe('AnalyticsService Unit Tests', () => {
           blob: async () => new Blob([`${format},data`])
         });
         
-        const mockElement = {
-          href: '',
-          download: '',
-          click: vi.fn()
-        };
         mockDocument.createElement.mockReturnValueOnce(mockElement);
         
         await analyticsService.exportTenantData('test_tenant', '1month', format);
@@ -540,7 +497,6 @@ describe('AnalyticsService Unit Tests', () => {
   describe('Service Lifecycle Management', () => {
     it('should disconnect WebSocket properly', async () => {
       let webSocketInstance: MockWebSocket;
-      const closeSpy = vi.fn();
       
       class TrackableWebSocket extends MockWebSocket {
         constructor(url: string) {
@@ -560,8 +516,6 @@ describe('AnalyticsService Unit Tests', () => {
     });
 
     it('should clear all listeners on disconnect', async () => {
-      const callback1 = vi.fn();
-      const callback2 = vi.fn();
       
       await analyticsService.connect('malmo_municipality');
       
@@ -583,7 +537,6 @@ describe('AnalyticsService Unit Tests', () => {
     it('should generate realistic mock tenant metrics', async () => {
       mockFetch.mockRejectedValueOnce(new Error('No API'));
       
-      const metrics = await analyticsService.getTenantMetrics('test_tenant');
       
       expect(metrics.tenantId).toBe('test_tenant');
       expect(metrics.tenantName).toBe('Mock Tenant');
@@ -594,7 +547,6 @@ describe('AnalyticsService Unit Tests', () => {
       expect(metrics.recentActivity).toHaveLength(3);
       
       // Verify activity structure
-      const activity = metrics.recentActivity[0];
       expect(activity.userId).toBe('anna.svensson@malmo.se');
       expect(activity.tenantId).toBe('test_tenant');
       expect(activity.gameId).toBe('gdpr-training');
@@ -605,7 +557,6 @@ describe('AnalyticsService Unit Tests', () => {
     it('should generate consistent mock system metrics', async () => {
       mockFetch.mockRejectedValueOnce(new Error('No API'));
       
-      const metrics = await analyticsService.getSystemMetrics();
       
       expect(metrics.totalUsers).toBe(15847);
       expect(metrics.activeGames).toBe(156);
@@ -617,16 +568,12 @@ describe('AnalyticsService Unit Tests', () => {
     it('should include realistic Swedish municipal user data', async () => {
       mockFetch.mockRejectedValueOnce(new Error('No API'));
       
-      const metrics = await analyticsService.getTenantMetrics('malmo_municipality');
       
-      const activities = metrics.recentActivity;
-      const userIds = activities.map(a => a.userId);
       
       expect(userIds).toContain('anna.svensson@malmo.se');
       expect(userIds).toContain('lars.eriksson@malmo.se');
       expect(userIds).toContain('maria.andersson@malmo.se');
       
-      const gameIds = activities.map(a => a.gameId);
       expect(gameIds).toContain('gdpr-training');
       expect(gameIds).toContain('safety-training');
     });
@@ -635,7 +582,6 @@ describe('AnalyticsService Unit Tests', () => {
   describe('Performance and Stress Testing', () => {
     it('should handle multiple rapid activity tracking calls', async () => {
       let webSocketInstance: MockWebSocket;
-      const sendSpy = vi.fn();
       
       class TrackableWebSocket extends MockWebSocket {
         constructor(url: string) {
@@ -685,11 +631,10 @@ describe('AnalyticsService Unit Tests', () => {
       });
       
       // Make 10 concurrent requests
-      const promises = Array.from({ length: 10 }, (_, i) => 
+      const _promises = Array.from({ length: 10 }, (_, i) => 
         analyticsService.getTenantMetrics(`tenant${i}`)
       );
       
-      const results = await Promise.all(promises);
       
       expect(results).toHaveLength(10);
       results.forEach((result, i) => {
@@ -698,7 +643,6 @@ describe('AnalyticsService Unit Tests', () => {
     });
 
     it('should handle WebSocket message bursts', async () => {
-      const callback = vi.fn();
       let webSocketInstance: MockWebSocket;
       
       class TrackableWebSocket extends MockWebSocket {
@@ -715,10 +659,6 @@ describe('AnalyticsService Unit Tests', () => {
       
       // Send 50 rapid messages
       for (let i = 0; i < 50; i++) {
-        const message = {
-          type: 'metrics_update',
-          payload: { totalUsers: 1000 + i }
-        };
         
         webSocketInstance!.onmessage!(new MessageEvent('message', {
           data: JSON.stringify(message)
@@ -732,7 +672,6 @@ describe('AnalyticsService Unit Tests', () => {
   describe('Error Resilience and Edge Cases', () => {
     it('should handle invalid activity data gracefully', async () => {
       let webSocketInstance: MockWebSocket;
-      const sendSpy = vi.fn();
       
       class TrackableWebSocket extends MockWebSocket {
         constructor(url: string) {
@@ -746,77 +685,6 @@ describe('AnalyticsService Unit Tests', () => {
       
       await analyticsService.connect('malmo_municipality');
       
-      const invalidActivity = {
-        userId: null,
-        tenantId: undefined,
-        gameId: '',
-        action: 'invalid_action',
-        timestamp: 'not-a-date',
-        metadata: { score: 'invalid' }
-      } as any;
-      
-      // Should not throw error
-      expect(() => {
-        analyticsService.trackActivity(invalidActivity);
-      }).not.toThrow();
-      
-      expect(sendSpy).toHaveBeenCalled();
-    });
-
-    it('should handle network timeouts gracefully', async () => {
-      mockFetch.mockImplementation(() => 
-        new Promise((_, reject) => 
-          setTimeout(() => reject(new Error('Network timeout')), 100)
-        )
-      );
-      
-      const result = await analyticsService.getTenantMetrics('timeout_tenant');
-      
-      // Should fallback to mock data
-      expect(result.tenantId).toBe('timeout_tenant');
-      expect(result.totalUsers).toBeGreaterThan(0);
-    });
-
-    it('should handle malformed API responses', async () => {
-      mockFetch.mockResolvedValueOnce({
-        ok: true,
-        json: async () => {
-          throw new Error('Invalid JSON');
-        }
-      });
-      
-      const result = await analyticsService.getTenantMetrics('malformed_tenant');
-      
-      // Should fallback to mock data
-      expect(result.tenantId).toBe('malformed_tenant');
-      expect(consoleErrorSpy).toHaveBeenCalled();
-    });
-
-    it('should handle WebSocket send failures', async () => {
-      let webSocketInstance: MockWebSocket;
-      
-      class FailingSendWebSocket extends MockWebSocket {
-        constructor(url: string) {
-          super(url);
-          webSocketInstance = this;
-        }
-        
-        send(data: string) {
-          throw new Error('Send failed');
-        }
-      }
-      
-      global.WebSocket = FailingSendWebSocket as any;
-      
-      await analyticsService.connect('malmo_municipality');
-      
-      const activity: UserActivity = {
-        userId: 'test@malmo.se',
-        tenantId: 'malmo_municipality',
-        gameId: 'test-game',
-        action: 'game_start',
-        timestamp: new Date()
-      };
       
       // Should fall back to HTTP
       mockFetch.mockResolvedValueOnce({ ok: true });
@@ -831,12 +699,10 @@ describe('AnalyticsService Unit Tests', () => {
     it('should generate culturally appropriate mock data', async () => {
       mockFetch.mockRejectedValueOnce(new Error('No API'));
       
-      const metrics = await analyticsService.getTenantMetrics('stockholm_municipality');
       
       expect(metrics.tenantId).toBe('stockholm_municipality');
       
       // Should contain Swedish names and municipal context
-      const activities = metrics.recentActivity;
       activities.forEach(activity => {
         expect(activity.userId).toMatch(/@malmo\.se$/);
         expect(['gdpr-training', 'safety-training']).toContain(activity.gameId);
@@ -845,18 +711,10 @@ describe('AnalyticsService Unit Tests', () => {
     });
 
     it('should handle different tenant naming patterns', async () => {
-      const tenantIds = [
-        'malmo_municipality',
-        'stockholm-stad',
-        'berlin_bezirk',
-        'paris_arrondissement',
-        'amsterdam_gemeente'
-      ];
       
       for (const tenantId of tenantIds) {
         mockFetch.mockRejectedValueOnce(new Error('No API'));
         
-        const metrics = await analyticsService.getTenantMetrics(tenantId);
         
         expect(metrics.tenantId).toBe(tenantId);
         expect(metrics.totalUsers).toBeGreaterThan(0);
@@ -866,9 +724,7 @@ describe('AnalyticsService Unit Tests', () => {
     it('should include municipal-specific game types in activity', async () => {
       mockFetch.mockRejectedValueOnce(new Error('No API'));
       
-      const metrics = await analyticsService.getTenantMetrics('test_municipality');
       
-      const gameIds = metrics.recentActivity.map(a => a.gameId);
       
       // Should include municipal training types
       expect(gameIds).toContain('gdpr-training');

@@ -679,13 +679,11 @@ export class BackupSystemFailoverTesting extends EventEmitter {
     this.testResults.clear();
     
     // Initialize backup system testing
-    const backupSystems = Object.keys(this.failoverSpecs.backupSystems);
     for (const system of backupSystems) {
       this.testResults.set(`backup_${system}`, []);
     }
 
     // Initialize failover scenario testing
-    const scenarios = Object.keys(this.failoverSpecs.failoverScenarios);
     for (const scenario of scenarios) {
       this.testResults.set(`scenario_${scenario}`, []);
     }
@@ -748,7 +746,6 @@ export class BackupSystemFailoverTesting extends EventEmitter {
     };
 
     // Store results
-    const systemResults = this.testResults.get(`backup_${systemName}`) || [];
     systemResults.push(result);
     this.testResults.set(`backup_${systemName}`, systemResults);
 
@@ -777,7 +774,6 @@ export class BackupSystemFailoverTesting extends EventEmitter {
     };
 
     // Store results
-    const scenarioResults = this.testResults.get(`scenario_${scenarioName}`) || [];
     scenarioResults.push(result);
     this.testResults.set(`scenario_${scenarioName}`, scenarioResults);
 
@@ -795,8 +791,7 @@ export class BackupSystemFailoverTesting extends EventEmitter {
    * Measure Failover Performance
    */
   private async measureFailoverPerformance(systemSpec: BackupSystemSpec): Promise<FailoverPerformanceMetrics> {
-    const targets = this.failoverSpecs.performanceTargets;
-    const systemFactor = systemSpec.systemType === 'hot-standby' ? 0.5 : 
+    const _systemFactor = systemSpec.systemType === 'hot-standby' ? 0.5 : 
                         systemSpec.systemType === 'warm-standby' ? 1.0 : 2.0;
     
     return {
@@ -814,7 +809,6 @@ export class BackupSystemFailoverTesting extends EventEmitter {
    * Measure System Reliability
    */
   private async measureSystemReliability(systemSpec: BackupSystemSpec): Promise<SystemReliabilityMetrics> {
-    const reliabilityFactor = systemSpec.governmentCertified ? 1.0 : 0.9;
     
     return {
       systemStability: Math.round(96 * reliabilityFactor),
@@ -829,7 +823,6 @@ export class BackupSystemFailoverTesting extends EventEmitter {
    * Measure Emergency Response
    */
   private async measureEmergencyResponse(systemName: string): Promise<EmergencyResponseMetrics> {
-    const responseTargets = this.failoverSpecs.emergencyProtocols.alertingSystem.responseTimeTargets;
     
     return {
       alertResponseTime: responseTargets.immediateAlert,
@@ -844,7 +837,7 @@ export class BackupSystemFailoverTesting extends EventEmitter {
    * Measure Data Integrity
    */
   private async measureDataIntegrity(systemSpec: BackupSystemSpec): Promise<DataIntegrityMetrics> {
-    const integrityFactor = systemSpec.systemType === 'hot-standby' ? 1.0 : 
+    const _integrityFactor = systemSpec.systemType === 'hot-standby' ? 1.0 : 
                            systemSpec.systemType === 'warm-standby' ? 0.98 : 0.95;
     
     return {
@@ -896,7 +889,6 @@ export class BackupSystemFailoverTesting extends EventEmitter {
    * Measure Scenario Performance
    */
   private async measureScenarioPerformance(scenarioSpec: FailoverScenarioSpec): Promise<FailoverPerformanceMetrics> {
-    const requirements = scenarioSpec.performanceRequirements;
     
     return {
       detectionTime: Math.round(requirements.maxDetectionTime * 0.8),
@@ -912,7 +904,6 @@ export class BackupSystemFailoverTesting extends EventEmitter {
    * Measure Scenario Reliability
    */
   private async measureScenarioReliability(scenarioSpec: FailoverScenarioSpec): Promise<SystemReliabilityMetrics> {
-    const criticalBonus = scenarioSpec.criticalForDemo ? 2 : 0;
     
     return {
       systemStability: 94 + criticalBonus,
@@ -927,8 +918,6 @@ export class BackupSystemFailoverTesting extends EventEmitter {
    * Measure Scenario Emergency Response
    */
   private async measureScenarioEmergencyResponse(scenarioName: string): Promise<EmergencyResponseMetrics> {
-    const isPowerScenario = scenarioName === 'powerOutage';
-    const responseTargets = this.failoverSpecs.emergencyProtocols.alertingSystem.responseTimeTargets;
     
     return {
       alertResponseTime: isPowerScenario ? 1 : responseTargets.immediateAlert,
@@ -943,7 +932,6 @@ export class BackupSystemFailoverTesting extends EventEmitter {
    * Measure Scenario Data Integrity
    */
   private async measureScenarioDataIntegrity(scenarioSpec: FailoverScenarioSpec): Promise<DataIntegrityMetrics> {
-    const integrityRequired = scenarioSpec.performanceRequirements.dataIntegrityRequired;
     
     return {
       dataLossAmount: integrityRequired ? 0 : 0.2,
@@ -986,8 +974,6 @@ export class BackupSystemFailoverTesting extends EventEmitter {
    * Generate Backup Failover Analysis
    */
   private async generateBackupFailoverAnalysis(): Promise<void> {
-    const backupSystems = Object.keys(this.failoverSpecs.backupSystems);
-    const scenarios = Object.keys(this.failoverSpecs.failoverScenarios);
     
     // Generate failover summary
     const summary: BackupFailoverTestResult = {
@@ -1036,9 +1022,6 @@ export class BackupSystemFailoverTesting extends EventEmitter {
    * Get Backup Failover Testing Summary
    */
   getBackupFailoverTestingSummary(): Record<string, unknown> {
-    const summary = this.testResults.get('failover_summary')?.[0];
-    const backupSystems = Object.keys(this.failoverSpecs.backupSystems);
-    const scenarios = Object.keys(this.failoverSpecs.failoverScenarios);
     
     return {
       backup_failover_testing_active: this.testingActive,

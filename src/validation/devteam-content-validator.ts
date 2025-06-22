@@ -63,7 +63,6 @@ export class DevTeamContentValidator {
       return this.getResult();
     }
 
-    const scene = { ...content as any, type: 'quiz' };
     this.validateQuizScene(scene, 'root');
     return this.getResult();
   }
@@ -80,7 +79,6 @@ export class DevTeamContentValidator {
       return this.getResult();
     }
 
-    const scene = { ...content as any, type: 'dialogue' };
     this.validateDialogueScene(scene, 'root');
     return this.getResult();
   }
@@ -98,7 +96,6 @@ export class DevTeamContentValidator {
       return this.getResult();
     }
 
-    const manifest = content as any;
 
     // Required top-level fields
     this.validateRequiredField(manifest, 'gameId', 'string');
@@ -130,7 +127,6 @@ export class DevTeamContentValidator {
    * Validate game metadata
    */
   private validateMetadata(metadata: Record<string, unknown>): void {
-    const path = 'metadata';
     
     // Required metadata fields
     this.validateRequiredField(metadata, 'title', 'string', path);
@@ -167,7 +163,6 @@ export class DevTeamContentValidator {
     this.validateRequiredField(scene, 'type', 'string', path);
 
     // Validate scene type
-    const validTypes = ['dialogue', 'quiz', 'assessment', 'resource', 'summary'];
     if (scene.type && !validTypes.includes(scene.type)) {
       this.addError(`${path}.type`, 
         `Invalid scene type '${scene.type}'. Must be one of: ${validTypes.join(', ')}`, 
@@ -204,7 +199,6 @@ export class DevTeamContentValidator {
         this.addError(`${path}.dialogue_turns`, 'dialogue_turns must be an array', 'invalid_type');
       } else {
         scene.dialogue_turns.forEach((turn: Record<string, unknown>, index: number) => {
-          const turnPath = `${path}.dialogue_turns[${index}]`;
           this.validateRequiredField(turn, 'speaker', 'string', turnPath);
           this.validateRequiredField(turn, 'text', 'string', turnPath);
           this.validateRequiredField(turn, 'character_id', 'string', turnPath);
@@ -233,14 +227,12 @@ export class DevTeamContentValidator {
         this.addError(`${path}.questions`, 'questions must be an array', 'invalid_type');
       } else {
         scene.questions.forEach((question: Record<string, unknown>, qIndex: number) => {
-          const qPath = `${path}.questions[${qIndex}]`;
           this.validateRequiredField(question, 'question_text', 'string', qPath);
           this.validateRequiredField(question, 'options', 'array', qPath);
           
           if (Array.isArray(question.options)) {
             let hasCorrect = false;
             question.options.forEach((option: Record<string, unknown>, oIndex: number) => {
-              const optPath = `${qPath}.options[${oIndex}]`;
               // Support both 'text' and 'option_text'
               if (!option.text && !option.option_text) {
                 this.addError(optPath, 'Option must have either text or option_text', 'missing');
@@ -285,14 +277,12 @@ export class DevTeamContentValidator {
     expectedType: string, 
     parentPath: string = ''
   ): boolean {
-    const path = parentPath ? `${parentPath}.${field}` : field;
     
     if (!(field in obj)) {
       this.addError(path, `Required field '${field}' is missing`, 'missing');
       return false;
     }
 
-    const actualType = Array.isArray(obj[field]) ? 'array' : typeof obj[field];
     if (actualType !== expectedType) {
       this.addError(path, 
         `Field '${field}' must be of type ${expectedType}, got ${actualType}`, 
@@ -332,4 +322,3 @@ export class DevTeamContentValidator {
 }
 
 // Export singleton instance for easy use
-export const devTeamValidator = new DevTeamContentValidator();

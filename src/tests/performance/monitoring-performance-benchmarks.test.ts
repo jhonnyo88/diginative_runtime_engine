@@ -12,58 +12,15 @@ import { describe, it, expect, beforeEach, vi } from 'vitest';
 import { performance } from 'perf_hooks';
 
 // Municipal network profiles for testing
-const MUNICIPAL_NETWORKS = [
-  {
-    name: 'Swedish Municipal 3G',
-    bandwidth: 384, // kbps
-    latency: 150, // ms
-    packetLoss: 2, // %
-  },
-  {
-    name: 'German Government Proxy',
-    bandwidth: 2048, // kbps
-    latency: 80, // ms
-    packetLoss: 0.5, // %
-  },
-  {
-    name: 'French Administrative Network',
-    bandwidth: 1024, // kbps
-    latency: 100, // ms
-    packetLoss: 1, // %
-  },
-  {
-    name: 'Dutch Municipal Fiber',
-    bandwidth: 10240, // kbps
-    latency: 20, // ms
-    packetLoss: 0, // %
-  }
-];
 
 // Performance requirements from roadmap
-const PERFORMANCE_REQUIREMENTS = {
-  initialLoad: 2000, // ms - <2s requirement
-  dataUpdate: 100, // ms
-  memoryGrowth: 10, // MB per minute max
-  cpuUsage: 20, // % max
-  networkPayload: 500, // KB max for initial load
-};
 
 describe('Monitoring Infrastructure Performance Benchmarks', () => {
   describe('Data Processing Performance', () => {
     it('should process monitoring metrics efficiently', () => {
-      const metrics = generateMetrics(1000);
-      const startTime = performance.now();
       
       // Simulate metric processing
-      const processed = metrics.map(metric => ({
-        ...metric,
-        formatted: formatMetric(metric),
-        category: categorizeMetric(metric),
-        severity: calculateSeverity(metric),
-      }));
       
-      const endTime = performance.now();
-      const processingTime = endTime - startTime;
       
       expect(processingTime).toBeLessThan(50); // Should process 1000 metrics in <50ms
       expect(processed.length).toBe(1000);
@@ -72,14 +29,9 @@ describe('Monitoring Infrastructure Performance Benchmarks', () => {
     });
 
     it('should aggregate metrics efficiently', () => {
-      const metrics = generateMetrics(10000);
-      const startTime = performance.now();
       
       // Simulate aggregation
-      const aggregated = aggregateMetrics(metrics);
       
-      const endTime = performance.now();
-      const aggregationTime = endTime - startTime;
       
       expect(aggregationTime).toBeLessThan(100); // Should aggregate in <100ms
       console.log(`Aggregated 10000 metrics in ${aggregationTime.toFixed(2)}ms`);
@@ -90,10 +42,9 @@ describe('Monitoring Infrastructure Performance Benchmarks', () => {
     MUNICIPAL_NETWORKS.forEach(network => {
       it(`should meet performance requirements on ${network.name}`, () => {
         // Calculate theoretical load time based on network conditions
-        const payloadSize = 300; // KB (typical dashboard payload)
-        const bandwidthKBps = network.bandwidth / 8; // Convert to KB/s
-        const downloadTime = (payloadSize / bandwidthKBps) * 1000; // ms
-        const totalTime = downloadTime + network.latency + 100; // +100ms for rendering
+        const _bandwidthKBps = network.bandwidth / 8; // Convert to KB/s
+        const _downloadTime = (payloadSize / bandwidthKBps) * 1000; // ms
+        const _totalTime = downloadTime + network.latency + 100; // +100ms for rendering
         
         // For slow networks, we need optimization strategies
         if (totalTime > PERFORMANCE_REQUIREMENTS.initialLoad) {
@@ -101,9 +52,6 @@ describe('Monitoring Infrastructure Performance Benchmarks', () => {
           console.log(`  - Current: ${totalTime.toFixed(0)}ms`);
           
           // Calculate optimized payload size
-          const optimizedPayload = calculateOptimalPayload(network);
-          const optimizedDownloadTime = (optimizedPayload / bandwidthKBps) * 1000;
-          const optimizedTotal = optimizedDownloadTime + network.latency + 100;
           
           console.log(`  - Optimized payload: ${optimizedPayload}KB`);
           console.log(`  - Optimized time: ${optimizedTotal.toFixed(0)}ms`);
@@ -125,8 +73,7 @@ describe('Monitoring Infrastructure Performance Benchmarks', () => {
     });
 
     it('should optimize payload for slow networks', () => {
-      const slowestNetwork = MUNICIPAL_NETWORKS[0]; // Swedish 3G
-      const optimizedPayloadSize = calculateOptimalPayload(slowestNetwork);
+      const _slowestNetwork = MUNICIPAL_NETWORKS[0]; // Swedish 3G
       
       expect(optimizedPayloadSize).toBeLessThan(PERFORMANCE_REQUIREMENTS.networkPayload);
       console.log(`Optimized payload size: ${optimizedPayloadSize}KB`);
@@ -135,11 +82,9 @@ describe('Monitoring Infrastructure Performance Benchmarks', () => {
 
   describe('Real-time Update Performance', () => {
     it('should handle rapid metric updates without blocking', () => {
-      const updateCount = 1000;
       const updates: number[] = [];
       
       for (let i = 0; i < updateCount; i++) {
-        const startTime = performance.now();
         
         // Simulate metric update
         updateMetric({
@@ -148,12 +93,9 @@ describe('Monitoring Infrastructure Performance Benchmarks', () => {
           timestamp: Date.now(),
         });
         
-        const updateTime = performance.now() - startTime;
         updates.push(updateTime);
       }
       
-      const avgUpdateTime = updates.reduce((a, b) => a + b, 0) / updates.length;
-      const maxUpdateTime = Math.max(...updates);
       
       expect(avgUpdateTime).toBeLessThan(1); // <1ms average
       expect(maxUpdateTime).toBeLessThan(10); // <10ms max
@@ -164,17 +106,12 @@ describe('Monitoring Infrastructure Performance Benchmarks', () => {
     });
 
     it('should batch updates efficiently', () => {
-      const batchSizes = [10, 100, 1000];
       
       batchSizes.forEach(size => {
-        const metrics = generateMetrics(size);
-        const startTime = performance.now();
         
         // Simulate batch update
         batchUpdateMetrics(metrics);
         
-        const batchTime = performance.now() - startTime;
-        const timePerMetric = batchTime / size;
         
         expect(timePerMetric).toBeLessThan(0.1); // <0.1ms per metric
         
@@ -185,12 +122,9 @@ describe('Monitoring Infrastructure Performance Benchmarks', () => {
 
   describe('Memory Performance', () => {
     it('should not leak memory during continuous operation', () => {
-      const initialMemory = process.memoryUsage().heapUsed;
-      const iterations = 100;
       
       for (let i = 0; i < iterations; i++) {
         // Simulate monitoring operations
-        const metrics = generateMetrics(100);
         processMetrics(metrics);
         
         // Clean up references
@@ -202,8 +136,7 @@ describe('Monitoring Infrastructure Performance Benchmarks', () => {
         global.gc();
       }
       
-      const finalMemory = process.memoryUsage().heapUsed;
-      const memoryGrowth = (finalMemory - initialMemory) / 1024 / 1024; // MB
+      const _memoryGrowth = (finalMemory - initialMemory) / 1024 / 1024; // MB
       
       expect(memoryGrowth).toBeLessThan(PERFORMANCE_REQUIREMENTS.memoryGrowth);
       console.log(`Memory growth after ${iterations} iterations: ${memoryGrowth.toFixed(2)}MB`);
@@ -212,25 +145,15 @@ describe('Monitoring Infrastructure Performance Benchmarks', () => {
 
   describe('Performance Optimization Validation', () => {
     it('should use efficient data structures', () => {
-      const testCases = [
-        { size: 100, expectedTime: 10 },
-        { size: 1000, expectedTime: 50 },
-        { size: 10000, expectedTime: 200 },
-      ];
       
       testCases.forEach(({ size, expectedTime }) => {
-        const data = generateMetrics(size);
-        const startTime = performance.now();
         
         // Use Map for O(1) lookups
-        const metricMap = new Map(data.map(m => [m.name, m]));
         
         // Perform lookups
         for (let i = 0; i < 1000; i++) {
-          const metric = metricMap.get(`metric.${i % size}`);
         }
         
-        const lookupTime = performance.now() - startTime;
         expect(lookupTime).toBeLessThan(expectedTime);
         
         console.log(`${size} metrics - 1000 lookups: ${lookupTime.toFixed(2)}ms`);
@@ -238,15 +161,10 @@ describe('Monitoring Infrastructure Performance Benchmarks', () => {
     });
 
     it('should implement efficient rendering strategies', () => {
-      const visibleMetrics = 20; // Typical visible metrics on screen
-      const totalMetrics = 10000;
       
-      const startTime = performance.now();
       
       // Simulate virtualized rendering
-      const rendered = virtualizedRender(totalMetrics, visibleMetrics);
       
-      const renderTime = performance.now() - startTime;
       
       expect(rendered.length).toBe(visibleMetrics);
       expect(renderTime).toBeLessThan(10); // Should render visible items in <10ms
@@ -322,20 +240,15 @@ function aggregateMetrics(metrics: Record<string, unknown>[]): Record<string, un
 }
 
 function calculateOptimalPayload(network: Record<string, unknown>): number {
-  const targetLoadTime = 1500; // ms (leaving 500ms buffer)
-  const bandwidthKBps = network.bandwidth / 8;
-  const availableDownloadTime = targetLoadTime - network.latency - 100;
   return Math.floor(bandwidthKBps * (availableDownloadTime / 1000));
 }
 
 function updateMetric(metric: Record<string, unknown>): void {
   // Simulate metric update operation
-  const cache = new Map();
   cache.set(metric.name, metric);
 }
 
 function batchUpdateMetrics(metrics: Record<string, unknown>[]): void {
-  const cache = new Map();
   metrics.forEach(m => cache.set(m.name, m));
 }
 
@@ -349,8 +262,6 @@ function processMetrics(metrics: Record<string, unknown>[]): void {
 
 function virtualizedRender(total: number, visible: number): Record<string, unknown>[] {
   // Simulate virtualized rendering - only render visible items
-  const startIndex = 0;
-  const endIndex = Math.min(visible, total);
   
   return Array.from({ length: endIndex - startIndex }, (_, i) => ({
     index: startIndex + i,

@@ -74,67 +74,21 @@ export const MunicipalProgressIndicator: React.FC<MunicipalProgressIndicatorProp
   const [hoveredMilestone, setHoveredMilestone] = useState<string | null>(null);
   
   // Responsive design
-  const isMobile = useBreakpointValue({ base: true, md: false });
-  const progressHeight = isMobile ? "8px" : "12px";
-  const milestoneSize = isMobile ? "16px" : "20px";
   
   // Calculate current progress percentage
-  const progressPercentage = (progress.currentStep / progress.totalSteps) * 100;
   
   // Cultural text adaptations
-  const getCulturalText = (key: string) => {
-    const translations = {
-      'progress_label': {
-        swedish: 'Utbildningsframsteg',
-        german: 'Ausbildungsfortschritt', 
-        french: 'Progrès de formation',
-        dutch: 'Trainingsvoortgang'
-      },
-      'completed': {
-        swedish: 'slutfört',
-        german: 'abgeschlossen',
-        french: 'terminé',
-        dutch: 'voltooid'
-      },
-      'competencies': {
-        swedish: 'kompetenser utvecklade',
-        german: 'Kompetenzen entwickelt',
-        french: 'compétences développées',
-        dutch: 'competenties ontwikkeld'
-      }
-    };
-    
-    return translations[key as keyof typeof translations]?.[culturalContext] || 
-           translations[key as keyof typeof translations]?.swedish || key;
-  };
 
   // Handle milestone interaction
-  const handleMilestoneClick = (milestone: AchievementMilestone) => {
-    if (achievementIntegration.clickableMarkers && onMilestoneClick) {
-      onMilestoneClick(milestone);
-    }
-  };
 
-  const handleMilestoneHover = (milestone: AchievementMilestone, isHovering: boolean) => {
-    if (achievementIntegration.hoverDetails) {
-      setHoveredMilestone(isHovering ? milestone.id : null);
-      if (isHovering && onMilestoneHover) {
-        onMilestoneHover(milestone);
-      }
-    }
-  };
 
   // Milestone marker component
   const MilestoneMarker: React.FC<{ milestone: AchievementMilestone; position: number }> = ({ 
     milestone, 
     position 
   }) => {
-    const isAchieved = milestone.achieved;
-    const isPassed = progressPercentage >= milestone.percentage;
-    const isClickable = achievementIntegration.clickableMarkers;
-    const showTooltip = achievementIntegration.hoverDetails;
 
-    const marker = (
+    const _marker = (
       <Box
         position="absolute"
         left={`${position}%`}
@@ -347,10 +301,8 @@ export const DefaultGDPRMilestones: AchievementMilestone[] = [
 ];
 
 // Cultural adaptations for milestones
-export const getLocalizedMilestones = (
   culturalContext: 'swedish' | 'german' | 'french' | 'dutch'
 ): AchievementMilestone[] => {
-  const baseMilestones = DefaultGDPRMilestones;
   
   switch (culturalContext) {
     case 'german':

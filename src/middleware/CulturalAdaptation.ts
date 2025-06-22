@@ -168,7 +168,6 @@ export class SwedishMobileFirstAdapter {
 }
 
 // Main cultural middleware
-export const CulturalMiddleware = {
   german_systematic: new GermanSystematicAdapter(),
   french_collaborative: new FrenchCollaborativeAdapter(),
   dutch_progressive: new DutchProgressiveAdapter(),
@@ -176,8 +175,6 @@ export const CulturalMiddleware = {
 };
 
 // Auto-detection and adaptation
-export const detectAndAdaptCultural = (gameManifest: Record<string, unknown>, userContext: CulturalContext) => {
-  const adapter = CulturalMiddleware[userContext];
   if (!adapter) {
     console.warn(`Cultural adapter not found for ${userContext}, using Swedish default`);
     return CulturalMiddleware.swedish_mobile.adapt(gameManifest);
@@ -187,7 +184,6 @@ export const detectAndAdaptCultural = (gameManifest: Record<string, unknown>, us
 };
 
 // Expert requirement: Performance tracking for cultural adaptations
-export const trackCulturalPerformance = (culturalContext: CulturalContext, metrics: Record<string, unknown>) => {
   console.log(`Cultural performance tracking for ${culturalContext}:`, metrics);
   // Implementation: Send to analytics service
 };

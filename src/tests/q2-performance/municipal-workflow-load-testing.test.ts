@@ -11,141 +11,12 @@ import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 
 // Mock load testing utilities
-const mockLoadTestUtils = {
-  simulateConcurrentUsers: vi.fn(),
-  measureLoadPerformance: vi.fn(),
-  monitorSystemResources: vi.fn(),
-  generateLoadTestReport: vi.fn(),
-  validateMunicipalSLA: vi.fn()
-};
 
 // Municipal load testing scenarios
-const MUNICIPAL_LOAD_SCENARIOS = {
-  peakBusinessHours: {
-    scenario: 'peak-business-hours',
-    concurrentUsers: 500,
-    duration: 14400000, // 4 hours
-    workflowMix: {
-      'invoice-approval': 40,
-      'permit-processing': 35,
-      'document-review': 15,
-      'emergency-response': 10
-    },
-    expectedThroughput: 2000, // operations per hour
-    targetResponseTime: 150 // ms
-  },
-  emergencyResponse: {
-    scenario: 'emergency-response',
-    concurrentUsers: 200,
-    duration: 1800000, // 30 minutes
-    workflowMix: {
-      'emergency-response': 60,
-      'critical-permits': 25,
-      'urgent-approvals': 15
-    },
-    expectedThroughput: 1500,
-    targetResponseTime: 100 // ms - faster for emergencies
-  },
-  monthEndProcessing: {
-    scenario: 'month-end-processing',
-    concurrentUsers: 800,
-    duration: 7200000, // 2 hours
-    workflowMix: {
-      'invoice-approval': 70,
-      'financial-reports': 20,
-      'budget-processing': 10
-    },
-    expectedThroughput: 3000,
-    targetResponseTime: 200 // ms - bulk processing acceptable
-  },
-  citizenServicePeak: {
-    scenario: 'citizen-service-peak',
-    concurrentUsers: 300,
-    duration: 3600000, // 1 hour
-    workflowMix: {
-      'permit-processing': 50,
-      'complaint-handling': 30,
-      'service-requests': 20
-    },
-    expectedThroughput: 1200,
-    targetResponseTime: 120 // ms
-  },
-  sustainedOperations: {
-    scenario: 'sustained-operations',
-    concurrentUsers: 150,
-    duration: 28800000, // 8 hours (full work day)
-    workflowMix: {
-      'invoice-approval': 30,
-      'permit-processing': 30,
-      'document-review': 25,
-      'routine-tasks': 15
-    },
-    expectedThroughput: 800,
-    targetResponseTime: 180 // ms
-  }
-};
 
 // Load testing performance thresholds
-const LOAD_PERFORMANCE_THRESHOLDS = {
-  responseTime: {
-    p50: 150, // ms
-    p95: 300, // ms
-    p99: 500  // ms
-  },
-  throughput: {
-    minimum: 500, // operations per hour
-    target: 1000,
-    optimal: 2000
-  },
-  resourceUtilization: {
-    cpu: 0.8,    // max 80%
-    memory: 0.85, // max 85%
-    network: 0.75 // max 75%
-  },
-  errorRates: {
-    maximum: 0.01, // 1% max error rate
-    target: 0.005,  // 0.5% target
-    optimal: 0.001  // 0.1% optimal
-  },
-  dragDropPerformance: {
-    minFPS: 50,        // fps under load
-    maxLatency: 200,   // ms
-    touchAccuracy: 0.9, // 90% under load
-    completionRate: 0.95 // 95% successful operations
-  }
-};
 
 // Municipal user personas for load testing
-const MUNICIPAL_USER_PERSONAS = {
-  annaSvensson: {
-    persona: 'anna-svensson',
-    device: 'iPhone 12',
-    sessionDuration: 420000, // 7 minutes
-    workflowPreference: ['permit-processing', 'document-review'],
-    concurrentSessions: 50
-  },
-  municipalEmployee: {
-    persona: 'municipal-employee',
-    device: 'desktop',
-    sessionDuration: 1800000, // 30 minutes
-    workflowPreference: ['invoice-approval', 'permit-processing'],
-    concurrentSessions: 200
-  },
-  departmentManager: {
-    persona: 'department-manager',
-    device: 'laptop',
-    sessionDuration: 3600000, // 1 hour
-    workflowPreference: ['invoice-approval', 'budget-processing'],
-    concurrentSessions: 30
-  },
-  emergencyCoordinator: {
-    persona: 'emergency-coordinator',
-    device: 'mobile',
-    sessionDuration: 900000, // 15 minutes
-    workflowPreference: ['emergency-response', 'critical-permits'],
-    concurrentSessions: 10
-  }
-};
 
 describe('Municipal Workflow Load Testing for Q2 Drag-Drop Operations', () => {
   let loadTestHarness: Record<string, unknown>;
@@ -159,7 +30,6 @@ describe('Municipal Workflow Load Testing for Q2 Drag-Drop Operations', () => {
 
   describe('Peak Business Hours Load Testing', () => {
     it('should handle peak business hours load with optimal performance', async () => {
-      const peakLoadTest = await loadTestHarness.testMunicipalLoad({
         scenario: MUNICIPAL_LOAD_SCENARIOS.peakBusinessHours,
         municipality: 'malmö',
         testEnvironment: 'production-simulation',
@@ -217,7 +87,6 @@ describe('Municipal Workflow Load Testing for Q2 Drag-Drop Operations', () => {
     });
 
     it('should maintain resource utilization within acceptable limits during peak load', async () => {
-      const resourceUtilizationTest = await loadTestHarness.testResourceUtilizationUnderLoad({
         scenario: MUNICIPAL_LOAD_SCENARIOS.peakBusinessHours,
         monitoringInterval: 10000, // 10 seconds
         municipality: 'malmö'
@@ -264,7 +133,6 @@ describe('Municipal Workflow Load Testing for Q2 Drag-Drop Operations', () => {
 
   describe('Emergency Response Load Testing', () => {
     it('should prioritize emergency workflows during high-priority load scenarios', async () => {
-      const emergencyLoadTest = await loadTestHarness.testEmergencyResponseLoad({
         scenario: MUNICIPAL_LOAD_SCENARIOS.emergencyResponse,
         emergencyPriority: 'maximum',
         municipality: 'malmö',
@@ -312,7 +180,6 @@ describe('Municipal Workflow Load Testing for Q2 Drag-Drop Operations', () => {
     });
 
     it('should maintain emergency response capability during concurrent emergency scenarios', async () => {
-      const concurrentEmergencyTest = await loadTestHarness.testConcurrentEmergencyScenarios({
         simultaneousEmergencies: 5,
         emergencyTypes: ['fire', 'medical', 'infrastructure', 'security', 'environmental'],
         municipality: 'malmö',
@@ -348,7 +215,6 @@ describe('Municipal Workflow Load Testing for Q2 Drag-Drop Operations', () => {
 
   describe('Month-End Processing Load Testing', () => {
     it('should handle high-volume financial processing with sustained performance', async () => {
-      const monthEndLoadTest = await loadTestHarness.testMonthEndProcessingLoad({
         scenario: MUNICIPAL_LOAD_SCENARIOS.monthEndProcessing,
         financialVolume: 'maximum',
         municipality: 'malmö',
@@ -392,7 +258,6 @@ describe('Municipal Workflow Load Testing for Q2 Drag-Drop Operations', () => {
 
   describe('Multi-Persona Load Testing', () => {
     it('should handle mixed user personas with different device and usage patterns', async () => {
-      const multiPersonaTest = await loadTestHarness.testMultiPersonaLoad({
         personas: Object.values(MUNICIPAL_USER_PERSONAS),
         municipality: 'malmö',
         testDuration: 3600000, // 1 hour
@@ -438,7 +303,6 @@ describe('Municipal Workflow Load Testing for Q2 Drag-Drop Operations', () => {
 
   describe('Sustained Operations Load Testing', () => {
     it('should maintain performance during 8-hour sustained municipal operations', async () => {
-      const sustainedOperationsTest = await loadTestHarness.testSustainedOperations({
         scenario: MUNICIPAL_LOAD_SCENARIOS.sustainedOperations,
         municipality: 'malmö',
         monitoringGranularity: 'fine',
@@ -479,7 +343,6 @@ describe('Municipal Workflow Load Testing for Q2 Drag-Drop Operations', () => {
 
   describe('Load Testing Reporting and Analysis', () => {
     it('should generate comprehensive load testing reports for municipal stakeholders', async () => {
-      const loadTestReporting = await loadTestHarness.generateLoadTestReport({
         testScenarios: Object.keys(MUNICIPAL_LOAD_SCENARIOS),
         reportingAudience: ['municipal-leadership', 'technical-team', 'operations'],
         municipality: 'malmö',

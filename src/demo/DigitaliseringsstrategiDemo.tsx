@@ -13,41 +13,11 @@ export const DigitaliseringsstrategiDemo: React.FC = () => {
   const [error, setError] = useState<string | null>(null);
   const [playerName, setPlayerName] = useState('');
   const [showUsernameModal, setShowUsernameModal] = useState(false);
-  const toast = useToast();
 
-  const handleStartGameClick = () => {
-    setShowUsernameModal(true);
-  };
 
-  const handleUsernameSubmit = (name: string) => {
-    setPlayerName(name);
-    setShowUsernameModal(false);
-    
-    try {
-      console.log('Starting demo game with data:', demoGameData);
-      console.log('Player name:', name);
-      setGameStarted(true);
-      setError(null);
-    } catch (err) {
-      console.error('Failed to start game:', err);
-      setError(`Failed to start game: ${err}`);
-    }
-  };
 
-  const handleUsernameCancel = () => {
-    setShowUsernameModal(false);
-    setPlayerName('');
-  };
 
-  const handleGameComplete = (results: GameResults) => {
-    console.log('Game completed:', results);
-    setGameResults(results);
-    setGameStarted(false);
-  };
 
-  const handleSceneChange = (sceneId: string) => {
-    console.log('Scene changed to:', sceneId);
-  };
 
   if (error) {
     return (

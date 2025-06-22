@@ -22,10 +22,7 @@ export const DropZone: React.FC<DropZoneProps> = ({
 }) => {
   const { draggedItem, registerDropZone, unregisterDropZone, endDrag } = useDragDrop();
   const [isOver, setIsOver] = useState(false);
-  const elementRef = useRef<HTMLDivElement>(null);
 
-  const canAccept = draggedItem && accepts.includes(draggedItem.type);
-  const showHighlight = isOver && canAccept && !isDisabled;
 
   useEffect(() => {
     registerDropZone(zoneId, {
@@ -40,52 +37,14 @@ export const DropZone: React.FC<DropZoneProps> = ({
   }, [zoneId, accepts, onDrop, registerDropZone, unregisterDropZone]);
 
   // Handle drag over for mouse
-  const handleDragOver = (e: React.DragEvent) => {
-    e.preventDefault();
-    if (canAccept && !isOver) {
-      setIsOver(true);
-    }
-  };
 
-  const handleDragLeave = () => {
-    setIsOver(false);
-  };
 
-  const handleDrop = (e: React.DragEvent) => {
-    e.preventDefault();
-    if (canAccept && !isDisabled) {
-      onDrop(draggedItem);
-      setIsOver(false);
-      endDrag();
-    }
-  };
 
   // Handle touch events for mobile
   useEffect(() => {
     if (!elementRef.current || !draggedItem) return;
 
-    const handleTouchMove = (e: TouchEvent) => {
-      const touch = e.touches[0];
-      const element = document.elementFromPoint(touch.clientX, touch.clientY);
-      
-      if (element && elementRef.current.contains(element)) {
-        if (!isOver && canAccept) {
-          setIsOver(true);
-        }
-      } else if (isOver) {
-        setIsOver(false);
-      }
-    };
 
-    const handleTouchEnd = (e: TouchEvent) => {
-      const touch = e.changedTouches[0];
-      const element = document.elementFromPoint(touch.clientX, touch.clientY);
-      
-      if (element && elementRef.current.contains(element) && canAccept && !isDisabled) {
-        onDrop(draggedItem);
-        setIsOver(false);
-      }
-    };
 
     document.addEventListener('touchmove', handleTouchMove);
     document.addEventListener('touchend', handleTouchEnd);
@@ -94,7 +53,7 @@ export const DropZone: React.FC<DropZoneProps> = ({
       document.removeEventListener('touchmove', handleTouchMove);
       document.removeEventListener('touchend', handleTouchEnd);
     };
-  }, [draggedItem, canAccept, isDisabled, isOver, onDrop]);
+  }, [draggedItem, isDisabled, isOver, onDrop]);
 
   return (
     <Box

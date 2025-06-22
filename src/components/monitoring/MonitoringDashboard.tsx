@@ -16,23 +16,15 @@ export const MonitoringDashboard: React.FC = () => {
   const [updateTime, setUpdateTime] = useState<Date>(new Date());
 
   useEffect(() => {
-    const monitoring = InfrastructureMonitoring.getInstance();
     
     // Update dashboard every 5 seconds
-    const updateDashboard = () => {
-      const currentHealth = monitoring.getHealthStatus();
-      setHealth(currentHealth);
-      setPerformanceBaseline(monitoring.getPerformanceBaseline());
-      setUpdateTime(new Date());
-    };
 
     updateDashboard(); // Initial update
-    const interval = setInterval(updateDashboard, 5000);
 
     return () => clearInterval(interval);
   }, []);
 
-  const getStatusColor = (status: string): string => {
+  const _getStatusColor = (status: string): string => {
     switch (status) {
       case 'healthy':
       case 'up':
@@ -47,7 +39,7 @@ export const MonitoringDashboard: React.FC = () => {
     }
   };
 
-  const formatMetricValue = (value: number, unit: string): string => {
+  const _formatMetricValue = (value: number, unit: string): string => {
     if (unit === 'ms') {
       return `${value.toFixed(2)}ms`;
     } else if (unit === 'percent') {
@@ -143,10 +135,9 @@ export const MonitoringDashboard: React.FC = () => {
           <Heading size="md" mb={4}>Web Vitals</Heading>
           <Stack spacing={3}>
             {['lcp', 'fid', 'cls'].map(vital => {
-              const value = performanceBaseline[vital];
               if (!value) return null;
               
-              const isGood = vital === 'lcp' ? value < 2500 :
+              const _isGood = vital === 'lcp' ? value < 2500 :
                            vital === 'fid' ? value < 100 :
                            value < 0.1;
               

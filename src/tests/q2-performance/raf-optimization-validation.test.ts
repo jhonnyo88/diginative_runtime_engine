@@ -11,85 +11,12 @@ import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 
 // Mock RAF optimization utilities
-const mockRAFUtils = {
-  scheduleRAF: vi.fn(),
-  cancelRAF: vi.fn(),
-  measureFrameTime: vi.fn(),
-  batchUpdates: vi.fn(),
-  enableGPUAcceleration: vi.fn(),
-  monitorFrameRate: vi.fn()
-};
 
 // 60fps RAF optimization specifications
-const RAF_OPTIMIZATION_SPECS = {
-  targetFPS: 60,
-  targetFrameTime: 16.67, // ms (1000/60)
-  maxFrameDrops: 5, // per session
-  gpuAccelerationRequired: true,
-  batchingThreshold: 4, // operations per frame
-  performanceMonitoring: 'continuous'
-};
 
 // Municipal drag-drop operations requiring RAF optimization
-const MUNICIPAL_RAF_OPERATIONS = {
-  dragStart: {
-    operation: 'drag-start',
-    expectedFrameTime: 16.67,
-    gpuAcceleration: true,
-    batchingEnabled: false,
-    priorityLevel: 'immediate'
-  },
-  dragMove: {
-    operation: 'drag-move',
-    expectedFrameTime: 16.67,
-    gpuAcceleration: true,
-    batchingEnabled: true,
-    priorityLevel: 'continuous'
-  },
-  dragEnd: {
-    operation: 'drag-end',
-    expectedFrameTime: 16.67,
-    gpuAcceleration: true,
-    batchingEnabled: false,
-    priorityLevel: 'immediate'
-  },
-  documentValidation: {
-    operation: 'document-validation',
-    expectedFrameTime: 33.33, // 30fps acceptable for validation
-    gpuAcceleration: false,
-    batchingEnabled: true,
-    priorityLevel: 'background'
-  },
-  municipalCompliance: {
-    operation: 'municipal-compliance',
-    expectedFrameTime: 50, // 20fps acceptable for compliance checks
-    gpuAcceleration: false,
-    batchingEnabled: true,
-    priorityLevel: 'background'
-  }
-};
 
 // Anna Svensson iPhone 12 RAF optimization scenarios
-const ANNA_SVENSSON_RAF_SCENARIOS = {
-  sevenMinuteSession: {
-    sessionDuration: 420000, // 7 minutes in ms
-    expectedFrames: 25200, // 60fps * 420 seconds
-    allowedFrameDrops: 126, // <0.5% frame drops
-    batteryUsageTarget: 5 // percentage
-  },
-  invoiceApprovalWorkflow: {
-    workflowDuration: 180000, // 3 minutes
-    dragOperations: 15,
-    expectedFramesPerOperation: 180, // 3 seconds per operation at 60fps
-    touchResponsiveness: 50 // ms
-  },
-  permitProcessingWorkflow: {
-    workflowDuration: 150000, // 2.5 minutes
-    dragOperations: 12,
-    expectedFramesPerOperation: 120, // 2 seconds per operation at 60fps
-    culturalValidationFrames: 30 // 0.5 seconds for cultural validation
-  }
-};
 
 describe('RAF Optimization Validation Testing', () => {
   let rafOptimizer: Record<string, unknown>;
@@ -111,7 +38,6 @@ describe('RAF Optimization Validation Testing', () => {
 
   describe('60fps RAF Achievement Validation', () => {
     it('should achieve 60fps during drag-start operations', async () => {
-      const dragStartRAF = await rafOptimizer.testDragStartOptimization({
         operation: MUNICIPAL_RAF_OPERATIONS.dragStart.operation,
         targetFPS: RAF_OPTIMIZATION_SPECS.targetFPS,
         municipality: 'malmö',
@@ -145,7 +71,6 @@ describe('RAF Optimization Validation Testing', () => {
     });
 
     it('should maintain 60fps during continuous drag-move operations', async () => {
-      const dragMoveRAF = await rafOptimizer.testDragMoveOptimization({
         operation: MUNICIPAL_RAF_OPERATIONS.dragMove.operation,
         continuousFrames: 300, // 5 seconds of drag movement
         targetFPS: RAF_OPTIMIZATION_SPECS.targetFPS,
@@ -180,7 +105,6 @@ describe('RAF Optimization Validation Testing', () => {
     });
 
     it('should achieve optimal performance during drag-end operations', async () => {
-      const dragEndRAF = await rafOptimizer.testDragEndOptimization({
         operation: MUNICIPAL_RAF_OPERATIONS.dragEnd.operation,
         targetFPS: RAF_OPTIMIZATION_SPECS.targetFPS,
         municipality: 'malmö',
@@ -216,7 +140,6 @@ describe('RAF Optimization Validation Testing', () => {
 
   describe('Municipal Operations RAF Optimization', () => {
     it('should optimize background operations without affecting drag-drop performance', async () => {
-      const backgroundOperationsRAF = await rafOptimizer.testBackgroundOperationsOptimization({
         primaryOperation: 'drag-move',
         backgroundOperations: ['document-validation', 'municipal-compliance'],
         primaryTargetFPS: 60,
@@ -253,7 +176,6 @@ describe('RAF Optimization Validation Testing', () => {
     });
 
     it('should handle municipal compliance validation with RAF optimization', async () => {
-      const complianceRAFTest = await rafOptimizer.testMunicipalComplianceRAFOptimization({
         complianceChecks: ['gdpr-validation', 'accessibility-check', 'cultural-appropriateness'],
         dragDropOperationActive: true,
         primaryOperationFPS: 60,
@@ -288,7 +210,6 @@ describe('RAF Optimization Validation Testing', () => {
 
   describe('Anna Svensson Session RAF Optimization', () => {
     it('should maintain RAF optimization throughout 7-minute session', async () => {
-      const sessionRAFTest = await rafOptimizer.testAnnaSvenssonSessionRAFOptimization({
         sessionDuration: ANNA_SVENSSON_RAF_SCENARIOS.sevenMinuteSession.sessionDuration,
         expectedFrames: ANNA_SVENSSON_RAF_SCENARIOS.sevenMinuteSession.expectedFrames,
         municipality: 'malmö',
@@ -322,7 +243,6 @@ describe('RAF Optimization Validation Testing', () => {
     });
 
     it('should optimize RAF for invoice approval workflow', async () => {
-      const invoiceRAFTest = await rafOptimizer.testInvoiceApprovalRAFOptimization({
         workflowDuration: ANNA_SVENSSON_RAF_SCENARIOS.invoiceApprovalWorkflow.workflowDuration,
         dragOperations: ANNA_SVENSSON_RAF_SCENARIOS.invoiceApprovalWorkflow.dragOperations,
         municipality: 'malmö',
@@ -357,7 +277,6 @@ describe('RAF Optimization Validation Testing', () => {
     });
 
     it('should optimize RAF for permit processing workflow', async () => {
-      const permitRAFTest = await rafOptimizer.testPermitProcessingRAFOptimization({
         workflowDuration: ANNA_SVENSSON_RAF_SCENARIOS.permitProcessingWorkflow.workflowDuration,
         dragOperations: ANNA_SVENSSON_RAF_SCENARIOS.permitProcessingWorkflow.dragOperations,
         municipality: 'malmö',
@@ -403,7 +322,6 @@ describe('RAF Optimization Validation Testing', () => {
 
   describe('GPU Acceleration and Memory Optimization', () => {
     it('should enable GPU acceleration for optimal drag-drop performance', async () => {
-      const gpuAccelerationTest = await rafOptimizer.testGPUAccelerationOptimization({
         operations: ['drag-start', 'drag-move', 'drag-end'],
         municipality: 'malmö',
         device: 'iPhone 12',
@@ -437,7 +355,6 @@ describe('RAF Optimization Validation Testing', () => {
     });
 
     it('should optimize memory usage during RAF operations', async () => {
-      const memoryOptimizationTest = await rafOptimizer.testMemoryOptimizationRAF({
         sessionDuration: 420000, // 7 minutes
         memoryBudget: 100, // MB
         municipality: 'malmö',
@@ -472,7 +389,6 @@ describe('RAF Optimization Validation Testing', () => {
 
   describe('Performance Monitoring and Alerting', () => {
     it('should provide continuous RAF performance monitoring', async () => {
-      const performanceMonitoring = await frameMonitor.testContinuousRAFMonitoring({
         monitoringDuration: 300000, // 5 minutes
         alertThresholds: {
           minFPS: 55,

@@ -11,143 +11,14 @@ import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 
 // Mock Advanced Analytics and Municipal Intelligence utilities
-const mockAdvancedAnalyticsMunicipalIntelligence = {
-  collectMunicipalUsageAnalytics: vi.fn(),
-  trackLearningEffectiveness: vi.fn(),
-  measureCulturalAdaptationEffectiveness: vi.fn(),
-  calculateMunicipalTrainingROI: vi.fn(),
-  benchmarkCrossEuropeanPerformance: vi.fn(),
-  aggregateGDPRCompliantData: vi.fn(),
-  generateRealTimeMunicipalDashboard: vi.fn(),
-  detectQ2PerformanceRegressions: vi.fn(),
-  createAdvancedMunicipalReports: vi.fn()
-};
 
 // Q2 Advanced Analytics and Municipal Intelligence Specifications
-const Q2_ADVANCED_ANALYTICS_SPECS = {
-  municipalUsageAnalytics: {
-    trackingScope: ['drag-drop-workflows', 'timed-challenges', 'branching-narratives', 'character-system', 'achievement-system', 'municipal-compliance'],
-    privacyCompliance: 'gdpr-municipal-government-standards',
-    dataMinimization: 'essential-analytics-only',
-    consentManagement: 'explicit-municipal-professional-consent',
-    dataRetention: '12-months-municipal-training-cycle',
-    anonymization: 'k-anonymity-municipal-protection'
-  },
-  learningEffectivenessTracking: {
-    competencyMeasurement: ['municipal-workflow-improvement', 'emergency-response-readiness', 'stakeholder-management-skills', 'cultural-adaptation-competence'],
-    progressionValidation: 'pre-post-assessment-municipal-standards',
-    skillTransferMeasurement: 'real-world-municipal-application',
-    retentionAnalysis: '30-60-90-day-competency-retention',
-    municipalImpactAssessment: 'citizen-service-improvement-correlation',
-    professionalDevelopmentAlignment: 'municipal-career-progression-tracking'
-  },
-  culturalAdaptationEffectiveness: {
-    europeanMarkets: ['swedish-malmö', 'german-berlin', 'french-paris', 'dutch-amsterdam'],
-    culturalSensitivityMeasures: ['terminology-appropriateness', 'decision-making-style-alignment', 'communication-pattern-acceptance'],
-    localAdaptationSuccess: 'municipal-professional-feedback-90-percent-approval',
-    crossCulturalTransferability: 'european-municipal-best-practice-sharing',
-    culturalRiskMitigation: 'automated-cultural-appropriateness-monitoring',
-    municipalCultureAlignment: 'government-service-tradition-respect'
-  },
-  municipalTrainingROI: {
-    costFactors: ['training-time-municipal-employee', 'technology-infrastructure', 'administrative-overhead', 'municipal-trainer-resources'],
-    benefitMeasures: ['citizen-service-improvement', 'municipal-efficiency-gains', 'emergency-response-readiness', 'regulatory-compliance-improvement'],
-    roiCalculationMethod: 'net-present-value-municipal-investment',
-    paybackPeriodTarget: '6-months-municipal-budget-cycle',
-    benefitRealizationTracking: 'quarterly-municipal-performance-assessment',
-    stakeholderValueDemonstration: 'municipal-council-reporting-standards'
-  },
-  crossEuropeanBenchmarking: {
-    performanceMetrics: ['learning-completion-rates', 'competency-improvement-scores', 'citizen-satisfaction-correlation', 'municipal-efficiency-metrics'],
-    benchmarkingScope: ['nordic-municipalities', 'german-verwaltung', 'french-service-public', 'dutch-bestuur'],
-    privacyProtectedComparison: 'aggregated-anonymized-municipal-data',
-    bestPracticeIdentification: 'high-performing-municipal-pattern-analysis',
-    culturalContextNormalization: 'municipal-culture-adjusted-benchmarks',
-    regulatoryComplianceAlignment: 'european-municipal-standards-harmonization'
-  }
-};
 
 // GDPR-Compliant Data Aggregation Framework
-const GDPR_COMPLIANT_DATA_AGGREGATION = {
-  dataMinimizationPrinciple: {
-    onlyNecessaryData: 'municipal-training-effectiveness-essential-metrics',
-    automaticDataReduction: 'intelligent-filtering-municipal-relevance',
-    purposeLimitation: 'municipal-professional-development-only',
-    dataQualityOptimization: 'accurate-relevant-municipal-analytics',
-    storageMinimization: 'compressed-aggregated-municipal-insights'
-  },
-  consentManagement: {
-    explicitConsent: 'clear-municipal-professional-consent-process',
-    consentGranularity: 'feature-specific-analytics-consent',
-    consentWithdrawal: 'immediate-data-processing-cessation',
-    consentRenewal: 'annual-municipal-consent-refresh',
-    consentAuditTrail: 'government-standard-consent-documentation'
-  },
-  dataProtectionMeasures: {
-    encryptionStandards: 'aes-256-municipal-government-encryption',
-    accessControls: 'role-based-municipal-analytics-access',
-    auditLogging: 'comprehensive-municipal-data-access-audit',
-    dataLineage: 'full-municipal-data-source-tracking',
-    anonymizationTechniques: 'k-anonymity-differential-privacy-municipal'
-  },
-  municipalDataSovereignty: {
-    dataResidency: 'municipal-regional-data-centers',
-    crossBorderTransferProtection: 'schrems-ii-municipal-compliance',
-    governmentDataClassification: 'municipal-sensitive-data-handling',
-    dataProcessorAgreements: 'municipal-standard-dpa-contracts',
-    dataSubjectRights: 'comprehensive-municipal-citizen-rights'
-  }
-};
 
 // Real-Time Municipal Dashboard Specifications
-const REAL_TIME_MUNICIPAL_DASHBOARD_SPECS = {
-  administratorDashboard: {
-    performanceOverview: ['system-health-municipal-metrics', 'user-engagement-municipal-analytics', 'learning-effectiveness-scores', 'cultural-adaptation-success'],
-    alertSystem: ['performance-degradation-municipal', 'compliance-violation-alerts', 'cultural-sensitivity-warnings', 'emergency-system-issues'],
-    complianceMonitoring: ['gdpr-compliance-status', 'accessibility-wcag-monitoring', 'cultural-appropriateness-tracking', 'municipal-regulation-adherence'],
-    capacityManagement: ['concurrent-municipal-users', 'system-resource-utilization', 'scaling-threshold-monitoring', 'emergency-capacity-reserves'],
-    municipalInsights: ['training-completion-trends', 'competency-development-progress', 'citizen-service-impact-correlation', 'roi-realization-tracking']
-  },
-  municipalDecisionMakerReporting: {
-    executiveSummary: ['training-program-effectiveness', 'municipal-performance-improvement', 'citizen-satisfaction-correlation', 'budget-efficiency-analysis'],
-    strategicInsights: ['cross-departmental-competency-gaps', 'emergency-preparedness-readiness', 'digital-transformation-progress', 'cultural-adaptation-success'],
-    complianceReporting: ['regulatory-adherence-status', 'accessibility-compliance-metrics', 'data-protection-compliance', 'municipal-standard-alignment'],
-    budgetJustification: ['training-investment-roi', 'citizen-service-improvement-value', 'efficiency-gain-quantification', 'emergency-preparedness-value'],
-    peerBenchmarking: ['similar-municipality-comparison', 'best-practice-identification', 'performance-gap-analysis', 'improvement-opportunity-ranking']
-  },
-  culturalIntelligenceDashboard: {
-    europeanMarketPerformance: ['swedish-municipal-adaptation', 'german-verwaltung-effectiveness', 'french-service-public-success', 'dutch-bestuur-optimization'],
-    culturalSensitivityMonitoring: ['terminology-appropriateness-scores', 'decision-making-alignment-metrics', 'communication-style-acceptance', 'cultural-risk-indicators'],
-    localizationEffectiveness: ['municipal-professional-feedback', 'cultural-context-switching-success', 'cross-cultural-transferability', 'government-appropriateness-validation'],
-    marketExpansionInsights: ['european-expansion-readiness', 'cultural-adaptation-gaps', 'localization-investment-priority', 'market-penetration-potential']
-  }
-};
 
 // Performance Regression Detection Framework
-const Q2_PERFORMANCE_REGRESSION_DETECTION = {
-  componentMonitoring: {
-    dragDropWorkflowMetrics: ['gesture-response-time', 'workflow-completion-efficiency', 'municipal-document-processing-speed', 'touch-accuracy-maintenance'],
-    timedChallengeMetrics: ['timer-precision', 'emergency-response-simulation-accuracy', 'pressure-handling-effectiveness', 'multi-participant-coordination'],
-    branchingNarrativeMetrics: ['decision-tree-processing-speed', 'character-interaction-responsiveness', 'scenario-complexity-handling', 'cultural-context-switching'],
-    characterSystemMetrics: ['emotion-transition-smoothness', 'relationship-calculation-speed', 'archetype-processing-efficiency', 'cultural-persona-switching'],
-    achievementSystemMetrics: ['progress-calculation-speed', 'competency-assessment-accuracy', 'peer-recognition-processing', 'certification-validation-speed'],
-    municipalComplianceMetrics: ['gdpr-validation-speed', 'accessibility-checking-efficiency', 'cultural-appropriateness-verification', 'regulatory-compliance-processing']
-  },
-  regressionThresholds: {
-    performanceDegradation: '15-percent-response-time-increase',
-    accuracyDegradation: '5-percent-accuracy-reduction',
-    memoryUsageIncrease: '20-percent-memory-overhead-increase',
-    culturalAppropriatenessDrop: '10-percent-cultural-score-reduction',
-    complianceFailure: 'any-regulatory-compliance-violation',
-    emergencySystemFailure: 'any-emergency-scenario-system-failure'
-  },
-  alertingFramework: {
-    immediateAlerts: ['compliance-violation', 'emergency-system-failure', 'cultural-sensitivity-breach', 'gdpr-data-protection-violation'],
-    performanceAlerts: ['response-time-degradation', 'accuracy-reduction', 'memory-usage-spike', 'concurrent-user-capacity-reduction'],
-    trendAlerts: ['gradual-performance-decline', 'cultural-adaptation-effectiveness-drop', 'learning-effectiveness-reduction', 'municipal-satisfaction-decline'],
-    predictiveAlerts: ['capacity-threshold-approaching', 'cultural-risk-probability-increase', 'compliance-deadline-approaching', 'system-maintenance-required']
-  }
-};
 
 describe('Q2 Advanced Analytics and Municipal Intelligence System', () => {
   beforeEach(() => {
@@ -163,7 +34,6 @@ describe('Q2 Advanced Analytics and Municipal Intelligence System', () => {
 
   describe('Municipal Usage Analytics with Privacy Compliance', () => {
     it('should collect GDPR-compliant municipal usage analytics across all Q2 mechanics', async () => {
-      const usageAnalytics = await mockAdvancedAnalyticsMunicipalIntelligence.collectMunicipalUsageAnalytics(
         Q2_ADVANCED_ANALYTICS_SPECS.municipalUsageAnalytics
       );
 
@@ -176,7 +46,6 @@ describe('Q2 Advanced Analytics and Municipal Intelligence System', () => {
     });
 
     it('should implement comprehensive data minimization for municipal analytics', async () => {
-      const dataMinimization = await mockAdvancedAnalyticsMunicipalIntelligence.aggregateGDPRCompliantData(
         GDPR_COMPLIANT_DATA_AGGREGATION.dataMinimizationPrinciple
       );
 
@@ -187,7 +56,6 @@ describe('Q2 Advanced Analytics and Municipal Intelligence System', () => {
     });
 
     it('should manage explicit consent for municipal professional analytics', async () => {
-      const consentManagement = await mockAdvancedAnalyticsMunicipalIntelligence.aggregateGDPRCompliantData(
         GDPR_COMPLIANT_DATA_AGGREGATION.consentManagement
       );
 
@@ -198,7 +66,6 @@ describe('Q2 Advanced Analytics and Municipal Intelligence System', () => {
     });
 
     it('should implement municipal data sovereignty and protection measures', async () => {
-      const dataProtection = await mockAdvancedAnalyticsMunicipalIntelligence.aggregateGDPRCompliantData(
         GDPR_COMPLIANT_DATA_AGGREGATION.municipalDataSovereignty
       );
 
@@ -211,7 +78,6 @@ describe('Q2 Advanced Analytics and Municipal Intelligence System', () => {
 
   describe('Learning Effectiveness Tracking Across Q2 Mechanics', () => {
     it('should track municipal competency improvement across all Q2 interactive mechanics', async () => {
-      const learningEffectiveness = await mockAdvancedAnalyticsMunicipalIntelligence.trackLearningEffectiveness(
         Q2_ADVANCED_ANALYTICS_SPECS.learningEffectivenessTracking
       );
 
@@ -222,7 +88,6 @@ describe('Q2 Advanced Analytics and Municipal Intelligence System', () => {
     });
 
     it('should measure skill transfer to real-world municipal applications', async () => {
-      const skillTransfer = await mockAdvancedAnalyticsMunicipalIntelligence.trackLearningEffectiveness({
         skillTransferMeasurement: 'real-world-municipal-application',
         municipalImpactAssessment: 'citizen-service-improvement-correlation',
         professionalDevelopmentAlignment: 'municipal-career-progression-tracking'
@@ -234,7 +99,6 @@ describe('Q2 Advanced Analytics and Municipal Intelligence System', () => {
     });
 
     it('should analyze competency retention over municipal training cycles', async () => {
-      const retentionAnalysis = await mockAdvancedAnalyticsMunicipalIntelligence.trackLearningEffectiveness({
         retentionAnalysis: '30-60-90-day-competency-retention',
         professionalDevelopmentAlignment: 'municipal-career-progression-tracking'
       });
@@ -246,7 +110,6 @@ describe('Q2 Advanced Analytics and Municipal Intelligence System', () => {
 
   describe('Cultural Adaptation Effectiveness Measurement', () => {
     it('should measure cultural adaptation effectiveness across European municipal markets', async () => {
-      const culturalAdaptation = await mockAdvancedAnalyticsMunicipalIntelligence.measureCulturalAdaptationEffectiveness(
         Q2_ADVANCED_ANALYTICS_SPECS.culturalAdaptationEffectiveness
       );
 
@@ -258,7 +121,6 @@ describe('Q2 Advanced Analytics and Municipal Intelligence System', () => {
     });
 
     it('should validate cultural sensitivity measures for municipal professionals', async () => {
-      const culturalSensitivity = await mockAdvancedAnalyticsMunicipalIntelligence.measureCulturalAdaptationEffectiveness({
         culturalSensitivityMeasures: ['terminology-appropriateness', 'decision-making-style-alignment', 'communication-pattern-acceptance'],
         municipalCultureAlignment: 'government-service-tradition-respect'
       });
@@ -270,7 +132,6 @@ describe('Q2 Advanced Analytics and Municipal Intelligence System', () => {
     });
 
     it('should monitor cross-cultural transferability and risk mitigation', async () => {
-      const crossCulturalTransfer = await mockAdvancedAnalyticsMunicipalIntelligence.measureCulturalAdaptationEffectiveness({
         crossCulturalTransferability: 'european-municipal-best-practice-sharing',
         culturalRiskMitigation: 'automated-cultural-appropriateness-monitoring'
       });
@@ -282,7 +143,6 @@ describe('Q2 Advanced Analytics and Municipal Intelligence System', () => {
 
   describe('Municipal Training ROI Calculation', () => {
     it('should calculate comprehensive municipal training ROI with cost-benefit analysis', async () => {
-      const trainingROI = await mockAdvancedAnalyticsMunicipalIntelligence.calculateMunicipalTrainingROI(
         Q2_ADVANCED_ANALYTICS_SPECS.municipalTrainingROI
       );
 
@@ -294,7 +154,6 @@ describe('Q2 Advanced Analytics and Municipal Intelligence System', () => {
     });
 
     it('should track benefit realization over municipal budget cycles', async () => {
-      const benefitRealization = await mockAdvancedAnalyticsMunicipalIntelligence.calculateMunicipalTrainingROI({
         paybackPeriodTarget: '6-months-municipal-budget-cycle',
         benefitRealizationTracking: 'quarterly-municipal-performance-assessment',
         stakeholderValueDemonstration: 'municipal-council-reporting-standards'
@@ -308,7 +167,6 @@ describe('Q2 Advanced Analytics and Municipal Intelligence System', () => {
 
   describe('Cross-European Municipal Performance Benchmarking', () => {
     it('should benchmark performance across European municipal contexts', async () => {
-      const crossEuropeanBenchmarking = await mockAdvancedAnalyticsMunicipalIntelligence.benchmarkCrossEuropeanPerformance(
         Q2_ADVANCED_ANALYTICS_SPECS.crossEuropeanBenchmarking
       );
 
@@ -320,7 +178,6 @@ describe('Q2 Advanced Analytics and Municipal Intelligence System', () => {
     });
 
     it('should identify best practices with cultural context normalization', async () => {
-      const bestPracticeIdentification = await mockAdvancedAnalyticsMunicipalIntelligence.benchmarkCrossEuropeanPerformance({
         bestPracticeIdentification: 'high-performing-municipal-pattern-analysis',
         culturalContextNormalization: 'municipal-culture-adjusted-benchmarks',
         regulatoryComplianceAlignment: 'european-municipal-standards-harmonization'
@@ -334,7 +191,6 @@ describe('Q2 Advanced Analytics and Municipal Intelligence System', () => {
 
   describe('Real-Time Municipal Dashboard for Administrators', () => {
     it('should generate comprehensive administrator dashboard with performance overview', async () => {
-      const administratorDashboard = await mockAdvancedAnalyticsMunicipalIntelligence.generateRealTimeMunicipalDashboard(
         REAL_TIME_MUNICIPAL_DASHBOARD_SPECS.administratorDashboard
       );
 
@@ -345,7 +201,6 @@ describe('Q2 Advanced Analytics and Municipal Intelligence System', () => {
     });
 
     it('should provide municipal decision maker reporting with strategic insights', async () => {
-      const decisionMakerReporting = await mockAdvancedAnalyticsMunicipalIntelligence.generateRealTimeMunicipalDashboard(
         REAL_TIME_MUNICIPAL_DASHBOARD_SPECS.municipalDecisionMakerReporting
       );
 
@@ -356,7 +211,6 @@ describe('Q2 Advanced Analytics and Municipal Intelligence System', () => {
     });
 
     it('should create cultural intelligence dashboard for European market expansion', async () => {
-      const culturalIntelligenceDashboard = await mockAdvancedAnalyticsMunicipalIntelligence.generateRealTimeMunicipalDashboard(
         REAL_TIME_MUNICIPAL_DASHBOARD_SPECS.culturalIntelligenceDashboard
       );
 
@@ -368,7 +222,6 @@ describe('Q2 Advanced Analytics and Municipal Intelligence System', () => {
 
   describe('Q2 Performance Regression Detection', () => {
     it('should detect performance regressions across all Q2 interactive mechanics', async () => {
-      const performanceRegression = await mockAdvancedAnalyticsMunicipalIntelligence.detectQ2PerformanceRegressions(
         Q2_PERFORMANCE_REGRESSION_DETECTION.componentMonitoring
       );
 
@@ -380,7 +233,6 @@ describe('Q2 Advanced Analytics and Municipal Intelligence System', () => {
     });
 
     it('should enforce regression thresholds with municipal compliance standards', async () => {
-      const regressionThresholds = await mockAdvancedAnalyticsMunicipalIntelligence.detectQ2PerformanceRegressions(
         Q2_PERFORMANCE_REGRESSION_DETECTION.regressionThresholds
       );
 
@@ -391,7 +243,6 @@ describe('Q2 Advanced Analytics and Municipal Intelligence System', () => {
     });
 
     it('should provide comprehensive alerting framework for municipal administrators', async () => {
-      const alertingFramework = await mockAdvancedAnalyticsMunicipalIntelligence.detectQ2PerformanceRegressions(
         Q2_PERFORMANCE_REGRESSION_DETECTION.alertingFramework
       );
 
@@ -404,7 +255,6 @@ describe('Q2 Advanced Analytics and Municipal Intelligence System', () => {
 
   describe('Advanced Municipal Reporting for Decision Makers', () => {
     it('should generate advanced municipal reports with strategic insights', async () => {
-      const advancedReports = await mockAdvancedAnalyticsMunicipalIntelligence.createAdvancedMunicipalReports({
         reportType: 'municipal-strategic-analysis',
         audienceLevel: 'municipal-council-executive-summary',
         complianceFramework: 'european-municipal-standards',
@@ -418,7 +268,6 @@ describe('Q2 Advanced Analytics and Municipal Intelligence System', () => {
     });
 
     it('should create municipal performance impact assessments', async () => {
-      const impactAssessment = await mockAdvancedAnalyticsMunicipalIntelligence.createAdvancedMunicipalReports({
         reportType: 'municipal-performance-impact-assessment',
         measurementScope: ['citizen-service-improvement', 'municipal-efficiency-gains', 'emergency-preparedness-enhancement'],
         timeframeAnalysis: 'quarterly-municipal-budget-alignment',
@@ -432,7 +281,6 @@ describe('Q2 Advanced Analytics and Municipal Intelligence System', () => {
     });
 
     it('should provide European expansion readiness reporting', async () => {
-      const expansionReadiness = await mockAdvancedAnalyticsMunicipalIntelligence.createAdvancedMunicipalReports({
         reportType: 'european-expansion-readiness-assessment',
         marketAnalysis: ['swedish-municipal-readiness', 'german-verwaltung-preparation', 'french-service-public-adaptation', 'dutch-bestuur-optimization'],
         culturalRiskAssessment: 'comprehensive-european-cultural-appropriateness',
@@ -448,7 +296,6 @@ describe('Q2 Advanced Analytics and Municipal Intelligence System', () => {
 
   describe('Integration with Existing Q2 Performance Monitoring', () => {
     it('should integrate seamlessly with existing Q2 performance monitoring infrastructure', async () => {
-      const performanceIntegration = await mockAdvancedAnalyticsMunicipalIntelligence.detectQ2PerformanceRegressions({
         existingMonitoringIntegration: 'seamless-q2-performance-monitoring-extension',
         dataConsistency: 'unified-q2-performance-analytics',
         alertingCoordination: 'integrated-municipal-alert-system',
@@ -462,7 +309,6 @@ describe('Q2 Advanced Analytics and Municipal Intelligence System', () => {
     });
 
     it('should maintain consistency with Q2 interactive mechanics monitoring', async () => {
-      const mechanicsMonitoringConsistency = await mockAdvancedAnalyticsMunicipalIntelligence.detectQ2PerformanceRegressions({
         mechanicsMonitoringAlignment: 'all-q2-mechanics-unified-monitoring',
         performanceBaselineConsistency: 'consistent-q2-performance-baselines',
         alertThresholdAlignment: 'unified-q2-alert-thresholds',

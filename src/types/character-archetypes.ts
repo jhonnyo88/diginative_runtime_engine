@@ -1229,45 +1229,32 @@ export const municipalArchetypes: Record<MunicipalArchetypeId, MunicipalCharacte
 };
 
 // Archetype utility functions
-export const getArchetypeById = (archetypeId: MunicipalArchetypeId): MunicipalCharacterArchetype => {
   return municipalArchetypes[archetypeId];
 };
 
-export const getArchetypesByExperience = (minYears: number, maxYears: number): MunicipalCharacterArchetype[] => {
   return Object.values(municipalArchetypes).filter(archetype => {
-    const experienceRange = archetype.experience.match(/(\d+)-(\d+)/);
     if (!experienceRange) return false;
-    const minExp = parseInt(experienceRange[1]);
-    const maxExp = parseInt(experienceRange[2]);
     return minExp >= minYears && maxExp <= maxYears;
   });
 };
 
-export const getCompatibleArchetypes = (archetypeId: MunicipalArchetypeId): MunicipalArchetypeId[] => {
-  const archetype = municipalArchetypes[archetypeId];
   return archetype.compatibilityMatrix.worksWellWith;
 };
 
-export const getArchetypeTensions = (archetypeId: MunicipalArchetypeId): MunicipalArchetypeId[] => {
-  const archetype = municipalArchetypes[archetypeId];
   return archetype.compatibilityMatrix.potentialTensions;
 };
 
-export const getCulturalArchetypeVariant = (
   archetypeId: MunicipalArchetypeId,
   culture: 'swedish' | 'german' | 'french' | 'dutch'
 ): CulturalArchetypeVariant | undefined => {
-  const archetype = municipalArchetypes[archetypeId];
   return archetype.culturalAdaptations.find(variant => variant.culture === culture);
 };
 
-export const getArchetypesByPrimaryEmotion = (emotion: string): MunicipalCharacterArchetype[] => {
   return Object.values(municipalArchetypes).filter(archetype => 
     archetype.emotionalCapabilities.primaryEmotions.includes(emotion)
   );
 };
 
-export const getArchetypesByExpertise = (expertise: string): MunicipalCharacterArchetype[] => {
   return Object.values(municipalArchetypes).filter(archetype => 
     archetype.expertise.includes(expertise)
   );

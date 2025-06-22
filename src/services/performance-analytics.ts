@@ -75,9 +75,6 @@ class PerformanceAnalyticsService {
   }
 
   private initializeSession(): SessionMetrics {
-    const sessionId = this.generateSessionId();
-    const municipality = this.getMunicipality();
-    const deviceType = this.getDeviceType();
 
     const session: SessionMetrics = {
       sessionId,
@@ -144,9 +141,6 @@ class PerformanceAnalyticsService {
     if (!('PerformanceObserver' in window)) return;
 
     try {
-      const observer = new PerformanceObserver((list) => {
-        const entries = list.getEntries();
-        const lastEntry = entries[entries.length - 1];
         
         this.updateCoreWebVital('lcp', lastEntry.startTime);
       });
@@ -161,7 +155,6 @@ class PerformanceAnalyticsService {
     if (!('PerformanceObserver' in window)) return;
 
     try {
-      const observer = new PerformanceObserver((list) => {
         for (const entry of list.getEntries()) {
           this.updateCoreWebVital('fid', (entry as any).processingStart - entry.startTime);
         }
@@ -179,7 +172,6 @@ class PerformanceAnalyticsService {
     let clsValue = 0;
 
     try {
-      const observer = new PerformanceObserver((list) => {
         for (const entry of list.getEntries()) {
           if (!(entry as any).hadRecentInput) {
             clsValue += (entry as any).value;
@@ -198,7 +190,6 @@ class PerformanceAnalyticsService {
     if (!('PerformanceObserver' in window)) return;
 
     try {
-      const observer = new PerformanceObserver((list) => {
         for (const entry of list.getEntries()) {
           if (entry.name === 'first-contentful-paint') {
             this.updateCoreWebVital('fcp', entry.startTime);
@@ -282,7 +273,6 @@ class PerformanceAnalyticsService {
   }
 
   public endGameSession(gameId: string, completed: boolean, score?: number): void {
-    const gameSession = this.currentSession.gamesSessions
       .find(session => session.gameId === gameId && !session.endTime);
     
     if (gameSession) {
@@ -309,7 +299,6 @@ class PerformanceAnalyticsService {
     this.trackInteraction(interaction);
 
     // Update game session interaction count
-    const gameSession = this.currentSession.gamesSessions
       .find(session => session.gameId === gameId && !session.endTime);
     
     if (gameSession) {
@@ -319,7 +308,6 @@ class PerformanceAnalyticsService {
   }
 
   public trackGameError(gameId: string, sceneId: string): void {
-    const gameSession = this.currentSession.gamesSessions
       .find(session => session.gameId === gameId && !session.endTime);
     
     if (gameSession) {
@@ -341,21 +329,13 @@ class PerformanceAnalyticsService {
 
   private processPerformanceEntry(entry: PerformanceEntry): void {
     if (entry.entryType === 'navigation') {
-      const navEntry = entry as PerformanceNavigationTiming;
       this.trackPageLoadMetrics(navEntry);
     } else if (entry.entryType === 'resource') {
-      const resourceEntry = entry as PerformanceResourceTiming;
       this.trackResourceLoadMetrics(resourceEntry);
     }
   }
 
   private trackPageLoadMetrics(entry: PerformanceNavigationTiming): void {
-    const metrics = {
-      pageLoadTime: entry.loadEventEnd - entry.fetchStart,
-      ttfb: entry.responseStart - entry.fetchStart,
-      domContentLoaded: entry.domContentLoadedEventEnd - entry.fetchStart,
-      networkLatency: entry.responseStart - entry.requestStart
-    };
 
     this.addPerformanceSnapshot({
       timestamp: Date.now(),
@@ -384,7 +364,6 @@ class PerformanceAnalyticsService {
 
     // Memory usage
     if ('memory' in performance) {
-      const memory = (performance as any).memory;
       snapshot.metrics.memoryUsage = memory.usedJSHeapSize;
     }
 
@@ -400,30 +379,14 @@ class PerformanceAnalyticsService {
     let lastTime = performance.now();
     let frameCount = 0;
 
-    const measureFPS = (currentTime: number) => {
-      frameCount++;
-      if (currentTime - lastTime >= 1000) {
-        fps = Math.round((frameCount * 1000) / (currentTime - lastTime));
-        frameCount = 0;
-        lastTime = currentTime;
-      }
-    };
 
     // Measure for 1 second
-    const startTime = performance.now();
-    const measure = (time: number) => {
-      measureFPS(time);
-      if (time - startTime < 1000) {
-        requestAnimationFrame(measure);
-      }
-    };
     requestAnimationFrame(measure);
 
     return fps;
   }
 
   private updateCoreWebVital(metric: keyof CoreWebVitals, value: number): void {
-    const latestSnapshot = this.metricsBuffer[this.metricsBuffer.length - 1];
     if (latestSnapshot) {
       if (!latestSnapshot.metrics.coreWebVitals) {
         latestSnapshot.metrics.coreWebVitals = {};
@@ -463,14 +426,12 @@ class PerformanceAnalyticsService {
 
   private analyzeGamePerformance(gameSession: GameSessionMetric): void {
     // Analyze Anna Svensson's 7-minute session target
-    const sevenMinutes = 7 * 60 * 1000;
     if (gameSession.duration && gameSession.duration > sevenMinutes) {
       console.warn(`Game session exceeded 7-minute target: ${gameSession.duration}ms`);
     }
 
     // Analyze interaction efficiency
     if (gameSession.duration && gameSession.interactions > 0) {
-      const avgInteractionTime = gameSession.duration / gameSession.interactions;
       if (avgInteractionTime > 5000) { // 5 seconds per interaction
         console.warn(`Slow game interactions: ${avgInteractionTime}ms average`);
       }
@@ -505,7 +466,6 @@ class PerformanceAnalyticsService {
   }
 
   private getDeviceType(): 'mobile' | 'tablet' | 'desktop' {
-    const width = window.innerWidth;
     if (width < 768) return 'mobile';
     if (width < 1024) return 'tablet';
     return 'desktop';
@@ -531,11 +491,7 @@ class PerformanceAnalyticsService {
     averageResponseTime: number;
     completionRate: number;
   } {
-    const duration = Date.now() - this.currentSession.startTime;
-    const gamesPlayed = this.currentSession.gamesSessions.length;
-    const completedGames = this.currentSession.gamesSessions.filter(g => g.completed).length;
-    const totalInteractions = this.currentSession.userInteractions.length;
-    const avgResponseTime = totalInteractions > 0
+    const _avgResponseTime = totalInteractions > 0
       ? this.currentSession.userInteractions.reduce((sum, i) => sum + i.responseTime, 0) / totalInteractions
       : 0;
 
@@ -550,4 +506,3 @@ class PerformanceAnalyticsService {
 }
 
 // Create singleton instance
-export const performanceAnalytics = new PerformanceAnalyticsService();

@@ -70,7 +70,6 @@ describe('EUComplianceManager - Emergency Service Testing', () => {
       };
       
       // Act
-      const validation = await complianceManager.validateProcessing(
         personalData,
         purpose,
         'DE',
@@ -101,7 +100,6 @@ describe('EUComplianceManager - Emergency Service Testing', () => {
       };
       
       // Act
-      const validation = await complianceManager.validateProcessing(
         personalData,
         purpose,
         'FR',
@@ -132,7 +130,6 @@ describe('EUComplianceManager - Emergency Service Testing', () => {
       };
       
       // Act
-      const validation = await complianceManager.validateProcessing(
         personalData,
         purpose,
         'NL',
@@ -162,7 +159,6 @@ describe('EUComplianceManager - Emergency Service Testing', () => {
       };
       
       // Act
-      const validation = await complianceManager.validateProcessing(
         personalData,
         purpose,
         'SE',
@@ -194,7 +190,6 @@ describe('EUComplianceManager - Emergency Service Testing', () => {
       };
       
       // Act
-      const validation = await complianceManager.validateProcessing(
         personalData,
         purpose,
         'DE',
@@ -202,7 +197,6 @@ describe('EUComplianceManager - Emergency Service Testing', () => {
       );
       
       // Assert
-      const rights = validation.applicableRights.applicable_rights;
       expect(rights).toContain('right_to_information');
       expect(rights).toContain('right_of_access');
       expect(rights).toContain('right_to_rectification');
@@ -226,7 +220,6 @@ describe('EUComplianceManager - Emergency Service Testing', () => {
       };
       
       // Act
-      const validation = await complianceManager.validateProcessing(
         personalData,
         purpose,
         'SE',
@@ -234,7 +227,6 @@ describe('EUComplianceManager - Emergency Service Testing', () => {
       );
       
       // Assert
-      const rights = validation.applicableRights.applicable_rights;
       expect(rights).toContain('right_to_datainspektionen_complaint');
       expect(rights).toContain('offentlighetsprincipen_rights');
       expect(validation.applicableRights.exercise_mechanisms).toContain('SE specific rights exercise procedures');
@@ -243,7 +235,6 @@ describe('EUComplianceManager - Emergency Service Testing', () => {
   
   describe('Security Measures Validation', () => {
     it('should enforce AES-256 encryption for all jurisdictions', async () => {
-      const jurisdictions = ['DE', 'FR', 'NL', 'SE'] as const;
       
       for (const jurisdiction of jurisdictions) {
         // Arrange
@@ -260,7 +251,6 @@ describe('EUComplianceManager - Emergency Service Testing', () => {
         };
         
         // Act
-        const validation = await complianceManager.validateProcessing(
           personalData,
           purpose,
           jurisdiction,
@@ -288,7 +278,6 @@ describe('EUComplianceManager - Emergency Service Testing', () => {
         municipal_context: 'berlin_de_sensitive'
       };
       
-      const validationDE = await complianceManager.validateProcessing(
         personalDataDE,
         purposeDE,
         'DE',
@@ -301,12 +290,6 @@ describe('EUComplianceManager - Emergency Service Testing', () => {
   
   describe('Retention Period Calculation', () => {
     it('should calculate correct retention periods per jurisdiction', async () => {
-      const testCases = [
-        { jurisdiction: 'DE' as const, expected: '6 years (German municipal requirements)' },
-        { jurisdiction: 'FR' as const, expected: '5 years (French administrative requirements)' },
-        { jurisdiction: 'NL' as const, expected: '7 years (Dutch administrative requirements)' },
-        { jurisdiction: 'SE' as const, expected: '7 years (Swedish municipal requirements)' }
-      ];
       
       for (const testCase of testCases) {
         const personalData: PersonalData = {
@@ -321,7 +304,6 @@ describe('EUComplianceManager - Emergency Service Testing', () => {
           municipal_context: `${testCase.jurisdiction.toLowerCase()}_training`
         };
         
-        const validation = await complianceManager.validateProcessing(
           personalData,
           purpose,
           testCase.jurisdiction,
@@ -338,7 +320,6 @@ describe('EUComplianceManager - Emergency Service Testing', () => {
   describe('Compliance Audit Functionality', () => {
     it('should perform comprehensive compliance audit for tenant', async () => {
       // Act
-      const auditReport = await complianceManager.performComplianceAudit('malmo_stad', 'SE');
       
       // Assert
       expect(auditReport).toBeDefined();
@@ -353,21 +334,16 @@ describe('EUComplianceManager - Emergency Service Testing', () => {
     });
     
     it('should calculate next audit date correctly per jurisdiction', async () => {
-      const jurisdictions = ['DE', 'FR', 'NL', 'SE'] as const;
       
       for (const jurisdiction of jurisdictions) {
-        const auditReport = await complianceManager.performComplianceAudit(
           `test_${jurisdiction.toLowerCase()}`,
           jurisdiction
         );
         
-        const currentDate = new Date();
-        const nextAuditDate = new Date(auditReport.nextAuditDate);
-        const monthsDiff = (nextAuditDate.getFullYear() - currentDate.getFullYear()) * 12 + 
+        const _monthsDiff = (nextAuditDate.getFullYear() - currentDate.getFullYear()) * 12 + 
                           (nextAuditDate.getMonth() - currentDate.getMonth());
         
         // German, Dutch, Swedish: 12 months, French: 18 months
-        const expectedMonths = jurisdiction === 'FR' ? 18 : 12;
         expect(monthsDiff).toBeCloseTo(expectedMonths, 0);
       }
     });
@@ -426,7 +402,6 @@ describe('EUComplianceManager - Emergency Service Testing', () => {
     
     it('should handle compliance audit failures gracefully', async () => {
       // Arrange - Create a new manager with failing audit logger
-      const failingManager = new EUComplianceManager();
       
       // Mock the audit logger to throw an error
       (failingManager as any).auditLogger = {
@@ -443,11 +418,8 @@ describe('EUComplianceManager - Emergency Service Testing', () => {
   describe('Performance and Concurrent Operations', () => {
     it('should handle multiple concurrent validation requests', async () => {
       // Arrange
-      const validationPromises = [];
-      const jurisdictions = ['DE', 'FR', 'NL', 'SE'] as const;
       
       for (let i = 0; i < 50; i++) {
-        const jurisdiction = jurisdictions[i % jurisdictions.length];
         const personalData: PersonalData = {
           category: 'user_data',
           sensitivity: 'normal',
@@ -471,9 +443,6 @@ describe('EUComplianceManager - Emergency Service Testing', () => {
       }
       
       // Act
-      const start = Date.now();
-      const results = await Promise.all(validationPromises);
-      const duration = Date.now() - start;
       
       // Assert
       expect(results).toHaveLength(50);
@@ -488,13 +457,10 @@ describe('EUComplianceManager - Emergency Service Testing', () => {
     
     it('should complete validation within performance budget', async () => {
       // Arrange
-      const iterations = 100;
-      const maxDurationMs = 10; // 10ms per validation
       const durations: number[] = [];
       
       // Act
       for (let i = 0; i < iterations; i++) {
-        const start = Date.now();
         
         await complianceManager.validateProcessing(
           {
@@ -515,8 +481,6 @@ describe('EUComplianceManager - Emergency Service Testing', () => {
       }
       
       // Assert
-      const avgDuration = durations.reduce((a, b) => a + b, 0) / durations.length;
-      const maxDuration = Math.max(...durations);
       
       expect(avgDuration).toBeLessThan(maxDurationMs);
       expect(maxDuration).toBeLessThan(maxDurationMs * 3); // Allow some variance
@@ -524,36 +488,6 @@ describe('EUComplianceManager - Emergency Service Testing', () => {
   });
   
   describe('Municipal Context Integration', () => {
-    const municipalScenarios = [
-      {
-        municipality: 'Malmö Stad',
-        jurisdiction: 'SE' as const,
-        tenantId: 'malmo_stad',
-        expectedLanguage: 'Swedish',
-        culturalContext: 'swedish_systematic'
-      },
-      {
-        municipality: 'Stadt Berlin',
-        jurisdiction: 'DE' as const,
-        tenantId: 'berlin_de',
-        expectedLanguage: 'German',
-        culturalContext: 'german_efficient'
-      },
-      {
-        municipality: 'Ville de Paris',
-        jurisdiction: 'FR' as const,
-        tenantId: 'paris_fr',
-        expectedLanguage: 'French',
-        culturalContext: 'french_administrative'
-      },
-      {
-        municipality: 'Gemeente Amsterdam',
-        jurisdiction: 'NL' as const,
-        tenantId: 'amsterdam_nl',
-        expectedLanguage: 'Dutch',
-        culturalContext: 'dutch_pragmatic'
-      }
-    ];
     
     municipalScenarios.forEach(scenario => {
       it(`should handle ${scenario.municipality} compliance correctly`, async () => {
@@ -571,7 +505,6 @@ describe('EUComplianceManager - Emergency Service Testing', () => {
         };
         
         // Act
-        const validation = await complianceManager.validateProcessing(
           personalData,
           purpose,
           scenario.jurisdiction,

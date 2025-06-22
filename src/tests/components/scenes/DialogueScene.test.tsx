@@ -11,9 +11,6 @@ const TestWrapper: React.FC<{ children: React.ReactNode }> = ({ children }) => (
   </ChakraThemeProvider>
 );
 
-const mockAnalytics = {
-  trackEvent: vi.fn()
-};
 
 const sampleDialogueScene: DialogueSceneType = {
   id: 'dialogue-test',
@@ -67,7 +64,6 @@ const sampleDialogueScene: DialogueSceneType = {
   }
 };
 
-const mockOnComplete = vi.fn();
 
 describe('DialogueScene', () => {
   beforeEach(() => {
@@ -80,11 +76,6 @@ describe('DialogueScene', () => {
     vi.useRealTimers();
   });
 
-  const defaultProps = {
-    scene: sampleDialogueScene,
-    onComplete: mockOnComplete,
-    analytics: mockAnalytics
-  };
 
   it('renders dialogue scene header correctly', () => {
     render(
@@ -158,7 +149,6 @@ describe('DialogueScene', () => {
     );
 
     // Click skip button
-    const skipButton = screen.getByText('Skip to end');
     fireEvent.click(skipButton);
 
     await waitFor(() => {
@@ -244,7 +234,6 @@ describe('DialogueScene', () => {
     fireEvent.click(screen.getByText('Skip to end'));
 
     await waitFor(() => {
-      const continueButton = screen.getByText('Continue Learning');
       continueButton.focus();
       
       expect(document.activeElement).toBe(continueButton);
@@ -266,12 +255,11 @@ describe('DialogueScene', () => {
     fireEvent.click(screen.getByText('Skip to end'));
 
     // Check for different speaker styling
-    const annaMessages = screen.getAllByText(/Anna Svensson/).filter(el => 
+    const _annaMessages = screen.getAllByText(/Anna Svensson/).filter(el => 
       el.textContent?.includes('Anna Svensson') && !el.textContent?.includes('Data Protection')
     );
     expect(annaMessages.length).toBeGreaterThan(0);
 
-    const userMessages = screen.getAllByText(/User/);
     expect(userMessages.length).toBeGreaterThan(0);
   });
 
@@ -283,7 +271,6 @@ describe('DialogueScene', () => {
     );
 
     // Progress should start at 25% (1 of 4 messages)
-    const progressBar = screen.getByRole('progressbar');
     expect(progressBar).toHaveAttribute('aria-valuenow', '25');
   });
 
@@ -298,7 +285,6 @@ describe('DialogueScene', () => {
     vi.advanceTimersByTime(2000);
 
     await waitFor(() => {
-      const progressBar = screen.getByRole('progressbar');
       expect(progressBar).toHaveAttribute('aria-valuenow', '50');
     });
   });
@@ -337,7 +323,6 @@ describe('DialogueScene', () => {
     expect(screen.getByRole('progressbar')).toHaveAttribute('aria-label', 'Dialogue progress');
     
     // Skip button should have proper aria-label
-    const skipButton = screen.getByText('Skip to end');
     expect(skipButton).toHaveAttribute('aria-label', 'Skip to end of dialogue');
   });
 
@@ -384,7 +369,6 @@ describe('DialogueScene', () => {
       </TestWrapper>
     );
 
-    const avatarImg = screen.getByAltText('Anna Svensson avatar');
     
     // Simulate image load error
     fireEvent.error(avatarImg);

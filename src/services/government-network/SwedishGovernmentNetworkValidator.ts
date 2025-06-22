@@ -393,12 +393,10 @@ export class SwedishGovernmentNetworkValidator extends EventEmitter {
   async validateAllGovernmentNetworks(): Promise<Map<string, GovernmentNetworkValidationResult>> {
     console.log('🏛️ Validating all Swedish government networks...');
 
-    const results = new Map<string, GovernmentNetworkValidationResult>();
 
     // Validate each government network
     for (const [networkName, networkSpec] of Object.entries(this.specs.networks)) {
       console.log(`   🌐 Validating ${networkName}...`);
-      const result = await this.validateGovernmentNetwork(networkName, networkSpec);
       results.set(networkName, result);
       this.validationResults.push(result);
     }
@@ -420,21 +418,16 @@ export class SwedishGovernmentNetworkValidator extends EventEmitter {
     networkName: string,
     networkSpec: GovernmentNetworkSpec
   ): Promise<GovernmentNetworkValidationResult> {
-    const startTime = Date.now();
 
     console.log(`     🔍 Conducting comprehensive validation for ${networkName}...`);
 
     // Performance validation
-    const performanceValidation = await this.validateNetworkPerformance(networkSpec);
     
     // Security validation
-    const securityValidation = await this.validateNetworkSecurity(networkSpec);
     
     // Compliance validation
-    const complianceValidation = await this.validateNetworkCompliance(networkSpec);
     
     // Demo readiness assessment
-    const demoReadiness = await this.assessNetworkDemoReadiness(
       networkSpec,
       performanceValidation,
       securityValidation,
@@ -442,7 +435,6 @@ export class SwedishGovernmentNetworkValidator extends EventEmitter {
     );
     
     // Issue identification
-    const issues = await this.identifyNetworkIssues(
       networkSpec,
       performanceValidation,
       securityValidation,
@@ -450,17 +442,14 @@ export class SwedishGovernmentNetworkValidator extends EventEmitter {
     );
     
     // Generate recommendations
-    const recommendations = this.generateNetworkRecommendations(issues, networkSpec);
     
     // Calculate overall compliance
-    const overallCompliance = this.calculateOverallCompliance(
       performanceValidation,
       securityValidation,
       complianceValidation
     );
     
     // Determine government approval
-    const governmentApproved = this.assessGovernmentApproval(
       networkSpec,
       overallCompliance,
       issues,
@@ -492,24 +481,12 @@ export class SwedishGovernmentNetworkValidator extends EventEmitter {
     console.log(`       ⚡ Validating performance for ${networkSpec.securityLevel} network...`);
 
     // Simulate comprehensive network performance testing
-    const securityOverhead = this.calculateSecurityOverhead(networkSpec.securityLevel);
     
-    const latency = networkSpec.performanceTargets.maxLatency * (0.7 + Math.random() * 0.5) + securityOverhead;
-    const bandwidth = networkSpec.performanceTargets.minBandwidth * (0.9 + Math.random() * 0.3);
-    const packetLoss = networkSpec.performanceTargets.maxPacketLoss * (0.1 + Math.random() * 0.8);
-    const uptime = networkSpec.performanceTargets.minUptime + Math.random() * (100 - networkSpec.performanceTargets.minUptime) * 0.1;
-    const jitter = networkSpec.performanceTargets.maxJitter * (0.2 + Math.random() * 0.6);
 
     // Calculate performance score
-    const latencyScore = Math.max(0, 100 - (latency / networkSpec.performanceTargets.maxLatency) * 100);
-    const bandwidthScore = Math.min(100, (bandwidth / networkSpec.performanceTargets.minBandwidth) * 100);
-    const lossScore = Math.max(0, 100 - (packetLoss / networkSpec.performanceTargets.maxPacketLoss) * 100);
-    const uptimeScore = (uptime / networkSpec.performanceTargets.minUptime) * 100;
-    const jitterScore = Math.max(0, 100 - (jitter / networkSpec.performanceTargets.maxJitter) * 100);
 
-    const performanceScore = (latencyScore + bandwidthScore + lossScore + uptimeScore + jitterScore) / 5;
 
-    const targetsMet = (
+    const _targetsMet = (
       latency <= networkSpec.performanceTargets.maxLatency &&
       bandwidth >= networkSpec.performanceTargets.minBandwidth &&
       packetLoss <= networkSpec.performanceTargets.maxPacketLoss &&
@@ -535,27 +512,11 @@ export class SwedishGovernmentNetworkValidator extends EventEmitter {
     console.log(`       🔒 Validating security for ${networkSpec.securityLevel} network...`);
 
     // Simulate comprehensive security validation
-    const encryptionValidated = this.validateEncryption(networkSpec.securityRequirements.encryptionInTransit);
-    const authenticationVerified = this.validateAuthentication(networkSpec.securityRequirements.authenticationMethod);
-    const accessControlValidated = networkSpec.accessRequirements.length > 0;
-    const auditLoggingActive = networkSpec.securityRequirements.accessLogging;
-    const intrusionDetectionActive = networkSpec.securityRequirements.intrusionDetection;
-    const firewallConfigured = networkSpec.securityRequirements.firewallRequirements.length > 0;
 
     // Calculate security score
-    const securityChecks = [
-      encryptionValidated,
-      authenticationVerified,
-      accessControlValidated,
-      auditLoggingActive,
-      intrusionDetectionActive,
-      firewallConfigured
-    ];
 
-    const securityScore = (securityChecks.filter(check => check).length / securityChecks.length) * 100;
     
     // Simulate vulnerability assessment
-    const vulnerabilities = this.simulateVulnerabilityAssessment(networkSpec.securityLevel);
 
     return {
       encryptionValidated,
@@ -576,22 +537,9 @@ export class SwedishGovernmentNetworkValidator extends EventEmitter {
     console.log(`       📋 Validating compliance for ${networkSpec.name}...`);
 
     // Simulate comprehensive compliance validation
-    const personuppgiftslag = this.validatePersonalDataAct(networkSpec);
-    const offentlighetslagen = this.validateFreedomOfInformationAct(networkSpec);
-    const arkivlagen = this.validateArchiveAct(networkSpec);
-    const sakerhetslagen = this.validateSecurityAct(networkSpec);
-    const gdprCompliance = this.validateGDPRCompliance(networkSpec);
 
     // Calculate compliance score
-    const complianceChecks = [
-      personuppgiftslag,
-      offentlighetslagen,
-      arkivlagen,
-      sakerhetslagen,
-      gdprCompliance
-    ];
 
-    const complianceScore = (complianceChecks.filter(check => check).length / complianceChecks.length) * 100;
 
     return {
       personuppgiftslag,
@@ -614,17 +562,9 @@ export class SwedishGovernmentNetworkValidator extends EventEmitter {
   ): Promise<NetworkDemoReadiness> {
     console.log(`       🎭 Assessing demo readiness for ${networkSpec.name}...`);
 
-    const performanceReady = performance.targetsMet && performance.performanceScore >= 85;
-    const securityReady = security.securityScore >= 90 && security.vulnerabilities === 0;
-    const complianceReady = compliance.complianceScore >= 95;
-    const loadCapacityReady = performance.bandwidth >= this.specs.performance.bandwidthRequirements.recommended;
-    const monitoringReady = networkSpec.monitoringLevel === 'comprehensive' || networkSpec.monitoringLevel === 'enhanced';
 
-    const overallReady = performanceReady && securityReady && complianceReady && loadCapacityReady && monitoringReady;
 
     // Calculate readiness score
-    const readinessFactors = [performanceReady, securityReady, complianceReady, loadCapacityReady, monitoringReady];
-    const readinessScore = (readinessFactors.filter(factor => factor).length / readinessFactors.length) * 100;
 
     return {
       performanceReady,
@@ -643,50 +583,38 @@ export class SwedishGovernmentNetworkValidator extends EventEmitter {
   async executeGovernmentLoadTesting(networkName: string): Promise<GovernmentNetworkValidationResult> {
     console.log(`🚀 Executing government load testing on ${networkName}...`);
 
-    const networkSpec = this.specs.networks[networkName as keyof typeof this.specs.networks];
     if (!networkSpec) {
       throw new Error(`Network ${networkName} not found in specifications`);
     }
 
     // Simulate government-scale load testing
-    const loadTestStartTime = Date.now();
     
     console.log(`   📊 Testing ${networkName} with government-scale concurrent load...`);
     
     // Simulate load testing with government-specific parameters
-    const concurrentUsers = this.calculateGovernmentConcurrentUsers(networkSpec);
-    const loadDuration = 30; // minutes
     
     console.log(`   👥 Testing ${concurrentUsers} concurrent government users for ${loadDuration} minutes...`);
 
     // Simulate load testing results
-    const performanceUnderLoad = await this.simulateLoadTestPerformance(networkSpec, concurrentUsers);
-    const securityUnderLoad = await this.simulateLoadTestSecurity(networkSpec, concurrentUsers);
-    const complianceUnderLoad = await this.validateNetworkCompliance(networkSpec);
     
-    const demoReadiness = await this.assessNetworkDemoReadiness(
       networkSpec,
       performanceUnderLoad,
       securityUnderLoad,
       complianceUnderLoad
     );
     
-    const issues = await this.identifyLoadTestIssues(
       networkSpec,
       performanceUnderLoad,
       securityUnderLoad,
       concurrentUsers
     );
     
-    const recommendations = this.generateLoadTestRecommendations(issues, networkSpec, concurrentUsers);
     
-    const overallCompliance = this.calculateOverallCompliance(
       performanceUnderLoad,
       securityUnderLoad,
       complianceUnderLoad
     );
     
-    const governmentApproved = this.assessGovernmentApproval(
       networkSpec,
       overallCompliance,
       issues,
@@ -718,9 +646,7 @@ export class SwedishGovernmentNetworkValidator extends EventEmitter {
    * Get Government Network Validation Summary
    */
   getGovernmentNetworkSummary() {
-    const totalNetworks = this.validationResults.length;
-    const approvedNetworks = this.validationResults.filter(r => r.governmentApproved).length;
-    const overallReadiness = totalNetworks > 0 ? this.calculateOverallReadiness(
+    const _overallReadiness = totalNetworks > 0 ? this.calculateOverallReadiness(
       new Map(this.validationResults.map(r => [r.networkName, r]))
     ) : 0;
 
@@ -792,34 +718,18 @@ export class SwedishGovernmentNetworkValidator extends EventEmitter {
 
   // Helper methods for validation
   private calculateSecurityOverhead(securityLevel: string): number {
-    const overheads = {
-      'open': 0,
-      'restricted': 10,
-      'confidential': 25,
-      'secret': 50,
-      'top-secret': 100
-    };
     return overheads[securityLevel as keyof typeof overheads] || 0;
   }
 
   private validateEncryption(encryptionStandard: string): boolean {
-    const approvedStandards = this.specs.security.encryptionStandards;
     return approvedStandards.some(standard => encryptionStandard.includes(standard));
   }
 
   private validateAuthentication(authMethod: string): boolean {
-    const governmentMethods = ['government-pki', 'government-saml', 'multi-factor-classified'];
     return governmentMethods.some(method => authMethod.includes(method));
   }
 
   private simulateVulnerabilityAssessment(securityLevel: string): number {
-    const baseVulnerabilities = {
-      'open': 3,
-      'restricted': 1,
-      'confidential': 0,
-      'secret': 0,
-      'top-secret': 0
-    };
     return baseVulnerabilities[securityLevel as keyof typeof baseVulnerabilities] || 0;
   }
 
@@ -850,13 +760,6 @@ export class SwedishGovernmentNetworkValidator extends EventEmitter {
 
   // Load testing simulation methods
   private calculateGovernmentConcurrentUsers(networkSpec: GovernmentNetworkSpec): number {
-    const userMultipliers = {
-      'riksdag': 50, // Parliament users
-      'regeringskansliet': 100, // Government office users
-      'myndighetsnat': 75, // Agency users
-      'kommunalnat': 25, // Municipal users
-      'sakranat': 10 // Classified users (limited)
-    };
     return userMultipliers[networkSpec.name.split(' ')[0] as keyof typeof userMultipliers] || 25;
   }
 
@@ -865,7 +768,6 @@ export class SwedishGovernmentNetworkValidator extends EventEmitter {
     concurrentUsers: number
   ): Promise<NetworkPerformanceResult> {
     // Simulate performance degradation under load
-    const loadFactor = Math.min(2.0, 1.0 + (concurrentUsers / 100));
     
     return {
       latency: networkSpec.performanceTargets.maxLatency * loadFactor * (0.8 + Math.random() * 0.4),
@@ -883,10 +785,8 @@ export class SwedishGovernmentNetworkValidator extends EventEmitter {
     concurrentUsers: number
   ): Promise<NetworkSecurityResult> {
     // Security typically maintains under load but with monitoring overhead
-    const securityValidation = await this.validateNetworkSecurity(networkSpec);
     
     // Minor security score reduction under high load due to monitoring overhead
-    const loadImpact = Math.min(5, concurrentUsers / 20);
     securityValidation.securityScore = Math.max(85, securityValidation.securityScore - loadImpact);
     
     return securityValidation;
@@ -986,7 +886,6 @@ export class SwedishGovernmentNetworkValidator extends EventEmitter {
   }
 
   private generateNetworkRecommendations(issues: NetworkIssue[], networkSpec: GovernmentNetworkSpec): string[] {
-    const recommendations = issues.map(issue => issue.recommendation);
     
     // Add network-specific recommendations
     if (networkSpec.securityLevel === 'secret' || networkSpec.securityLevel === 'top-secret') {
@@ -1005,7 +904,6 @@ export class SwedishGovernmentNetworkValidator extends EventEmitter {
     networkSpec: GovernmentNetworkSpec,
     concurrentUsers: number
   ): string[] {
-    const recommendations = issues.map(issue => issue.recommendation);
     
     // Add load-specific recommendations
     recommendations.push(`Optimize for ${concurrentUsers} concurrent government users`);
@@ -1031,8 +929,6 @@ export class SwedishGovernmentNetworkValidator extends EventEmitter {
     issues: NetworkIssue[],
     demoReadiness: NetworkDemoReadiness
   ): boolean {
-    const criticalIssues = issues.filter(i => i.severity === 'critical').length;
-    const governmentCriticalIssues = issues.filter(i => i.governmentCritical && !i.resolved).length;
     
     return (
       overallCompliance >= 90 &&
@@ -1043,7 +939,6 @@ export class SwedishGovernmentNetworkValidator extends EventEmitter {
   }
 
   private calculateOverallReadiness(results: Map<string, GovernmentNetworkValidationResult>): number {
-    const scores = Array.from(results.values()).map(r => r.demoReadiness.readinessScore);
     return scores.length > 0 ? scores.reduce((sum, score) => sum + score, 0) / scores.length : 0;
   }
 }

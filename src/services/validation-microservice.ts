@@ -133,15 +133,12 @@ export class ValidationMicroservice {
    * Process validation request
    */
   private async processValidation(request: ValidationRequest): Promise<void> {
-    const startTime = Date.now();
     
     try {
       this.metrics.processingJobs++;
       this.processingQueue.delete(request.id);
 
       // Check cache first
-      const cacheKey = `validation:${this.generateContentHash(request.content)}`;
-      const cachedResult = await this.redis.get<ValidationResult>(cacheKey);
       
       if (cachedResult) {
         const response: ValidationResponse = {
@@ -161,10 +158,8 @@ export class ValidationMicroservice {
       }
 
       // Perform validation
-      const result = await this.performValidation(request);
       
       // Apply sanitization pipeline
-      const sanitizedContent = await this.sanitizeContent(request.content, result);
 
       const response: ValidationResponse = {
         id: request.id,
@@ -246,7 +241,6 @@ export class ValidationMicroservice {
       return content;
     }
 
-    const sanitized = JSON.parse(JSON.stringify(content)); // Deep clone
 
     // Remove potentially harmful content
     if (sanitized && typeof sanitized === 'object') {
@@ -333,10 +327,8 @@ export class ValidationMicroservice {
    * Generate content hash for caching
    */
   private generateContentHash(content: unknown): string {
-    const str = JSON.stringify(content);
     let hash = 0;
     for (let i = 0; i < str.length; i++) {
-      const char = str.charCodeAt(i);
       hash = ((hash << 5) - hash) + char;
       hash = hash & hash;
     }
@@ -348,13 +340,10 @@ export class ValidationMicroservice {
    * Metrics updates
    */
   private updateAverageProcessingTime(newTime: number): void {
-    const total = this.metrics.averageProcessingTime * this.metrics.completedJobs;
     this.metrics.averageProcessingTime = (total + newTime) / (this.metrics.completedJobs + 1);
   }
 
   private updateCacheHitRate(hit: boolean): void {
-    const totalRequests = this.metrics.completedJobs + 1;
-    const currentHits = this.metrics.cacheHitRate * this.metrics.completedJobs;
     this.metrics.cacheHitRate = (currentHits + (hit ? 1 : 0)) / totalRequests;
   }
 
@@ -368,9 +357,6 @@ export class ValidationMicroservice {
   }
 
   private performHealthCheck(): void {
-    const queueSize = this.processingQueue.size;
-    const avgProcessingTime = this.metrics.averageProcessingTime;
-    const errorRate = this.metrics.failedJobs / (this.metrics.completedJobs + this.metrics.failedJobs || 1);
 
     if (queueSize > this.config.maxConcurrentValidations * 0.9) {
       this.healthStatus = 'degraded';
@@ -448,8 +434,6 @@ export class ValidationMicroservice {
     console.log(`Shutting down validation service ${this.serviceId}`);
     
     // Wait for current jobs to complete (with timeout)
-    const shutdownTimeout = 30000; // 30 seconds
-    const startTime = Date.now();
     
     while (this.processingQueue.size > 0 && (Date.now() - startTime) < shutdownTimeout) {
       await new Promise(resolve => setTimeout(resolve, 100));

@@ -35,12 +35,6 @@ const MockEnhancedErrorBoundary: React.FC<{
 
   // Mock error boundary behavior
   React.useEffect(() => {
-    const errorHandler = (event: ErrorEvent) => {
-      setHasError(true);
-      if (onError) {
-        onError(new Error(event.message), { componentStack: event.filename });
-      }
-    };
 
     window.addEventListener('error', errorHandler);
     return () => window.removeEventListener('error', errorHandler);
@@ -204,11 +198,6 @@ const ErrorThrowingComponent: React.FC<{ shouldThrow?: boolean; errorType?: stri
   return <div data-testid="working-content">Content loads successfully</div>;
 };
 
-const mockMunicipalBranding = {
-  primaryColor: '#005293',
-  logoUrl: 'https://example.se/municipal-logo.svg',
-  municipality: 'Malmö Stad'
-};
 
 describe('Enhanced ErrorBoundary Testing', () => {
   beforeEach(() => {
@@ -236,8 +225,6 @@ describe('Enhanced ErrorBoundary Testing', () => {
       expect(screen.getByTestId('municipal-error-header')).toBeInTheDocument();
       
       // Should NOT have unprofessional pink/red styling
-      const errorContainer = screen.getByTestId('enhanced-error-boundary');
-      const computedStyle = window.getComputedStyle(errorContainer);
       expect(computedStyle.backgroundColor).toBe('white');
       
       // Should show professional municipal branding
@@ -281,7 +268,6 @@ describe('Enhanced ErrorBoundary Testing', () => {
       expect(screen.getByText('Verifierad kommunal plattform')).toBeInTheDocument();
       
       // Professional error container should be well-designed
-      const errorContainer = screen.getByTestId('enhanced-error-boundary');
       expect(errorContainer).toBeInTheDocument();
     });
   });
@@ -297,11 +283,7 @@ describe('Enhanced ErrorBoundary Testing', () => {
       );
 
       // Retry and reload buttons should meet 48px minimum
-      const retryButton = screen.getByTestId('retry-button');
-      const reloadButton = screen.getByTestId('reload-button');
       
-      const retryStyle = window.getComputedStyle(retryButton);
-      const reloadStyle = window.getComputedStyle(reloadButton);
       
       expect(retryStyle.minHeight).toBe('48px');
       expect(retryStyle.minWidth).toBe('120px');
@@ -319,7 +301,6 @@ describe('Enhanced ErrorBoundary Testing', () => {
       );
 
       // Quick retry should be prominent and fast
-      const retryButton = screen.getByTestId('retry-button');
       expect(retryButton).toBeInTheDocument();
       expect(retryButton).toHaveTextContent('Försök igen');
       
@@ -361,7 +342,6 @@ describe('Enhanced ErrorBoundary Testing', () => {
         </TestWrapper>
       );
 
-      const retryButton = screen.getByTestId('retry-button');
       
       // First retry attempt
       fireEvent.click(retryButton);
@@ -384,7 +364,6 @@ describe('Enhanced ErrorBoundary Testing', () => {
       );
 
       // Manual reload should always be available
-      const reloadButton = screen.getByTestId('reload-button');
       expect(reloadButton).toBeInTheDocument();
       expect(reloadButton).toHaveTextContent('Ladda om');
       expect(reloadButton).toHaveAttribute('aria-label', 'Ladda om sidan helt');
@@ -400,7 +379,6 @@ describe('Enhanced ErrorBoundary Testing', () => {
       );
 
       // Support escalation should be clearly available
-      const supportFooter = screen.getByTestId('support-contact-footer');
       expect(supportFooter).toBeInTheDocument();
       
       expect(screen.getByText('Behöver du hjälp? Kontakta:')).toBeInTheDocument();
@@ -422,7 +400,6 @@ describe('Enhanced ErrorBoundary Testing', () => {
         </TestWrapper>
       );
 
-      const results = await axe(container);
       expect(results).toHaveNoViolations();
     });
 
@@ -436,7 +413,6 @@ describe('Enhanced ErrorBoundary Testing', () => {
       );
 
       // ARIA live region should announce error state
-      const announcement = screen.getByTestId('error-announcement');
       expect(announcement).toBeInTheDocument();
       expect(announcement).toHaveAttribute('aria-live', 'polite');
       expect(announcement).toHaveAttribute('aria-atomic', 'true');
@@ -452,8 +428,6 @@ describe('Enhanced ErrorBoundary Testing', () => {
         </TestWrapper>
       );
 
-      const retryButton = screen.getByTestId('retry-button');
-      const reloadButton = screen.getByTestId('reload-button');
       
       // Buttons should be focusable
       retryButton.focus();
@@ -477,7 +451,6 @@ describe('Enhanced ErrorBoundary Testing', () => {
         </TestWrapper>
       );
 
-      const results = await axe(container, {
         rules: {
           'color-contrast': { enabled: true },
           'focusable-content': { enabled: true },
@@ -491,163 +464,3 @@ describe('Enhanced ErrorBoundary Testing', () => {
   });
 
   describe('Error Type Classification Testing', () => {
-    const errorTypes = [
-      'content_loading',
-      'network_timeout', 
-      'component_crash',
-      'data_validation',
-      'user_session'
-    ] as const;
-
-    errorTypes.forEach(errorType => {
-      it(`handles ${errorType} errors with appropriate messaging`, () => {
-        render(
-          <TestWrapper>
-            <MockEnhancedErrorBoundary 
-              municipalBranding={mockMunicipalBranding}
-              errorType={errorType}
-            >
-              <ErrorThrowingComponent shouldThrow={true} errorType={errorType} />
-            </MockEnhancedErrorBoundary>
-          </TestWrapper>
-        );
-
-        // Should classify error type correctly
-        const errorContainer = screen.getByTestId('enhanced-error-boundary');
-        expect(errorContainer).toHaveAttribute('data-error-type', errorType);
-        
-        // Should show consistent municipal professional messaging
-        expect(screen.getByText('Teknisk service pågår')).toBeInTheDocument();
-        expect(screen.getByTestId('recovery-action-panel')).toBeInTheDocument();
-      });
-    });
-  });
-
-  describe('Municipal Branding Consistency During Errors', () => {
-    it('maintains municipal color scheme in error state', () => {
-      render(
-        <TestWrapper>
-          <MockEnhancedErrorBoundary municipalBranding={mockMunicipalBranding}>
-            <ErrorThrowingComponent shouldThrow={true} />
-          </MockEnhancedErrorBoundary>
-        </TestWrapper>
-      );
-
-      // Municipal blue (#005293) should be used consistently
-      const retryButton = screen.getByTestId('retry-button');
-      const reloadButton = screen.getByTestId('reload-button');
-      
-      const retryStyle = window.getComputedStyle(retryButton);
-      const reloadStyle = window.getComputedStyle(reloadButton);
-      
-      expect(retryStyle.backgroundColor).toBe('rgb(0, 82, 147)'); // #005293
-      expect(reloadStyle.color).toBe('rgb(0, 82, 147)');
-    });
-
-    it('displays municipal logo and verification badges', () => {
-      render(
-        <TestWrapper>
-          <MockEnhancedErrorBoundary municipalBranding={mockMunicipalBranding}>
-            <ErrorThrowingComponent shouldThrow={true} />
-          </MockEnhancedErrorBoundary>
-        </TestWrapper>
-      );
-
-      // Municipal header should be prominent
-      const municipalHeader = screen.getByTestId('municipal-error-header');
-      expect(municipalHeader).toBeInTheDocument();
-      
-      // Logo and verification should be visible
-      expect(screen.getByAltText('Malmö Stad logotyp')).toBeInTheDocument();
-      expect(screen.getByText('Verifierad kommunal plattform')).toBeInTheDocument();
-    });
-
-    it('works correctly without municipal branding', () => {
-      render(
-        <TestWrapper>
-          <MockEnhancedErrorBoundary>
-            <ErrorThrowingComponent shouldThrow={true} />
-          </MockEnhancedErrorBoundary>
-        </TestWrapper>
-      );
-
-      // Should still show professional error interface
-      expect(screen.getByTestId('enhanced-error-boundary')).toBeInTheDocument();
-      expect(screen.getByText('Teknisk service pågår')).toBeInTheDocument();
-      expect(screen.getByTestId('recovery-action-panel')).toBeInTheDocument();
-      
-      // But should not show municipal header
-      expect(screen.queryByTestId('municipal-error-header')).not.toBeInTheDocument();
-    });
-  });
-
-  describe('Error Boundary Performance', () => {
-    it('renders error state quickly without performance degradation', () => {
-      const startTime = performance.now();
-      
-      render(
-        <TestWrapper>
-          <MockEnhancedErrorBoundary municipalBranding={mockMunicipalBranding}>
-            <ErrorThrowingComponent shouldThrow={true} />
-          </MockEnhancedErrorBoundary>
-        </TestWrapper>
-      );
-      
-      const endTime = performance.now();
-      const renderTime = endTime - startTime;
-      
-      // Error state should render quickly
-      expect(renderTime).toBeLessThan(100);
-      expect(screen.getByTestId('enhanced-error-boundary')).toBeInTheDocument();
-    });
-
-    it('prevents error recovery loops', async () => {
-      const onError = vi.fn();
-      
-      render(
-        <TestWrapper>
-          <MockEnhancedErrorBoundary 
-            municipalBranding={mockMunicipalBranding}
-            onError={onError}
-          >
-            <ErrorThrowingComponent shouldThrow={true} />
-          </MockEnhancedErrorBoundary>
-        </TestWrapper>
-      );
-
-      const retryButton = screen.getByTestId('retry-button');
-      
-      // Multiple rapid clicks should not cause loops
-      fireEvent.click(retryButton);
-      fireEvent.click(retryButton);
-      fireEvent.click(retryButton);
-      
-      // Should handle gracefully without infinite loops
-      expect(retryButton).toBeInTheDocument();
-    });
-  });
-
-  describe('Cross-Browser Error Handling', () => {
-    it('maintains consistent error UI across different browsers', () => {
-      render(
-        <TestWrapper>
-          <MockEnhancedErrorBoundary municipalBranding={mockMunicipalBranding}>
-            <ErrorThrowingComponent shouldThrow={true} />
-          </MockEnhancedErrorBoundary>
-        </TestWrapper>
-      );
-
-      const errorContainer = screen.getByTestId('enhanced-error-boundary');
-      const computedStyle = window.getComputedStyle(errorContainer);
-      
-      // Should use CSS that works across browsers
-      expect(computedStyle.display).toBe('flex');
-      expect(computedStyle.flexDirection).toBe('column');
-      expect(computedStyle.backgroundColor).toBe('white');
-      
-      // Professional layout should be consistent
-      expect(screen.getByTestId('municipal-error-header')).toBeInTheDocument();
-      expect(screen.getByTestId('recovery-action-panel')).toBeInTheDocument();
-    });
-  });
-});

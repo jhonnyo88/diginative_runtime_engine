@@ -96,7 +96,6 @@ export class AdvancedErrorRecovery {
     errorInfo: Record<string, unknown>,
     userContext: MunicipalUserContext
   ): Promise<RecoveryResult> {
-    const errorContext = this.createErrorContext(error, errorInfo, userContext);
     
     console.log(`🚨 Municipal error detected: ${errorContext.errorType} in ${errorContext.component}`);
     console.log(`🏛️ Preserving municipal work for ${userContext.municipality}`);
@@ -110,11 +109,9 @@ export class AdvancedErrorRecovery {
     }
     
     // Start recovery process
-    const recoveryPromise = this.executeRecoveryStrategy(errorContext);
     this.activeRecoveries.set(errorContext.errorId, recoveryPromise);
     
     try {
-      const result = await recoveryPromise;
       this.recordErrorHistory(errorContext, result);
       return result;
     } finally {
@@ -168,14 +165,12 @@ export class AdvancedErrorRecovery {
   async restorePreservedWork(sessionId: string): Promise<MunicipalWorkState | null> {
     try {
       // Check memory first
-      const memoryBackup = this.workStateBackups.get(sessionId);
       if (memoryBackup && this.isWorkStateValid(memoryBackup)) {
         console.log(`🔄 Restoring municipal work from memory for session ${sessionId}`);
         return memoryBackup;
       }
 
       // Check persistent storage
-      const persistedWork = await this.loadPersistedWorkState(sessionId);
       if (persistedWork && this.isWorkStateValid(persistedWork)) {
         console.log(`🔄 Restoring municipal work from storage for session ${sessionId}`);
         return persistedWork;
@@ -200,14 +195,12 @@ export class AdvancedErrorRecovery {
     averageRecoveryTime: number;
     successRate: number;
   } {
-    const recentErrors = this.errorHistory.slice(-50);
-    const successfulRecoveries = recentErrors.filter(e => e.recoveryStrategy.type !== 'manual_intervention');
     
-    const averageRecoveryTime = recentErrors.length > 0 
+    const _averageRecoveryTime = recentErrors.length > 0 
       ? recentErrors.reduce((sum, e) => sum + (e.recoveryStrategy.recoveryTimeout || 0), 0) / recentErrors.length
       : 0;
     
-    const successRate = recentErrors.length > 0 
+    const _successRate = recentErrors.length > 0 
       ? (successfulRecoveries.length / recentErrors.length) * 100 
       : 100;
 
@@ -224,8 +217,6 @@ export class AdvancedErrorRecovery {
    * Clean up old preserved work states
    */
   async cleanupPreservedWork(): Promise<void> {
-    const now = Date.now();
-    const maxAge = 24 * 60 * 60 * 1000; // 24 hours
 
     // Clean memory backups
     for (const [sessionId, workState] of this.workStateBackups.entries()) {
@@ -247,10 +238,6 @@ export class AdvancedErrorRecovery {
     errorInfo: Record<string, unknown>,
     userContext: MunicipalUserContext
   ): ErrorContext {
-    const errorId = this.generateErrorId();
-    const errorType = this.classifyError(error);
-    const severity = this.assessErrorSeverity(error, errorType);
-    const recoveryStrategy = this.selectRecoveryStrategy(errorType, severity);
 
     return {
       errorId,
@@ -264,7 +251,6 @@ export class AdvancedErrorRecovery {
   }
 
   private async executeRecoveryStrategy(context: ErrorContext): Promise<RecoveryResult> {
-    const startTime = Date.now();
     
     try {
       switch (context.recoveryStrategy.type) {
@@ -310,7 +296,6 @@ export class AdvancedErrorRecovery {
   private async executeStateRollback(context: ErrorContext): Promise<RecoveryResult> {
     console.log(`⏮️ Executing state rollback for ${context.userContext.hubSessionId}`);
     
-    const preservedWork = await this.restorePreservedWork(context.userContext.hubSessionId);
     
     return {
       success: preservedWork !== null,
@@ -372,7 +357,6 @@ export class AdvancedErrorRecovery {
     errorType: ErrorContext['errorType'],
     severity: ErrorContext['severity']
   ): RecoveryStrategy {
-    const strategies = this.recoveryStrategies.get(`${errorType}_${severity}`);
     
     return strategies || {
       type: 'automatic_retry',
@@ -429,9 +413,7 @@ export class AdvancedErrorRecovery {
 
   private async loadPreservedWorkStates(): Promise<void> {
     try {
-      const stored = localStorage.getItem(this.WORK_PRESERVATION_KEY);
       if (stored) {
-        const parsed = JSON.parse(stored);
         this.workStateBackups = new Map(parsed.workStates || []);
         console.log(`📱 Loaded ${this.workStateBackups.size} preserved work states`);
       }
@@ -442,8 +424,6 @@ export class AdvancedErrorRecovery {
 
   private async persistWorkState(workState: MunicipalWorkState): Promise<void> {
     try {
-      const current = localStorage.getItem(this.WORK_PRESERVATION_KEY);
-      const data = current ? JSON.parse(current) : { workStates: [] };
       
       data.workStates = Array.from(this.workStateBackups.entries());
       
@@ -455,10 +435,7 @@ export class AdvancedErrorRecovery {
 
   private async loadPersistedWorkState(sessionId: string): Promise<MunicipalWorkState | null> {
     try {
-      const stored = localStorage.getItem(this.WORK_PRESERVATION_KEY);
       if (stored) {
-        const parsed = JSON.parse(stored);
-        const workStates = new Map(parsed.workStates || []);
         return workStates.get(sessionId) || null;
       }
     } catch (error) {
@@ -469,12 +446,7 @@ export class AdvancedErrorRecovery {
 
   private async cleanupPersistedWorkStates(): Promise<void> {
     try {
-      const stored = localStorage.getItem(this.WORK_PRESERVATION_KEY);
       if (stored) {
-        const parsed = JSON.parse(stored);
-        const workStates = new Map(parsed.workStates || []);
-        const now = Date.now();
-        const maxAge = 24 * 60 * 60 * 1000; // 24 hours
         
         for (const [sessionId, workState] of workStates.entries()) {
           if (now - workState.timestamp > maxAge) {
@@ -491,8 +463,6 @@ export class AdvancedErrorRecovery {
   }
 
   private isWorkStateValid(workState: MunicipalWorkState): boolean {
-    const now = Date.now();
-    const maxAge = 24 * 60 * 60 * 1000; // 24 hours
     
     return workState && 
            workState.sessionId && 
@@ -519,4 +489,3 @@ export class AdvancedErrorRecovery {
 }
 
 // Export singleton instance
-export const advancedErrorRecovery = new AdvancedErrorRecovery();

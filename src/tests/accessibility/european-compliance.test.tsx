@@ -45,12 +45,11 @@ const COMPLIANCE_STANDARDS: ComplianceStandard[] = [
         level: 'A',
         description: 'All functionality available from keyboard',
         testFunction: async (container) => {
-          const focusableElements = container.querySelectorAll(
+          const _focusableElements = container.querySelectorAll(
             'a, button, input, select, textarea, [tabindex]:not([tabindex="-1"])'
           );
           return focusableElements.length > 0 && 
             Array.from(focusableElements).every(el => {
-              const tabindex = el.getAttribute('tabindex');
               return tabindex === null || parseInt(tabindex) >= 0;
             });
         }
@@ -63,9 +62,6 @@ const COMPLIANCE_STANDARDS: ComplianceStandard[] = [
         testFunction: async (container) => {
           // This would use a real contrast checking library
           // For testing, we verify CSS variables are set correctly
-          const styles = getComputedStyle(container);
-          const textColor = styles.getPropertyValue('color');
-          const bgColor = styles.getPropertyValue('background-color');
           return textColor !== '' && bgColor !== '';
         }
       },
@@ -75,9 +71,7 @@ const COMPLIANCE_STANDARDS: ComplianceStandard[] = [
         level: 'AA',
         description: 'Focus indicator clearly visible',
         testFunction: async (container) => {
-          const focusableElements = container.querySelectorAll('button, a, input');
           return Array.from(focusableElements).every(el => {
-            const styles = getComputedStyle(el, ':focus');
             return styles.outline !== 'none' || styles.boxShadow !== 'none';
           });
         }
@@ -96,7 +90,6 @@ const COMPLIANCE_STANDARDS: ComplianceStandard[] = [
         level: 'A',
         description: 'Images have appropriate text alternatives',
         testFunction: async (container) => {
-          const images = container.querySelectorAll('img');
           return Array.from(images).every(img => 
             img.hasAttribute('alt') || img.hasAttribute('aria-label')
           );
@@ -109,12 +102,9 @@ const COMPLIANCE_STANDARDS: ComplianceStandard[] = [
         description: 'Valid code according to specifications',
         testFunction: async (container) => {
           // Check for basic HTML validity
-          const duplicateIds = new Set();
-          const ids = container.querySelectorAll('[id]');
           let hasDuplicates = false;
           
           ids.forEach(el => {
-            const id = el.getAttribute('id');
             if (id && duplicateIds.has(id)) {
               hasDuplicates = true;
             }
@@ -131,10 +121,7 @@ const COMPLIANCE_STANDARDS: ComplianceStandard[] = [
         description: 'No information by color alone',
         testFunction: async (container) => {
           // Check that error states have text/icon indicators
-          const errorElements = container.querySelectorAll('[aria-invalid="true"]');
           return Array.from(errorElements).every(el => {
-            const text = el.textContent || '';
-            const hasIcon = el.querySelector('[aria-label*="error"], [aria-label*="erreur"]');
             return text.match(/error|erreur|incorrect/i) || hasIcon !== null;
           });
         }
@@ -154,7 +141,6 @@ const COMPLIANCE_STANDARDS: ComplianceStandard[] = [
         description: 'Parsing - Well-formed markup',
         testFunction: async (container) => {
           // Check for proper nesting
-          const buttons = container.querySelectorAll('button');
           let properNesting = true;
           
           buttons.forEach(button => {
@@ -173,8 +159,6 @@ const COMPLIANCE_STANDARDS: ComplianceStandard[] = [
         description: 'Content reflows without horizontal scrolling',
         testFunction: async (container) => {
           // Check that container uses responsive units
-          const styles = getComputedStyle(container);
-          const width = styles.width;
           return !width.includes('px') || parseInt(width) <= 1280;
         }
       }
@@ -193,12 +177,10 @@ const COMPLIANCE_STANDARDS: ComplianceStandard[] = [
         description: 'Info and relationships programmatically determined',
         testFunction: async (container) => {
           // Check heading hierarchy
-          const headings = container.querySelectorAll('h1, h2, h3, h4, h5, h6');
           let previousLevel = 0;
           let properHierarchy = true;
           
           headings.forEach(heading => {
-            const level = parseInt(heading.tagName[1]);
             if (previousLevel > 0 && level > previousLevel + 1) {
               properHierarchy = false; // Skipped heading level
             }
@@ -214,12 +196,7 @@ const COMPLIANCE_STANDARDS: ComplianceStandard[] = [
         level: 'A',
         description: 'Labels or instructions provided for user input',
         testFunction: async (container) => {
-          const inputs = container.querySelectorAll('input, select, textarea');
           return Array.from(inputs).every(input => {
-            const id = input.getAttribute('id');
-            const hasLabel = id ? container.querySelector(`label[for="${id}"]`) : false;
-            const hasAriaLabel = input.hasAttribute('aria-label');
-            const hasAriaLabelledby = input.hasAttribute('aria-labelledby');
             return hasLabel || hasAriaLabel || hasAriaLabelledby;
           });
         }
@@ -235,9 +212,6 @@ const TestWrapper: React.FC<{ children: React.ReactNode }> = ({ children }) => (
   </ChakraThemeProvider>
 );
 
-const mockAnalytics = {
-  trackEvent: vi.fn()
-};
 
 // Test data for different cultural contexts
 const culturalGameManifests: Record<string, GameManifest> = {
@@ -337,7 +311,6 @@ describe('European Government Compliance Tests', () => {
   });
 
   describe('BITV 2.0 Compliance (German)', () => {
-    const bitvStandard = COMPLIANCE_STANDARDS[0];
 
     it('passes all BITV 2.0 Level A requirements', async () => {
       const { container } = render(
@@ -354,7 +327,6 @@ describe('European Government Compliance Tests', () => {
       );
 
       // Run axe accessibility tests with BITV rules
-      const results = await axe(container, {
         runOnly: {
           type: 'tag',
           values: ['wcag2a', 'wcag21a']
@@ -364,10 +336,8 @@ describe('European Government Compliance Tests', () => {
       expect(results).toHaveNoViolations();
 
       // Run custom BITV tests
-      const levelARequirements = bitvStandard.requirements.filter(r => r.level === 'A');
       
       for (const requirement of levelARequirements) {
-        const passed = await requirement.testFunction(container);
         expect(passed).toBe(true);
       }
     });
@@ -386,7 +356,6 @@ describe('European Government Compliance Tests', () => {
         </TestWrapper>
       );
 
-      const results = await axe(container, {
         runOnly: {
           type: 'tag',
           values: ['wcag2aa', 'wcag21aa']
@@ -396,10 +365,8 @@ describe('European Government Compliance Tests', () => {
       expect(results).toHaveNoViolations();
 
       // Run custom BITV AA tests
-      const levelAARequirements = bitvStandard.requirements.filter(r => r.level === 'AA');
       
       for (const requirement of levelAARequirements) {
-        const passed = await requirement.testFunction(container);
         expect(passed).toBe(true);
       }
     });
@@ -422,13 +389,11 @@ describe('European Government Compliance Tests', () => {
       expect(container.querySelector('[lang="de"]')).toBeTruthy();
       
       // Check for German-specific ARIA labels
-      const buttons = screen.getAllByRole('button');
       expect(buttons.length).toBeGreaterThan(0);
     });
   });
 
   describe('RGAA 4.1 Compliance (French)', () => {
-    const rgaaStandard = COMPLIANCE_STANDARDS[1];
 
     it('passes all RGAA 4.1 requirements', async () => {
       const { container } = render(
@@ -445,7 +410,6 @@ describe('European Government Compliance Tests', () => {
       );
 
       // Run RGAA-specific axe configuration
-      const results = await axe(container, {
         rules: {
           'color-contrast': { enabled: true },
           'image-alt': { enabled: true },
@@ -458,7 +422,6 @@ describe('European Government Compliance Tests', () => {
 
       // Run custom RGAA tests
       for (const requirement of rgaaStandard.requirements) {
-        const passed = await requirement.testFunction(container);
         expect(passed).toBe(true);
       }
     });
@@ -477,13 +440,11 @@ describe('European Government Compliance Tests', () => {
         </TestWrapper>
       );
 
-      const styles = getComputedStyle(container);
       
       // Marianne font should be used for French government
       expect(styles.fontFamily).toMatch(/Marianne|Inter/);
       
       // Minimum font size requirement
-      const fontSize = parseFloat(styles.fontSize);
       expect(fontSize).toBeGreaterThanOrEqual(14);
     });
 
@@ -503,13 +464,11 @@ describe('European Government Compliance Tests', () => {
 
       // Marie Dubois persona focuses on collaboration
       // Ensure collaborative features are accessible
-      const liveRegions = screen.getAllByRole('status');
       expect(liveRegions.length).toBeGreaterThan(0);
     });
   });
 
   describe('EN 301 549 Compliance (EU/Dutch)', () => {
-    const enStandard = COMPLIANCE_STANDARDS[2];
 
     it('passes all EN 301 549 requirements', async () => {
       const { container } = render(
@@ -526,7 +485,6 @@ describe('European Government Compliance Tests', () => {
       );
 
       // EN 301 549 aligns with WCAG 2.1 AA
-      const results = await axe(container, {
         runOnly: {
           type: 'tag',
           values: ['wcag2aa', 'wcag21aa', 'best-practice']
@@ -537,7 +495,6 @@ describe('European Government Compliance Tests', () => {
 
       // Run custom EN tests
       for (const requirement of enStandard.requirements) {
-        const passed = await requirement.testFunction(container);
         expect(passed).toBe(true);
       }
     });
@@ -566,8 +523,6 @@ describe('European Government Compliance Tests', () => {
       window.dispatchEvent(new Event('resize'));
 
       await waitFor(() => {
-        const scrollWidth = container.scrollWidth;
-        const clientWidth = container.clientWidth;
         expect(scrollWidth).toBeLessThanOrEqual(clientWidth + 10); // Allow small margin
       });
     });
@@ -588,7 +543,6 @@ describe('European Government Compliance Tests', () => {
 
       // Pieter van Berg persona values efficiency
       // Ensure minimal clicks to complete tasks
-      const interactiveElements = screen.getAllByRole('button');
       
       // Efficient design should have clear, minimal options
       expect(interactiveElements.length).toBeLessThanOrEqual(5);
@@ -596,7 +550,6 @@ describe('European Government Compliance Tests', () => {
   });
 
   describe('DOS 2018:1937 Compliance (Swedish)', () => {
-    const dosStandard = COMPLIANCE_STANDARDS[3];
 
     it('passes all DOS 2018:1937 requirements', async () => {
       const { container } = render(
@@ -612,7 +565,6 @@ describe('European Government Compliance Tests', () => {
         </TestWrapper>
       );
 
-      const results = await axe(container, {
         runOnly: {
           type: 'tag',
           values: ['wcag2aa', 'wcag21aa']
@@ -623,7 +575,6 @@ describe('European Government Compliance Tests', () => {
 
       // Run custom DOS tests
       for (const requirement of dosStandard.requirements) {
-        const passed = await requirement.testFunction(container);
         expect(passed).toBe(true);
       }
     });
@@ -643,16 +594,13 @@ describe('European Government Compliance Tests', () => {
       );
 
       // Test touch target sizes (48x48 minimum)
-      const buttons = container.querySelectorAll('button');
       
       buttons.forEach(button => {
-        const rect = button.getBoundingClientRect();
         expect(rect.width).toBeGreaterThanOrEqual(48);
         expect(rect.height).toBeGreaterThanOrEqual(48);
       });
 
       // Test mobile viewport
-      const viewport = container.querySelector('meta[name="viewport"]');
       if (viewport) {
         expect(viewport.getAttribute('content')).toContain('width=device-width');
       }
@@ -676,14 +624,12 @@ describe('European Government Compliance Tests', () => {
       expect(screen.getByText(/utbildning/i)).toBeInTheDocument();
       
       // Verify proper character encoding for Swedish characters
-      const swedishText = screen.getByText(/tillgänglig/i);
       expect(swedishText).toBeInTheDocument();
     });
   });
 
   describe('Cross-Standard Compliance Validation', () => {
     it('meets all European standards simultaneously', async () => {
-      const allStandards = COMPLIANCE_STANDARDS;
       const testResults: Record<string, boolean> = {};
 
       // Test with a universal game manifest
@@ -713,7 +659,6 @@ describe('European Government Compliance Tests', () => {
         let standardPassed = true;
         
         for (const requirement of standard.requirements) {
-          const passed = await requirement.testFunction(container);
           if (!passed) {
             standardPassed = false;
             console.error(`Failed ${standard.code} requirement: ${requirement.id}`);
@@ -730,15 +675,6 @@ describe('European Government Compliance Tests', () => {
     });
 
     it('generates compliance report', async () => {
-      const complianceReport = {
-        timestamp: new Date().toISOString(),
-        standards: [] as Array<{
-          code: string;
-          country: string;
-          compliance: number;
-          details: string[];
-        }>
-      };
 
       const { container } = render(
         <TestWrapper>
@@ -755,11 +691,8 @@ describe('European Government Compliance Tests', () => {
 
       // Generate report for each standard
       for (const standard of COMPLIANCE_STANDARDS) {
-        const passedRequirements = [];
-        const failedRequirements = [];
         
         for (const requirement of standard.requirements) {
-          const passed = await requirement.testFunction(container);
           if (passed) {
             passedRequirements.push(requirement.id);
           } else {
@@ -767,7 +700,6 @@ describe('European Government Compliance Tests', () => {
           }
         }
         
-        const compliance = (passedRequirements.length / standard.requirements.length) * 100;
         
         complianceReport.standards.push({
           code: standard.code,
@@ -806,7 +738,6 @@ describe('European Government Compliance Tests', () => {
 
       // Run all compliance tests
       try {
-        const results = await axe(container);
         if (results.violations.length > 0) {
           exitCode = 1;
         }
@@ -814,7 +745,6 @@ describe('European Government Compliance Tests', () => {
         // Run all custom tests
         for (const standard of COMPLIANCE_STANDARDS) {
           for (const requirement of standard.requirements) {
-            const passed = await requirement.testFunction(container);
             if (!passed) {
               exitCode = 1;
               break;
@@ -842,19 +772,8 @@ describe('European Government Compliance Tests', () => {
         </TestWrapper>
       );
 
-      const results = await axe(container);
       
       // Generate JUnit-style XML output for CI/CD
-      const junitOutput = {
-        testsuites: {
-          testsuite: {
-            name: 'European Compliance Tests',
-            tests: COMPLIANCE_STANDARDS.reduce((sum, s) => sum + s.requirements.length, 0),
-            failures: results.violations.length,
-            time: 0
-          }
-        }
-      };
 
       expect(junitOutput.testsuites.testsuite.failures).toBe(0);
     });
@@ -862,12 +781,6 @@ describe('European Government Compliance Tests', () => {
 
   describe('Automated Compliance Dashboard', () => {
     it('tracks compliance metrics over time', async () => {
-      const metrics = {
-        bitv: [] as number[],
-        rgaa: [] as number[],
-        en301549: [] as number[],
-        dos: [] as number[]
-      };
 
       // Simulate multiple test runs
       for (let i = 0; i < 3; i++) {
@@ -892,7 +805,6 @@ describe('European Government Compliance Tests', () => {
               passed++;
             }
           }
-          const compliance = (passed / standard.requirements.length) * 100;
           
           switch (standard.code) {
             case 'BITV 2.0':
@@ -922,10 +834,9 @@ describe('European Government Compliance Tests', () => {
     it('alerts on compliance regression', async () => {
       const alerts: string[] = [];
       
-      const checkCompliance = async (container: HTMLElement) => {
+      const _checkCompliance = async (container: HTMLElement) => {
         for (const standard of COMPLIANCE_STANDARDS) {
           for (const requirement of standard.requirements) {
-            const passed = await requirement.testFunction(container);
             if (!passed) {
               alerts.push(
                 `COMPLIANCE REGRESSION: ${standard.code} - ${requirement.id}: ${requirement.description}`

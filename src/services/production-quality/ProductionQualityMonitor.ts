@@ -199,7 +199,6 @@ export class ProductionQualityMonitor extends EventEmitter {
    */
   private async performQualityCheck(): Promise<void> {
     try {
-      const metrics = await this.collectQualityMetrics();
       this.metrics.push(metrics);
 
       // Keep only last 1000 metrics for performance
@@ -230,13 +229,8 @@ export class ProductionQualityMonitor extends EventEmitter {
    * Collect Comprehensive Quality Metrics
    */
   private async collectQualityMetrics(): Promise<ProductionQualityMetrics> {
-    const timestamp = Date.now();
     
     // Simulate comprehensive quality data collection
-    const performance = await this.collectPerformanceMetrics();
-    const compliance = await this.collectComplianceMetrics();
-    const reliability = await this.collectReliabilityMetrics();
-    const quality = await this.calculateQualityScore(performance, compliance, reliability);
 
     return {
       timestamp,
@@ -292,17 +286,11 @@ export class ProductionQualityMonitor extends EventEmitter {
    */
   private async calculateQualityScore(performance: Record<string, unknown>, compliance: Record<string, unknown>, reliability: Record<string, unknown>) {
     // Calculate weighted quality score
-    const performanceScore = this.calculatePerformanceScore(performance);
-    const complianceScore = (compliance.gdprCompliance + compliance.culturalAdaptation + 
+    const _complianceScore = (compliance.gdprCompliance + compliance.culturalAdaptation + 
                            compliance.municipalStandards + compliance.accessibility) / 4;
-    const reliabilityScore = (reliability.uptime + (100 - reliability.errorRate * 100)) / 2;
 
-    const overallScore = (performanceScore * 0.4 + complianceScore * 0.3 + reliabilityScore * 0.3);
     
     // Determine trend and risk
-    const trendDirection = this.calculateTrend();
-    const riskLevel = this.assessRiskLevel(overallScore, performance, compliance, reliability);
-    const improvementOpportunities = this.identifyImprovementOpportunities(performance, compliance, reliability);
 
     return {
       overallScore: Math.round(overallScore * 100) / 100,
@@ -317,9 +305,6 @@ export class ProductionQualityMonitor extends EventEmitter {
    */
   private calculatePerformanceScore(performance: Record<string, unknown>): number {
     // Calculate scores based on performance excellence (higher is better)
-    const hubScore = Math.max(0, Math.min(100, 100 * (this.specs.performance.hubLoadingThreshold / performance.hubLoadTime)));
-    const transitionScore = Math.max(0, Math.min(100, 100 * (this.specs.performance.worldTransitionThreshold / performance.worldTransitionTime)));
-    const memoryScore = Math.max(0, Math.min(100, 100 * (this.specs.performance.memoryConstraintThreshold / performance.memoryUsage)));
     
     return (hubScore + transitionScore + memoryScore) / 3;
   }
@@ -368,17 +353,12 @@ export class ProductionQualityMonitor extends EventEmitter {
   private async detectRegressionPatterns(): Promise<void> {
     if (this.metrics.length < 10) return; // Need sufficient data
 
-    const recent = this.metrics.slice(-10);
-    const baseline = this.metrics.slice(-20, -10);
 
     if (baseline.length === 0) return;
 
     // Calculate average performance over periods
-    const recentAvgHub = recent.reduce((sum, m) => sum + m.performance.hubLoadTime, 0) / recent.length;
-    const baselineAvgHub = baseline.reduce((sum, m) => sum + m.performance.hubLoadTime, 0) / baseline.length;
 
     // Detect regression (>5% degradation)
-    const degradation = (recentAvgHub - baselineAvgHub) / baselineAvgHub;
     
     if (degradation > this.specs.performance.regressionDetectionSensitivity) {
       await this.createAlert({
@@ -484,13 +464,7 @@ export class ProductionQualityMonitor extends EventEmitter {
     console.log(`🔧 Attempting auto-optimization for: ${issue}`);
     
     // Simulate optimization attempts
-    const optimizations = {
-      'hub_loading_regression': ['Cache optimization', 'Resource preloading', 'Bundle size reduction'],
-      'memory_pressure': ['Garbage collection', 'Memory cleanup', 'Resource deallocation'],
-      'performance_degradation': ['Performance tuning', 'Query optimization', 'Caching enhancement']
-    };
 
-    const actions = optimizations[issue] || ['General optimization'];
     
     for (const action of actions) {
       console.log(`   📈 Applying: ${action}`);
@@ -508,7 +482,6 @@ export class ProductionQualityMonitor extends EventEmitter {
     alert.autoResolutionAttempted = true;
     
     // Simulate auto-resolution based on category
-    const resolutionSuccess = Math.random() > 0.3; // 70% success rate
     
     if (resolutionSuccess) {
       alert.resolved = true;
@@ -544,8 +517,6 @@ export class ProductionQualityMonitor extends EventEmitter {
    * Get Quality Summary
    */
   getQualitySummary() {
-    const latest = this.getLatestMetrics();
-    const activeAlerts = this.getActiveAlerts();
     
     return {
       timestamp: Date.now(),
@@ -566,7 +537,6 @@ export class ProductionQualityMonitor extends EventEmitter {
     
     // Collect initial metrics for baseline
     for (let i = 0; i < 5; i++) {
-      const metrics = await this.collectQualityMetrics();
       this.metrics.push(metrics);
       await new Promise(resolve => setTimeout(resolve, 200));
     }
@@ -593,10 +563,7 @@ export class ProductionQualityMonitor extends EventEmitter {
   private calculateTrend(): 'improving' | 'stable' | 'declining' {
     if (this.metrics.length < 5) return 'stable';
     
-    const recent = this.metrics.slice(-5);
-    const scores = recent.map(m => m.quality.overallScore);
     
-    const trend = scores[scores.length - 1] - scores[0];
     
     if (trend > 1) return 'improving';
     if (trend < -1) return 'declining';
@@ -653,8 +620,6 @@ export class ProductionQualityMonitor extends EventEmitter {
   private determineOverallStatus(metrics: ProductionQualityMetrics | null, alerts: ProductionQualityAlert[]): string {
     if (!metrics) return 'unknown';
     
-    const criticalAlerts = alerts.filter(a => a.severity === 'critical').length;
-    const errorAlerts = alerts.filter(a => a.severity === 'error').length;
     
     if (criticalAlerts > 0) return 'critical';
     if (errorAlerts > 0) return 'degraded';

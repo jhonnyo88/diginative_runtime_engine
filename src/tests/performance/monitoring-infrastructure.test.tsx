@@ -15,41 +15,8 @@ import { InfrastructureMonitoring } from '../../services/infrastructure-monitori
 import { performance } from 'perf_hooks';
 
 // Municipal network profiles
-const MUNICIPAL_NETWORKS = [
-  {
-    name: 'Swedish Municipal 3G',
-    bandwidth: 384, // kbps
-    latency: 150, // ms
-    packetLoss: 2, // %
-  },
-  {
-    name: 'German Government Proxy',
-    bandwidth: 2048, // kbps
-    latency: 80, // ms
-    packetLoss: 0.5, // %
-  },
-  {
-    name: 'French Administrative Network',
-    bandwidth: 1024, // kbps
-    latency: 100, // ms
-    packetLoss: 1, // %
-  },
-  {
-    name: 'Dutch Municipal Fiber',
-    bandwidth: 10240, // kbps
-    latency: 20, // ms
-    packetLoss: 0, // %
-  }
-];
 
 // Performance benchmarks
-const PERFORMANCE_THRESHOLDS = {
-  initialRender: 200, // ms
-  dataUpdate: 100, // ms
-  totalLoadTime: 2000, // ms (<2s requirement)
-  memoryUsage: 50 * 1024 * 1024, // 50MB
-  cpuUsage: 20, // % max
-};
 
 describe('Monitoring Infrastructure Performance Tests', () => {
   let monitoring: InfrastructureMonitoring;
@@ -77,7 +44,6 @@ describe('Monitoring Infrastructure Performance Tests', () => {
 
   describe('Dashboard Rendering Performance', () => {
     it('should render within performance budget', async () => {
-      const startTime = performance.now();
       
       const { unmount } = render(<MonitoringDashboard />);
       cleanupFns.push(unmount);
@@ -87,7 +53,6 @@ describe('Monitoring Infrastructure Performance Tests', () => {
         expect(screen.getByText('Infrastructure Monitoring')).toBeInTheDocument();
       });
       
-      const renderTime = performance.now() - startTime;
       
       expect(renderTime).toBeLessThan(PERFORMANCE_THRESHOLDS.initialRender);
       console.log(`Dashboard render time: ${renderTime.toFixed(2)}ms`);
@@ -101,7 +66,6 @@ describe('Monitoring Infrastructure Performance Tests', () => {
       
       // Simulate 10 metric updates
       for (let i = 0; i < 10; i++) {
-        const updateStart = performance.now();
         
         act(() => {
           monitoring.recordPerformanceMetric({
@@ -117,12 +81,9 @@ describe('Monitoring Infrastructure Performance Tests', () => {
           expect(screen.getByText('Infrastructure Monitoring')).toBeInTheDocument();
         }, { timeout: 100 });
         
-        const updateTime = performance.now() - updateStart;
         updateTimes.push(updateTime);
       }
       
-      const avgUpdateTime = updateTimes.reduce((a, b) => a + b, 0) / updateTimes.length;
-      const maxUpdateTime = Math.max(...updateTimes);
       
       expect(avgUpdateTime).toBeLessThan(PERFORMANCE_THRESHOLDS.dataUpdate);
       expect(maxUpdateTime).toBeLessThan(PERFORMANCE_THRESHOLDS.dataUpdate * 2);
@@ -136,8 +97,6 @@ describe('Monitoring Infrastructure Performance Tests', () => {
     MUNICIPAL_NETWORKS.forEach(network => {
       it(`should load within 2s on ${network.name}`, async () => {
         // Simulate network conditions
-        const networkDelay = network.latency;
-        const originalFetch = global.fetch;
         
         // Mock fetch with network delay
         global.fetch = vi.fn(async (...args) => {
@@ -145,7 +104,6 @@ describe('Monitoring Infrastructure Performance Tests', () => {
           return originalFetch(...args);
         });
         
-        const startTime = performance.now();
         
         const { unmount } = render(<MonitoringDashboard />);
         cleanupFns.push(unmount);
@@ -161,7 +119,6 @@ describe('Monitoring Infrastructure Performance Tests', () => {
           expect(screen.getByText(/System Health:/)).toBeInTheDocument();
         }, { timeout: PERFORMANCE_THRESHOLDS.totalLoadTime });
         
-        const totalLoadTime = performance.now() - startTime;
         
         expect(totalLoadTime).toBeLessThan(PERFORMANCE_THRESHOLDS.totalLoadTime);
         console.log(`${network.name} load time: ${totalLoadTime.toFixed(2)}ms`);
@@ -178,11 +135,8 @@ describe('Monitoring Infrastructure Performance Tests', () => {
       cleanupFns.push(unmount);
       
       // Get initial memory usage (if available)
-      const initialMemory = (performance as any).memory?.usedJSHeapSize || 0;
       
       // Simulate 1 minute of continuous updates
-      const updates = 60;
-      const updateInterval = 1000 / updates; // Updates per second
       
       for (let i = 0; i < updates; i++) {
         act(() => {
@@ -218,8 +172,6 @@ describe('Monitoring Infrastructure Performance Tests', () => {
       }
       
       // Check final memory usage
-      const finalMemory = (performance as any).memory?.usedJSHeapSize || 0;
-      const memoryIncrease = finalMemory - initialMemory;
       
       if (initialMemory > 0) {
         expect(memoryIncrease).toBeLessThan(PERFORMANCE_THRESHOLDS.memoryUsage);
@@ -244,7 +196,6 @@ describe('Monitoring Infrastructure Performance Tests', () => {
         });
       }
       
-      const renderStart = performance.now();
       
       act(() => {
         metrics.forEach(metric => monitoring.recordPerformanceMetric(metric));
@@ -254,7 +205,6 @@ describe('Monitoring Infrastructure Performance Tests', () => {
         expect(screen.getByText('Infrastructure Monitoring')).toBeInTheDocument();
       });
       
-      const renderTime = performance.now() - renderStart;
       
       expect(renderTime).toBeLessThan(500); // Should handle 1000 metrics in under 500ms
       console.log(`Large dataset render time: ${renderTime.toFixed(2)}ms`);
@@ -265,10 +215,9 @@ describe('Monitoring Infrastructure Performance Tests', () => {
       cleanupFns.push(unmount);
       
       // Check if virtualization is implemented - look for the monitoring content
-      const container = document.querySelector('.chakra-stack'); // Chakra UI stack container
+      const _container = document.querySelector('.chakra-stack'); // Chakra UI stack container
       
       // Look for virtualization indicators (react-window classes)
-      const virtualizedElements = container ? container.querySelectorAll('[style*="position: absolute"]') : [];
       
       // If we have many metrics, we should see virtualization
       if (virtualizedElements.length > 0) {
@@ -285,15 +234,12 @@ describe('Monitoring Infrastructure Performance Tests', () => {
       let updateCount = 0;
       
       // Mock the internal update mechanism
-      const originalUpdate = monitoring.recordPerformanceMetric;
       monitoring.recordPerformanceMetric = vi.fn((...args) => {
         updateCount++;
         return originalUpdate.apply(monitoring, args);
       });
       
       // Send 100 metrics rapidly
-      const metricsToSend = 100;
-      const startTime = performance.now();
       
       for (let i = 0; i < metricsToSend; i++) {
         monitoring.recordPerformanceMetric({
@@ -307,17 +253,14 @@ describe('Monitoring Infrastructure Performance Tests', () => {
       // Wait for batching
       await new Promise(resolve => setTimeout(resolve, 100));
       
-      const totalTime = performance.now() - startTime;
       
       expect(totalTime).toBeLessThan(200); // Should batch efficiently
       console.log(`Batched ${metricsToSend} metrics in ${totalTime.toFixed(2)}ms`);
     });
 
     it('should handle concurrent health checks efficiently', async () => {
-      const concurrentChecks = 10;
       const checkPromises: Promise<Record<string, unknown>>[] = [];
       
-      const startTime = performance.now();
       
       for (let i = 0; i < concurrentChecks; i++) {
         checkPromises.push(monitoring.performHealthCheck());
@@ -325,7 +268,6 @@ describe('Monitoring Infrastructure Performance Tests', () => {
       
       await Promise.all(checkPromises);
       
-      const totalTime = performance.now() - startTime;
       
       expect(totalTime).toBeLessThan(1000); // Should complete within 1s
       console.log(`${concurrentChecks} concurrent health checks: ${totalTime.toFixed(2)}ms`);
@@ -341,17 +283,8 @@ describe('Monitoring Infrastructure Performance Tests', () => {
       let lastFrameTime = performance.now();
       
       // Monitor frame timings during updates
-      const measureFrame = () => {
-        const currentTime = performance.now();
-        const frameTime = currentTime - lastFrameTime;
-        frameTimings.push(frameTime);
-        lastFrameTime = currentTime;
-      };
       
       // Simulate rapid updates for 1 second
-      const updateDuration = 1000;
-      const updateInterval = 16; // ~60fps
-      const updates = updateDuration / updateInterval;
       
       for (let i = 0; i < updates; i++) {
         act(() => {
@@ -368,9 +301,6 @@ describe('Monitoring Infrastructure Performance Tests', () => {
       }
       
       // Calculate frame statistics
-      const avgFrameTime = frameTimings.reduce((a, b) => a + b, 0) / frameTimings.length;
-      const maxFrameTime = Math.max(...frameTimings);
-      const droppedFrames = frameTimings.filter(t => t > 16.67).length;
       
       expect(avgFrameTime).toBeLessThan(20); // Allow some overhead
       expect(droppedFrames / frameTimings.length).toBeLessThan(0.1); // Less than 10% dropped frames
@@ -385,8 +315,6 @@ describe('Monitoring Infrastructure Performance Tests', () => {
       const { unmount } = render(<MonitoringDashboard />);
       cleanupFns.push(unmount);
       
-      const errorCount = 50;
-      const startTime = performance.now();
       
       // Simulate many errors
       for (let i = 0; i < errorCount; i++) {
@@ -402,7 +330,6 @@ describe('Monitoring Infrastructure Performance Tests', () => {
         expect(screen.getByText('Infrastructure Monitoring')).toBeInTheDocument();
       });
       
-      const totalTime = performance.now() - startTime;
       
       expect(totalTime).toBeLessThan(500); // Should handle errors quickly
       console.log(`Handled ${errorCount} errors in ${totalTime.toFixed(2)}ms`);
@@ -411,13 +338,6 @@ describe('Monitoring Infrastructure Performance Tests', () => {
 
   describe('Performance Benchmarks Summary', () => {
     it('should generate performance report', async () => {
-      const benchmarks = {
-        'Initial Render': { target: 200, unit: 'ms' },
-        'Data Update': { target: 100, unit: 'ms' },
-        'Total Load Time': { target: 2000, unit: 'ms' },
-        'Memory Usage': { target: 50, unit: 'MB' },
-        'Frame Rate': { target: 60, unit: 'fps' },
-      };
       
       console.log('\n=== Monitoring Dashboard Performance Benchmarks ===');
       console.log('Target: <2s loading on all municipal networks\n');
@@ -435,16 +355,8 @@ describe('Monitoring Infrastructure Performance Tests', () => {
 
 describe('Performance Monitoring Integration', () => {
   it('should integrate with Web Vitals monitoring', async () => {
-    const monitoring = InfrastructureMonitoring.getInstance();
     
     // Simulate Web Vitals
-    const vitals = {
-      LCP: { value: 1200, rating: 'good' },
-      FID: { value: 50, rating: 'good' },
-      CLS: { value: 0.05, rating: 'good' },
-      FCP: { value: 800, rating: 'good' },
-      TTFB: { value: 200, rating: 'good' },
-    };
     
     Object.entries(vitals).forEach(([name, { value }]) => {
       monitoring.recordPerformanceMetric({
@@ -456,25 +368,20 @@ describe('Performance Monitoring Integration', () => {
     });
     
     // Verify all metrics recorded
-    const metrics = monitoring.getPerformanceMetrics();
     expect(metrics.length).toBeGreaterThanOrEqual(5);
     
     console.log('Web Vitals integrated successfully');
   });
 
   it('should provide performance recommendations', () => {
-    const monitoring = InfrastructureMonitoring.getInstance();
-    const metrics = monitoring.getPerformanceMetrics();
     
     // Analyze and provide recommendations
     const recommendations: string[] = [];
     
-    const lcpMetric = metrics.find(m => m.name === 'lcp');
     if (lcpMetric && lcpMetric.value > 2500) {
       recommendations.push('Optimize largest contentful paint - consider lazy loading');
     }
     
-    const fidMetric = metrics.find(m => m.name === 'fid');
     if (fidMetric && fidMetric.value > 100) {
       recommendations.push('Reduce first input delay - minimize JavaScript execution');
     }

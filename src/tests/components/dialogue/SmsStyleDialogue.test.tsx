@@ -15,70 +15,8 @@ const TestWrapper: React.FC<{ children: React.ReactNode }> = ({ children }) => (
 );
 
 // Test data for SMS-style dialogue with Erik Slottner scenario
-const erikSlottnerDialogueData = {
-  scene_id: 'sms-dialogue-erik-test',
-  scene_type: 'DialogueScene' as const,
-  title: 'SMS-Style Conversation with Erik Slottner',
-  description: 'Testing modern chat interface',
-  characters: [
-    {
-      character_id: 'erik_slottner',
-      name: 'Erik Slottner',
-      role: 'Digitaliseringschef',
-      avatar_description: 'Municipal digitalization leader'
-    },
-    {
-      character_id: 'player',
-      name: 'Du',
-      role: 'Municipal Employee',
-      avatar_description: 'Player character'
-    }
-  ],
-  dialogue_turns: [
-    {
-      speaker: 'Erik Slottner',
-      character_id: 'erik_slottner',
-      text: 'Hej! Welcome to our digitalization strategy discussion.',
-      emotion: 'confident' as const,
-      timing: 0
-    },
-    {
-      speaker: 'Player',
-      character_id: 'player',
-      text: 'Tack Erik! I\'m excited to learn about the new digital initiatives.',
-      emotion: 'questioning' as const,
-      timing: 2000
-    },
-    {
-      speaker: 'Erik Slottner',
-      character_id: 'erik_slottner',
-      text: 'Perfect! Let\'s start with our citizen service transformation.',
-      emotion: 'confident' as const,
-      timing: 4000
-    },
-    {
-      speaker: 'Player',
-      character_id: 'player',
-      text: 'How will this affect our daily work processes?',
-      emotion: 'questioning' as const,
-      timing: 6000
-    }
-  ],
-  learning_objectives: [
-    'Understand SMS-style dialogue interface',
-    'Test player name integration',
-    'Validate Erik Slottner vs Player differentiation'
-  ],
-  scene_duration: 420
-};
 
-const mockMunicipalBranding = {
-  primaryColor: '#2563eb',
-  logoUrl: 'https://example.se/stockholm-sms-logo.svg',
-  municipality: 'Stockholm SMS Test'
-};
 
-const mockOnComplete = vi.fn();
 
 describe('SMS-Style Dialogue Interface Tests', () => {
   beforeEach(() => {
@@ -105,8 +43,6 @@ describe('SMS-Style Dialogue Interface Tests', () => {
       );
 
       // Erik Slottner's message should be left-aligned with proper bubble styling
-      const erikMessage = screen.getByText('Hej! Welcome to our digitalization strategy discussion.');
-      const chatBubble = erikMessage.closest('[class*="chakra-box"]');
       
       expect(chatBubble).toBeInTheDocument();
       // Erik messages should be left-aligned (flex-start)
@@ -129,7 +65,6 @@ describe('SMS-Style Dialogue Interface Tests', () => {
       fireEvent.click(screen.getByText('Nästa'));
       
       await waitFor(() => {
-        const playerMessage = screen.getByText('Tack Erik! I\'m excited to learn about the new digital initiatives.');
         expect(playerMessage).toBeInTheDocument();
         
         // Player should show as "Anna Svensson" not "Player"
@@ -150,8 +85,6 @@ describe('SMS-Style Dialogue Interface Tests', () => {
       );
 
       // Erik's message should have proper styling
-      const erikMessage = screen.getByText('Hej! Welcome to our digitalization strategy discussion.');
-      const erikBubble = erikMessage.closest('[class*="chakra-box"]');
       
       expect(erikBubble).toBeInTheDocument();
       // Chat bubble should be properly styled with border radius
@@ -172,7 +105,6 @@ describe('SMS-Style Dialogue Interface Tests', () => {
       );
 
       // Check Erik's message is displayed correctly
-      const erikMessage = screen.getByText('Hej! Welcome to our digitalization strategy discussion.');
       expect(erikMessage).toBeInTheDocument();
       expect(screen.getByText('Erik Slottner')).toBeInTheDocument();
 
@@ -181,7 +113,6 @@ describe('SMS-Style Dialogue Interface Tests', () => {
       
       await waitFor(() => {
         // Player message should be displayed correctly
-        const playerMessage = screen.getByText('Tack Erik! I\'m excited to learn about the new digital initiatives.');
         expect(playerMessage).toBeInTheDocument();
         expect(screen.getByText('Anna Svensson')).toBeInTheDocument();
       }, { timeout: 15000 });
@@ -214,7 +145,6 @@ describe('SMS-Style Dialogue Interface Tests', () => {
     });
 
     it('handles long player names correctly in chat bubbles', () => {
-      const longPlayerName = "Anna-Christina Margareta Svensson-Andersson";
       
       render(
         <TestWrapper>
@@ -233,14 +163,11 @@ describe('SMS-Style Dialogue Interface Tests', () => {
         expect(screen.getByText(longPlayerName)).toBeInTheDocument();
         
         // Chat bubble should still maintain proper layout with long names
-        const nameElement = screen.getByText(longPlayerName);
-        const chatContainer = nameElement.closest('[style*="maxWidth"]');
         expect(chatContainer).toHaveStyle({ maxWidth: '85%' });
       });
     });
 
     it('handles special characters in player names', () => {
-      const specialCharName = "Åsa Björk-Öström";
       
       render(
         <TestWrapper>
@@ -296,7 +223,6 @@ describe('SMS-Style Dialogue Interface Tests', () => {
       
       waitFor(() => {
         // Avatar should show player name initials "AS"
-        const avatar = screen.getByRole('img', { name: /Anna Svensson/i });
         expect(avatar).toBeInTheDocument();
       });
     });
@@ -316,7 +242,6 @@ describe('SMS-Style Dialogue Interface Tests', () => {
       );
 
       // Erik's message should be displayed
-      const erikMessage = screen.getByText('Hej! Welcome to our digitalization strategy discussion.');
       expect(erikMessage).toBeInTheDocument();
       expect(screen.getByText('Erik Slottner')).toBeInTheDocument();
 
@@ -325,7 +250,6 @@ describe('SMS-Style Dialogue Interface Tests', () => {
       
       await waitFor(() => {
         // Player's message should be displayed with player name
-        const playerMessage = screen.getByText('Tack Erik! I\'m excited to learn about the new digital initiatives.');
         expect(playerMessage).toBeInTheDocument();
         expect(screen.getByText('Anna Svensson')).toBeInTheDocument();
       }, { timeout: 15000 });
@@ -369,7 +293,6 @@ describe('SMS-Style Dialogue Interface Tests', () => {
       );
 
       // Erik's avatar
-      const erikAvatar = screen.getByRole('img', { name: /Erik Slottner/i });
       expect(erikAvatar).toBeInTheDocument();
 
       // Advance to player message
@@ -377,7 +300,6 @@ describe('SMS-Style Dialogue Interface Tests', () => {
       
       await waitFor(() => {
         // Player's avatar should have different styling
-        const playerAvatar = screen.getByRole('img', { name: /Anna Svensson/i });
         expect(playerAvatar).toBeInTheDocument();
       });
     });
@@ -427,7 +349,6 @@ describe('SMS-Style Dialogue Interface Tests', () => {
         </TestWrapper>
       );
 
-      const results = await axe(container);
       expect(results).toHaveNoViolations();
     });
 
@@ -444,7 +365,6 @@ describe('SMS-Style Dialogue Interface Tests', () => {
       );
 
       // Check for aria-live region announcing conversation progress
-      const liveRegion = screen.getByText(/Dialogue turn 1 of 4/);
       expect(liveRegion).toBeInTheDocument();
     });
 
@@ -488,11 +408,9 @@ describe('SMS-Style Dialogue Interface Tests', () => {
       );
 
       // Next button should have descriptive aria-label
-      const nextButton = screen.getByText('Nästa');
       expect(nextButton).toHaveAttribute('aria-label');
       
       // Progress bar should have accessibility label
-      const progressBar = screen.getByRole('progressbar');
       expect(progressBar).toHaveAttribute('aria-label');
     });
 
@@ -508,7 +426,6 @@ describe('SMS-Style Dialogue Interface Tests', () => {
         </TestWrapper>
       );
 
-      const nextButton = screen.getByText('Nästa');
       nextButton.focus();
       expect(document.activeElement).toBe(nextButton);
 
@@ -516,7 +433,6 @@ describe('SMS-Style Dialogue Interface Tests', () => {
       
       await waitFor(() => {
         // Focus should remain on the next button after message change
-        const updatedButton = screen.getByText('Nästa');
         expect(document.activeElement).toBe(updatedButton);
       });
     });
@@ -579,7 +495,6 @@ describe('SMS-Style Dialogue Interface Tests', () => {
       );
 
       // Primary color should be applied to municipal branding elements
-      const brandingElement = screen.getByText('Stockholm SMS Test');
       expect(brandingElement).toBeInTheDocument();
     });
   });
@@ -598,11 +513,9 @@ describe('SMS-Style Dialogue Interface Tests', () => {
       );
 
       // Chat container should be mobile-optimized
-      const chatBubble = screen.getByText('Hej! Welcome to our digitalization strategy discussion.').closest('div');
       expect(chatBubble).toBeInTheDocument();
 
       // Next button should have proper touch target size
-      const nextButton = screen.getByText('Nästa');
       expect(nextButton).toHaveStyle({ minHeight: '48px', minWidth: '120px' });
     });
 
@@ -619,7 +532,6 @@ describe('SMS-Style Dialogue Interface Tests', () => {
       );
 
       // Text should be properly sized for mobile reading
-      const messageText = screen.getByText('Hej! Welcome to our digitalization strategy discussion.');
       expect(messageText).toBeInTheDocument();
     });
 
@@ -636,7 +548,6 @@ describe('SMS-Style Dialogue Interface Tests', () => {
       );
 
       // VStack should provide proper spacing between elements
-      const chatContainer = screen.getByText('Hej! Welcome to our digitalization strategy discussion.').closest('[class*="chakra-stack"]');
       expect(chatContainer).toBeInTheDocument();
     });
   });
@@ -654,7 +565,6 @@ describe('SMS-Style Dialogue Interface Tests', () => {
         </TestWrapper>
       );
 
-      const nextButton = screen.getByText('Nästa');
       fireEvent.click(nextButton);
 
       // Motion component should handle transitions
@@ -675,7 +585,6 @@ describe('SMS-Style Dialogue Interface Tests', () => {
         </TestWrapper>
       );
 
-      const nextButton = screen.getByText('Nästa');
       fireEvent.click(nextButton);
       fireEvent.click(nextButton); // Rapid click should be ignored
 
@@ -690,7 +599,6 @@ describe('SMS-Style Dialogue Interface Tests', () => {
     });
 
     it('maintains performance with complex SMS styling', () => {
-      const startTime = performance.now();
       
       render(
         <TestWrapper>
@@ -704,8 +612,6 @@ describe('SMS-Style Dialogue Interface Tests', () => {
         </TestWrapper>
       );
 
-      const endTime = performance.now();
-      const renderTime = endTime - startTime;
 
       // Rendering should be fast even with SMS styling
       expect(renderTime).toBeLessThan(100); // 100ms threshold
@@ -714,18 +620,6 @@ describe('SMS-Style Dialogue Interface Tests', () => {
 
   describe('Error Handling in Chat Interface', () => {
     it('handles missing player character gracefully', () => {
-      const incompleteData = {
-        ...erikSlottnerDialogueData,
-        characters: [
-          {
-            character_id: 'erik_slottner',
-            name: 'Erik Slottner',
-            role: 'Digitaliseringschef',
-            avatar_description: 'Municipal digitalization leader'
-          }
-          // Missing player character
-        ]
-      };
 
       render(
         <TestWrapper>
@@ -763,10 +657,6 @@ describe('SMS-Style Dialogue Interface Tests', () => {
     });
 
     it('handles empty dialogue array gracefully', () => {
-      const emptyDialogueData = {
-        ...erikSlottnerDialogueData,
-        dialogue_turns: []
-      };
 
       render(
         <TestWrapper>

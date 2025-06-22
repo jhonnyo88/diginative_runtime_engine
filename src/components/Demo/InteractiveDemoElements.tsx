@@ -79,8 +79,6 @@ import {
 
 import { useCulturalTheme } from '../WorldHub/CulturalThemeProvider';
 
-const MotionBox = motion(Box);
-const MotionCard = motion(Card);
 
 // Interactive Demo Element Types
 interface InteractiveElement {
@@ -265,31 +263,9 @@ const InteractiveElementCard: React.FC<InteractiveElementCardProps> = ({
   onActivate = () => {},
   onDeactivate = () => {}
 }) => {
-  const swedishBlue = '#003366';
-  const swedishYellow = '#FFCC00';
 
-  const getComplexityColor = (complexity: string) => {
-    switch (complexity) {
-      case 'low': return 'green';
-      case 'medium': return 'orange';
-      case 'high': return 'red';
-      default: return 'gray';
-    }
-  };
 
-  const getTypeIcon = (type: string) => {
-    switch (type) {
-      case 'live_poll': return FiBarChart3;
-      case 'q_and_a': return FiMessageSquare;
-      case 'scenario_builder': return FiSettings;
-      case 'real_time_customization': return FiZap;
-      case 'feedback_collector': return FiHeart;
-      case 'cultural_adapter': return FiGlobe;
-      default: return FiStar;
-    }
-  };
 
-  const TypeIcon = getTypeIcon(element.type);
 
   return (
     <MotionCard
@@ -446,10 +422,7 @@ interface DemoSessionMonitorProps {
 }
 
 const DemoSessionMonitor: React.FC<DemoSessionMonitorProps> = ({ session, activeElements }) => {
-  const swedishBlue = '#003366';
-  const swedishYellow = '#FFCC00';
 
-  const overallEngagement = Math.round(
     (session.engagementMetrics.participation + 
      session.engagementMetrics.satisfaction + 
      session.engagementMetrics.understanding + 
@@ -639,8 +612,6 @@ const DemoSessionMonitor: React.FC<DemoSessionMonitorProps> = ({ session, active
 
 // Quick Action Panel för Demo Control
 const DemoQuickActionsPanel: React.FC = () => {
-  const swedishBlue = '#003366';
-  const swedishYellow = '#FFCC00';
 
   const [isRecording, setIsRecording] = useState(false);
   const [isMuted, setIsMuted] = useState(false);
@@ -730,8 +701,6 @@ export const InteractiveDemoElements: React.FC<InteractiveDemoElementsProps> = (
   onElementDeactivated = () => console.log('Interactive element deactivated'),
   onSessionUpdate = () => console.log('Demo session updated')
 }) => {
-  const swedishBlue = '#003366';
-  const swedishYellow = '#FFCC00';
 
   const [activeElements, setActiveElements] = useState<Set<string>>(new Set());
   const [demoSession] = useState<DemoSession>({
@@ -775,21 +744,8 @@ export const InteractiveDemoElements: React.FC<InteractiveDemoElementsProps> = (
 
   const { isOpen, onOpen, onClose } = useDisclosure();
 
-  const handleElementActivation = (elementId: string) => {
-    setActiveElements(prev => new Set([...prev, elementId]));
-    onElementActivated(elementId);
-  };
 
-  const handleElementDeactivation = (elementId: string) => {
-    setActiveElements(prev => {
-      const updated = new Set(prev);
-      updated.delete(elementId);
-      return updated;
-    });
-    onElementDeactivated(elementId);
-  };
 
-  const activationPercentage = (activeElements.size / interactiveElements.length) * 100;
 
   return (
     <VStack spacing={8} align="stretch">

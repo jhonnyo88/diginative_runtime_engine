@@ -13,22 +13,9 @@ interface ValidationResult {
 }
 
 // Content size limits from System Architect analysis
-const CONTENT_LIMITS = {
-  DIALOGUE_SCENE_MAX: 50 * 1024, // 50KB
-  QUIZ_SCENE_MAX: 30 * 1024,     // 30KB
-  ASSESSMENT_SCENE_MAX: 75 * 1024, // 75KB
-  TOTAL_JSON_MAX: 500 * 1024,    // 500KB total
-};
 
 // Performance budgets from System Architect
-const PERFORMANCE_BUDGETS = {
-  MAX_LOADING_TIME: 2000,        // 2 seconds
-  MIN_LIGHTHOUSE_SCORE: 95,      // 95+ score required
-  VALIDATION_TIMEOUT: 5000,      // 5 seconds max validation
-};
 
-export const validateDevTeamContent = async (content: Record<string, unknown>): Promise<ValidationResult> => {
-  const startTime = Date.now();
   const errors: string[] = [];
   const warnings: string[] = [];
 
@@ -47,8 +34,6 @@ export const validateDevTeamContent = async (content: Record<string, unknown>): 
     }
 
     // Content size validation
-    const contentString = JSON.stringify(content);
-    const contentSize = new Blob([contentString]).size;
 
     if (contentSize > CONTENT_LIMITS.TOTAL_JSON_MAX) {
       errors.push(`Content size ${Math.round(contentSize / 1024)}KB exceeds limit ${CONTENT_LIMITS.TOTAL_JSON_MAX / 1024}KB`);
@@ -57,8 +42,6 @@ export const validateDevTeamContent = async (content: Record<string, unknown>): 
     // Scene-specific validation
     if (content.game_content?.scenes) {
       for (const scene of content.game_content.scenes) {
-        const sceneString = JSON.stringify(scene);
-        const sceneSize = new Blob([sceneString]).size;
 
         switch (scene.scene_type) {
           case 'DialogueScene':
@@ -82,11 +65,8 @@ export const validateDevTeamContent = async (content: Record<string, unknown>): 
     }
 
     // Performance impact estimation
-    const estimatedLoadTime = Math.max(500, contentSize * 0.002); // Rough estimation
-    const lighthouseImpact = contentSize > CONTENT_LIMITS.TOTAL_JSON_MAX * 0.8 ? -5 : 0;
 
     // Validation timeout check (System Architect requirement)
-    const validationTime = Date.now() - startTime;
     if (validationTime > PERFORMANCE_BUDGETS.VALIDATION_TIMEOUT) {
       warnings.push(`Validation took ${validationTime}ms, exceeds ${PERFORMANCE_BUDGETS.VALIDATION_TIMEOUT}ms target`);
     }
@@ -116,90 +96,8 @@ export const validateDevTeamContent = async (content: Record<string, unknown>): 
   }
 };
 
-const validateDialogueScene = (scene: Record<string, unknown>, errors: string[], warnings: string[]) => {
-  if (!scene.scene_id) {
-    errors.push(`DialogueScene missing scene_id`);
-  }
 
-  if (!scene.characters || !Array.isArray(scene.characters)) {
-    errors.push(`DialogueScene ${scene.scene_id} missing characters array`);
-  }
 
-  if (!scene.dialogue_turns || !Array.isArray(scene.dialogue_turns)) {
-    errors.push(`DialogueScene ${scene.scene_id} missing dialogue_turns array`);
-  }
-
-  // Validate dialogue turns
-  if (scene.dialogue_turns) {
-    scene.dialogue_turns.forEach((turn: Record<string, unknown>, index: number) => {
-      if (!turn.speaker || !turn.character_id || !turn.text) {
-        errors.push(`DialogueScene ${scene.scene_id} turn ${index} missing required fields`);
-      }
-
-      if (turn.text && turn.text.length > 500) {
-        warnings.push(`DialogueScene ${scene.scene_id} turn ${index} text is very long (${turn.text.length} chars)`);
-      }
-    });
-  }
-
-  // Anna Svensson 7-minute optimization check
-  if (scene.scene_duration && scene.scene_duration > 420) {
-    warnings.push(`DialogueScene ${scene.scene_id} duration ${scene.scene_duration}s exceeds Anna Svensson 7-minute target`);
-  }
-};
-
-const validateQuizScene = (scene: Record<string, unknown>, errors: string[], warnings: string[]) => {
-  if (!scene.scene_id) {
-    errors.push(`QuizScene missing scene_id`);
-  }
-
-  if (!scene.questions || !Array.isArray(scene.questions)) {
-    errors.push(`QuizScene ${scene.scene_id} missing questions array`);
-  }
-
-  // Validate questions
-  if (scene.questions) {
-    scene.questions.forEach((question: Record<string, unknown>, index: number) => {
-      if (!question.question_id || !question.question_type || !question.question_text) {
-        errors.push(`QuizScene ${scene.scene_id} question ${index} missing required fields`);
-      }
-
-      if (!['multiple_choice', 'true_false', 'multiple_select'].includes(question.question_type)) {
-        errors.push(`QuizScene ${scene.scene_id} question ${index} invalid question_type: ${question.question_type}`);
-      }
-
-      if (!question.options || !Array.isArray(question.options)) {
-        errors.push(`QuizScene ${scene.scene_id} question ${index} missing options array`);
-      }
-
-      // Validate options
-      if (question.options) {
-        const correctOptions = question.options.filter((opt: Record<string, unknown>) => opt.is_correct);
-        
-        if (correctOptions.length === 0) {
-          errors.push(`QuizScene ${scene.scene_id} question ${index} has no correct options`);
-        }
-
-        if (question.question_type === 'true_false' && question.options.length !== 2) {
-          errors.push(`QuizScene ${scene.scene_id} question ${index} true_false must have exactly 2 options`);
-        }
-
-        question.options.forEach((option: Record<string, unknown>, optIndex: number) => {
-          if (!option.option_id || !option.text || typeof option.is_correct !== 'boolean') {
-            errors.push(`QuizScene ${scene.scene_id} question ${index} option ${optIndex} missing required fields`);
-          }
-        });
-      }
-    });
-  }
-
-  // Quiz length validation for Anna Svensson persona
-  if (scene.questions && scene.questions.length > 10) {
-    warnings.push(`QuizScene ${scene.scene_id} has ${scene.questions.length} questions, may be too long for Anna Svensson 7-minute sessions`);
-  }
-};
-
-export const validateMunicipalBranding = (branding: Record<string, unknown>): ValidationResult => {
   const errors: string[] = [];
   const warnings: string[] = [];
 
@@ -220,7 +118,6 @@ export const validateMunicipalBranding = (branding: Record<string, unknown>): Va
     warnings.push("Municipal branding missing primaryColor - using default");
   } else {
     // Basic color validation
-    const colorRegex = /^#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})$/;
     if (!colorRegex.test(branding.primaryColor)) {
       errors.push(`Invalid primaryColor format: ${branding.primaryColor}. Use hex format (#RRGGBB)`);
     }
@@ -248,8 +145,6 @@ export const validateMunicipalBranding = (branding: Record<string, unknown>): Va
 };
 
 // Validate complete game manifest (for DevTeam API integration)
-export const validateGameManifest = (manifest: Record<string, unknown>): ValidationResult => {
-  const startTime = Date.now();
   const errors: string[] = [];
   const warnings: string[] = [];
 
@@ -263,7 +158,6 @@ export const validateGameManifest = (manifest: Record<string, unknown>): Validat
       errors.push("Missing required field: metadata");
     } else {
       // Validate metadata
-      const requiredMeta = ['title', 'description', 'duration', 'targetAudience', 'language'];
       requiredMeta.forEach(field => {
         if (!manifest.metadata[field]) {
           errors.push(`Missing required metadata field: ${field}`);
@@ -284,8 +178,6 @@ export const validateGameManifest = (manifest: Record<string, unknown>): Validat
         }
         
         // Scene-specific validation
-        const sceneString = JSON.stringify(scene);
-        const sceneSize = new Blob([sceneString]).size;
         
         if (scene.type === 'dialogue' && sceneSize > CONTENT_LIMITS.DIALOGUE_SCENE_MAX) {
           errors.push(`Dialogue scene ${scene.id} exceeds size limit`);
@@ -297,19 +189,14 @@ export const validateGameManifest = (manifest: Record<string, unknown>): Validat
     }
 
     // Total size check
-    const manifestString = JSON.stringify(manifest);
-    const manifestSize = new Blob([manifestString]).size;
     
     if (manifestSize > CONTENT_LIMITS.TOTAL_JSON_MAX) {
       errors.push(`Total manifest size ${Math.round(manifestSize / 1024)}KB exceeds ${CONTENT_LIMITS.TOTAL_JSON_MAX / 1024}KB limit`);
     }
 
     // Performance estimation
-    const estimatedLoadTime = Math.max(500, manifestSize * 0.002);
-    const lighthouseImpact = manifestSize > CONTENT_LIMITS.TOTAL_JSON_MAX * 0.8 ? -5 : 0;
 
     // Ensure <5s validation
-    const validationTime = Date.now() - startTime;
     if (validationTime > PERFORMANCE_BUDGETS.VALIDATION_TIMEOUT) {
       warnings.push(`Validation took ${validationTime}ms, exceeds target`);
     }

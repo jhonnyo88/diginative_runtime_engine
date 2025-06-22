@@ -16,13 +16,6 @@ import AchievementAccessibility from '../../../components/accessibility/Achievem
 // Mock dependencies if needed
 
 
-const renderWithChakra = (component: React.ReactElement) => {
-  return render(
-    <ChakraProvider>
-      {component}
-    </ChakraProvider>
-  );
-};
 
 describe('AchievementAccessibility', () => {
   beforeEach(() => {
@@ -33,14 +26,10 @@ describe('AchievementAccessibility', () => {
     it('renders without crashing', () => {
       renderWithChakra(<AchievementAccessibility />);
       
-      const component = screen.getByTestId('-achievement-accessibility');
       expect(component).toBeInTheDocument();
     });
 
     it('handles props correctly', () => {
-      const testProps = {
-        // Add relevant props based on component analysis
-      };
       
       renderWithChakra(<AchievementAccessibility {...testProps} />);
       
@@ -60,7 +49,6 @@ describe('AchievementAccessibility', () => {
     it('provides proper ARIA attributes', () => {
       renderWithChakra(<AchievementAccessibility />);
       
-      const element = screen.getByTestId('-achievement-accessibility');
       
       // Check for appropriate ARIA attributes
       expect(element).toHaveAttribute('role');
@@ -69,7 +57,6 @@ describe('AchievementAccessibility', () => {
     it('supports keyboard navigation', () => {
       renderWithChakra(<AchievementAccessibility />);
       
-      const element = screen.getByTestId('-achievement-accessibility');
       
       // Test tab navigation
       element.focus();
@@ -80,7 +67,6 @@ describe('AchievementAccessibility', () => {
       renderWithChakra(<AchievementAccessibility />);
       
       // Basic contrast check
-      const element = screen.getByTestId('-achievement-accessibility');
       expect(element).toBeInTheDocument();
     });
   });

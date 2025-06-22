@@ -5,14 +5,6 @@ import { MunicipalButton } from './MunicipalButton';
 import { createChakraTheme } from '../../theme/ChakraThemeProvider';
 
 // Helper to render with theme
-const renderWithTheme = (ui: React.ReactElement) => {
-  const theme = createChakraTheme();
-  return render(
-    <ChakraProvider theme={theme}>
-      {ui}
-    </ChakraProvider>
-  );
-};
 
 describe('MunicipalButton', () => {
   describe('Variants', () => {
@@ -23,7 +15,6 @@ describe('MunicipalButton', () => {
         </MunicipalButton>
       );
       
-      const button = screen.getByRole('button', { name: 'Starta utbildningen' });
       expect(button).toBeInTheDocument();
       expect(button).toHaveStyle({
         fontWeight: '500',
@@ -38,7 +29,6 @@ describe('MunicipalButton', () => {
         </MunicipalButton>
       );
       
-      const button = screen.getByRole('button', { name: 'Avbryt' });
       expect(button).toBeInTheDocument();
     });
 
@@ -49,7 +39,6 @@ describe('MunicipalButton', () => {
         </MunicipalButton>
       );
       
-      const button = screen.getByRole('button', { name: 'Läs mer' });
       expect(button).toBeInTheDocument();
     });
   });
@@ -62,7 +51,6 @@ describe('MunicipalButton', () => {
         </MunicipalButton>
       );
       
-      const button = screen.getByRole('button');
       expect(button).toHaveAttribute('data-cultural-context', 'swedish');
       expect(button).toHaveAttribute('data-municipal-entity', 'Malmö Stad');
     });
@@ -106,7 +94,6 @@ describe('MunicipalButton', () => {
         </MunicipalButton>
       );
       
-      const button = screen.getByRole('button');
       expect(button).toHaveStyle({
         minHeight: '48px'
       });
@@ -119,7 +106,6 @@ describe('MunicipalButton', () => {
         </MunicipalButton>
       );
       
-      const button = screen.getByRole('button', { name: 'Svara på frågan' });
       expect(button).toBeInTheDocument();
     });
 
@@ -130,34 +116,29 @@ describe('MunicipalButton', () => {
         </MunicipalButton>
       );
       
-      const button = screen.getByRole('button');
       expect(button).toHaveAttribute('data-accessibility-standard', 'DOS2018');
     });
   });
 
   describe('Interactions', () => {
     it('handles click events', () => {
-      const handleClick = jest.fn();
       renderWithTheme(
         <MunicipalButton onClick={handleClick}>
           Klicka här
         </MunicipalButton>
       );
       
-      const button = screen.getByRole('button');
       fireEvent.click(button);
       expect(handleClick).toHaveBeenCalledTimes(1);
     });
 
     it('respects disabled state', () => {
-      const handleClick = jest.fn();
       renderWithTheme(
         <MunicipalButton onClick={handleClick} isDisabled>
           Inaktiverad
         </MunicipalButton>
       );
       
-      const button = screen.getByRole('button');
       expect(button).toBeDisabled();
       fireEvent.click(button);
       expect(handleClick).not.toHaveBeenCalled();
@@ -185,7 +166,6 @@ describe('MunicipalButton', () => {
         </MunicipalButton>
       );
       
-      const button = screen.getByRole('button');
       expect(button).toHaveAttribute('data-government-level', 'municipal');
     });
   });

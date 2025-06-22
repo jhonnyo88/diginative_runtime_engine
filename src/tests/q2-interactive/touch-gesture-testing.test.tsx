@@ -10,79 +10,10 @@ import { describe, it, expect, beforeEach, vi } from 'vitest';
 import { render, screen, fireEvent } from '@testing-library/react';
 
 // Mock touch gesture utilities
-const mockTouchUtils = {
-  createTouchEvent: vi.fn(),
-  simulateGesture: vi.fn(),
-  validateTouchResponse: vi.fn(),
-  measureGesturePerformance: vi.fn(),
-  trackHapticFeedback: vi.fn()
-};
 
 // Touch gesture patterns for municipal interfaces
-const MUNICIPAL_TOUCH_GESTURES = {
-  singleTap: {
-    name: 'Document Selection',
-    fingers: 1,
-    duration: 100,
-    municipalContext: 'document-approval',
-    accessibility: 'high'
-  },
-  doubleTap: {
-    name: 'Quick Action',
-    fingers: 1,
-    duration: 200,
-    interval: 300,
-    municipalContext: 'emergency-action',
-    accessibility: 'medium'
-  },
-  longPress: {
-    name: 'Context Menu',
-    fingers: 1,
-    duration: 800,
-    municipalContext: 'options-menu',
-    accessibility: 'high'
-  },
-  pinchZoom: {
-    name: 'Document Zoom',
-    fingers: 2,
-    distance: 100,
-    municipalContext: 'document-reading',
-    accessibility: 'medium'
-  },
-  swipeLeft: {
-    name: 'Next Step',
-    fingers: 1,
-    direction: 'left',
-    distance: 150,
-    municipalContext: 'workflow-navigation',
-    accessibility: 'high'
-  },
-  swipeRight: {
-    name: 'Previous Step',
-    fingers: 1,
-    direction: 'right',
-    distance: 150,
-    municipalContext: 'workflow-navigation',
-    accessibility: 'high'
-  },
-  twoFingerScroll: {
-    name: 'Accessibility Scroll',
-    fingers: 2,
-    direction: 'vertical',
-    municipalContext: 'content-navigation',
-    accessibility: 'essential'
-  }
-};
 
 // Anna Svensson iPhone 12 specifications
-const IPHONE_12_SPECS = {
-  screenSize: { width: 390, height: 844 },
-  pixelDensity: 460, // PPI
-  touchSensitivity: 'high',
-  hapticEngine: 'advanced',
-  iOSVersion: '17.0',
-  municipality: 'malmö'
-};
 
 describe('Touch Gesture Testing Framework', () => {
   let touchHarness: Record<string, unknown>;
@@ -104,9 +35,7 @@ describe('Touch Gesture Testing Framework', () => {
         />
       );
 
-      const document = screen.getByTestId('municipal-document-001');
       
-      const touchResult = await touchHarness.simulateSingleTap({
         element: document,
         position: { x: 195, y: 100 }, // Center of iPhone 12 screen
         pressure: 0.5,
@@ -133,9 +62,7 @@ describe('Touch Gesture Testing Framework', () => {
         />
       );
 
-      const emergencyButton = screen.getByTestId('emergency-action-button');
 
-      const doubleTapResult = await touchHarness.simulateDoubleTap({
         element: emergencyButton,
         tapInterval: 300,
         position: { x: 195, y: 400 },
@@ -167,9 +94,7 @@ describe('Touch Gesture Testing Framework', () => {
         />
       );
 
-      const workflowStep = screen.getByTestId('workflow-step-approval');
 
-      const longPressResult = await touchHarness.simulateLongPress({
         element: workflowStep,
         duration: 800,
         pressure: 0.7,
@@ -181,7 +106,6 @@ describe('Touch Gesture Testing Framework', () => {
       expect(longPressResult.duration).toBeCloseTo(800, 100);
 
       // Verify context menu accessibility
-      const contextMenu = screen.getByTestId('context-menu');
       expect(contextMenu).toHaveAttribute('role', 'menu');
       expect(contextMenu).toHaveAttribute('aria-label', expect.stringContaining('workflow options'));
 
@@ -200,9 +124,7 @@ describe('Touch Gesture Testing Framework', () => {
         />
       );
 
-      const documentViewer = screen.getByTestId('document-viewer');
 
-      const pinchResult = await touchHarness.simulatePinchZoom({
         element: documentViewer,
         startDistance: 100,
         endDistance: 200,
@@ -235,10 +157,8 @@ describe('Touch Gesture Testing Framework', () => {
         />
       );
 
-      const workflowContainer = screen.getByTestId('workflow-container');
 
       // Test swipe left (next step)
-      const swipeLeftResult = await touchHarness.simulateSwipe({
         element: workflowContainer,
         direction: 'left',
         distance: 150,
@@ -251,7 +171,6 @@ describe('Touch Gesture Testing Framework', () => {
       expect(screen.getByTestId('current-step')).toHaveTextContent('3');
 
       // Test swipe right (previous step)
-      const swipeRightResult = await touchHarness.simulateSwipe({
         element: workflowContainer,
         direction: 'right',
         distance: 150,
@@ -278,9 +197,7 @@ describe('Touch Gesture Testing Framework', () => {
         />
       );
 
-      const contentContainer = screen.getByTestId('accessible-content');
 
-      const twoFingerScrollResult = await touchHarness.simulateTwoFingerScroll({
         element: contentContainer,
         direction: 'down',
         distance: 200,
@@ -304,7 +221,7 @@ describe('Touch Gesture Testing Framework', () => {
     });
 
     it('should test gesture customization for motor disabilities', async () => {
-      const accessibilityHarness = createAccessibilityGestureHarness({
+      const _accessibilityHarness = createAccessibilityGestureHarness({
         disabilities: ['motor', 'tremor'],
         municipality: 'malmö',
         adaptiveSettings: {
@@ -321,9 +238,7 @@ describe('Touch Gesture Testing Framework', () => {
         />
       );
 
-      const adaptiveButton = screen.getByTestId('adaptive-gesture-button');
 
-      const adaptiveGestureResult = await accessibilityHarness.testAdaptiveGesture({
         element: adaptiveButton,
         gestureType: 'long-press',
         adaptations: {
@@ -348,13 +263,12 @@ describe('Touch Gesture Testing Framework', () => {
 
   describe('Performance and Battery Optimization', () => {
     it('should measure touch gesture performance impact on iPhone 12', async () => {
-      const performanceHarness = createTouchPerformanceHarness({
+      const _performanceHarness = createTouchPerformanceHarness({
         device: 'iPhone 12',
         municipality: 'malmö',
         monitoring: ['cpu', 'memory', 'battery', 'gpu']
       });
 
-      const performanceResults = await performanceHarness.measureGesturePerformance({
         gestures: Object.values(MUNICIPAL_TOUCH_GESTURES),
         duration: 300000, // 5 minutes Anna Svensson session
         frequency: 'typical-usage'
@@ -374,12 +288,11 @@ describe('Touch Gesture Testing Framework', () => {
     });
 
     it('should test gesture performance under municipal network stress', async () => {
-      const networkGestureHarness = createNetworkGestureHarness({
+      const _networkGestureHarness = createNetworkGestureHarness({
         networkConditions: ['3G', 'degraded-wifi', 'high-latency'],
         municipality: 'malmö'
       });
 
-      const networkStressResults = await networkGestureHarness.testGesturesUnderNetworkStress({
         networkProfile: '3G-stressed',
         simultaneousUsers: 100,
         gestureTypes: ['tap', 'swipe', 'pinch', 'long-press']
@@ -400,13 +313,12 @@ describe('Touch Gesture Testing Framework', () => {
 
   describe('Cultural and Municipal Context', () => {
     it('should validate gestures for Swedish municipal cultural appropriateness', async () => {
-      const culturalHarness = createCulturalGestureHarness({
+      const _culturalHarness = createCulturalGestureHarness({
         culture: 'swedish',
         municipality: 'malmö',
         context: 'government-service'
       });
 
-      const culturalValidation = await culturalHarness.validateGestureCulturalAppropriateness({
         gestures: MUNICIPAL_TOUCH_GESTURES,
         culturalContext: 'swedish-government',
         formalityLevel: 'professional'
@@ -420,7 +332,6 @@ describe('Touch Gesture Testing Framework', () => {
       expect(culturalValidation.conflictingGestures).toHaveLength(0);
       
       // Test cultural adaptation for different municipalities
-      const municipalAdaptations = culturalValidation.municipalAdaptations;
       expect(municipalAdaptations.malmö).toMatchObject({
         gestureSet: 'standard',
         culturalNotes: expect.any(Array),
@@ -431,7 +342,7 @@ describe('Touch Gesture Testing Framework', () => {
 
   describe('Multi-Touch and Complex Gestures', () => {
     it('should test complex multi-touch emergency coordination gestures', async () => {
-      const multiTouchHarness = createMultiTouchHarness({
+      const _multiTouchHarness = createMultiTouchHarness({
         maxSimultaneousTouches: 5,
         scenario: 'emergency-coordination',
         municipality: 'malmö'
@@ -445,7 +356,6 @@ describe('Touch Gesture Testing Framework', () => {
         />
       );
 
-      const coordinationResult = await multiTouchHarness.simulateEmergencyCoordination({
         simultaneousTouches: 3,
         gestures: [
           { type: 'drag', resource: 'fire-truck', target: 'zone-1' },

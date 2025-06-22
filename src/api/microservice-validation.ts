@@ -11,16 +11,11 @@ import { getValidationService, type ValidationRequest, type ValidationResponse }
 import { getRedisCluster } from '../services/redis-cluster';
 import { InfrastructureMonitoring } from '../services/infrastructure-monitoring';
 
-const router = Router();
-const monitoring = InfrastructureMonitoring.getInstance();
-const validationService = getValidationService();
-const redisCluster = getRedisCluster();
 
 /**
  * POST /api/v2/validate - Microservice-based validation
  */
 router.post('/validate', async (req: Request, res: Response) => {
-  const startTime = Date.now();
   
   try {
     const { content, contentType = 'game', priority = 'normal', metadata } = req.body;
@@ -34,7 +29,6 @@ router.post('/validate', async (req: Request, res: Response) => {
     }
 
     // Generate unique request ID
-    const requestId = `val_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
     
     // Create validation request
     const validationRequest: ValidationRequest = {
@@ -52,10 +46,8 @@ router.post('/validate', async (req: Request, res: Response) => {
     };
 
     // Submit to validation service
-    const submittedId = await validationService.submitValidation(validationRequest);
     
     // Poll for result (in production, use WebSocket or callback)
-    const result = await pollForResult(submittedId, 30000); // 30 second timeout
     
     if (!result) {
       return res.status(408).json({
@@ -66,7 +58,6 @@ router.post('/validate', async (req: Request, res: Response) => {
       });
     }
 
-    const processingTime = Date.now() - startTime;
 
     // Record metrics
     monitoring.recordMetric({
@@ -103,7 +94,6 @@ router.post('/validate', async (req: Request, res: Response) => {
     });
 
   } catch (error) {
-    const processingTime = Date.now() - startTime;
     
     monitoring.reportError(error as Error, {
       endpoint: 'microservice-validation',
@@ -123,7 +113,6 @@ router.post('/validate', async (req: Request, res: Response) => {
  * POST /api/v2/validate/batch - Batch validation with microservice
  */
 router.post('/validate/batch', async (req: Request, res: Response) => {
-  const startTime = Date.now();
   
   try {
     const { items } = req.body;
@@ -145,51 +134,11 @@ router.post('/validate/batch', async (req: Request, res: Response) => {
     }
 
     // Submit all validation requests
-    const requestPromises = items.map(async (item, index) => {
-      const requestId = `batch_${Date.now()}_${index}_${Math.random().toString(36).substr(2, 9)}`;
-      
-      const validationRequest: ValidationRequest = {
-        id: requestId,
-        content: item.content,
-        contentType: item.contentType || 'game',
-        priority: item.priority || 'normal',
-        metadata: {
-          userId: req.headers['x-user-id'] as string,
-          teamId: req.headers['x-team-id'] as string,
-          timestamp: Date.now(),
-          source: 'batch',
-          batchIndex: index
-        }
-      };
-
-      await validationService.submitValidation(validationRequest);
       return requestId;
     });
 
-    const requestIds = await Promise.all(requestPromises);
     
     // Poll for all results
-    const resultPromises = requestIds.map(id => pollForResult(id, 45000)); // 45 second timeout for batch
-    const results = await Promise.all(resultPromises);
-    
-    const processingTime = Date.now() - startTime;
-    const successCount = results.filter(r => r?.success).length;
-    const failureCount = results.filter(r => !r?.success).length;
-    const timeoutCount = results.filter(r => r === null).length;
-
-    // Record batch metrics
-    monitoring.recordMetric({
-      name: 'microservice_batch_validation',
-      value: items.length,
-      unit: 'count',
-      timestamp: Date.now(),
-      tags: {
-        totalItems: items.length.toString(),
-        successCount: successCount.toString(),
-        failureCount: failureCount.toString(),
-        timeoutCount: timeoutCount.toString()
-      }
-    });
 
     res.json({
       success: timeoutCount === 0,
@@ -231,7 +180,6 @@ router.post('/validate/batch', async (req: Request, res: Response) => {
 router.get('/validate/status/:id', async (req: Request, res: Response) => {
   try {
     const { id } = req.params;
-    const result = await validationService.getValidationResult(id);
     
     if (!result) {
       return res.status(404).json({
@@ -271,9 +219,6 @@ router.get('/validate/status/:id', async (req: Request, res: Response) => {
  */
 router.get('/validate/metrics', async (req: Request, res: Response) => {
   try {
-    const validationMetrics = validationService.getMetrics();
-    const redisMetrics = redisCluster.getMetrics();
-    const redisHealth = await redisCluster.healthCheck();
 
     res.json({
       success: true,
@@ -352,10 +297,7 @@ router.post('/validate/cache/clear', async (req: Request, res: Response) => {
  */
 router.get('/validate/health', async (req: Request, res: Response) => {
   try {
-    const validationMetrics = validationService.getMetrics();
-    const redisHealth = await redisCluster.healthCheck();
     
-    const isHealthy = validationMetrics.healthStatus === 'healthy' && redisHealth.healthy;
     
     res.status(isHealthy ? 200 : 503).json({
       status: isHealthy ? 'healthy' : 'unhealthy',
@@ -397,7 +339,6 @@ export function setupMicroserviceValidationWebSocket(io: Record<string, unknown>
 
     socket.on('validate-realtime', async (data: Record<string, unknown>) => {
       try {
-        const requestId = `ws_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
         
         const validationRequest: ValidationRequest = {
           id: requestId,
@@ -415,7 +356,6 @@ export function setupMicroserviceValidationWebSocket(io: Record<string, unknown>
         await validationService.submitValidation(validationRequest);
         
         // Poll for result with shorter timeout for real-time
-        const result = await pollForResult(requestId, 10000); // 10 second timeout
         
         if (result) {
           socket.emit('validation-result', {
@@ -452,11 +392,8 @@ export function setupMicroserviceValidationWebSocket(io: Record<string, unknown>
  * Helper function to poll for validation result
  */
 async function pollForResult(requestId: string, timeoutMs: number): Promise<ValidationResponse | null> {
-  const startTime = Date.now();
-  const pollInterval = 100; // Check every 100ms
   
   while (Date.now() - startTime < timeoutMs) {
-    const result = await validationService.getValidationResult(requestId);
     if (result) {
       return result;
     }

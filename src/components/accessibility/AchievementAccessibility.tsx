@@ -15,17 +15,14 @@ export interface AchievementAccessibilityProps {
 }
 
 // Hook for screen reader announcements
-export const useAchievementAnnouncer = () => {
-  const announceAchievement = (
+  const _announceAchievement = (
     title: string,
     description: string,
     municipalValue: string,
     culturalContext: string = 'swedish'
   ) => {
-    const announcement = `${title}. ${description}. ${municipalValue}`;
     
     // Create screen reader announcement
-    const ariaLive = document.createElement('div');
     ariaLive.setAttribute('aria-live', 'polite');
     ariaLive.setAttribute('aria-atomic', 'true');
     ariaLive.style.position = 'absolute';
@@ -47,39 +44,23 @@ export const useAchievementAnnouncer = () => {
 };
 
 // Hook for focus management
-export const useAchievementFocus = () => {
-  const focusToast = (element: HTMLElement | null) => {
-    if (element) {
-      element.focus();
-    }
-  };
 
   return { focusToast };
 };
 
 // Hook for high contrast detection
-export const useHighContrastDetection = () => {
-  const isHighContrast = window.matchMedia('(prefers-contrast: high)').matches;
   
-  const accessibleColors = {
-    backgroundColor: '#000000',
-    textColor: '#FFFFFF',
-    borderColor: '#FFFFFF'
-  };
 
   return { isHighContrast, accessibleColors };
 };
 
 // Hook for reduced motion detection
-export const useReducedMotionDetection = () => {
-  const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   
   return { prefersReducedMotion };
 };
 
 // Hook for keyboard navigation
-export const useAchievementKeyboardNavigation = () => {
-  const handleKeyDown = (event: KeyboardEvent, onDismiss?: () => void) => {
+  const _handleKeyDown = (event: KeyboardEvent, onDismiss?: () => void) => {
     if (event.key === 'Escape' && onDismiss) {
       onDismiss();
     }

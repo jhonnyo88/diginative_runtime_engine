@@ -162,11 +162,8 @@ export class RedisClusterService {
     tags?: string[];
     metadata?: Record<string, unknown>;
   }): Promise<boolean> {
-    const startTime = Date.now();
     
     try {
-      const pattern = this.findMatchingPattern(key);
-      const ttl = options?.ttl || pattern?.defaultTTL || 3600;
       
       const cacheEntry: CacheEntry = {
         key,
@@ -180,7 +177,6 @@ export class RedisClusterService {
         }
       };
 
-      const serialized = JSON.stringify(cacheEntry);
       await this.cluster.setex(this.prefixKey(key), ttl, serialized);
       
       this.updateMetrics('set', Date.now() - startTime, true);
@@ -197,10 +193,8 @@ export class RedisClusterService {
    * Get cache entry with hit/miss tracking
    */
   async get<T = unknown>(key: string): Promise<T | null> {
-    const startTime = Date.now();
     
     try {
-      const serialized = await this.cluster.get(this.prefixKey(key));
       
       if (!serialized) {
         this.updateMetrics('get', Date.now() - startTime, false);
@@ -223,24 +217,15 @@ export class RedisClusterService {
    * Multi-get for batch operations
    */
   async mget<T = unknown>(keys: string[]): Promise<(T | null)[]> {
-    const startTime = Date.now();
     
     try {
-      const prefixedKeys = keys.map(key => this.prefixKey(key));
-      const results = await this.cluster.mget(prefixedKeys);
       
-      const parsed = results.map((serialized: string | null) => {
-        if (!serialized) return null;
-        
-        try {
-          const cacheEntry: CacheEntry = JSON.parse(serialized);
           return cacheEntry.value as T;
         } catch {
           return null;
         }
       });
 
-      const hits = parsed.filter(result => result !== null).length;
       this.updateMetrics('mget', Date.now() - startTime, hits > 0, hits / keys.length);
       
       return parsed;
@@ -257,7 +242,6 @@ export class RedisClusterService {
    */
   async del(key: string): Promise<boolean> {
     try {
-      const result = await this.cluster.del(this.prefixKey(key));
       return result > 0;
     } catch (error) {
       console.error(`Failed to delete cache key ${key}:`, error);
@@ -270,7 +254,6 @@ export class RedisClusterService {
    */
   async mdel(keys: string[]): Promise<number> {
     try {
-      const prefixedKeys = keys.map(key => this.prefixKey(key));
       return await this.cluster.del(...prefixedKeys);
     } catch (error) {
       console.error('Failed to perform mdel operation:', error);
@@ -283,7 +266,6 @@ export class RedisClusterService {
    */
   async clearByPattern(pattern: string): Promise<number> {
     try {
-      const keys = await this.cluster.keys(this.prefixKey(pattern));
       if (keys.length === 0) return 0;
       
       return await this.cluster.del(...keys);
@@ -300,16 +282,13 @@ export class RedisClusterService {
     try {
       // In production, implement tag-based indexing
       // For now, scan and filter by metadata
-      const allKeys = await this.cluster.keys(this.prefixKey('*'));
       let deletedCount = 0;
 
       for (const key of allKeys) {
-        const serialized = await this.cluster.get(key);
         if (!serialized) continue;
 
         try {
           const cacheEntry: CacheEntry = JSON.parse(serialized);
-          const hasMatchingTag = cacheEntry.tags?.some(tag => tags.includes(tag));
           
           if (hasMatchingTag) {
             await this.cluster.del(key);
@@ -351,7 +330,6 @@ export class RedisClusterService {
    */
   async expire(key: string, seconds: number): Promise<boolean> {
     try {
-      const result = await this.cluster.expire(this.prefixKey(key), seconds);
       return result === 1;
     } catch (error) {
       console.error(`Failed to set expiration on key ${key}:`, error);
@@ -364,7 +342,6 @@ export class RedisClusterService {
    */
   async exists(key: string): Promise<boolean> {
     try {
-      const result = await this.cluster.exists(this.prefixKey(key));
       return result === 1;
     } catch (error) {
       console.error(`Failed to check existence of key ${key}:`, error);
@@ -399,14 +376,11 @@ export class RedisClusterService {
       const details: Record<string, any> = {};
       
       // Check cluster info
-      const info = await this.cluster.cluster('info');
       details.clusterInfo = info;
       
       // Check individual nodes
       for (const node of this.config.nodes) {
-        const nodeKey = `${node.host}:${node.port}`;
         try {
-          const ping = await this.cluster.ping();
           details[nodeKey] = { status: ping === 'PONG' ? 'healthy' : 'unhealthy', response: ping };
           this.metrics.nodeHealth[nodeKey] = ping === 'PONG' ? 'healthy' : 'unhealthy';
         } catch (error) {
@@ -415,7 +389,6 @@ export class RedisClusterService {
         }
       }
 
-      const allHealthy = Object.values(this.metrics.nodeHealth).every(status => status === 'healthy');
       
       return {
         healthy: allHealthy,
@@ -439,7 +412,6 @@ export class RedisClusterService {
 
   private findMatchingPattern(key: string): CachePattern | undefined {
     for (const [pattern, config] of this.cachePatterns) {
-      const regex = new RegExp(pattern.replace(/\*/g, '.*'));
       if (regex.test(key)) {
         return config;
       }
@@ -451,15 +423,12 @@ export class RedisClusterService {
     this.metrics.totalRequests++;
     
     // Update average response time
-    const totalTime = this.metrics.averageResponseTime * (this.metrics.totalRequests - 1);
     this.metrics.averageResponseTime = (totalTime + responseTime) / this.metrics.totalRequests;
     
     if (operation === 'get' || operation === 'mget') {
       if (success) {
-        const currentHits = this.metrics.hitRate * (this.metrics.totalRequests - 1);
         this.metrics.hitRate = (currentHits + (hitRate || 1)) / this.metrics.totalRequests;
       } else {
-        const currentMisses = this.metrics.missRate * (this.metrics.totalRequests - 1);
         this.metrics.missRate = (currentMisses + 1) / this.metrics.totalRequests;
       }
     }
@@ -515,7 +484,6 @@ class MockRedisCluster {
   }
 
   emit(event: string, ...args: Record<string, unknown>[]): void {
-    const handlers = this.eventHandlers.get(event) || [];
     handlers.forEach(handler => handler(...args));
   }
 
@@ -526,7 +494,6 @@ class MockRedisCluster {
   }
 
   async get(key: string): Promise<string | null> {
-    const expireTime = this.expiry.get(key);
     if (expireTime && Date.now() > expireTime) {
       this.data.delete(key);
       this.expiry.delete(key);
@@ -551,13 +518,10 @@ class MockRedisCluster {
   }
 
   async keys(pattern: string): Promise<string[]> {
-    const regex = new RegExp(pattern.replace(/\*/g, '.*'));
     return Array.from(this.data.keys()).filter(key => regex.test(key));
   }
 
   async incrby(key: string, increment: number): Promise<number> {
-    const current = parseInt(this.data.get(key) || '0', 10);
-    const newValue = current + increment;
     this.data.set(key, newValue.toString());
     return newValue;
   }
@@ -575,9 +539,7 @@ class MockRedisCluster {
   }
 
   async ttl(key: string): Promise<number> {
-    const expireTime = this.expiry.get(key);
     if (!expireTime) return -1;
-    const remaining = Math.floor((expireTime - Date.now()) / 1000);
     return remaining > 0 ? remaining : -2;
   }
 

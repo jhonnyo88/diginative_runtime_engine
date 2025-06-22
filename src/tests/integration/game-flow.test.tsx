@@ -14,11 +14,6 @@ const TestWrapper: React.FC<{ children: React.ReactNode }> = ({ children }) => (
   </ChakraThemeProvider>
 );
 
-const mockAnalytics = {
-  trackEvent: vi.fn(),
-  identify: vi.fn(),
-  page: vi.fn()
-};
 
 // Complete GDPR training game manifest
 const completeGDPRGame: GameManifest = {
@@ -229,8 +224,6 @@ const completeGDPRGame: GameManifest = {
   ]
 };
 
-const mockOnGameComplete = vi.fn();
-const mockOnGameExit = vi.fn();
 
 describe('Complete Game Flow Integration', () => {
   beforeEach(() => {
@@ -243,14 +236,6 @@ describe('Complete Game Flow Integration', () => {
     vi.useRealTimers();
   });
 
-  const defaultProps = {
-    gameManifest: completeGDPRGame,
-    onGameComplete: mockOnGameComplete,
-    onGameExit: mockOnGameExit,
-    analytics: mockAnalytics,
-    userId: 'anna.svensson@malmo.se',
-    tenantId: 'malmo-stad'
-  };
 
   it('completes full GDPR training flow successfully', async () => {
     render(
@@ -477,7 +462,6 @@ describe('Complete Game Flow Integration', () => {
     );
 
     // Exit from dialogue scene
-    const exitButton = screen.getByLabelText('Exit game');
     fireEvent.click(exitButton);
 
     expect(mockOnGameExit).toHaveBeenCalledWith({
@@ -490,15 +474,6 @@ describe('Complete Game Flow Integration', () => {
   });
 
   it('supports resume from middle of game', async () => {
-    const resumeProps = {
-      ...defaultProps,
-      resumeFromScene: 'gdpr-basics-quiz',
-      previousProgress: {
-        completedScenes: ['welcome-dialogue'],
-        currentScene: 'gdpr-basics-quiz',
-        progress: 50
-      }
-    };
 
     render(
       <TestWrapper>
@@ -582,7 +557,6 @@ describe('Complete Game Flow Integration', () => {
     );
 
     // Theme should be applied to components
-    const gameContainer = screen.getByTestId('strategy-play-host');
     expect(gameContainer).toHaveStyle({
       '--primary-color': '#2B5AA0',
       '--secondary-color': '#4A90C2',
@@ -606,12 +580,10 @@ describe('Complete Game Flow Integration', () => {
 
     await waitFor(() => {
       // Focus should move to quiz question
-      const questionElement = screen.getByText('Vad står GDPR för?');
       expect(document.activeElement?.textContent).toContain('Vad står GDPR för?');
     });
 
     // Keyboard navigation
-    const option = screen.getByLabelText('General Data Protection Regulation');
     option.focus();
     fireEvent.keyDown(option, { key: ' ' });
     expect(option).toBeChecked();

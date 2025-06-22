@@ -60,8 +60,6 @@ import { EnhancedCulturalSwitching } from '../WorldHub/EnhancedCulturalSwitching
 import { ExecutiveMunicipalDashboard } from '../WorldHub/ExecutiveMunicipalDashboard';
 import { CulturalThemeProvider, useCulturalTheme } from '../WorldHub/CulturalThemeProvider';
 
-const MotionBox = motion(Box);
-const MotionContainer = motion(Container);
 
 // Perfect Demo Stage Definitions with Government Excellence
 interface PerfectDemoStage {
@@ -866,35 +864,6 @@ export const PerfectSverigesDigitaliseringsstrategiDemo: React.FC<PerfectSverige
 
   // Enhanced keyboard shortcuts
   useEffect(() => {
-    const handleKeyPress = (event: KeyboardEvent) => {
-      switch (event.code) {
-        case 'Space':
-          event.preventDefault();
-          isPlaying ? handlePause() : handlePlay();
-          break;
-        case 'ArrowRight':
-          event.preventDefault();
-          handleNext();
-          break;
-        case 'ArrowLeft':
-          event.preventDefault();
-          handlePrevious();
-          break;
-        case 'KeyF':
-          event.preventDefault();
-          setIsFullscreen(!isFullscreen);
-          break;
-        case 'KeyP':
-          event.preventDefault();
-          setPresentationMode(presentationMode === 'practice' ? 'live' : 'practice');
-          break;
-        case 'Escape':
-          if (isFullscreen) {
-            setIsFullscreen(false);
-          }
-          break;
-      }
-    };
 
     window.addEventListener('keydown', handleKeyPress);
     return () => window.removeEventListener('keydown', handleKeyPress);
@@ -929,77 +898,3 @@ export const PerfectSverigesDigitaliseringsstrategiDemo: React.FC<PerfectSverige
     setRemainingTime(perfectSverigeDemoStages[currentStage].duration);
   }, [currentStage]);
 
-  const handlePlay = useCallback(() => {
-    setIsPlaying(true);
-    setIsPaused(false);
-  }, []);
-
-  const handlePause = useCallback(() => {
-    setIsPlaying(false);
-    setIsPaused(true);
-  }, []);
-
-  const handleNext = useCallback(() => {
-    if (currentStage < perfectSverigeDemoStages.length - 1) {
-      setCurrentStage(prev => prev + 1);
-    }
-  }, [currentStage]);
-
-  const handlePrevious = useCallback(() => {
-    if (currentStage > 0) {
-      setCurrentStage(prev => prev - 1);
-    }
-  }, [currentStage]);
-
-  const handleStageSelect = useCallback((stageIndex: number) => {
-    setCurrentStage(stageIndex);
-    setRemainingTime(perfectSverigeDemoStages[stageIndex].duration);
-  }, []);
-
-  const currentStageData = perfectSverigeDemoStages[currentStage];
-
-  return (
-    <CulturalThemeProvider>
-      <Box
-        minH="100vh"
-        bg={isFullscreen ? "black" : "gray.50"}
-        position="relative"
-        overflow={isFullscreen ? "hidden" : "auto"}
-      >
-        
-        {/* Perfect Demo Content */}
-        <AnimatePresence mode="wait">
-          <PerfectDemoStageDisplay
-            key={currentStage}
-            stage={currentStageData}
-            stageIndex={currentStage}
-            isActive={true}
-            remainingTime={remainingTime}
-            presentationMode={presentationMode}
-            isFullscreen={isFullscreen}
-          />
-        </AnimatePresence>
-
-        {/* Perfect Demo Controls */}
-        <PerfectDemoControls
-          currentStage={currentStage}
-          totalStages={perfectSverigeDemoStages.length}
-          isPlaying={isPlaying}
-          isPaused={isPaused}
-          isFullscreen={isFullscreen}
-          onPlay={handlePlay}
-          onPause={handlePause}
-          onNext={handleNext}
-          onPrevious={handlePrevious}
-          onStageSelect={handleStageSelect}
-          onToggleFullscreen={() => setIsFullscreen(!isFullscreen)}
-          remainingTime={remainingTime}
-          currentStageData={currentStageData}
-          presentationMode={presentationMode}
-          onModeChange={setPresentationMode}
-        />
-
-      </Box>
-    </CulturalThemeProvider>
-  );
-};

@@ -174,7 +174,6 @@ export class MunicipalTenantScalingEngine extends TenantAwareService {
    * Create new municipal tenant with auto-scaling capabilities
    */
   async createMunicipalTenant(config: MunicipalityConfig): Promise<TenantInstance> {
-    const tenantId = config.municipalityId;
     
     // Validate tenant doesn't already exist
     if (this.tenantInstances.has(tenantId)) {
@@ -182,7 +181,6 @@ export class MunicipalTenantScalingEngine extends TenantAwareService {
     }
     
     // Calculate initial resource allocation
-    const resourceAllocation = await this.calculateInitialResources(config);
     
     // Create tenant instance with isolation
     const tenantInstance: TenantInstance = {
@@ -263,12 +261,10 @@ export class MunicipalTenantScalingEngine extends TenantAwareService {
     municipalityId: string,
     demand: { cpu?: number; memory?: number; storage?: number; reason: string }
   ): Promise<void> {
-    const tenant = this.tenantInstances.get(municipalityId);
     if (!tenant) {
       throw new Error(`Municipality ${municipalityId} not found`);
     }
     
-    const previousAllocation = { ...tenant.resourceAllocation };
     
     // Apply scaling
     if (demand.cpu) {
@@ -303,10 +299,6 @@ export class MunicipalTenantScalingEngine extends TenantAwareService {
   }
   
   private async calculateInitialResources(config: MunicipalityConfig): Promise<ResourceAllocation> {
-    const baseResources = this.getBaseResourcesByPopulation(config.populationSize);
-    const culturalMultiplier = this.getCulturalResourceMultiplier(config.culturalContext);
-    const complianceMultiplier = this.getComplianceResourceMultiplier(config.complianceLevel);
-    const q2Resources = this.calculateQ2InteractiveResources(config.expectedQ2Usage);
     
     return {
       cpu: Math.ceil(baseResources.cpu * culturalMultiplier * complianceMultiplier),
@@ -365,7 +357,6 @@ export class MunicipalTenantScalingEngine extends TenantAwareService {
   }
   
   private calculateCacheLevel(expectedLoad: number, q2Resources: Q2InteractiveResources): CacheLevel {
-    const totalDemand = expectedLoad + q2Resources.dragDropConcurrency + q2Resources.timedChallengeConcurrency;
     
     if (totalDemand < 100) return 'basic';
     if (totalDemand < 500) return 'standard';
@@ -412,7 +403,6 @@ export class MunicipalTenantScalingEngine extends TenantAwareService {
   }
   
   private async allocateCacheNodes(tenantId: string, cacheLevel: CacheLevel): Promise<CacheNode[]> {
-    const nodeCount = cacheLevel === 'enterprise' ? 3 : cacheLevel === 'premium' ? 2 : 1;
     const nodes: CacheNode[] = [];
     
     for (let i = 0; i < nodeCount; i++) {
@@ -517,9 +507,9 @@ export class MunicipalTenantScalingEngine extends TenantAwareService {
   
   private calculateCostImpact(previous: ResourceAllocation, current: ResourceAllocation): number {
     // Simple cost calculation based on resource changes
-    const cpuCost = (current.cpu - previous.cpu) * 10; // $10 per CPU
-    const memoryCost = (current.memory - previous.memory) * 0.01; // $0.01 per MB
-    const storageCost = (current.storage - previous.storage) * 0.001; // $0.001 per MB
+    const _cpuCost = (current.cpu - previous.cpu) * 10; // $10 per CPU
+    const _memoryCost = (current.memory - previous.memory) * 0.01; // $0.01 per MB
+    const _storageCost = (current.storage - previous.storage) * 0.001; // $0.001 per MB
     
     return cpuCost + memoryCost + storageCost;
   }
@@ -552,8 +542,6 @@ export class Q2CachingStrategyEngine extends TenantAwareService {
   ): Promise<void> {
     await this.validateTenantAccess(municipalityId, municipalityId, 'system', 'cache_mechanics');
     
-    const cacheKey = `${mechanicType}:${mechanicData.id}`;
-    const ttl = this.calculateCacheTTL(mechanicType);
     
     await this.tenantRedis.set(municipalityId, cacheKey, JSON.stringify(mechanicData), ttl);
     
@@ -579,7 +567,6 @@ export class Q2CachingStrategyEngine extends TenantAwareService {
     await this.validateTenantAccess(municipalityId, municipalityId, 'system', 'preload_scenarios');
     
     for (const scenario of scenarios) {
-      const cacheKey = `emergency_scenario:${scenario.scenarioId}`;
       await this.tenantRedis.set(
         municipalityId,
         cacheKey,
@@ -610,5 +597,3 @@ export class Q2CachingStrategyEngine extends TenantAwareService {
 }
 
 // Export singleton instances
-export const municipalTenantScalingEngine = new MunicipalTenantScalingEngine();
-export const q2CachingStrategyEngine = new Q2CachingStrategyEngine();

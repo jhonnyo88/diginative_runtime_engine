@@ -15,8 +15,6 @@ export const CelebrationEffects: React.FC<CelebrationEffectsProps> = ({
 }) => {
   useEffect(() => {
     // Complete immediately since we're not showing the celebration
-    const timer = setTimeout(() => {
-      onComplete?.();
     }, 0);
 
     return () => clearTimeout(timer);
@@ -43,7 +41,6 @@ export const ButtonFeedback: React.FC<{
     return <>{children}</>;
   }
 
-  const intensity = feedbackType === 'prominent' ? 1.05 : 1.02;
   
   return (
     <Box

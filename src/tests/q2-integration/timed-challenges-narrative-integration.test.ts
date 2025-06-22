@@ -11,128 +11,12 @@ import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 
 // Mock timed challenge narrative integration utilities
-const mockTimedNarrativeIntegration = {
-  integrateTimedChallengeWithNarrative: vi.fn(),
-  calculateNarrativeImpactOnChallenge: vi.fn(),
-  processChallengeOutcomeForNarrative: vi.fn(),
-  monitorTimePressureDecisionMaking: vi.fn(),
-  validateMunicipalDeadlineRealism: vi.fn()
-};
 
 // Timed Challenge + Narrative Integration Specifications
-const TIMED_NARRATIVE_SPECS = {
-  narrativeChoiceToChallengeDifficulty: {
-    'cooperative-approach': { difficultyModifier: 0.85, timeExtension: 1.2 }, // 15% easier, 20% more time
-    'assertive-approach': { difficultyModifier: 1.0, timeExtension: 1.0 }, // baseline
-    'aggressive-approach': { difficultyModifier: 1.15, timeExtension: 0.9 }, // 15% harder, 10% less time
-    'diplomatic-approach': { difficultyModifier: 0.9, timeExtension: 1.3 } // 10% easier, 30% more time
-  },
-  challengeOutcomeToNarrativeBranching: {
-    'excellent': { narrativeBranches: ['success-path', 'recognition-path', 'leadership-opportunity'] },
-    'good': { narrativeBranches: ['success-path', 'standard-progression'] },
-    'satisfactory': { narrativeBranches: ['standard-progression', 'improvement-needed'] },
-    'poor': { narrativeBranches: ['failure-recovery', 'learning-opportunity', 'support-needed'] },
-    'failed': { narrativeBranches: ['failure-recovery', 'crisis-management', 'external-help'] }
-  },
-  municipalTimePressureScenarios: {
-    'emergency-response': { timeLimit: 300000, pressureLevel: 'extreme', realisticDeadline: true }, // 5 minutes
-    'budget-deadline': { timeLimit: 1800000, pressureLevel: 'high', realisticDeadline: true }, // 30 minutes
-    'citizen-service': { timeLimit: 600000, pressureLevel: 'medium', realisticDeadline: true }, // 10 minutes
-    'routine-approval': { timeLimit: 900000, pressureLevel: 'low', realisticDeadline: true } // 15 minutes
-  },
-  performanceUnderTimePressure: {
-    maxLatency: 150, // max 150ms for UI updates under time pressure
-    narrativeRenderingTime: 100, // max 100ms for narrative updates
-    challengeValidationTime: 50, // max 50ms for challenge validation
-    stateUpdateTime: 75 // max 75ms for state updates during timed scenarios
-  }
-};
 
 // Municipal Timed Narrative Scenarios
-const MUNICIPAL_TIMED_SCENARIOS = {
-  emergencyFloodResponse: {
-    scenario: 'göteborg-flood-emergency-response',
-    initialNarrative: 'flood-alert-received',
-    timedChallenges: [
-      { name: 'resource-allocation', timeLimit: 180000, difficulty: 'high' }, // 3 minutes
-      { name: 'evacuation-coordination', timeLimit: 300000, difficulty: 'extreme' }, // 5 minutes
-      { name: 'media-communication', timeLimit: 240000, difficulty: 'medium' } // 4 minutes
-    ],
-    narrativeBranching: {
-      'all-excellent': 'hero-municipal-leader',
-      'mixed-results': 'competent-emergency-response',
-      'poor-performance': 'crisis-learning-experience'
-    },
-    municipalRealism: {
-      swedishEmergencyProtocols: true,
-      multiAgencyCoordination: true,
-      citizenSafetyCommunication: true,
-      mediaTransparency: true
-    }
-  },
-  budgetCrisisNegotiation: {
-    scenario: 'malmö-budget-crisis-stakeholder-meeting',
-    initialNarrative: 'winter-service-cuts-proposal',
-    timedChallenges: [
-      { name: 'stakeholder-persuasion', timeLimit: 900000, difficulty: 'high' }, // 15 minutes
-      { name: 'compromise-negotiation', timeLimit: 600000, difficulty: 'medium' }, // 10 minutes
-      { name: 'public-communication', timeLimit: 480000, difficulty: 'medium' } // 8 minutes
-    ],
-    narrativeBranching: {
-      'consensus-achieved': 'unified-municipal-leadership',
-      'partial-agreement': 'ongoing-stakeholder-management',
-      'conflict-unresolved': 'escalated-municipal-crisis'
-    },
-    municipalRealism: {
-      swedishConsensusBuilding: true,
-      transparencyRequirements: true,
-      stakeholderInvolvement: true,
-      budgetLegalConstraints: true
-    }
-  },
-  digitalTransformationProject: {
-    scenario: 'stockholm-digital-service-launch',
-    initialNarrative: 'citizen-digital-services-planning',
-    timedChallenges: [
-      { name: 'accessibility-validation', timeLimit: 720000, difficulty: 'medium' }, // 12 minutes
-      { name: 'security-compliance', timeLimit: 840000, difficulty: 'high' }, // 14 minutes
-      { name: 'citizen-training-preparation', timeLimit: 600000, difficulty: 'low' } // 10 minutes
-    ],
-    narrativeBranching: {
-      'inclusive-digital-success': 'municipal-innovation-leader',
-      'technical-success-inclusion-gaps': 'iterative-improvement-path',
-      'compliance-challenges': 'technical-debt-management'
-    },
-    municipalRealism: {
-      swedishDigitalPolicy: true,
-      wcagComplianceRequired: true,
-      gdprIntegration: true,
-      citizenInclusionFocus: true
-    }
-  }
-};
 
 // Anna Svensson Time Pressure Decision-Making Profile
-const ANNA_SVENSSON_TIME_PRESSURE_PROFILE = {
-  decisionMakingUnderPressure: {
-    emergencySituations: { performanceModifier: 1.1, stressResilience: 0.8 }, // 10% better performance
-    routineDeadlines: { performanceModifier: 1.05, stressResilience: 0.9 }, // 5% better performance
-    stakeholderPressure: { performanceModifier: 0.95, stressResilience: 0.7 }, // 5% reduced performance
-    publicScrutiny: { performanceModifier: 0.9, stressResilience: 0.6 } // 10% reduced performance
-  },
-  narrativeDecisionStyle: {
-    underTimePressure: 'experience-based-quick-decisions',
-    withAmpleTime: 'thorough-consultation-based',
-    inCrisis: 'leadership-directive-style',
-    inCollaboration: 'consensus-building-facilitation'
-  },
-  municipalExpertiseAdvantages: {
-    emergencyProtocolKnowledge: 0.15, // 15% time advantage
-    stakeholderRelationshipLeverage: 0.12, // 12% efficiency gain
-    institutionalMemory: 0.1, // 10% decision speed increase
-    culturalContextAwareness: 0.08 // 8% communication efficiency
-  }
-};
 
 describe('Timed Challenges + Branching Narratives Integration Testing', () => {
   let timedNarrativeHarness: Record<string, unknown>;
@@ -146,10 +30,8 @@ describe('Timed Challenges + Branching Narratives Integration Testing', () => {
 
   describe('Narrative Choice Impact on Challenge Difficulty', () => {
     it('should adjust timed challenge difficulty based on narrative approach choices', async () => {
-      const narrativeApproaches = ['cooperative-approach', 'assertive-approach', 'aggressive-approach', 'diplomatic-approach'];
       
       for (const approach of narrativeApproaches) {
-        const narrativeToChallenge = await timedNarrativeHarness.testNarrativeChoiceImpactOnChallenge({
           narrativeChoice: approach,
           initialChallenge: 'stakeholder-negotiation',
           baseTimeLimit: 600000, // 10 minutes
@@ -164,7 +46,6 @@ describe('Timed Challenges + Branching Narratives Integration Testing', () => {
         expect(narrativeToChallenge.municipalRealismMaintained).toBe(true);
 
         // Verify narrative-specific adjustments
-        const expectedModifier = TIMED_NARRATIVE_SPECS.narrativeChoiceToChallengeDifficulty[approach];
         expect(narrativeToChallenge.difficultyModifier).toBeCloseTo(expectedModifier.difficultyModifier, 2);
         expect(narrativeToChallenge.timeExtensionModifier).toBeCloseTo(expectedModifier.timeExtension, 2);
 
@@ -199,7 +80,6 @@ describe('Timed Challenges + Branching Narratives Integration Testing', () => {
     });
 
     it('should maintain narrative coherence when adjusting challenge parameters', async () => {
-      const narrativeCoherenceTest = await timedNarrativeHarness.testNarrativeCoherenceWithChallengeAdjustments({
         narrativeSequence: [
           { choice: 'diplomatic-approach', challenge: 'initial-stakeholder-meeting' },
           { choice: 'cooperative-approach', challenge: 'compromise-negotiation' },
@@ -239,10 +119,8 @@ describe('Timed Challenges + Branching Narratives Integration Testing', () => {
 
   describe('Challenge Outcome Triggered Narrative Branching', () => {
     it('should trigger appropriate narrative branches based on timed challenge performance', async () => {
-      const challengeOutcomes = ['excellent', 'good', 'satisfactory', 'poor', 'failed'];
       
       for (const outcome of challengeOutcomes) {
-        const challengeToNarrative = await timedNarrativeHarness.testChallengeOutcomeNarrativeBranching({
           challengeType: 'emergency-resource-allocation',
           challengeOutcome: outcome,
           performanceMetrics: {
@@ -260,7 +138,6 @@ describe('Timed Challenges + Branching Narratives Integration Testing', () => {
         expect(challengeToNarrative.municipalConsequencesRealistic).toBe(true);
 
         // Verify outcome-specific narrative branches
-        const expectedBranches = TIMED_NARRATIVE_SPECS.challengeOutcomeToNarrativeBranching[outcome];
         expect(challengeToNarrative.availableNarrativeBranches).toEqual(expect.arrayContaining(expectedBranches.narrativeBranches));
 
         // Verify narrative branching quality
@@ -296,7 +173,6 @@ describe('Timed Challenges + Branching Narratives Integration Testing', () => {
     });
 
     it('should handle complex challenge sequences with cumulative narrative impact', async () => {
-      const complexSequenceTest = await timedNarrativeHarness.testComplexChallengeSequenceNarrativeImpact({
         challengeSequence: [
           { challenge: 'initial-assessment', outcome: 'good', timeEfficiency: 0.8 },
           { challenge: 'resource-mobilization', outcome: 'excellent', timeEfficiency: 0.95 },
@@ -344,9 +220,7 @@ describe('Timed Challenges + Branching Narratives Integration Testing', () => {
 
   describe('Municipal Time Pressure Scenario Integration', () => {
     it('should handle emergency flood response scenario with realistic time pressures', async () => {
-      const emergencyScenario = MUNICIPAL_TIMED_SCENARIOS.emergencyFloodResponse;
       
-      const emergencyResponseTest = await timedNarrativeHarness.testEmergencyTimePressureScenario({
         scenario: emergencyScenario,
         participant: 'anna-svensson',
         municipality: 'göteborg',
@@ -396,9 +270,7 @@ describe('Timed Challenges + Branching Narratives Integration Testing', () => {
     });
 
     it('should handle budget crisis negotiation scenario with stakeholder time pressures', async () => {
-      const budgetScenario = MUNICIPAL_TIMED_SCENARIOS.budgetCrisisNegotiation;
       
-      const budgetCrisisTest = await timedNarrativeHarness.testBudgetCrisisTimePressureScenario({
         scenario: budgetScenario,
         participant: 'anna-svensson',
         municipality: 'malmö',
@@ -448,9 +320,7 @@ describe('Timed Challenges + Branching Narratives Integration Testing', () => {
     });
 
     it('should handle digital transformation scenario with accessibility and compliance time pressures', async () => {
-      const digitalScenario = MUNICIPAL_TIMED_SCENARIOS.digitalTransformationProject;
       
-      const digitalTransformationTest = await timedNarrativeHarness.testDigitalTransformationTimePressureScenario({
         scenario: digitalScenario,
         participant: 'anna-svensson',
         municipality: 'stockholm',
@@ -499,7 +369,6 @@ describe('Timed Challenges + Branching Narratives Integration Testing', () => {
 
   describe('Performance Under Time Pressure Integration', () => {
     it('should maintain optimal performance during timed narrative-challenge integration', async () => {
-      const performanceUnderPressureTest = await timedNarrativeHarness.testPerformanceUnderTimePressure({
         concurrentTimedChallenges: 3,
         narrativeComplexity: 'high',
         timePressureLevel: 'extreme',
@@ -543,10 +412,8 @@ describe('Timed Challenges + Branching Narratives Integration Testing', () => {
     });
 
     it('should optimize Anna Svensson decision-making under different time pressure scenarios', async () => {
-      const timePressureScenarios = ['emergency-response', 'budget-deadline', 'citizen-service', 'routine-approval'];
       
       for (const scenario of timePressureScenarios) {
-        const annaSwenssonTimePressureTest = await timedNarrativeHarness.testAnnaSwenssonTimePressureOptimization({
           timePressureScenario: scenario,
           pressureLevel: TIMED_NARRATIVE_SPECS.municipalTimePressureScenarios[scenario].pressureLevel,
           timeLimit: TIMED_NARRATIVE_SPECS.municipalTimePressureScenarios[scenario].timeLimit,
@@ -581,7 +448,6 @@ describe('Timed Challenges + Branching Narratives Integration Testing', () => {
           culturalContextAwareness: expect.any(Number)
         });
 
-        const expectedAdvantages = ANNA_SVENSSON_TIME_PRESSURE_PROFILE.municipalExpertiseAdvantages;
         expect(annaSwenssonTimePressureTest.municipalExpertiseAdvantages.emergencyProtocolKnowledge).toBeCloseTo(expectedAdvantages.emergencyProtocolKnowledge, 2);
         expect(annaSwenssonTimePressureTest.municipalExpertiseAdvantages.stakeholderRelationshipLeverage).toBeCloseTo(expectedAdvantages.stakeholderRelationshipLeverage, 2);
 
@@ -598,7 +464,6 @@ describe('Timed Challenges + Branching Narratives Integration Testing', () => {
 
   describe('Integration Quality and Reporting', () => {
     it('should generate comprehensive timed narrative integration reports', async () => {
-      const integrationReporting = await timedNarrativeHarness.generateTimedNarrativeIntegrationReport({
         scenariosTested: Object.keys(MUNICIPAL_TIMED_SCENARIOS),
         participantProfile: 'anna-svensson',
         municipality: 'malmö',
@@ -841,7 +706,6 @@ function createTimedNarrativeHarness() {
       }
     }),
     testAnnaSwenssonTimePressureOptimization: vi.fn().mockImplementation(({ timePressureScenario }) => {
-      const isEmergency = timePressureScenario === 'emergency-response';
       return Promise.resolve({
         timePressureOptimizationApplied: true,
         decisionMakingAdapted: true,

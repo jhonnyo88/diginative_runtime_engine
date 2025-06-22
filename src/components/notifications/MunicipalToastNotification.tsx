@@ -55,10 +55,8 @@ export const MunicipalToastNotification: React.FC<MunicipalToastNotificationProp
 }) => {
   const [isVisible, setIsVisible] = useState(true);
   const [isExiting, setIsExiting] = useState(false);
-  const toastRef = useRef<HTMLDivElement>(null);
   
   // Responsive positioning
-  const isMobile = useBreakpointValue({ base: true, md: false });
   
   // TASK-HD-014: Accessibility enhancements
   const { announceAchievement } = useAchievementAnnouncer();
@@ -68,14 +66,6 @@ export const MunicipalToastNotification: React.FC<MunicipalToastNotificationProp
   const { handleKeyDown, createFocusableElement } = useAchievementKeyboardNavigation();
   
   // Municipal colors based on cultural context
-  const getMunicipalColors = () => {
-    switch (design.culturalContext) {
-      case 'swedish':
-        return { 
-          primary: '#0066CC', // Municipal blue
-          background: '#0066CC',
-          text: '#FFFFFF'
-        };
       case 'german':
         return { 
           primary: '#000000', // Federal black
@@ -103,20 +93,8 @@ export const MunicipalToastNotification: React.FC<MunicipalToastNotificationProp
     }
   };
 
-  const colors = getMunicipalColors();
 
   // Achievement icon based on variant
-  const getAchievementIcon = () => {
-    switch (design.variant) {
-      case 'certification':
-        return <CertificateIcon w="20px" h="20px" color={colors.text} aria-hidden="true" />;
-      case 'competence':
-        return <StarIcon w="20px" h="20px" color={colors.text} aria-hidden="true" />;
-      case 'municipal-achievement':
-      default:
-        return <CheckIcon w="20px" h="20px" color={colors.text} aria-hidden="true" />;
-    }
-  };
 
   // TASK-HD-014: Accessibility initialization
   useEffect(() => {
@@ -159,8 +137,6 @@ export const MunicipalToastNotification: React.FC<MunicipalToastNotificationProp
   // Auto-dismiss handling
   useEffect(() => {
     if (accessibility.autoTimeout > 0) {
-      const timer = setTimeout(() => {
-        handleDismiss();
       }, accessibility.autoTimeout);
 
       return () => clearTimeout(timer);
@@ -168,29 +144,11 @@ export const MunicipalToastNotification: React.FC<MunicipalToastNotificationProp
   }, [accessibility.autoTimeout]);
 
   // Handle dismissal with animation
-  const handleDismiss = () => {
-    setIsExiting(true);
-    
-    // Give time for exit animation
-    const exitTimer = setTimeout(() => {
-      setIsVisible(false);
-      integration.onDismiss?.();
-    }, accessibility.reducedMotion ? 0 : 300);
-
-    return () => clearTimeout(exitTimer);
-  };
 
   // TASK-HD-014: Enhanced keyboard handling for accessibility
-  const handleToastKeyDown = (event: React.KeyboardEvent) => {
-    handleKeyDown(event, {
-      onEscape: accessibility.dismissible ? handleDismiss : undefined,
-      onEnter: accessibility.dismissible ? handleDismiss : undefined,
-      onSpace: accessibility.dismissible ? handleDismiss : undefined
-    });
-  };
 
   // TASK-HD-014: Apply high contrast colors if needed
-  const accessibleColors = isHighContrast 
+  const _accessibleColors = isHighContrast 
     ? getHighContrastColors({
         progressColor: colors.primary,
         milestoneColor: colors.primary,
@@ -358,7 +316,6 @@ export const MunicipalToastNotification: React.FC<MunicipalToastNotificationProp
 };
 
 // Municipal achievement categories for GDPR training
-export const MunicipalAchievementCategories = {
   // Municipal Competence Achievements
   GDPR_SPECIALIST: {
     id: 'gdpr_specialist',
@@ -394,11 +351,9 @@ export const MunicipalAchievementCategories = {
 };
 
 // Cultural text adaptations for different municipal contexts
-export const getMunicipalToastText = (
   achievementKey: keyof typeof MunicipalAchievementCategories,
   culturalContext: 'swedish' | 'german' | 'french' | 'dutch'
 ): MunicipalAchievement => {
-  const baseAchievement = MunicipalAchievementCategories[achievementKey];
   
   switch (culturalContext) {
     case 'german':

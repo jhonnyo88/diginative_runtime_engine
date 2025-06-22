@@ -40,8 +40,6 @@ const Q2PerformanceMonitoringDashboard: React.FC = () => {
   const [activeAlerts, setActiveAlerts] = useState<AlertConfig[]>([]);
   const [selectedTimeRange, setSelectedTimeRange] = useState<'1h' | '4h' | '24h' | '7d'>('4h');
   
-  const deploymentManager = useRef<Q2ProductionDeploymentManager | null>(null);
-  const monitoringInterval = useRef<NodeJS.Timeout | null>(null);
 
   // Alert configurations för municipal environment
   const alertConfigs: AlertConfig[] = [
@@ -110,20 +108,18 @@ const Q2PerformanceMonitoringDashboard: React.FC = () => {
     };
   }, []);
 
-  const startMonitoring = async () => {
+  const _startMonitoring = async () => {
     if (!deploymentManager.current) return;
 
     setIsMonitoring(true);
     
     // Initial health check
-    const initialHealth = await deploymentManager.current.performHealthCheck();
     setCurrentHealth(initialHealth);
     updatePerformanceHistory(initialHealth);
 
     // Start continuous monitoring
     monitoringInterval.current = setInterval(async () => {
       if (deploymentManager.current) {
-        const healthCheck = await deploymentManager.current.performHealthCheck();
         setCurrentHealth(healthCheck);
         updatePerformanceHistory(healthCheck);
         checkAlerts(healthCheck);
@@ -131,81 +127,25 @@ const Q2PerformanceMonitoringDashboard: React.FC = () => {
     }, 30000); // Check every 30 seconds
   };
 
-  const stopMonitoring = () => {
-    setIsMonitoring(false);
-    if (monitoringInterval.current) {
-      clearInterval(monitoringInterval.current);
-      monitoringInterval.current = null;
-    }
-    if (deploymentManager.current) {
-      deploymentManager.current.stopHealthMonitoring();
-    }
-  };
 
-  const updatePerformanceHistory = (healthCheck: Q2HealthCheck) => {
-    const newDataPoint: Q2PerformanceData = {
-      timestamp: healthCheck.timestamp,
-      loadTime: healthCheck.performance.averageLoadTime,
-      memoryUsage: healthCheck.performance.memoryUsage,
-      activeUsers: healthCheck.performance.activeUsers,
-      errorRate: healthCheck.performance.errorRate,
-      fps: calculateAverageFPS(healthCheck),
-      municipalMetrics: healthCheck.municipalMetrics
-    };
 
     setPerformanceHistory(prev => {
-      const updated = [...prev, newDataPoint];
       // Keep only data for selected time range
-      const cutoffTime = Date.now() - getTimeRangeMs(selectedTimeRange);
       return updated.filter(dp => dp.timestamp >= cutoffTime);
     });
   };
 
-  const calculateAverageFPS = (healthCheck: Q2HealthCheck): number => {
+  const _calculateAverageFPS = (healthCheck: Q2HealthCheck): number => {
     // Calculate average FPS from component response times
-    const avgResponseTime = Object.values(healthCheck.components)
+    const _avgResponseTime = Object.values(healthCheck.components)
       .reduce((sum, comp) => sum + comp.responseTime, 0) / Object.keys(healthCheck.components).length;
     
     // Convert response time to estimated FPS (simplified calculation)
     return Math.max(30, 60 - (avgResponseTime / 10));
   };
 
-  const checkAlerts = (healthCheck: Q2HealthCheck) => {
-    const newAlerts: AlertConfig[] = [];
 
-    alertConfigs.forEach(config => {
-      let triggerValue: number;
-
-      switch (config.id) {
-        case 'load_time_warning':
-        case 'load_time_critical':
-          triggerValue = healthCheck.performance.averageLoadTime;
-          if (triggerValue >= config.threshold) newAlerts.push(config);
-          break;
-        case 'memory_warning':
-          triggerValue = healthCheck.performance.memoryUsage;
-          if (triggerValue >= config.threshold) newAlerts.push(config);
-          break;
-        case 'error_rate_warning':
-        case 'error_rate_critical':
-          triggerValue = healthCheck.performance.errorRate;
-          if (triggerValue >= config.threshold) newAlerts.push(config);
-          break;
-        case 'fps_degradation':
-          triggerValue = calculateAverageFPS(healthCheck);
-          if (triggerValue <= config.threshold) newAlerts.push(config);
-          break;
-        case 'accessibility_compliance':
-          triggerValue = healthCheck.municipalMetrics.accessibilityCompliance;
-          if (triggerValue <= config.threshold) newAlerts.push(config);
-          break;
-      }
-    });
-
-    setActiveAlerts(newAlerts);
-  };
-
-  const getTimeRangeMs = (range: string): number => {
+  const _getTimeRangeMs = (range: string): number => {
     switch (range) {
       case '1h': return 60 * 60 * 1000;
       case '4h': return 4 * 60 * 60 * 1000;
@@ -215,7 +155,7 @@ const Q2PerformanceMonitoringDashboard: React.FC = () => {
     }
   };
 
-  const getStatusColor = (status: string): string => {
+  const _getStatusColor = (status: string): string => {
     switch (status) {
       case 'healthy': return '#16a34a';
       case 'degraded': return '#ca8a04';
@@ -225,7 +165,7 @@ const Q2PerformanceMonitoringDashboard: React.FC = () => {
     }
   };
 
-  const getAlertColor = (severity: string): string => {
+  const _getAlertColor = (severity: string): string => {
     switch (severity) {
       case 'info': return '#3b82f6';
       case 'warning': return '#f59e0b';
@@ -234,11 +174,11 @@ const Q2PerformanceMonitoringDashboard: React.FC = () => {
     }
   };
 
-  const formatNumber = (num: number, decimals: number = 1): string => {
+  const _formatNumber = (num: number, decimals: number = 1): string => {
     return num.toFixed(decimals);
   };
 
-  const formatPercentage = (num: number): string => {
+  const _formatPercentage = (num: number): string => {
     return `${(num * 100).toFixed(1)}%`;
   };
 

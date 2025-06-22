@@ -8,7 +8,6 @@
 import { Router } from 'express';
 import { validateContent, validateBatch, validationHealthCheck } from '../content-validation';
 
-const router = Router();
 
 /**
  * POST /api/validation/content

@@ -93,9 +93,6 @@ export async function validateContent(
   req: Request<Record<string, unknown>, Record<string, unknown>, ValidationRequest>,
   res: Response<ValidationResponse>,
 ): Promise<void> {
-  const startTime = Date.now();
-  const monitoring = InfrastructureMonitoring.getInstance();
-  
   try {
     const { content, contentType = 'game', userId, teamId } = req.body;
     
@@ -123,8 +120,6 @@ export async function validateContent(
     // Check cache first
     const cached = validationCache.get(cacheKey);
     if (cached && (Date.now() - cached.timestamp) < 3600000) { // 1 hour cache
-      const processingTime = Date.now() - startTime;
-      
       // Record cache hit metric
       monitoring.recordMetric({
         name: 'validation_cache_hit',
@@ -145,7 +140,6 @@ export async function validateContent(
     }
     
     // Perform validation
-    const validator = new DevTeamContentValidator();
     let result: ValidationResult;
     
     switch (contentType) {
@@ -178,7 +172,6 @@ export async function validateContent(
       entries.slice(0, 100).forEach(([key]) => validationCache.delete(key));
     }
     
-    const processingTime = Date.now() - startTime;
     
     // Record validation metrics
     monitoring.recordMetric({
@@ -224,7 +217,6 @@ export async function validateContent(
     res.json(response);
     
   } catch (error) {
-    const processingTime = Date.now() - startTime;
     
     monitoring.reportError(error as Error, {
       endpoint: 'content-validation',
@@ -253,8 +245,6 @@ export async function validateBatch(
   req: Request<Record<string, unknown>, unknown, { items: ValidationRequest[] }>,
   res: Response<{ results: ValidationResponse[]; totalProcessingTime: number }>
 ): Promise<void> {
-  const startTime = Date.now();
-  const monitoring = InfrastructureMonitoring.getInstance();
   
   try {
     const { items } = req.body;
@@ -268,12 +258,8 @@ export async function validateBatch(
     }
     
     // Validate each item in parallel
-    const results = await Promise.all(
       items.map(async (item) => {
-        const itemStart = Date.now();
-        const validator = new DevTeamContentValidator();
         
-        const result = validator.validateGameManifest(item.content);
         
         return {
           valid: result.isValid,
@@ -287,7 +273,6 @@ export async function validateBatch(
       })
     );
     
-    const totalProcessingTime = Date.now() - startTime;
     
     // Record batch metrics
     monitoring.recordMetric({
@@ -326,19 +311,14 @@ export async function validateBatch(
  * Provides instant feedback during content creation
  */
 export function setupRealtimeValidation(io: Record<string, unknown>): void {
-  const monitoring = InfrastructureMonitoring.getInstance();
   
   io.on('connection', (socket: Record<string, unknown>) => {
     console.log('DevTeam editor connected for real-time validation');
     
     socket.on('validate', async (data: ValidationRequest) => {
-      const startTime = Date.now();
       
       try {
-        const validator = new DevTeamContentValidator();
-        const result = validator.validateGameManifest(data.content);
         
-        const processingTime = Date.now() - startTime;
         
         // Emit validation result
         socket.emit('validation-result', {
@@ -375,30 +355,10 @@ export function setupRealtimeValidation(io: Record<string, unknown>): void {
  * Validation health check endpoint
  */
 export function validationHealthCheck(req: Request, res: Response): void {
-  const monitoring = InfrastructureMonitoring.getInstance();
   
   // Test validation with sample content
-  const testContent = {
-    title: 'Health Check Test',
-    description: 'Test game for validation health check',
-    scenes: [{
-      id: 'test-scene',
-      type: 'quiz',
-      title: 'Test Quiz',
-      questions: [{
-        text: 'Test question?',
-        options: ['A', 'B', 'C'],
-        correctAnswer: 0
-      }]
-    }]
-  };
   
-  const validator = new DevTeamContentValidator();
-  const startTime = Date.now();
-  const result = validator.validateGameManifest(testContent);
-  const processingTime = Date.now() - startTime;
   
-  const healthStatus = monitoring.getHealthStatus();
   
   res.json({
     status: 'healthy',

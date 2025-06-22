@@ -22,103 +22,18 @@ export const WorldSelectionGrid: React.FC<WorldSelectionGridProps> = ({
   selectedWorld,
   culturalContext
 }) => {
-  const getWorldStatus = (worldIndex: number) => {
-    const worldStatus = hubState.worldCompletionStatus.find(w => w.worldIndex === worldIndex);
-    return worldStatus || {
-      worldIndex,
-      worldId: `world-${worldIndex}`,
-      status: 'locked' as const,
-      score: 0,
-      completionPercentage: 0,
-      timeSpent: 0,
-      achievementsUnlocked: [],
-      competencyGains: Record<string, unknown>
-    };
   };
 
-  const getWorldIcon = (worldIndex: number, status: string) => {
-    const icons = {
-      1: { available: '🏛️', completed: '✅', locked: '🔒', in_progress: '⏳' },
-      2: { available: '👥', completed: '✅', locked: '🔒', in_progress: '⏳' },
-      3: { available: '🚨', completed: '✅', locked: '🔒', in_progress: '⏳' },
-      4: { available: '👔', completed: '✅', locked: '🔒', in_progress: '⏳' },
-      5: { available: '💡', completed: '✅', locked: '🔒', in_progress: '⏳' }
-    };
-    return icons[worldIndex as keyof typeof icons]?.[status as keyof typeof icons[1]] || '🔒';
-  };
 
-  const getCulturalWorldTitle = (worldIndex: number) => {
-    const worldDef = getWorldDefinition(worldIndex);
-    if (!worldDef) return `Värld ${worldIndex}`;
-    
-    const titleMap = {
-      swedish_municipal: worldDef.title.swedish,
-      german_municipal: worldDef.title.german,
-      french_municipal: worldDef.title.french,
-      dutch_municipal: worldDef.title.dutch
-    };
-    
-    return titleMap[culturalContext] || worldDef.title.swedish;
-  };
 
-  const getCulturalWorldDescription = (worldIndex: number) => {
-    const worldDef = getWorldDefinition(worldIndex);
-    if (!worldDef) return `Beskrivning för värld ${worldIndex}`;
-    
-    const descMap = {
-      swedish_municipal: worldDef.description.swedish,
-      german_municipal: worldDef.description.german,
-      french_municipal: worldDef.description.french,
-      dutch_municipal: worldDef.description.dutch
-    };
-    
-    return descMap[culturalContext] || worldDef.description.swedish;
-  };
 
-  const getStatusText = (status: string) => {
-    const statusTexts = {
-      swedish_municipal: {
-        locked: 'Låst',
-        available: 'Tillgänglig',
-        in_progress: 'Pågående',
-        completed: 'Slutförd'
-      },
-      german_municipal: {
-        locked: 'Gesperrt',
-        available: 'Verfügbar',
-        in_progress: 'In Bearbeitung',
-        completed: 'Abgeschlossen'
-      },
-      french_municipal: {
-        locked: 'Verrouillé',
-        available: 'Disponible',
-        in_progress: 'En cours',
-        completed: 'Terminé'
-      },
-      dutch_municipal: {
-        locked: 'Vergrendeld',
-        available: 'Beschikbaar',
-        in_progress: 'Bezig',
-        completed: 'Voltooid'
-      }
-    };
-    return statusTexts[culturalContext]?.[status as keyof typeof statusTexts['swedish_municipal']] || status;
-  };
 
-  const getDifficultyStars = (difficulty: number) => {
-    return '★'.repeat(difficulty) + '☆'.repeat(5 - difficulty);
-  };
 
-  const worlds = [1, 2, 3, 4, 5].filter(isValidWorldIndex);
 
   return (
     <div className="world-selection-grid" data-cultural-context={culturalContext}>
       <div className="worlds-grid">
         {worlds.map((worldIndex, index) => {
-          const worldStatus = getWorldStatus(worldIndex);
-          const worldDef = getWorldDefinition(worldIndex);
-          const isClickable = worldStatus.status !== 'locked';
-          const isSelected = selectedWorld === worldIndex;
 
           return (
             <motion.div

@@ -23,35 +23,8 @@ import {
 } from '../../services/error-monitoring';
 
 // Mock global objects and APIs
-const mockPerformance = {
-  timing: {
-    navigationStart: 1000,
-    loadEventEnd: 3000,
-    domContentLoadedEventEnd: 2000,
-  },
-  getEntriesByType: vi.fn(() => [{
-    domContentLoadedEventEnd: 2000,
-    fetchStart: 1100
-  }]),
-};
 
-const mockNavigator = {
-  userAgent: 'Mozilla/5.0 (iPhone; CPU iPhone OS 14_7_1 like Mac OS X) AppleWebKit/605.1.15'
-};
 
-const mockWindow = {
-  innerWidth: 375, // iPhone width
-  addEventListener: vi.fn(),
-  sessionStorage: {
-    getItem: vi.fn(),
-    setItem: vi.fn(),
-  },
-  __DIGINATIVA_CONFIG__: {
-    MONITORING_ENABLED: 'true',
-    NODE_ENV: 'test',
-    DEFAULT_MUNICIPALITY: 'stockholm'
-  }
-};
 
 // Mock global performance and navigator
 Object.defineProperty(global, 'performance', {
@@ -122,7 +95,6 @@ describe('ErrorMonitoringService Unit Tests', () => {
       mockWindow.__DIGINATIVA_CONFIG__.MONITORING_ENABLED = 'false';
       
       // Create new instance to test disabled state
-      const disabledService = new (errorMonitoring.constructor as any)();
       
       expect(consoleWarnSpy).toHaveBeenCalledWith('Error monitoring is disabled');
       
@@ -138,16 +110,9 @@ describe('ErrorMonitoringService Unit Tests', () => {
 
   describe('Error Capture', () => {
     it('should capture basic error correctly', () => {
-      const testError = {
-        name: 'TestError',
-        message: 'This is a test error',
-        severity: 'medium' as const,
-        category: 'runtime' as const
-      };
 
       errorMonitoring.captureError(testError);
 
-      const errorQueue = (errorMonitoring as any).errorQueue;
       expect(errorQueue).toHaveLength(1);
       expect(errorQueue[0]).toMatchObject({
         name: 'TestError',
@@ -167,12 +132,6 @@ describe('ErrorMonitoringService Unit Tests', () => {
     });
 
     it('should capture critical errors and log immediately', () => {
-      const criticalError = {
-        name: 'CriticalError',
-        message: 'System failure',
-        severity: 'critical' as const,
-        category: 'runtime' as const
-      };
 
       errorMonitoring.captureError(criticalError);
 
@@ -186,20 +145,9 @@ describe('ErrorMonitoringService Unit Tests', () => {
     });
 
     it('should merge custom context with current context', () => {
-      const errorWithContext = {
-        name: 'ContextError',
-        message: 'Error with custom context',
-        severity: 'low' as const,
-        category: 'validation' as const,
-        context: {
-          customField: 'custom-value',
-          municipality: 'gothenburg' // Override default
-        }
-      };
 
       errorMonitoring.captureError(errorWithContext);
 
-      const errorQueue = (errorMonitoring as any).errorQueue;
       expect(errorQueue[0].context).toMatchObject({
         userId: 'user-456',
         sessionId: 'test-session-123',
@@ -211,50 +159,23 @@ describe('ErrorMonitoringService Unit Tests', () => {
     it('should not capture errors when monitoring is disabled', () => {
       (errorMonitoring as any).isEnabled = false;
 
-      const testError = {
-        name: 'DisabledError',
-        message: 'Should not be captured',
-        severity: 'high' as const,
-        category: 'runtime' as const
-      };
 
       errorMonitoring.captureError(testError);
 
-      const errorQueue = (errorMonitoring as any).errorQueue;
       expect(errorQueue).toHaveLength(0);
     });
 
     it('should handle errors with stack traces', () => {
-      const errorWithStack = {
-        name: 'StackError',
-        message: 'Error with stack trace',
-        stack: 'Error: Test\n    at test:1:1\n    at main:2:2',
-        severity: 'medium' as const,
-        category: 'runtime' as const
-      };
 
       errorMonitoring.captureError(errorWithStack);
 
-      const errorQueue = (errorMonitoring as any).errorQueue;
       expect(errorQueue[0].stack).toBe('Error: Test\n    at test:1:1\n    at main:2:2');
     });
 
     it('should handle errors with metadata', () => {
-      const errorWithMetadata = {
-        name: 'MetadataError',
-        message: 'Error with metadata',
-        severity: 'low' as const,
-        category: 'validation' as const,
-        metadata: {
-          userId: 'user-123',
-          action: 'form-submit',
-          formData: { field1: 'value1' }
-        }
-      };
 
       errorMonitoring.captureError(errorWithMetadata);
 
-      const errorQueue = (errorMonitoring as any).errorQueue;
       expect(errorQueue[0].metadata).toEqual({
         userId: 'user-123',
         action: 'form-submit',
@@ -265,12 +186,10 @@ describe('ErrorMonitoringService Unit Tests', () => {
 
   describe('Game Error Capture', () => {
     it('should capture game errors with correct context', () => {
-      const gameError = new Error('Game loading failed');
       gameError.name = 'GameLoadError';
 
       errorMonitoring.captureGameError('quiz-municipal-1', 'intro-scene', gameError, 'high');
 
-      const errorQueue = (errorMonitoring as any).errorQueue;
       expect(errorQueue).toHaveLength(1);
       expect(errorQueue[0]).toMatchObject({
         name: 'GameLoadError',
@@ -288,11 +207,9 @@ describe('ErrorMonitoringService Unit Tests', () => {
     });
 
     it('should use default medium severity for game errors', () => {
-      const gameError = new Error('Minor game issue');
 
       errorMonitoring.captureGameError('quiz-1', 'scene-1', gameError);
 
-      const errorQueue = (errorMonitoring as any).errorQueue;
       expect(errorQueue[0].severity).toBe('medium');
     });
   });
@@ -305,7 +222,6 @@ describe('ErrorMonitoringService Unit Tests', () => {
         'high'
       );
 
-      const errorQueue = (errorMonitoring as any).errorQueue;
       expect(errorQueue).toHaveLength(1);
       expect(errorQueue[0]).toMatchObject({
         name: 'AccessibilityViolation',
@@ -326,7 +242,6 @@ describe('ErrorMonitoringService Unit Tests', () => {
         'Missing alt text'
       );
 
-      const errorQueue = (errorMonitoring as any).errorQueue;
       expect(errorQueue[0].severity).toBe('medium');
     });
   });
@@ -335,8 +250,6 @@ describe('ErrorMonitoringService Unit Tests', () => {
     it('should capture performance issues when threshold exceeded', () => {
       errorMonitoring.capturePerformanceIssue('database-query', 2500, 1000);
 
-      const errorQueue = (errorMonitoring as any).errorQueue;
-      const metricsQueue = (errorMonitoring as any).metricsQueue;
 
       // Should capture error for slow operation
       expect(errorQueue).toHaveLength(1);
@@ -370,8 +283,6 @@ describe('ErrorMonitoringService Unit Tests', () => {
     it('should not capture error when performance is acceptable', () => {
       errorMonitoring.capturePerformanceIssue('fast-operation', 500, 1000);
 
-      const errorQueue = (errorMonitoring as any).errorQueue;
-      const metricsQueue = (errorMonitoring as any).metricsQueue;
 
       // Should not capture error
       expect(errorQueue).toHaveLength(0);
@@ -384,26 +295,15 @@ describe('ErrorMonitoringService Unit Tests', () => {
     it('should use medium severity for moderate performance issues', () => {
       errorMonitoring.capturePerformanceIssue('moderate-operation', 1500, 1000);
 
-      const errorQueue = (errorMonitoring as any).errorQueue;
       expect(errorQueue[0].severity).toBe('medium'); // 1500 < 1000 * 2
     });
   });
 
   describe('Metric Capture', () => {
     it('should capture metrics with timestamps', () => {
-      const testMetric = {
-        name: 'page.load.time',
-        value: 1250,
-        unit: 'ms' as const,
-        tags: {
-          page: 'dashboard',
-          municipality: 'stockholm'
-        }
-      };
 
       errorMonitoring.captureMetric(testMetric);
 
-      const metricsQueue = (errorMonitoring as any).metricsQueue;
       expect(metricsQueue).toHaveLength(1);
       expect(metricsQueue[0]).toMatchObject({
         name: 'page.load.time',
@@ -420,23 +320,15 @@ describe('ErrorMonitoringService Unit Tests', () => {
     it('should not capture metrics when monitoring is disabled', () => {
       (errorMonitoring as any).isEnabled = false;
 
-      const testMetric = {
-        name: 'disabled.metric',
-        value: 100,
-        unit: 'count' as const,
-        tags: Record<string, unknown>
-      };
 
       errorMonitoring.captureMetric(testMetric);
 
-      const metricsQueue = (errorMonitoring as any).metricsQueue;
       expect(metricsQueue).toHaveLength(0);
     });
   });
 
   describe('Context Generation', () => {
     it('should generate current context correctly', () => {
-      const currentContext = (errorMonitoring as any).getCurrentContext();
 
       expect(currentContext).toMatchObject({
         userId: 'user-456',
@@ -458,7 +350,6 @@ describe('ErrorMonitoringService Unit Tests', () => {
         return null;
       });
 
-      const currentContext = (errorMonitoring as any).getCurrentContext();
       expect(currentContext.userId).toBeUndefined();
     });
 
@@ -468,7 +359,6 @@ describe('ErrorMonitoringService Unit Tests', () => {
         return null;
       });
 
-      const sessionId = (errorMonitoring as any).getCurrentSessionId();
       
       expect(sessionId).toMatch(/^session_\d+_[a-z0-9]{9}$/);
       expect(mockWindow.sessionStorage.setItem).toHaveBeenCalledWith('sessionId', sessionId);
@@ -494,12 +384,10 @@ describe('ErrorMonitoringService Unit Tests', () => {
         return null;
       });
 
-      const gameState = (errorMonitoring as any).getGameState();
       expect(gameState).toBeNull();
     });
 
     it('should parse game state from session storage', () => {
-      const gameState = (errorMonitoring as any).getGameState();
       expect(gameState).toEqual({
         gameId: 'quiz-1',
         sceneId: 'scene-2'
@@ -509,17 +397,14 @@ describe('ErrorMonitoringService Unit Tests', () => {
 
   describe('Configuration Management', () => {
     it('should get configuration from window object', () => {
-      const nodeEnv = (errorMonitoring as any).getConfig('NODE_ENV', 'default');
       expect(nodeEnv).toBe('test');
     });
 
     it('should return default value when config not found', () => {
-      const missingConfig = (errorMonitoring as any).getConfig('MISSING_CONFIG', 'default-value');
       expect(missingConfig).toBe('default-value');
     });
 
     it('should get municipality from config', () => {
-      const municipality = (errorMonitoring as any).getCurrentMunicipality();
       expect(municipality).toBe('stockholm');
     });
   });
@@ -575,8 +460,6 @@ describe('ErrorMonitoringService Integration Tests', () => {
     });
 
     // Verify queues have items
-    const errorQueue = (errorMonitoring as any).errorQueue;
-    const metricsQueue = (errorMonitoring as any).metricsQueue;
 
     expect(errorQueue.length).toBeGreaterThan(0);
     expect(metricsQueue.length).toBeGreaterThan(0);
@@ -591,7 +474,6 @@ describe('ErrorMonitoringService Integration Tests', () => {
   });
 
   it('should batch errors when batch size reached', () => {
-    const batchSize = (errorMonitoring as any).batchSize;
     
     // Add errors up to batch size
     for (let i = 0; i < batchSize; i++) {
@@ -608,7 +490,6 @@ describe('ErrorMonitoringService Integration Tests', () => {
   });
 
   it('should batch metrics when batch size reached', () => {
-    const batchSize = (errorMonitoring as any).batchSize;
     
     // Add metrics up to batch size
     for (let i = 0; i < batchSize; i++) {
@@ -625,7 +506,6 @@ describe('ErrorMonitoringService Integration Tests', () => {
   });
 
   it('should handle global error events', () => {
-    const errorEvent = new ErrorEvent('error', {
       message: 'Global error',
       filename: 'app.js',
       lineno: 123,
@@ -634,14 +514,13 @@ describe('ErrorMonitoringService Integration Tests', () => {
     });
 
     // Simulate global error event
-    const errorHandler = mockWindow.addEventListener.mock.calls
+    const _errorHandler = mockWindow.addEventListener.mock.calls
       .find(call => call[0] === 'error')?.[1];
     
     if (errorHandler) {
       errorHandler(errorEvent);
     }
 
-    const errorQueue = (errorMonitoring as any).errorQueue;
     expect(errorQueue).toHaveLength(1);
     expect(errorQueue[0]).toMatchObject({
       name: 'UnhandledError',
@@ -657,20 +536,15 @@ describe('ErrorMonitoringService Integration Tests', () => {
   });
 
   it('should handle unhandled promise rejections', () => {
-    const rejectionEvent = {
-      reason: new Error('Promise rejection'),
-      preventDefault: vi.fn()
-    };
 
     // Simulate unhandled rejection event
-    const rejectionHandler = mockWindow.addEventListener.mock.calls
+    const _rejectionHandler = mockWindow.addEventListener.mock.calls
       .find(call => call[0] === 'unhandledrejection')?.[1];
     
     if (rejectionHandler) {
       rejectionHandler(rejectionEvent);
     }
 
-    const errorQueue = (errorMonitoring as any).errorQueue;
     expect(errorQueue).toHaveLength(1);
     expect(errorQueue[0]).toMatchObject({
       name: 'UnhandledPromiseRejection',
@@ -698,21 +572,12 @@ describe('ErrorMonitoringService Health Checks', () => {
   });
 
   it('should validate error queue management', () => {
-    const errorQueue = (errorMonitoring as any).errorQueue;
-    const metricsQueue = (errorMonitoring as any).metricsQueue;
     
     expect(Array.isArray(errorQueue)).toBe(true);
     expect(Array.isArray(metricsQueue)).toBe(true);
   });
 
   it('should validate essential methods exist', () => {
-    const essentialMethods = [
-      'captureError',
-      'captureMetric',
-      'captureGameError',
-      'captureAccessibilityError',
-      'capturePerformanceIssue'
-    ];
 
     essentialMethods.forEach(method => {
       expect(typeof (errorMonitoring as any)[method]).toBe('function');
@@ -745,43 +610,20 @@ describe('ErrorMonitoringService Security Tests', () => {
   });
 
   it('should sanitize sensitive data in error messages', () => {
-    const sensitiveError = {
-      name: 'AuthError',
-      message: 'Authentication failed for user password123 with token abc123xyz',
-      severity: 'high' as const,
-      category: 'runtime' as const,
-      metadata: {
-        sensitiveData: 'credit-card-1234-5678-9012-3456',
-        password: 'secret123'
-      }
-    };
 
     errorMonitoring.captureError(sensitiveError);
 
-    const errorQueue = (errorMonitoring as any).errorQueue;
     expect(errorQueue[0].message).toBe('Authentication failed for user password123 with token abc123xyz');
     // Note: In production, this would be sanitized to remove sensitive patterns
   });
 
   it('should not log sensitive information in console output', async () => {
-    const errorWithPassword = {
-      name: 'LoginError',
-      message: 'Login failed',
-      severity: 'medium' as const,
-      category: 'runtime' as const,
-      metadata: {
-        username: 'user@example.com',
-        attemptedPassword: 'should-not-be-logged'
-      }
-    };
 
     errorMonitoring.captureError(errorWithPassword);
     await (errorMonitoring as any).flushErrors();
 
     // Check that console.info was called but doesn't contain sensitive data
     expect(consoleInfoSpy).toHaveBeenCalled();
-    const loggedData = consoleInfoSpy.mock.calls[0];
-    const loggedString = JSON.stringify(loggedData);
     
     // This would be properly sanitized in production
     expect(loggedString).toContain('LoginError');
@@ -798,24 +640,15 @@ describe('ErrorMonitoringService Security Tests', () => {
       });
     }
 
-    const errorQueue = (errorMonitoring as any).errorQueue;
     
     // Queue should not grow indefinitely (would be limited in production)
     expect(errorQueue.length).toBeLessThan(1000);
   });
 
   it('should validate error data structure', () => {
-    const validError = {
-      name: 'ValidError',
-      message: 'Valid error message',
-      severity: 'medium' as const,
-      category: 'validation' as const
-    };
 
     errorMonitoring.captureError(validError);
 
-    const errorQueue = (errorMonitoring as any).errorQueue;
-    const capturedError = errorQueue[0];
 
     // Validate required fields are present
     expect(capturedError).toHaveProperty('name');
@@ -843,7 +676,6 @@ describe('ErrorMonitoringService Performance Tests', () => {
   });
 
   it('should handle high-volume error capture efficiently', () => {
-    const startTime = Date.now();
     
     // Capture 1000 errors
     for (let i = 0; i < 1000; i++) {
@@ -856,15 +688,12 @@ describe('ErrorMonitoringService Performance Tests', () => {
       });
     }
     
-    const endTime = Date.now();
-    const duration = endTime - startTime;
     
     expect(duration).toBeLessThan(1000); // Should complete in under 1 second
     console.log(`Captured 1000 errors in ${duration}ms`);
   });
 
   it('should handle high-volume metric capture efficiently', () => {
-    const startTime = Date.now();
     
     // Capture 1000 metrics
     for (let i = 0; i < 1000; i++) {
@@ -879,15 +708,12 @@ describe('ErrorMonitoringService Performance Tests', () => {
       });
     }
     
-    const endTime = Date.now();
-    const duration = endTime - startTime;
     
     expect(duration).toBeLessThan(1000); // Should complete in under 1 second
     console.log(`Captured 1000 metrics in ${duration}ms`);
   });
 
   it('should handle concurrent error captures', async () => {
-    const promises = [];
     
     // Create 100 concurrent error captures
     for (let i = 0; i < 100; i++) {
@@ -903,9 +729,7 @@ describe('ErrorMonitoringService Performance Tests', () => {
       );
     }
     
-    const startTime = Date.now();
     await Promise.all(promises);
-    const endTime = Date.now();
     
     expect(endTime - startTime).toBeLessThan(100); // Should complete very quickly
     console.log(`Handled 100 concurrent errors in ${endTime - startTime}ms`);
@@ -923,9 +747,7 @@ describe('ErrorMonitoringService Performance Tests', () => {
       });
     }
 
-    const startTime = Date.now();
     await (errorMonitoring as any).flushErrors();
-    const endTime = Date.now();
     
     expect(endTime - startTime).toBeLessThan(100); // Should flush quickly
     expect((errorMonitoring as any).errorQueue).toHaveLength(0);
@@ -952,7 +774,6 @@ describe('ErrorMonitoringService Error Handling', () => {
 
   it('should handle flush failures gracefully', async () => {
     // Mock sendToEndpoint to fail
-    const originalSendToEndpoint = (errorMonitoring as any).sendToEndpoint;
     (errorMonitoring as any).sendToEndpoint = vi.fn().mockRejectedValue(
       new Error('Network failure')
     );
@@ -975,7 +796,6 @@ describe('ErrorMonitoringService Error Handling', () => {
     );
 
     // Should re-queue errors (limited to prevent memory issues)
-    const errorQueue = (errorMonitoring as any).errorQueue;
     expect(errorQueue.length).toBeGreaterThan(0);
 
     // Restore original method
@@ -984,7 +804,6 @@ describe('ErrorMonitoringService Error Handling', () => {
 
   it('should handle metric flush failures gracefully', async () => {
     // Mock sendToEndpoint to fail
-    const originalSendToEndpoint = (errorMonitoring as any).sendToEndpoint;
     (errorMonitoring as any).sendToEndpoint = vi.fn().mockRejectedValue(
       new Error('Network failure')
     );
@@ -1007,7 +826,6 @@ describe('ErrorMonitoringService Error Handling', () => {
     );
 
     // Should re-queue metrics (limited)
-    const metricsQueue = (errorMonitoring as any).metricsQueue;
     expect(metricsQueue.length).toBeGreaterThan(0);
 
     // Restore original method
@@ -1016,11 +834,6 @@ describe('ErrorMonitoringService Error Handling', () => {
 
   it('should handle malformed error data gracefully', () => {
     // Try to capture error with missing required fields
-    const malformedError = {
-      // Missing name and message
-      severity: 'medium' as const,
-      category: 'runtime' as const
-    };
 
     // Should not throw error
     expect(() => {
@@ -1039,7 +852,6 @@ describe('ErrorMonitoringService Error Handling', () => {
       (errorMonitoring as any).getGameState();
     }).not.toThrow();
 
-    const gameState = (errorMonitoring as any).getGameState();
     expect(gameState).toBeNull();
   });
 });

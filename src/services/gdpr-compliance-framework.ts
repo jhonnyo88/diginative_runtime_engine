@@ -228,25 +228,19 @@ export class EUComplianceManager {
     tenantId: string
   ): Promise<ComplianceValidation> {
     try {
-      const rules = this.jurisdictionRules.get(jurisdiction);
       if (!rules) {
         throw new ComplianceError(`Compliance rules not found för jurisdiction: ${jurisdiction}`);
       }
 
       // Expert validation: Legal basis determination
-      const legalBasis = await this.determineLegalBasis(purpose, jurisdiction);
       
       // Expert validation: Retention period calculation
-      const retentionPeriod = this.calculateRetentionPeriod(data.category, rules, jurisdiction);
       
       // Expert validation: Security measures assessment
-      const securityMeasures = this.getRequiredSecurityMeasures(data.sensitivity, rules);
       
       // Expert validation: User rights determination
-      const applicableRights = this.getApplicableRights(jurisdiction);
       
       // Expert validation: Audit requirements
-      const auditRequirements = this.getAuditRequirements(rules, jurisdiction);
 
       const validation: ComplianceValidation = {
         isCompliant: true,
@@ -357,7 +351,6 @@ export class EUComplianceManager {
     rules: ComplianceRules,
     jurisdiction: string
   ): RetentionPeriod {
-    const retentionPolicy = rules.retention_policies[dataCategory] || rules.retention_policies.user_data;
     
     return {
       period: retentionPolicy,
@@ -390,22 +383,7 @@ export class EUComplianceManager {
 
   private getApplicableRights(jurisdiction: string): DataSubjectRights {
     // Expert implementation: Rights per jurisdiction
-    const baseRights = [
-      'right_to_information',
-      'right_of_access', 
-      'right_to_rectification',
-      'right_to_erasure',
-      'right_to_restrict_processing',
-      'right_to_data_portability',
-      'right_to_object'
-    ];
 
-    const jurisdictionSpecificRights = {
-      'DE': [...baseRights, 'right_to_compensation_german_law'],
-      'FR': [...baseRights, 'right_to_cnil_complaint'],
-      'NL': [...baseRights, 'right_to_dutch_dpa_complaint'],
-      'SE': [...baseRights, 'right_to_datainspektionen_complaint', 'offentlighetsprincipen_rights']
-    };
 
     return {
       applicable_rights: jurisdictionSpecificRights[jurisdiction] || baseRights,
@@ -438,7 +416,6 @@ export class EUComplianceManager {
   // Expert implementation: Compliance monitoring
   async performComplianceAudit(tenantId: string, jurisdiction: string): Promise<ComplianceAuditReport> {
     try {
-      const auditResults = await this.auditLogger.generateComplianceReport(tenantId, jurisdiction);
       
       return {
         tenantId,
@@ -456,23 +433,13 @@ export class EUComplianceManager {
 
   private calculateComplianceScore(auditResults: Record<string, unknown>): number {
     // Expert calculation: Compliance scoring algorithm
-    const totalChecks = auditResults.totalChecks;
-    const passedChecks = auditResults.passedChecks;
     
     return Math.round((passedChecks / totalChecks) * 100);
   }
 
   private calculateNextAuditDate(jurisdiction: string): string {
     // Expert requirement: Jurisdiction-specific audit cycles
-    const auditCycles = {
-      'DE': 12, // German systematic annual audits
-      'FR': 18, // French moderate audit cycle
-      'NL': 12, // Dutch annual compliance reviews
-      'SE': 12  // Swedish annual municipal audits
-    };
     
-    const months = auditCycles[jurisdiction] || 12;
-    const nextAudit = new Date();
     nextAudit.setMonth(nextAudit.getMonth() + months);
     
     return nextAudit.toISOString();
@@ -483,15 +450,6 @@ export class EUComplianceManager {
 class ComplianceAuditLogger {
   async logComplianceValidation(validation: ComplianceValidation): Promise<void> {
     // Expert requirement: Comprehensive compliance logging
-    const logEntry = {
-      timestamp: new Date().toISOString(),
-      type: 'compliance_validation',
-      jurisdiction: validation.jurisdiction,
-      tenantId: validation.tenantId,
-      legalBasis: validation.legalBasis,
-      result: 'compliant',
-      auditTrail: validation
-    };
     
     // Implementation: Store in secure audit database
     console.log('Compliance validation logged:', logEntry);

@@ -30,12 +30,6 @@ describe('SharePointConnector Unit Tests', () => {
     fetchMock = vi.mocked(fetch);
     fetchMock.mockClear();
 
-    const config = {
-      clientId: 'test-client-id',
-      clientSecret: 'test-client-secret',
-      tenantId: 'test-tenant-id',
-      siteUrl: 'test.sharepoint.com/sites/municipal'
-    };
 
     sharePointConnector = new SharePointConnector(config);
   });
@@ -55,7 +49,6 @@ describe('SharePointConnector Unit Tests', () => {
         })
       } as Response);
 
-      const accessToken = await sharePointConnector.authenticate();
 
       expect(accessToken).toBe('mock-access-token-12345');
       expect(fetchMock).toHaveBeenCalledWith(
@@ -85,8 +78,6 @@ describe('SharePointConnector Unit Tests', () => {
 
       await sharePointConnector.authenticate();
 
-      const callArgs = fetchMock.mock.calls[0];
-      const body = callArgs[1]?.body as URLSearchParams;
       
       expect(body.get('grant_type')).toBe('client_credentials');
       expect(body.get('client_id')).toBe('test-client-id');
@@ -126,7 +117,6 @@ describe('SharePointConnector Unit Tests', () => {
         })
       } as Response);
 
-      const materials = await sharePointConnector.getLearningMaterials('stockholm_municipality');
 
       expect(materials).toHaveLength(2);
       expect(materials[0]).toEqual({
@@ -151,7 +141,6 @@ describe('SharePointConnector Unit Tests', () => {
     });
 
     it('should detect file types correctly', () => {
-      const detectFileType = (sharePointConnector as any).detectFileType;
       
       expect(detectFileType('document.pdf')).toBe('document');
       expect(detectFileType('presentation.pptx')).toBe('presentation');
@@ -180,7 +169,6 @@ describe('SharePointConnector Unit Tests', () => {
 
   describe('Certificate Upload', () => {
     it('should upload completion certificate successfully', async () => {
-      const consoleSpy = vi.spyOn(console, 'log').mockImplementation(() => {});
 
       // Mock authentication
       fetchMock.mockResolvedValueOnce({
@@ -197,15 +185,7 @@ describe('SharePointConnector Unit Tests', () => {
         })
       } as Response);
 
-      const certificate = {
-        userId: 'user-123',
-        gameId: 'gdpr-training',
-        score: 95,
-        completedAt: '2024-01-15T10:00:00Z',
-        pdfData: Buffer.from('mock pdf content')
-      };
 
-      const result = await sharePointConnector.uploadCompletionCertificate(
         certificate,
         'stockholm_municipality'
       );
@@ -241,13 +221,6 @@ describe('SharePointConnector Unit Tests', () => {
       // Mock upload failure
       fetchMock.mockRejectedValueOnce(new Error('Upload failed'));
 
-      const certificate = {
-        userId: 'user-123',
-        gameId: 'test-game',
-        score: 80,
-        completedAt: '2024-01-15T10:00:00Z',
-        pdfData: Buffer.from('pdf content')
-      };
 
       await expect(
         sharePointConnector.uploadCompletionCertificate(certificate, 'test_municipality')
@@ -267,19 +240,10 @@ describe('SharePointConnector Unit Tests', () => {
         json: async () => ({ id: 'file-id', webUrl: 'url' })
       } as Response);
 
-      const certificate = {
-        userId: 'anna.svensson',
-        gameId: 'gdpr-course',
-        score: 90,
-        completedAt: '2024-01-15T10:00:00Z',
-        pdfData: Buffer.from('content')
-      };
 
       await sharePointConnector.uploadCompletionCertificate(certificate, 'test');
 
       // Check the upload URL contains the expected file pattern
-      const uploadCall = fetchMock.mock.calls[1];
-      const uploadUrl = uploadCall[0] as string;
       
       expect(uploadUrl).toMatch(
         /.*\/certificates\/anna\.svensson_gdpr-course_\d+\.pdf:\/content$/
@@ -296,12 +260,6 @@ describe('SAPSuccessFactorsConnector Unit Tests', () => {
     fetchMock = vi.mocked(fetch);
     fetchMock.mockClear();
 
-    const config = {
-      apiUrl: 'https://api.successfactors.com',
-      companyId: 'MUNICIPAL_COMPANY',
-      username: 'api-user',
-      password: 'api-password'
-    };
 
     sapConnector = new SAPSuccessFactorsConnector(config);
   });
@@ -339,7 +297,6 @@ describe('SAPSuccessFactorsConnector Unit Tests', () => {
         })
       } as Response);
 
-      const result = await sapConnector.syncEmployeeData('stockholm_municipality');
 
       expect(result).toEqual({
         totalEmployees: 2,
@@ -369,7 +326,6 @@ describe('SAPSuccessFactorsConnector Unit Tests', () => {
     });
 
     it('should map cultural context correctly', () => {
-      const determineCultural = (sapConnector as any).determineCulturalMapping;
       
       expect(determineCultural('berlin_de')).toBe('german_systematic');
       expect(determineCultural('paris_fr')).toBe('french_collaborative');
@@ -378,9 +334,7 @@ describe('SAPSuccessFactorsConnector Unit Tests', () => {
     });
 
     it('should generate correct learning preferences for cultural contexts', () => {
-      const generatePreferences = (sapConnector as any).generateLearningPreferences;
       
-      const germanPrefs = generatePreferences('german_systematic');
       expect(germanPrefs).toEqual({
         preferredDuration: '15-20 minutes',
         informationDensity: 'detailed',
@@ -388,7 +342,6 @@ describe('SAPSuccessFactorsConnector Unit Tests', () => {
         feedbackLevel: 'detailed_analytical'
       });
 
-      const swedishPrefs = generatePreferences('swedish_mobile');
       expect(swedishPrefs).toEqual({
         preferredDuration: '7 minutes',
         informationDensity: 'balanced',
@@ -398,7 +351,6 @@ describe('SAPSuccessFactorsConnector Unit Tests', () => {
     });
 
     it('should map municipal roles correctly', () => {
-      const mapRole = (sapConnector as any).mapMunicipalRole;
       
       expect(mapRole('System Administrator')).toBe('administrator');
       expect(mapRole('IT Manager')).toBe('manager');
@@ -409,19 +361,15 @@ describe('SAPSuccessFactorsConnector Unit Tests', () => {
     });
 
     it('should determine training requirements by department', () => {
-      const getRequirements = (sapConnector as any).getTrainingRequirements;
       
-      const itRequirements = getRequirements('IT Department');
       expect(itRequirements).toContain('gdpr_compliance');
       expect(itRequirements).toContain('municipal_ethics');
       expect(itRequirements).toContain('cybersecurity');
       expect(itRequirements).toContain('digital_transformation');
 
-      const hrRequirements = getRequirements('Human Resources');
       expect(hrRequirements).toContain('employee_privacy');
       expect(hrRequirements).toContain('recruitment_compliance');
 
-      const financeRequirements = getRequirements('Finance');
       expect(financeRequirements).toContain('financial_compliance');
       expect(financeRequirements).toContain('procurement_rules');
     });
@@ -429,7 +377,6 @@ describe('SAPSuccessFactorsConnector Unit Tests', () => {
 
   describe('Learning Completion Reporting', () => {
     it('should report learning completion to SAP successfully', async () => {
-      const consoleSpy = vi.spyOn(console, 'log').mockImplementation(() => {});
       
       // Mock SAP API calls
       fetchMock.mockResolvedValue({
@@ -437,13 +384,6 @@ describe('SAPSuccessFactorsConnector Unit Tests', () => {
         json: async () => ({ success: true })
       } as Response);
 
-      const completion = {
-        userId: 'stockholm_municipality:emp-001',
-        gameId: 'gdpr-training',
-        score: 92,
-        completedAt: '2024-01-15T10:00:00Z',
-        certificateUrl: 'https://certs.diginativa.eu/cert-123'
-      };
 
       await sapConnector.reportLearningCompletion(completion, 'stockholm_municipality');
 
@@ -475,12 +415,6 @@ describe('SAPSuccessFactorsConnector Unit Tests', () => {
     it('should handle reporting failures gracefully', async () => {
       fetchMock.mockRejectedValueOnce(new Error('SAP reporting failed'));
 
-      const completion = {
-        userId: 'test:user-1',
-        gameId: 'test-game',
-        score: 80,
-        completedAt: '2024-01-15T10:00:00Z'
-      };
 
       await expect(
         sapConnector.reportLearningCompletion(completion, 'test_municipality')
@@ -488,12 +422,7 @@ describe('SAPSuccessFactorsConnector Unit Tests', () => {
     });
 
     it('should calculate next training dates correctly', () => {
-      const calculateNext = (sapConnector as any).calculateNextTraining;
       
-      const gdprNext = calculateNext('gdpr-training');
-      const ethicsNext = calculateNext('ethics-training');
-      const securityNext = calculateNext('security-training');
-      const defaultNext = calculateNext('unknown-training');
       
       // All should return valid ISO date strings
       expect(gdprNext).toMatch(/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}/);
@@ -503,7 +432,6 @@ describe('SAPSuccessFactorsConnector Unit Tests', () => {
     });
 
     it('should determine compliance status correctly', async () => {
-      const consoleSpy = vi.spyOn(console, 'log').mockImplementation(() => {});
       
       fetchMock.mockResolvedValue({
         ok: true,
@@ -511,31 +439,19 @@ describe('SAPSuccessFactorsConnector Unit Tests', () => {
       } as Response);
 
       // Test compliant score (≥80)
-      const compliantCompletion = {
-        userId: 'test:user-1',
-        gameId: 'test-game',
-        score: 85,
-        completedAt: '2024-01-15T10:00:00Z'
-      };
 
       await sapConnector.reportLearningCompletion(compliantCompletion, 'test');
 
-      const compliantCall = consoleSpy.mock.calls.find(call => 
+      const _compliantCall = consoleSpy.mock.calls.find(call => 
         call[0] === 'Municipal compliance report generated:'
       );
       expect(compliantCall[1].complianceStatus).toBe('compliant');
 
       // Test non-compliant score (<80)
-      const nonCompliantCompletion = {
-        userId: 'test:user-2',
-        gameId: 'test-game',
-        score: 75,
-        completedAt: '2024-01-15T10:00:00Z'
-      };
 
       await sapConnector.reportLearningCompletion(nonCompliantCompletion, 'test');
 
-      const nonCompliantCall = consoleSpy.mock.calls.find(call => 
+      const _nonCompliantCall = consoleSpy.mock.calls.find(call => 
         call[0] === 'Municipal compliance report generated:' &&
         call[1].completionData.score === 75
       );
@@ -554,12 +470,6 @@ describe('WorkdayConnector Unit Tests', () => {
     fetchMock = vi.mocked(fetch);
     fetchMock.mockClear();
 
-    const config = {
-      apiUrl: 'https://impl-cc.workday.com',
-      tenant: 'municipal_tenant',
-      username: 'workday-user',
-      password: 'workday-password'
-    };
 
     workdayConnector = new WorkdayConnector(config);
   });
@@ -589,7 +499,6 @@ describe('WorkdayConnector Unit Tests', () => {
         })
       } as Response);
 
-      const result = await workdayConnector.syncLearningAssignments('stockholm_municipality');
 
       expect(result).toEqual({
         totalAssignments: 2,
@@ -618,7 +527,6 @@ describe('WorkdayConnector Unit Tests', () => {
     });
 
     it('should map course titles to game IDs correctly', () => {
-      const mapToGameId = (workdayConnector as any).mapToGameId;
       
       expect(mapToGameId('GDPR Compliance Training')).toBe('malmo-gdpr-training');
       expect(mapToGameId('Data Protection Fundamentals')).toBe('gdpr-comprehensive');
@@ -629,7 +537,6 @@ describe('WorkdayConnector Unit Tests', () => {
     });
 
     it('should identify municipal requirements correctly', () => {
-      const isMunicipal = (workdayConnector as any).isMunicipalRequirement;
       
       expect(isMunicipal('Municipal Ethics Training')).toBe(true);
       expect(isMunicipal('Government Compliance Course')).toBe(true);
@@ -657,7 +564,6 @@ describe('WorkdayConnector Unit Tests', () => {
       await workdayConnector.syncLearningAssignments('berlin_de');
 
       // The mapping should have been called with German cultural context
-      const determineCultural = (workdayConnector as any).determineCulturalMapping;
       expect(determineCultural('berlin_de')).toBe('german_systematic');
     });
   });
@@ -670,15 +576,7 @@ describe('WorkdayConnector Unit Tests', () => {
         json: async () => ({ success: true })
       } as Response);
 
-      const completion = {
-        userId: 'stockholm_municipality:emp-001',
-        gameId: 'gdpr-training',
-        score: 88,
-        completedAt: '2024-01-15T10:00:00Z',
-        culturalContext: 'swedish_mobile' as const
-      };
 
-      const result = await workdayConnector.issueCertificate(completion, 'stockholm_municipality');
 
       expect(result).toEqual({
         certificateId: expect.stringMatching(/^cert_\d+$/),
@@ -701,19 +599,8 @@ describe('WorkdayConnector Unit Tests', () => {
     });
 
     it('should generate certificate PDF with municipal branding', async () => {
-      const generatePDF = (workdayConnector as any).generateCertificatePDF;
       
-      const data = {
-        employeeId: 'emp-001',
-        courseId: 'gdpr-training',
-        completionDate: '2024-01-15T10:00:00Z',
-        score: 92,
-        municipalAuthority: 'Stockholm Municipality',
-        culturalContext: 'swedish_mobile'
-      };
 
-      const pdfBuffer = await generatePDF(data);
-      const pdfContent = pdfBuffer.toString();
       
       expect(pdfContent).toContain('Municipal Training Certificate');
       expect(pdfContent).toContain('Employee: emp-001');
@@ -724,12 +611,7 @@ describe('WorkdayConnector Unit Tests', () => {
     });
 
     it('should calculate certificate expiry dates correctly', () => {
-      const calculateExpiry = (workdayConnector as any).calculateCertificateExpiry;
       
-      const gdprExpiry = calculateExpiry('gdpr-training');
-      const ethicsExpiry = calculateExpiry('ethics-training');
-      const securityExpiry = calculateExpiry('security-training');
-      const defaultExpiry = calculateExpiry('unknown-training');
       
       // All should return valid ISO date strings in the future
       expect(gdprExpiry).toMatch(/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}/);
@@ -744,12 +626,6 @@ describe('WorkdayConnector Unit Tests', () => {
     it('should handle certificate issuance failures gracefully', async () => {
       fetchMock.mockRejectedValueOnce(new Error('Certificate generation failed'));
 
-      const completion = {
-        userId: 'test:user-1',
-        gameId: 'test-game',
-        score: 80,
-        completedAt: '2024-01-15T10:00:00Z'
-      };
 
       await expect(
         workdayConnector.issueCertificate(completion, 'test_municipality')
@@ -764,25 +640,10 @@ describe('Municipal Integration APIs Integration Tests', () => {
   });
 
   it('should handle complete learning flow integration', async () => {
-    const fetchMock = vi.mocked(fetch);
     
     // Setup SharePoint connector
-    const sharePointConfig = {
-      clientId: 'sp-client',
-      clientSecret: 'sp-secret',
-      tenantId: 'sp-tenant',
-      siteUrl: 'sharepoint.test'
-    };
-    const sharePoint = new SharePointConnector(sharePointConfig);
     
     // Setup SAP connector
-    const sapConfig = {
-      apiUrl: 'https://sap.test',
-      companyId: 'MUNICIPAL',
-      username: 'sap-user',
-      password: 'sap-pass'
-    };
-    const sap = new SAPSuccessFactorsConnector(sapConfig);
     
     // Mock authentication and API calls
     fetchMock
@@ -808,21 +669,13 @@ describe('Municipal Integration APIs Integration Tests', () => {
       } as Response);
     
     // Step 1: Fetch learning materials from SharePoint
-    const materials = await sharePoint.getLearningMaterials('stockholm_municipality');
     expect(materials).toHaveLength(1);
     
     // Step 2: Sync employee data from SAP
-    const syncResult = await sap.syncEmployeeData('stockholm_municipality');
     expect(syncResult.totalEmployees).toBe(1);
     expect(syncResult.culturalMapping).toBe('swedish_mobile');
     
     // Step 3: Report completion to SAP
-    const completion = {
-      userId: 'stockholm_municipality:emp-1',
-      gameId: 'gdpr-training',
-      score: 90,
-      completedAt: '2024-01-15T10:00:00Z'
-    };
     
     await sap.reportLearningCompletion(completion, 'stockholm_municipality');
     
@@ -831,30 +684,15 @@ describe('Municipal Integration APIs Integration Tests', () => {
   });
 
   it('should handle multi-cultural context integration', async () => {
-    const sapConfig = {
-      apiUrl: 'https://sap.test',
-      companyId: 'EURO_MUNICIPAL',
-      username: 'user',
-      password: 'pass'
-    };
-    const sap = new SAPSuccessFactorsConnector(sapConfig);
     
     // Test different cultural contexts
-    const contexts = [
-      { tenant: 'berlin_de', expected: 'german_systematic' },
-      { tenant: 'paris_fr', expected: 'french_collaborative' },
-      { tenant: 'amsterdam_nl', expected: 'dutch_progressive' },
-      { tenant: 'stockholm_se', expected: 'swedish_mobile' }
-    ];
     
-    const fetchMock = vi.mocked(fetch);
     fetchMock.mockResolvedValue({
       ok: true,
       json: async () => ({ d: { results: [] } })
     } as Response);
     
     for (const { tenant, expected } of contexts) {
-      const result = await sap.syncEmployeeData(tenant);
       expect(result.culturalMapping).toBe(expected);
     }
   });
@@ -862,14 +700,7 @@ describe('Municipal Integration APIs Integration Tests', () => {
 
 describe('Municipal Integration APIs Health Checks', () => {
   it('should validate SharePoint configuration', () => {
-    const config = {
-      clientId: 'client-id',
-      clientSecret: 'client-secret',
-      tenantId: 'tenant-id',
-      siteUrl: 'site-url'
-    };
     
-    const connector = new SharePointConnector(config);
     expect(connector).toBeInstanceOf(SharePointConnector);
     
     // Check configuration properties are set
@@ -880,14 +711,7 @@ describe('Municipal Integration APIs Health Checks', () => {
   });
 
   it('should validate SAP configuration', () => {
-    const config = {
-      apiUrl: 'https://api.test',
-      companyId: 'COMPANY',
-      username: 'user',
-      password: 'pass'
-    };
     
-    const connector = new SAPSuccessFactorsConnector(config);
     expect(connector).toBeInstanceOf(SAPSuccessFactorsConnector);
     
     expect((connector as any).apiUrl).toBe('https://api.test');
@@ -897,14 +721,7 @@ describe('Municipal Integration APIs Health Checks', () => {
   });
 
   it('should validate Workday configuration', () => {
-    const config = {
-      apiUrl: 'https://workday.test',
-      tenant: 'tenant',
-      username: 'user',
-      password: 'pass'
-    };
     
-    const connector = new WorkdayConnector(config);
     expect(connector).toBeInstanceOf(WorkdayConnector);
     
     expect((connector as any).apiUrl).toBe('https://workday.test');
@@ -914,27 +731,15 @@ describe('Municipal Integration APIs Health Checks', () => {
   });
 
   it('should validate essential methods exist', () => {
-    const sharePointConfig = {
-      clientId: 'id', clientSecret: 'secret', tenantId: 'tenant', siteUrl: 'url'
-    };
-    const sharePoint = new SharePointConnector(sharePointConfig);
     
     expect(typeof sharePoint.authenticate).toBe('function');
     expect(typeof sharePoint.getLearningMaterials).toBe('function');
     expect(typeof sharePoint.uploadCompletionCertificate).toBe('function');
     
-    const sapConfig = {
-      apiUrl: 'url', companyId: 'company', username: 'user', password: 'pass'
-    };
-    const sap = new SAPSuccessFactorsConnector(sapConfig);
     
     expect(typeof sap.syncEmployeeData).toBe('function');
     expect(typeof sap.reportLearningCompletion).toBe('function');
     
-    const workdayConfig = {
-      apiUrl: 'url', tenant: 'tenant', username: 'user', password: 'pass'
-    };
-    const workday = new WorkdayConnector(workdayConfig);
     
     expect(typeof workday.syncLearningAssignments).toBe('function');
     expect(typeof workday.issueCertificate).toBe('function');
@@ -943,52 +748,33 @@ describe('Municipal Integration APIs Health Checks', () => {
 
 describe('Municipal Integration APIs Security Tests', () => {
   it('should handle authentication credentials securely', () => {
-    const sharePointConfig = {
-      clientId: 'sensitive-client-id',
-      clientSecret: 'sensitive-client-secret',
-      tenantId: 'sensitive-tenant-id',
-      siteUrl: 'site.sharepoint.com'
-    };
     
-    const connector = new SharePointConnector(sharePointConfig);
     
     // Verify credentials are stored but not exposed
     expect((connector as any).clientId).toBe('sensitive-client-id');
     expect((connector as any).clientSecret).toBe('sensitive-client-secret');
     
     // toString should not expose sensitive data
-    const stringified = connector.toString();
     expect(stringified).not.toContain('sensitive-client-secret');
   });
 
   it('should encode authentication headers correctly', async () => {
-    const fetchMock = vi.mocked(fetch);
     fetchMock.mockResolvedValue({
       ok: true,
       json: async () => ({ d: { results: [] } })
     } as Response);
     
-    const sapConfig = {
-      apiUrl: 'https://api.test',
-      companyId: 'COMPANY',
-      username: 'test-user',
-      password: 'test-password'
-    };
     
-    const sap = new SAPSuccessFactorsConnector(sapConfig);
     await sap.syncEmployeeData('test');
     
     // Verify Basic auth header is properly encoded
-    const authHeader = fetchMock.mock.calls[0][1]?.headers?.['Authorization'];
     expect(authHeader).toMatch(/^Basic [A-Za-z0-9+/]+=*$/);
     
     // Decode and verify it contains the correct credentials
-    const decoded = Buffer.from(authHeader.split(' ')[1], 'base64').toString();
     expect(decoded).toBe('test-user:test-password');
   });
 
   it('should sanitize user input in file names', async () => {
-    const fetchMock = vi.mocked(fetch);
     fetchMock.mockResolvedValue({
       ok: true,
       json: async () => ({ access_token: 'token' })
@@ -998,24 +784,11 @@ describe('Municipal Integration APIs Security Tests', () => {
       json: async () => ({ id: 'file-id', webUrl: 'url' })
     } as Response);
     
-    const sharePointConfig = {
-      clientId: 'id', clientSecret: 'secret', tenantId: 'tenant', siteUrl: 'site'
-    };
-    const sharePoint = new SharePointConnector(sharePointConfig);
     
-    const maliciousCertificate = {
-      userId: '../../../malicious',
-      gameId: '<script>alert("xss")</script>',
-      score: 80,
-      completedAt: '2024-01-15T10:00:00Z',
-      pdfData: Buffer.from('content')
-    };
     
     await sharePoint.uploadCompletionCertificate(maliciousCertificate, 'test');
     
     // Verify the file name in the upload URL is sanitized
-    const uploadCall = fetchMock.mock.calls[1];
-    const uploadUrl = uploadCall[0] as string;
     
     // The malicious characters should be contained in the URL but not executed
     expect(uploadUrl).toContain('certificates');
@@ -1023,18 +796,12 @@ describe('Municipal Integration APIs Security Tests', () => {
   });
 
   it('should validate municipal context in all operations', async () => {
-    const fetchMock = vi.mocked(fetch);
     fetchMock.mockResolvedValue({
       ok: true,
       json: async () => ({ access_token: 'token' })
     } as Response);
     
-    const sharePointConfig = {
-      clientId: 'id', clientSecret: 'secret', tenantId: 'tenant', siteUrl: 'site'
-    };
-    const sharePoint = new SharePointConnector(sharePointConfig);
     
-    const materials = await sharePoint.getLearningMaterials('stockholm_municipality');
     
     // Verify municipal context is preserved in results
     materials.forEach(material => {
@@ -1049,26 +816,18 @@ describe('Municipal Integration APIs Performance Tests', () => {
   });
 
   it('should handle concurrent API calls efficiently', async () => {
-    const fetchMock = vi.mocked(fetch);
     fetchMock.mockResolvedValue({
       ok: true,
       json: async () => ({ access_token: 'token', value: [], d: { results: [] } })
     } as Response);
     
-    const sharePointConfig = {
-      clientId: 'id', clientSecret: 'secret', tenantId: 'tenant', siteUrl: 'site'
-    };
-    const sharePoint = new SharePointConnector(sharePointConfig);
     
-    const startTime = Date.now();
     
     // Make 10 concurrent requests
-    const promises = Array.from({ length: 10 }, (_, i) =>
+    const _promises = Array.from({ length: 10 }, (_, i) =>
       sharePoint.getLearningMaterials(`municipality_${i}`)
     );
     
-    const results = await Promise.all(promises);
-    const endTime = Date.now();
     
     expect(results).toHaveLength(10);
     expect(endTime - startTime).toBeLessThan(1000); // Should complete quickly
@@ -1077,10 +836,9 @@ describe('Municipal Integration APIs Performance Tests', () => {
   });
 
   it('should handle large employee synchronization efficiently', async () => {
-    const fetchMock = vi.mocked(fetch);
     
     // Mock large employee dataset
-    const employees = Array.from({ length: 1000 }, (_, i) => ({
+    const _employees = Array.from({ length: 1000 }, (_, i) => ({
       userId: `emp-${i}`,
       email: `employee${i}@municipality.com`,
       firstName: `Employee`,
@@ -1096,17 +854,7 @@ describe('Municipal Integration APIs Performance Tests', () => {
       json: async () => ({ d: { results: employees } })
     } as Response);
     
-    const sapConfig = {
-      apiUrl: 'https://api.test',
-      companyId: 'COMPANY',
-      username: 'user',
-      password: 'pass'
-    };
-    const sap = new SAPSuccessFactorsConnector(sapConfig);
     
-    const startTime = Date.now();
-    const result = await sap.syncEmployeeData('stockholm_municipality');
-    const endTime = Date.now();
     
     expect(result.totalEmployees).toBe(1000);
     expect(result.syncedProfiles).toBe(1000);
@@ -1116,36 +864,22 @@ describe('Municipal Integration APIs Performance Tests', () => {
   });
 
   it('should batch certificate operations efficiently', async () => {
-    const fetchMock = vi.mocked(fetch);
     fetchMock.mockResolvedValue({
       ok: true,
       json: async () => ({ success: true, id: 'cert-id', url: 'cert-url' })
     } as Response);
     
-    const workdayConfig = {
-      apiUrl: 'https://workday.test',
-      tenant: 'tenant',
-      username: 'user',
-      password: 'pass'
-    };
-    const workday = new WorkdayConnector(workdayConfig);
     
-    const startTime = Date.now();
     
     // Issue 50 certificates concurrently
-    const completions = Array.from({ length: 50 }, (_, i) => ({
+    const _completions = Array.from({ length: 50 }, (_, i) => ({
       userId: `municipality:emp-${i}`,
       gameId: 'gdpr-training',
       score: 85 + (i % 15),
       completedAt: '2024-01-15T10:00:00Z'
     }));
     
-    const promises = completions.map(completion =>
-      workday.issueCertificate(completion, 'municipality')
-    );
     
-    const results = await Promise.all(promises);
-    const endTime = Date.now();
     
     expect(results).toHaveLength(50);
     expect(endTime - startTime).toBeLessThan(2000); // Should complete in under 2 seconds

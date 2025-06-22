@@ -16,13 +16,6 @@ import EnhancedErrorBoundary from '../../../components/GameContainer/EnhancedErr
 // Mock dependencies if needed
 
 
-const renderWithChakra = (component: React.ReactElement) => {
-  return render(
-    <ChakraProvider>
-      {component}
-    </ChakraProvider>
-  );
-};
 
 describe('EnhancedErrorBoundary', () => {
   beforeEach(() => {
@@ -33,14 +26,10 @@ describe('EnhancedErrorBoundary', () => {
     it('renders without crashing', () => {
       renderWithChakra(<EnhancedErrorBoundary />);
       
-      const component = screen.getByTestId('-enhanced-error-boundary');
       expect(component).toBeInTheDocument();
     });
 
     it('handles props correctly', () => {
-      const testProps = {
-        // Add relevant props based on component analysis
-      };
       
       renderWithChakra(<EnhancedErrorBoundary {...testProps} />);
       
@@ -60,7 +49,6 @@ describe('EnhancedErrorBoundary', () => {
     it('provides proper ARIA attributes', () => {
       renderWithChakra(<EnhancedErrorBoundary />);
       
-      const element = screen.getByTestId('-enhanced-error-boundary');
       
       // Check for appropriate ARIA attributes
       expect(element).toHaveAttribute('role');
@@ -69,7 +57,6 @@ describe('EnhancedErrorBoundary', () => {
     it('supports keyboard navigation', () => {
       renderWithChakra(<EnhancedErrorBoundary />);
       
-      const element = screen.getByTestId('-enhanced-error-boundary');
       
       // Test tab navigation
       element.focus();
@@ -80,7 +67,6 @@ describe('EnhancedErrorBoundary', () => {
       renderWithChakra(<EnhancedErrorBoundary />);
       
       // Basic contrast check
-      const element = screen.getByTestId('-enhanced-error-boundary');
       expect(element).toBeInTheDocument();
     });
   });

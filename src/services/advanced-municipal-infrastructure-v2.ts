@@ -139,35 +139,26 @@ export class EuropeanMunicipalInfrastructureEngine extends EventEmitter {
    * Create European municipality tenant with Q2 production mechanics
    */
   async createEuropeanMunicipalTenant(config: EuropeanMunicipalityConfig): Promise<MunicipalTenantInstanceV2> {
-    const tenantId = config.municipalityId;
     
     if (this.tenantInstances.has(tenantId)) {
       throw new Error(`European municipality ${tenantId} already exists`);
     }
 
     // Calculate advanced resource allocation with Q2 mechanics overhead
-    const resourceAllocation = await this.calculateEuropeanResourceAllocation(config);
     
     // Initialize Q2 production mechanics
-    const q2Mechanics = await this.initializeQ2ProductionMechanics(config);
     
     // Setup real-time cross-border synchronization
-    const realTimeSync = await this.initializeRealTimeMunicipalSync(config);
     
     // Configure European caching strategy
-    const caching = await this.initializeEuropeanCaching(config);
     
     // Setup municipal backup and disaster recovery
-    const backup = await this.initializeMunicipalBackup(config);
     
     // Configure European compliance framework
-    const compliance = await this.initializeEuropeanCompliance(config);
     
     // Initialize performance monitoring
-    const performanceMonitoring = new MunicipalPerformanceMonitor(config);
     
     // Setup cultural intelligence engine
-    const culturalIntelligence = new CulturalIntelligenceEngine(config.culturalContext);
 
     const tenantInstance: MunicipalTenantInstanceV2 = {
       tenantId,
@@ -220,7 +211,6 @@ export class EuropeanMunicipalInfrastructureEngine extends EventEmitter {
     tenantId: string, 
     scalingTrigger: ScalingTrigger
   ): Promise<void> {
-    const tenant = this.tenantInstances.get(tenantId);
     if (!tenant) {
       throw new Error(`European municipality ${tenantId} not found`);
     }
@@ -228,7 +218,6 @@ export class EuropeanMunicipalInfrastructureEngine extends EventEmitter {
     tenant.status = 'scaling';
 
     // Calculate scaling requirements based on Q2 mechanics load
-    const scalingRequirements = await this.calculateQ2ScalingRequirements(tenant, scalingTrigger);
     
     // Scale resources
     await this.scaleResources(tenant, scalingRequirements);
@@ -262,13 +251,11 @@ export class EuropeanMunicipalInfrastructureEngine extends EventEmitter {
     sourceTenant: MunicipalTenantInstanceV2,
     targetMunicipalityId: string
   ): Promise<CrossBorderConnection> {
-    const targetTenant = this.tenantInstances.get(targetMunicipalityId);
     if (!targetTenant) {
       throw new Error(`Target municipality ${targetMunicipalityId} not found`);
     }
 
     // Validate cross-border cooperation compliance
-    const complianceValidation = await this.europeanComplianceOrchestrator
       .validateCrossBorderCooperation(sourceTenant, targetTenant);
     
     if (!complianceValidation.approved) {
@@ -276,13 +263,11 @@ export class EuropeanMunicipalInfrastructureEngine extends EventEmitter {
     }
 
     // Determine connection protocol
-    const connectionType = this.determineCrossBorderConnectionType(
       sourceTenant.config.country, 
       targetTenant.config.country
     );
 
     // Setup encryption and security
-    const encryptionLevel = this.determineEncryptionLevel(connectionType);
 
     const connection: CrossBorderConnection = {
       targetMunicipalityId,
@@ -378,29 +363,19 @@ export class EuropeanMunicipalInfrastructureEngine extends EventEmitter {
     config: EuropeanMunicipalityConfig
   ): Promise<ResourceAllocationV2> {
     // Base resource calculation
-    const baseResources = this.calculateBaseResources(config.population);
     
     // Cultural multipliers for European markets
-    const culturalMultipliers = {
-      'swedish_consensus': 1.0,    // Efficient consensus-based decisions
-      'german_systematik': 1.2,   // Thorough systematic processes
-      'french_elegance': 1.3,     // Refined service excellence
-      'dutch_efficiency': 1.1     // Pragmatic efficiency
-    };
 
-    const culturalMultiplier = culturalMultipliers[config.culturalContext];
 
     // Q2 mechanics overhead calculation
-    const q2MechanicOverhead = this.calculateQ2MechanicOverhead(config.q2MechanicsEnabled);
 
     // Population scaling with European municipal patterns
-    const populationScalingFactor = this.calculateEuropeanPopulationScaling(
       config.population, 
       config.country
     );
 
     // Cross-border bandwidth requirements
-    const crossBorderBandwidth = config.crossBorderCooperation 
+    const _crossBorderBandwidth = config.crossBorderCooperation 
       ? config.crossBorderCooperation.length * 100 // MB/s per connection
       : 0;
 
@@ -468,13 +443,6 @@ export class EuropeanMunicipalInfrastructureEngine extends EventEmitter {
    * Calculate Q2 mechanic overhead
    */
   private calculateQ2MechanicOverhead(enabledMechanics: string[]): number {
-    const mechanicOverheads = {
-      'drag_drop': 0.15,           // 15% overhead for drag-drop workflows
-      'timed_challenge': 0.20,     // 20% overhead for real-time challenges
-      'branching_narrative': 0.25, // 25% overhead for complex narratives
-      'achievement_system': 0.10,  // 10% overhead for achievement tracking
-      'character_system': 0.30     // 30% overhead for character interactions
-    };
 
     return enabledMechanics.reduce((total, mechanic) => {
       return total + (mechanicOverheads[mechanic] || 0.05);
@@ -489,13 +457,11 @@ export class EuropeanMunicipalInfrastructureEngine extends EventEmitter {
     targetCountry: string
   ): 'bilateral' | 'eu_framework' | 'regional_cooperation' {
     // Nordic cooperation
-    const nordicCountries = ['sweden', 'denmark', 'norway', 'finland'];
     if (nordicCountries.includes(sourceCountry) && nordicCountries.includes(targetCountry)) {
       return 'regional_cooperation';
     }
 
     // Benelux cooperation
-    const beneluxCountries = ['netherlands', 'belgium', 'luxembourg'];
     if (beneluxCountries.includes(sourceCountry) && beneluxCountries.includes(targetCountry)) {
       return 'regional_cooperation';
     }
@@ -514,36 +480,6 @@ export class EuropeanMunicipalInfrastructureEngine extends EventEmitter {
    * Get cultural terminology for mechanic adaptation
    */
   private getCulturalTerminology(culturalContext: string): Record<string, string> {
-    const terminologySets = {
-      'swedish_consensus': {
-        'approve': 'godkänn',
-        'reject': 'avslå',
-        'discuss': 'diskutera',
-        'consensus': 'konsensus',
-        'transparency': 'transparens'
-      },
-      'german_systematik': {
-        'approve': 'genehmigen',
-        'reject': 'ablehnen',
-        'process': 'bearbeiten',
-        'systematic': 'systematisch',
-        'thorough': 'gründlich'
-      },
-      'french_elegance': {
-        'approve': 'approuver',
-        'reject': 'rejeter',
-        'excellence': 'excellence',
-        'refinement': 'raffinement',
-        'precision': 'précision'
-      },
-      'dutch_efficiency': {
-        'approve': 'goedkeuren',
-        'reject': 'afwijzen',
-        'efficient': 'efficiënt',
-        'practical': 'praktisch',
-        'direct': 'direct'
-      }
-    };
 
     return terminologySets[culturalContext] || {};
   }
@@ -564,50 +500,23 @@ export class EuropeanMunicipalInfrastructureEngine extends EventEmitter {
   }
 
   private determineCrossMechanicIntegration(mechanicType: string): string[] {
-    const integrationMap = {
-      'drag_drop': ['character_system', 'achievement_system'],
-      'timed_challenge': ['branching_narrative', 'achievement_system'],
-      'branching_narrative': ['character_system', 'timed_challenge'],
-      'achievement_system': ['drag_drop', 'timed_challenge', 'character_system'],
-      'character_system': ['drag_drop', 'branching_narrative', 'achievement_system']
-    };
 
     return integrationMap[mechanicType] || [];
   }
 
   private getDecisionMakingStyle(culturalContext: string): string {
-    const styles = {
-      'swedish_consensus': 'consensus_based',
-      'german_systematik': 'hierarchical_thorough',
-      'french_elegance': 'centralized_refined',
-      'dutch_efficiency': 'pragmatic_direct'
-    };
 
     return styles[culturalContext] || 'european_standard';
   }
 
   private getCommunicationProtocol(culturalContext: string): string {
-    const protocols = {
-      'swedish_consensus': 'inclusive_transparent',
-      'german_systematik': 'formal_comprehensive',
-      'french_elegance': 'refined_hierarchical',
-      'dutch_efficiency': 'direct_practical'
-    };
 
     return protocols[culturalContext] || 'professional_standard';
   }
 
   private calculateEuropeanPopulationScaling(population: number, country: string): number {
     // European municipal size distributions
-    const countryScalingFactors = {
-      'sweden': 1.0,     // Efficient municipal organization
-      'germany': 1.1,    // Federal complexity
-      'france': 1.2,     // Centralized administration
-      'netherlands': 0.9 // Compact efficiency
-    };
 
-    const baseFactor = Math.log10(population / 10000) * 0.1;
-    const countryFactor = countryScalingFactors[country] || 1.0;
 
     return Math.max(1.0, baseFactor * countryFactor);
   }
@@ -659,7 +568,6 @@ export class EuropeanMunicipalInfrastructureEngine extends EventEmitter {
   }
 
   private async registerWithRegionalCluster(tenant: MunicipalTenantInstanceV2): Promise<void> {
-    const cluster = this.regionalClusters.get(tenant.config.dataResidencyRegion);
     if (cluster) {
       cluster.municipalities.add(tenant.tenantId);
     }

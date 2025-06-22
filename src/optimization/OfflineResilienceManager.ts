@@ -105,7 +105,6 @@ export class OfflineResilienceManager {
    * Save complete world state for offline access
    */
   async saveWorldStateOffline(worldIndex: number, worldState: Record<string, unknown>): Promise<void> {
-    const offlineState = await this.getOfflineState();
     if (offlineState) {
       offlineState.worldStates.set(worldIndex, {
         ...worldState,
@@ -121,9 +120,7 @@ export class OfflineResilienceManager {
    * Get world state for offline access
    */
   async getWorldStateOffline(worldIndex: number): Promise<any | null> {
-    const offlineState = await this.getOfflineState();
     if (offlineState?.worldStates.has(worldIndex)) {
-      const worldState = offlineState.worldStates.get(worldIndex);
       console.log(`📱 Retrieved World ${worldIndex} state from offline storage`);
       return worldState;
     }
@@ -168,11 +165,8 @@ export class OfflineResilienceManager {
    * Clean up old offline data
    */
   async cleanupOfflineData(): Promise<void> {
-    const offlineState = await this.getOfflineState();
     if (!offlineState) return;
 
-    const now = Date.now();
-    const maxAge = 7 * 24 * 60 * 60 * 1000; // 7 days
 
     // Clean old actions
     this.pendingActions = this.pendingActions.filter(
@@ -242,14 +236,11 @@ export class OfflineResilienceManager {
     }
 
     this.syncInProgress = true;
-    const startTime = Date.now();
     let actionsProcessed = 0;
-    const conflictsResolved = 0;
 
     try {
       console.log(`🔄 Syncing ${this.pendingActions.length} municipal actions`);
 
-      const actionsToSync = [...this.pendingActions];
       
       for (const action of actionsToSync) {
         try {
@@ -276,7 +267,6 @@ export class OfflineResilienceManager {
       this.lastSyncAttempt = Date.now();
       await this.persistOfflineState();
 
-      const syncDuration = Date.now() - startTime;
       console.log(`✅ Municipal sync completed in ${syncDuration}ms: ${actionsProcessed} actions processed`);
 
       return {
@@ -353,9 +343,7 @@ export class OfflineResilienceManager {
 
   private async loadOfflineState(): Promise<void> {
     try {
-      const stored = localStorage.getItem(this.OFFLINE_STORAGE_KEY);
       if (stored) {
-        const parsed = JSON.parse(stored);
         this.pendingActions = parsed.pendingActions || [];
         console.log(`📱 Loaded ${this.pendingActions.length} pending municipal actions from offline storage`);
       }
@@ -367,9 +355,7 @@ export class OfflineResilienceManager {
 
   private async getOfflineState(): Promise<OfflineState | null> {
     try {
-      const stored = localStorage.getItem(this.OFFLINE_STORAGE_KEY);
       if (stored) {
-        const parsed = JSON.parse(stored);
         return {
           ...parsed,
           worldStates: new Map(parsed.worldStates || [])
@@ -383,7 +369,7 @@ export class OfflineResilienceManager {
 
   private async persistOfflineState(state?: OfflineState): Promise<void> {
     try {
-      const stateToSave = state || {
+      const _stateToSave = state || {
         hubSessionId: '',
         uniqueCode: '',
         lastSync: this.lastSyncAttempt,
@@ -398,10 +384,6 @@ export class OfflineResilienceManager {
         }
       };
 
-      const serializable = {
-        ...stateToSave,
-        worldStates: Array.from(stateToSave.worldStates.entries())
-      };
 
       localStorage.setItem(this.OFFLINE_STORAGE_KEY, JSON.stringify(serializable));
     } catch (error) {
@@ -424,4 +406,3 @@ export class OfflineResilienceManager {
 }
 
 // Export singleton instance
-export const offlineResilienceManager = new OfflineResilienceManager();

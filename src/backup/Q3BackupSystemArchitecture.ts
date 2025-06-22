@@ -146,7 +146,6 @@ export class Q3BackupSystemArchitecture {
     console.log(`📊 Redundancy Level: ${this.config.redundancyLevel}`);
     console.log(`🎯 Recovery Targets: RTO ${this.GOVERNMENT_DEMO_TARGETS.rto}s, Zero Downtime`);
     
-    const startTime = Date.now();
     
     try {
       // Phase 1: Primary Backup Server Deployment
@@ -171,9 +170,7 @@ export class Q3BackupSystemArchitecture {
       await this.executeFailoverTesting();
       
       // Phase 8: Final Validation
-      const validationResult = await this.validateBackupSystems();
       
-      const deploymentTime = Date.now() - startTime;
       
       console.log(`✅ Backup System Architecture Deployed in ${Math.round(deploymentTime / 1000)}s`);
       console.log(`🎯 Government Demo Readiness: ${validationResult.ready ? 'READY' : 'REQUIRES ATTENTION'}`);
@@ -200,7 +197,6 @@ export class Q3BackupSystemArchitecture {
     console.log(`🚨 Executing Failover: ${trigger.triggerType}`);
     console.log('🔄 Switching to backup systems for zero-downtime continuation');
     
-    const startTime = Date.now();
     const failoverEvent: FailoverEvent = {
       id: this.generateFailoverId(),
       timestamp: startTime,
@@ -213,7 +209,6 @@ export class Q3BackupSystemArchitecture {
     
     try {
       // Step 1: Validate backup system readiness
-      const backupReady = await this.validateBackupReadiness(failoverEvent.targetSystem);
       if (!backupReady) {
         throw new Error(`Backup system ${failoverEvent.targetSystem} not ready`);
       }
@@ -231,9 +226,7 @@ export class Q3BackupSystemArchitecture {
       await this.restoreApplicationState();
       
       // Step 6: Validate system functionality
-      const functionalityValidation = await this.validateSystemFunctionality();
       
-      const failoverTime = Date.now() - startTime;
       
       failoverEvent.status = 'completed';
       failoverEvent.duration = failoverTime;
@@ -282,14 +275,12 @@ export class Q3BackupSystemArchitecture {
   async testBackupSystems(): Promise<BackupTestResult> {
     console.log('🧪 Testing Backup Systems for Government Demo Readiness');
     
-    const testStartTime = Date.now();
     const testResults: ComponentTestResult[] = [];
     
     // Test each backup component
     for (const [componentId, component] of this.backupComponents) {
       console.log(`🔍 Testing ${componentId}`);
       
-      const componentTestResult = await this.testBackupComponent(component);
       testResults.push(componentTestResult);
       
       if (!componentTestResult.passed) {
@@ -298,16 +289,12 @@ export class Q3BackupSystemArchitecture {
     }
     
     // Test failover procedures
-    const failoverTests = await this.testFailoverProcedures();
     
     // Test data replication
-    const replicationTest = await this.testDataReplication();
     
     // Test network failover
-    const networkFailoverTest = await this.testNetworkFailover();
     
-    const testDuration = Date.now() - testStartTime;
-    const overallSuccess = testResults.every(r => r.passed) && 
+    const _overallSuccess = testResults.every(r => r.passed) && 
                           failoverTests.every(r => r.passed) &&
                           replicationTest.passed &&
                           networkFailoverTest.passed;
@@ -531,18 +518,7 @@ export class Q3BackupSystemArchitecture {
   private async validateBackupSystems(): Promise<BackupValidationResult> {
     console.log('✅ Phase 8: Final Backup System Validation');
     
-    const validationChecks = {
-      allComponentsOperational: this.validateAllComponentsOperational(),
-      failoverTimeMeetsTargets: this.validateFailoverTime(),
-      dataReplicationWorking: this.validateDataReplication(),
-      networkFailoverReady: this.validateNetworkFailover(),
-      governmentCompliance: this.validateGovernmentCompliance(),
-      zeroDowntimeCapability: this.validateZeroDowntimeCapability()
-    };
     
-    const passedChecks = Object.values(validationChecks).filter(Boolean).length;
-    const totalChecks = Object.keys(validationChecks).length;
-    const score = Math.round((passedChecks / totalChecks) * 100);
     
     await this.simulateDeploymentPhase(1500);
     
@@ -601,7 +577,6 @@ export class Q3BackupSystemArchitecture {
   }
 
   private async validateBackupReadiness(targetSystem: string): Promise<boolean> {
-    const component = this.backupComponents.get(targetSystem);
     return component?.healthStatus === 'operational' && component?.failoverCapability;
   }
 
@@ -701,11 +676,9 @@ export class Q3BackupSystemArchitecture {
   }
 
   private calculateOverallStatus(): 'excellent' | 'ready' | 'warning' | 'critical' {
-    const operationalComponents = Array.from(this.backupComponents.values())
+    const _operationalComponents = Array.from(this.backupComponents.values())
       .filter(c => c.healthStatus === 'operational').length;
     
-    const totalComponents = this.backupComponents.size;
-    const healthPercentage = totalComponents > 0 ? (operationalComponents / totalComponents) * 100 : 0;
     
     if (healthPercentage >= 98) return 'excellent';
     if (healthPercentage >= 90) return 'ready';
@@ -914,5 +887,4 @@ interface BackupTestResult {
 }
 
 // Export factory function for creating backup system
-export const createBackupSystem = (config: BackupSystemConfiguration) => 
   new Q3BackupSystemArchitecture(config);

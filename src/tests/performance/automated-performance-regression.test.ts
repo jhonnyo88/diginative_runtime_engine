@@ -10,50 +10,10 @@ import { describe, it, expect, beforeEach, vi } from 'vitest';
 import { execSync } from 'child_process';
 
 // Mock regression detection utilities
-const mockRegressionUtils = {
-  runPerformanceBaseline: vi.fn(),
-  detectRegressions: vi.fn(),
-  generateRegressionReport: vi.fn(),
-  blockDeployment: vi.fn(),
-  sendPerformanceAlerts: vi.fn()
-};
 
 // Performance regression thresholds
-const REGRESSION_THRESHOLDS = {
-  yellow: 0.1,    // 10% degradation - warning
-  orange: 0.2,    // 20% degradation - alert
-  red: 0.3,       // 30% degradation - block deployment
-  critical: 0.5   // 50% degradation - emergency alert
-};
 
 // Municipal performance baselines
-const MUNICIPAL_PERFORMANCE_BASELINES = {
-  annaSvenssonSession: {
-    totalLoadTime: 1800,        // 1.8s baseline
-    interactiveTime: 2500,      // 2.5s baseline
-    sessionBandwidth: 1.5 * 1024 * 1024, // 1.5MB baseline
-    batteryUsage: 0.04,         // 4% baseline
-    taskCompletionRate: 0.95    // 95% baseline
-  },
-  municipalNetworks: {
-    '3G': { loadTime: 2800, interactiveTime: 4000 },
-    'wifi': { loadTime: 1200, interactiveTime: 1800 },
-    'restricted': { loadTime: 3500, interactiveTime: 5000 }
-  },
-  q2Features: {
-    dragDropWorkflow: 250,      // 250ms baseline
-    timerChallenge: 120,        // 120ms baseline
-    characterInteraction: 200,  // 200ms baseline
-    touchGestures: 80,          // 80ms baseline
-    branchingNarrative: 300     // 300ms baseline
-  },
-  municipalCompliance: {
-    gdprProcessing: 80,         // 80ms baseline
-    accessibilityFeatures: 45,  // 45ms baseline
-    swedishLocalization: 30,    // 30ms baseline
-    brandingSwitching: 60       // 60ms baseline
-  }
-};
 
 describe('Automated Performance Regression Detection', () => {
   let regressionDetector: Record<string, unknown>;
@@ -67,7 +27,6 @@ describe('Automated Performance Regression Detection', () => {
 
   describe('Baseline Performance Establishment', () => {
     it('should establish Anna Svensson performance baseline', async () => {
-      const baselineResult = await regressionDetector.establishPerformanceBaseline({
         userPersona: 'anna-svensson',
         sessionDuration: 420000, // 7 minutes
         networkConditions: '3G',
@@ -93,7 +52,6 @@ describe('Automated Performance Regression Detection', () => {
     });
 
     it('should establish Q2 feature performance baselines', async () => {
-      const q2BaselineResult = await regressionDetector.establishQ2FeatureBaselines({
         features: ['drag-drop', 'timer', 'character-interaction', 'touch-gestures', 'branching-narrative'],
         municipality: 'malmö',
         testScenarios: 'comprehensive'
@@ -117,7 +75,6 @@ describe('Automated Performance Regression Detection', () => {
     });
 
     it('should establish municipal compliance performance baselines', async () => {
-      const complianceBaseline = await regressionDetector.establishComplianceBaselines({
         municipality: 'malmö',
         complianceFeatures: ['gdpr', 'accessibility', 'localization', 'branding'],
         wcagLevel: 'AA'
@@ -146,7 +103,6 @@ describe('Automated Performance Regression Detection', () => {
 
   describe('Real-time Regression Detection', () => {
     it('should detect performance regressions in pull requests', async () => {
-      const pullRequestAnalysis = await regressionDetector.analyzePullRequestPerformance({
         prId: 'pr-456',
         changedFiles: ['src/components/Q2/DragDropWorkflow.tsx', 'src/services/character-interaction.ts'],
         baselineBranch: 'main',
@@ -168,7 +124,6 @@ describe('Automated Performance Regression Detection', () => {
         });
 
         // Verify regression percentage calculation
-        const expectedRegression = (regression.currentValue - regression.baselineValue) / regression.baselineValue;
         expect(regression.regressionPercentage).toBeCloseTo(expectedRegression, 2);
       });
 
@@ -180,7 +135,6 @@ describe('Automated Performance Regression Detection', () => {
     });
 
     it('should validate Q2 feature performance impact', async () => {
-      const q2FeatureImpact = await regressionDetector.analyzeQ2FeatureImpact({
         newFeatures: ['enhanced-character-emotions', 'advanced-branching-logic'],
         baselineComparison: true,
         municipalContext: 'malmö'
@@ -206,7 +160,6 @@ describe('Automated Performance Regression Detection', () => {
     });
 
     it('should monitor continuous performance degradation', async () => {
-      const continuousMonitoring = await regressionDetector.runContinuousPerformanceMonitoring({
         monitoringDuration: 3600000, // 1 hour
         samplingInterval: 60000,     // 1 minute samples
         municipality: 'malmö',
@@ -240,7 +193,6 @@ describe('Automated Performance Regression Detection', () => {
 
   describe('CI/CD Performance Gates', () => {
     it('should block deployment on critical performance regressions', async () => {
-      const deploymentGateResult = await cicdGates.evaluateDeploymentGate({
         buildId: 'build-789',
         performanceResults: {
           totalLoadTime: 2500,  // 39% regression from 1800ms baseline
@@ -267,7 +219,6 @@ describe('Automated Performance Regression Detection', () => {
     });
 
     it('should allow deployment with minor performance warnings', async () => {
-      const minorRegressionGate = await cicdGates.evaluateDeploymentGate({
         buildId: 'build-790',
         performanceResults: {
           totalLoadTime: 1980,  // 10% regression from 1800ms baseline
@@ -294,7 +245,6 @@ describe('Automated Performance Regression Detection', () => {
     });
 
     it('should provide detailed performance impact reports for CI/CD', async () => {
-      const cicdReport = await cicdGates.generateCICDPerformanceReport({
         buildId: 'build-791',
         includeBaslineComparison: true,
         includeRecommendations: true,
@@ -332,7 +282,6 @@ describe('Automated Performance Regression Detection', () => {
 
   describe('Performance Alert System', () => {
     it('should send automated performance alerts', async () => {
-      const alertResult = await regressionDetector.sendPerformanceAlert({
         alertLevel: 'orange',
         regressions: [
           {
@@ -371,7 +320,6 @@ describe('Automated Performance Regression Detection', () => {
     });
 
     it('should track alert resolution and follow-up', async () => {
-      const alertTracking = await regressionDetector.trackAlertResolution({
         alertId: 'alert-123',
         resolutionActions: ['code-optimization', 'performance-tuning'],
         municipality: 'malmö'
@@ -400,7 +348,6 @@ describe('Automated Performance Regression Detection', () => {
 
   describe('Historical Performance Analysis', () => {
     it('should analyze long-term performance trends', async () => {
-      const trendAnalysis = await regressionDetector.analyzeLongTermTrends({
         timeframe: '90-days',
         municipality: 'malmö',
         includeSeasonality: true,
@@ -431,7 +378,6 @@ describe('Automated Performance Regression Detection', () => {
     });
 
     it('should predict future performance based on development trends', async () => {
-      const performancePrediction = await regressionDetector.predictFuturePerformance({
         predictionHorizon: '30-days',
         developmentVelocity: 'current',
         plannedFeatures: ['q2-advanced-animations', 'q2-complex-branching'],

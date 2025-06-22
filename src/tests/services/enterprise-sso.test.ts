@@ -15,9 +15,6 @@
 import { describe, it, expect, beforeEach, afterEach, vi, Mock } from 'vitest';
 
 // Mock SAML dependency before importing the service
-const mockSAMLInstance = {
-  validatePostResponse: vi.fn(),
-};
 
 vi.mock('@node-saml/node-saml', () => ({
   SAML: vi.fn().mockImplementation(() => mockSAMLInstance),
@@ -59,19 +56,15 @@ describe('EnterpriseSSO Unit Tests', () => {
 
     it('should load SAML configurations from environment', () => {
       // Access private properties through type assertion for testing
-      const samlConfigs = (enterpriseSSO as any).samlConfigs;
       expect(samlConfigs.has('malmo_stad')).toBe(true);
       
-      const malmoConfig = samlConfigs.get('malmo_stad');
       expect(malmoConfig.issuer).toBe('diginativa-runtime-engine');
       expect(malmoConfig.entryPoint).toBe('https://login.malmo.se/adfs/ls');
     });
 
     it('should load OAuth configurations from environment', () => {
-      const oauthConfigs = (enterpriseSSO as any).oauthConfigs;
       expect(oauthConfigs.has('azure_ad')).toBe(true);
       
-      const azureConfig = oauthConfigs.get('azure_ad');
       expect(azureConfig.clientId).toBe('test-azure-client-id');
       expect(azureConfig.scopes).toContain('openid');
     });
@@ -79,17 +72,10 @@ describe('EnterpriseSSO Unit Tests', () => {
 
   describe('User Authentication', () => {
     it('should authenticate user via SAML successfully', async () => {
-      const mockSamlResponse = 'mock-saml-response';
-      const mockProfile = {
-        nameID: 'test-user-123',
-        email: 'test@malmo.se',
-        displayName: 'Test User',
-      };
 
       // Mock SAML validation
       mockSAMLInstance.validatePostResponse.mockResolvedValue(mockProfile);
 
-      const result = await enterpriseSSO.authenticateUser(
         'malmo_stad', 
         'saml', 
         mockSamlResponse
@@ -108,17 +94,14 @@ describe('EnterpriseSSO Unit Tests', () => {
     });
 
     it('should authenticate user via OAuth successfully', async () => {
-      const mockOAuthToken = 'mock-oauth-token';
       
       // Mock OAuth validation
-      const mockValidateOAuth = vi.spyOn(enterpriseSSO as any, 'validateOAuthToken');
       mockValidateOAuth.mockResolvedValue({
         nameID: 'oauth-user-456',
         email: 'oauth@test.com',
         displayName: 'OAuth User',
       });
 
-      const result = await enterpriseSSO.authenticateUser(
         'german_municipal', 
         'oauth', 
         mockOAuthToken
@@ -153,28 +136,24 @@ describe('EnterpriseSSO Unit Tests', () => {
 
   describe('Cultural Context Mapping', () => {
     it('should map German tenant to german_systematic context', () => {
-      const getCulturalContext = (enterpriseSSO as any).getCulturalContextForTenant;
       
       expect(getCulturalContext('berlin_de')).toBe('german_systematic');
       expect(getCulturalContext('german_municipal')).toBe('german_systematic');
     });
 
     it('should map French tenant to french_collaborative context', () => {
-      const getCulturalContext = (enterpriseSSO as any).getCulturalContextForTenant;
       
       expect(getCulturalContext('paris_fr')).toBe('french_collaborative');
       expect(getCulturalContext('french_municipal')).toBe('french_collaborative');
     });
 
     it('should map Dutch tenant to dutch_progressive context', () => {
-      const getCulturalContext = (enterpriseSSO as any).getCulturalContextForTenant;
       
       expect(getCulturalContext('amsterdam_nl')).toBe('dutch_progressive');
       expect(getCulturalContext('dutch_municipal')).toBe('dutch_progressive');
     });
 
     it('should default to swedish_mobile context', () => {
-      const getCulturalContext = (enterpriseSSO as any).getCulturalContextForTenant;
       
       expect(getCulturalContext('stockholm_se')).toBe('swedish_mobile');
       expect(getCulturalContext('unknown_tenant')).toBe('swedish_mobile');
@@ -183,8 +162,6 @@ describe('EnterpriseSSO Unit Tests', () => {
 
   describe('Tenant Permissions', () => {
     it('should generate correct tenant permissions', async () => {
-      const getTenantPermissions = (enterpriseSSO as any).getTenantPermissions;
-      const permissions = await getTenantPermissions('test_tenant');
       
       expect(permissions).toEqual([
         'read:content',
@@ -197,8 +174,6 @@ describe('EnterpriseSSO Unit Tests', () => {
 
   describe('Data Scope Creation', () => {
     it('should create proper data scope for tenant', () => {
-      const createDataScope = (enterpriseSSO as any).createDataScope;
-      const dataScope = createDataScope('test_tenant');
       
       expect(dataScope).toEqual({
         namespace: 'tenant:test_tenant',
@@ -222,7 +197,6 @@ describe('TenantIsolationManager Unit Tests', () => {
 
   describe('Session Isolation', () => {
     it('should create isolated session for tenant user', async () => {
-      const session = await isolationManager.isolateUserSession('user123', 'malmo_stad');
       
       expect(session).toMatchObject({
         namespace: 'tenant:malmo_stad:user:user123',
@@ -246,7 +220,6 @@ describe('TenantIsolationManager Unit Tests', () => {
     });
 
     it('should create correct data scope with row-level security', async () => {
-      const session = await isolationManager.isolateUserSession('user456', 'german_municipal');
       
       expect(session.dataAccess).toEqual({
         allowedSchemas: ['tenant_german_municipal_data'],
@@ -258,7 +231,6 @@ describe('TenantIsolationManager Unit Tests', () => {
 
   describe('Cultural Preferences', () => {
     it('should set German cultural preferences correctly', async () => {
-      const session = await isolationManager.isolateUserSession('user789', 'berlin_de');
       
       expect(session.culturalPreferences).toEqual({
         language: 'de-DE',
@@ -269,7 +241,6 @@ describe('TenantIsolationManager Unit Tests', () => {
     });
 
     it('should set French cultural preferences correctly', async () => {
-      const session = await isolationManager.isolateUserSession('user999', 'paris_fr');
       
       expect(session.culturalPreferences).toEqual({
         language: 'fr-FR',
@@ -280,7 +251,6 @@ describe('TenantIsolationManager Unit Tests', () => {
     });
 
     it('should set Dutch cultural preferences correctly', async () => {
-      const session = await isolationManager.isolateUserSession('user111', 'amsterdam_nl');
       
       expect(session.culturalPreferences).toEqual({
         language: 'nl-NL',
@@ -318,14 +288,12 @@ describe('Enterprise SSO Integration Tests', () => {
     });
 
     // Step 1: Authenticate user
-    const authenticatedUser = await enterpriseSSO.authenticateUser(
       'malmo_stad',
       'saml',
       'mock-saml-response'
     );
 
     // Step 2: Create isolated session
-    const session = await isolationManager.isolateUserSession(
       authenticatedUser.id,
       'malmo_stad'
     );
@@ -342,24 +310,19 @@ describe('Enterprise SSO Integration Tests', () => {
 
   it('should handle multi-tenant isolation correctly', async () => {
     // Test multiple tenants don't interfere
-    const tenants = ['malmo_stad', 'berlin_de', 'paris_fr', 'amsterdam_nl'];
-    const sessions = [];
 
     for (const tenant of tenants) {
-      const session = await isolationManager.isolateUserSession(`user-${tenant}`, tenant);
       sessions.push(session);
     }
 
     // Verify each session is properly isolated
     sessions.forEach((session, index) => {
-      const expectedTenant = tenants[index];
       expect(session.namespace).toContain(expectedTenant);
       expect(session.dataAccess.allowedSchemas[0]).toContain(expectedTenant);
       expect(session.dataAccess.rowLevelSecurity).toContain(expectedTenant);
     });
 
     // Verify no cross-tenant access
-    const malmoSession = sessions[0];
     expect(malmoSession.dataAccess.restrictedOperations).toContain('cross_tenant_access');
   });
 });
@@ -380,12 +343,6 @@ describe('Enterprise SSO Health Checks', () => {
   });
 
   it('should validate required environment variables', () => {
-    const requiredVars = [
-      'SAML_MALMO_ENTRY_POINT',
-      'SAML_MALMO_CERT',
-      'AZURE_CLIENT_ID',
-      'AZURE_AUTHORITY'
-    ];
 
     requiredVars.forEach(varName => {
       expect(process.env[varName]).toBeDefined();
@@ -394,8 +351,6 @@ describe('Enterprise SSO Health Checks', () => {
   });
 
   it('should validate SAML configuration structure', () => {
-    const samlConfigs = (enterpriseSSO as any).samlConfigs;
-    const malmoConfig = samlConfigs.get('malmo_stad');
     
     expect(malmoConfig).toHaveProperty('entryPoint');
     expect(malmoConfig).toHaveProperty('issuer');
@@ -407,8 +362,6 @@ describe('Enterprise SSO Health Checks', () => {
   });
 
   it('should validate OAuth configuration structure', () => {
-    const oauthConfigs = (enterpriseSSO as any).oauthConfigs;
-    const azureConfig = oauthConfigs.get('azure_ad');
     
     expect(azureConfig).toHaveProperty('clientId');
     expect(azureConfig).toHaveProperty('authority');
@@ -419,14 +372,7 @@ describe('Enterprise SSO Health Checks', () => {
   });
 
   it('should validate cultural context mappings', () => {
-    const getCulturalContext = (enterpriseSSO as any).getCulturalContextForTenant;
     
-    const contexts = [
-      'german_systematic',
-      'french_collaborative',
-      'dutch_progressive',
-      'swedish_mobile'
-    ];
 
     contexts.forEach(context => {
       expect(['german_systematic', 'french_collaborative', 'dutch_progressive', 'swedish_mobile'])
@@ -451,8 +397,6 @@ describe('Enterprise SSO Security Tests', () => {
   });
 
   it('should prevent cross-tenant data access', async () => {
-    const session1 = await isolationManager.isolateUserSession('user1', 'tenant1');
-    const session2 = await isolationManager.isolateUserSession('user2', 'tenant2');
 
     // Verify tenant isolation
     expect(session1.dataAccess.allowedSchemas).not.toEqual(session2.dataAccess.allowedSchemas);
@@ -465,22 +409,17 @@ describe('Enterprise SSO Security Tests', () => {
   });
 
   it('should validate session namespace uniqueness', async () => {
-    const sessions = [];
     
     for (let i = 0; i < 5; i++) {
-      const session = await isolationManager.isolateUserSession(`user${i}`, `tenant${i}`);
       sessions.push(session);
     }
 
     // Check all namespaces are unique
-    const namespaces = sessions.map(s => s.namespace);
-    const uniqueNamespaces = new Set(namespaces);
     
     expect(uniqueNamespaces.size).toBe(sessions.length);
   });
 
   it('should enforce proper tenant permissions', async () => {
-    const session = await isolationManager.isolateUserSession('testuser', 'testtenant');
     
     // Check permissions structure
     session.permissions.forEach(permission => {
@@ -490,21 +429,13 @@ describe('Enterprise SSO Security Tests', () => {
     });
 
     // Check tenant-specific permission exists
-    const tenantPermission = session.permissions.find(p => p.resource === 'tenant:testtenant');
     expect(tenantPermission).toBeDefined();
     expect(tenantPermission?.actions).toContain('all');
   });
 
   it('should validate user ID format and prevent injection', async () => {
-    const maliciousUserIds = [
-      'user; DROP TABLE users; --',
-      'user\' OR 1=1 --',
-      '<script>alert("xss")</script>',
-      'user\x00null',
-    ];
 
     for (const maliciousId of maliciousUserIds) {
-      const session = await isolationManager.isolateUserSession(maliciousId, 'testtenant');
       
       // Verify the session namespace contains the sanitized/escaped version
       expect(session.namespace).toContain('testtenant');
@@ -514,7 +445,6 @@ describe('Enterprise SSO Security Tests', () => {
   });
 
   it('should validate session timeout is reasonable', async () => {
-    const session = await isolationManager.isolateUserSession('testuser', 'testtenant');
     
     // 8 hours = 28800000 ms
     expect(session.sessionTimeout).toBe(28800000);
@@ -539,9 +469,6 @@ describe('Enterprise SSO Error Handling', () => {
   it('should handle missing environment variables gracefully', () => {
     delete process.env.SAML_MALMO_ENTRY_POINT;
     
-    const newSSO = new EnterpriseSSO();
-    const samlConfigs = (newSSO as any).samlConfigs;
-    const malmoConfig = samlConfigs.get('malmo_stad');
     
     expect(malmoConfig.entryPoint).toBeUndefined();
   });
@@ -551,7 +478,6 @@ describe('Enterprise SSO Error Handling', () => {
       new Error('SAML validation failed')
     );
 
-    const consoleSpy = vi.spyOn(console, 'error').mockImplementation(() => {});
 
     await expect(
       enterpriseSSO.authenticateUser('malmo_stad', 'saml', 'invalid-response')
@@ -594,14 +520,12 @@ describe('Enterprise SSO Performance Tests', () => {
       displayName: 'Concurrent User',
     });
 
-    const promises = [];
     for (let i = 0; i < 10; i++) {
       promises.push(
         enterpriseSSO.authenticateUser(`tenant${i}`, 'saml', `response${i}`)
       );
     }
 
-    const results = await Promise.allSettled(promises);
     
     // Some may fail due to missing tenant configs, but they should all complete
     expect(results.length).toBe(10);
@@ -611,17 +535,13 @@ describe('Enterprise SSO Performance Tests', () => {
   });
 
   it('should handle rapid session creation', async () => {
-    const startTime = Date.now();
     
-    const promises = [];
     for (let i = 0; i < 100; i++) {
       promises.push(
         isolationManager.isolateUserSession(`user${i}`, `tenant${i % 5}`)
       );
     }
 
-    const sessions = await Promise.all(promises);
-    const endTime = Date.now();
     
     expect(sessions.length).toBe(100);
     expect(endTime - startTime).toBeLessThan(1000); // Should complete in under 1 second

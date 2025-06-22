@@ -400,7 +400,6 @@ export class GovernmentDemoLoadTesting extends EventEmitter {
     this.loadTestResults.clear();
     
     // Initialize load testing scenarios
-    const scenarios = Object.keys(this.loadTestingSpecs.loadScenarios);
     for (const scenario of scenarios) {
       this.loadTestResults.set(`scenario_${scenario}`, []);
     }
@@ -443,7 +442,6 @@ export class GovernmentDemoLoadTesting extends EventEmitter {
     this.currentTest = scenarioName;
     this.emit('loadTesting:scenarioStarted', { scenario: scenarioName });
 
-    const startTime = Date.now();
     
     // Simulate load testing execution
     const result: LoadTestResult = {
@@ -461,7 +459,6 @@ export class GovernmentDemoLoadTesting extends EventEmitter {
     };
 
     // Store results
-    const scenarioResults = this.loadTestResults.get(`scenario_${scenarioName}`) || [];
     scenarioResults.push(result);
     this.loadTestResults.set(`scenario_${scenarioName}`, scenarioResults);
 
@@ -472,8 +469,6 @@ export class GovernmentDemoLoadTesting extends EventEmitter {
    * Simulate Performance Metrics Under Load
    */
   private async simulatePerformanceMetrics(scenarioSpec: LoadScenarioSpec): Promise<DetailedPerformanceMetrics> {
-    const baselineResponse = this.loadTestingSpecs.performanceTargets.responseTimeTargets.hubLoading;
-    const loadFactor = Math.min(scenarioSpec.concurrentUsers / 50, 2.0); // Scale with users
     
     return {
       averageResponseTime: Math.round(baselineResponse * (1 + loadFactor * 0.3)),
@@ -490,7 +485,6 @@ export class GovernmentDemoLoadTesting extends EventEmitter {
    * Simulate Reliability Metrics Under Load
    */
   private async simulateReliabilityMetrics(scenarioSpec: LoadScenarioSpec): Promise<ReliabilityMetrics> {
-    const loadStress = scenarioSpec.concurrentUsers / this.loadTestingSpecs.loadTestingConfiguration.maxConcurrentUsers;
     
     return {
       uptime: Math.max(99.9 - loadStress * 0.3, 99.0),
@@ -505,7 +499,6 @@ export class GovernmentDemoLoadTesting extends EventEmitter {
    * Simulate Resource Metrics Under Load
    */
   private async simulateResourceMetrics(scenarioSpec: LoadScenarioSpec): Promise<ResourceMetrics> {
-    const resourceLoad = scenarioSpec.concurrentUsers / this.loadTestingSpecs.loadTestingConfiguration.maxConcurrentUsers;
     
     return {
       peakCpuUsage: Math.round(50 + resourceLoad * 35),
@@ -520,9 +513,8 @@ export class GovernmentDemoLoadTesting extends EventEmitter {
    * Evaluate Government Readiness Under Load
    */
   private evaluateGovernmentReadiness(scenarioSpec: LoadScenarioSpec): boolean {
-    const isAcceptablePerformance = scenarioSpec.concurrentUsers <= 100; // Government threshold for stress testing
-    const isCriticalScenario = scenarioSpec.governmentCritical;
-    const hasLowErrorRate = true; // Simulated low error rate
+    const _isAcceptablePerformance = scenarioSpec.concurrentUsers <= 100; // Government threshold for stress testing
+    const _hasLowErrorRate = true; // Simulated low error rate
     
     return isAcceptablePerformance && (isCriticalScenario ? hasLowErrorRate : true);
   }
@@ -563,9 +555,7 @@ export class GovernmentDemoLoadTesting extends EventEmitter {
    */
   private async generateLoadTestingAnalysis(): Promise<void> {
     // Generate load testing summary
-    const scenarios = Object.keys(this.loadTestingSpecs.loadScenarios);
-    const totalScenarios = scenarios.length;
-    const successfulScenarios = scenarios.length; // All simulated as successful
+    const _successfulScenarios = scenarios.length; // All simulated as successful
     
     const summary: LoadTestResult = {
       testType: 'load_testing_summary',
@@ -633,8 +623,6 @@ export class GovernmentDemoLoadTesting extends EventEmitter {
    * Get Load Testing Summary
    */
   getLoadTestingSummary(): Record<string, unknown> {
-    const summary = this.loadTestResults.get('load_testing_summary')?.[0];
-    const scenarios = Object.keys(this.loadTestingSpecs.loadScenarios);
     
     return {
       load_testing_active: this.loadTestingActive,

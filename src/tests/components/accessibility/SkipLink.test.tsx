@@ -16,13 +16,6 @@ import SkipLink from '../../../components/common/SkipLink.tsx';
 // Mock dependencies if needed
 
 
-const renderWithChakra = (component: React.ReactElement) => {
-  return render(
-    <ChakraProvider>
-      {component}
-    </ChakraProvider>
-  );
-};
 
 describe('SkipLink', () => {
   beforeEach(() => {
@@ -33,14 +26,10 @@ describe('SkipLink', () => {
     it('renders without crashing', () => {
       renderWithChakra(<SkipLink />);
       
-      const component = screen.getByTestId('-skip-link');
       expect(component).toBeInTheDocument();
     });
 
     it('handles props correctly', () => {
-      const testProps = {
-        // Add relevant props based on component analysis
-      };
       
       renderWithChakra(<SkipLink {...testProps} />);
       
@@ -60,7 +49,6 @@ describe('SkipLink', () => {
     it('provides proper ARIA attributes', () => {
       renderWithChakra(<SkipLink />);
       
-      const element = screen.getByTestId('-skip-link');
       
       // Check for appropriate ARIA attributes
       expect(element).toHaveAttribute('role');
@@ -69,7 +57,6 @@ describe('SkipLink', () => {
     it('supports keyboard navigation', () => {
       renderWithChakra(<SkipLink />);
       
-      const element = screen.getByTestId('-skip-link');
       
       // Test tab navigation
       element.focus();
@@ -80,7 +67,6 @@ describe('SkipLink', () => {
       renderWithChakra(<SkipLink />);
       
       // Basic contrast check
-      const element = screen.getByTestId('-skip-link');
       expect(element).toBeInTheDocument();
     });
   });

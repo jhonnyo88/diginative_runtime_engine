@@ -11,135 +11,10 @@ import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 
 // Mock cross-component data flow utilities
-const mockCrossComponentDataFlow = {
-  validateDataFlow: vi.fn(),
-  synchronizeComponentStates: vi.fn(),
-  coordinateEventFlow: vi.fn(),
-  optimizeDataFlowPerformance: vi.fn(),
-  monitorCrossComponentIntegration: vi.fn()
-};
 
 // Cross-Component Data Flow Specifications
-const CROSS_COMPONENT_DATA_FLOW_SPECS = {
-  q2Components: [
-    'drag-drop-workflows',
-    'character-system', 
-    'timed-challenges',
-    'branching-narratives',
-    'achievement-system',
-    'municipal-compliance'
-  ],
-  dataFlowPatterns: {
-    'character-to-dragdrop': {
-      sourceComponent: 'character-system',
-      targetComponent: 'drag-drop-workflows',
-      dataTypes: ['emotional-state', 'relationship-status', 'municipal-role', 'competency-level'],
-      flowDirection: 'bidirectional',
-      updateFrequency: 'real-time',
-      performanceTarget: 25 // max 25ms latency
-    },
-    'narrative-to-timedchallenge': {
-      sourceComponent: 'branching-narratives',
-      targetComponent: 'timed-challenges',
-      dataTypes: ['narrative-context', 'choice-history', 'character-development', 'scenario-parameters'],
-      flowDirection: 'unidirectional',
-      updateFrequency: 'triggered',
-      performanceTarget: 50 // max 50ms latency
-    },
-    'timedchallenge-to-achievement': {
-      sourceComponent: 'timed-challenges',
-      targetComponent: 'achievement-system',
-      dataTypes: ['performance-metrics', 'completion-status', 'skill-demonstration', 'municipal-impact'],
-      flowDirection: 'unidirectional',
-      updateFrequency: 'event-based',
-      performanceTarget: 30 // max 30ms latency
-    },
-    'achievement-to-compliance': {
-      sourceComponent: 'achievement-system',
-      targetComponent: 'municipal-compliance',
-      dataTypes: ['competency-validation', 'certification-status', 'compliance-milestones', 'verification-requirements'],
-      flowDirection: 'bidirectional',
-      updateFrequency: 'milestone-based',
-      performanceTarget: 40 // max 40ms latency
-    },
-    'compliance-to-narrative': {
-      sourceComponent: 'municipal-compliance',
-      targetComponent: 'branching-narratives',
-      dataTypes: ['compliance-status', 'regulatory-context', 'policy-constraints', 'cultural-requirements'],
-      flowDirection: 'unidirectional',
-      updateFrequency: 'contextual',
-      performanceTarget: 35 // max 35ms latency
-    },
-    'dragdrop-to-character': {
-      sourceComponent: 'drag-drop-workflows',
-      targetComponent: 'character-system',
-      dataTypes: ['performance-feedback', 'workflow-completion', 'interaction-quality', 'municipal-service-delivery'],
-      flowDirection: 'unidirectional',
-      updateFrequency: 'action-based',
-      performanceTarget: 20 // max 20ms latency
-    }
-  },
-  stateManagement: {
-    centralStateStore: 'unified-q2-state-manager',
-    componentStates: ['local-component-state', 'shared-cross-component-state', 'global-municipal-state'],
-    synchronizationStrategy: 'optimistic-updates-with-rollback',
-    conflictResolution: 'timestamp-based-priority',
-    performanceOptimization: 'selective-state-updates'
-  },
-  annaSwenssonDataFlowOptimization: {
-    device: 'iPhone 12',
-    sessionDuration: 420000, // 7 minutes
-    dataFlowPriority: 'user-experience-first',
-    batteryOptimization: 'aggressive',
-    networkOptimization: 'municipal-3G-optimized'
-  }
-};
 
 // Municipal Data Flow Scenarios
-const MUNICIPAL_DATA_FLOW_SCENARIOS = {
-  emergencyResponseWorkflow: {
-    scenario: 'emergency-flood-response-göteborg',
-    dataFlowSequence: [
-      { component: 'branching-narratives', trigger: 'emergency-alert-received', data: { urgency: 'high', stakeholders: 5, timeLimit: 300000 } },
-      { component: 'character-system', trigger: 'stress-level-increase', data: { stress: 0.8, confidence: 0.7, emergency_mode: true } },
-      { component: 'timed-challenges', trigger: 'resource-allocation-challenge', data: { timeLimit: 180000, complexity: 'high', municipal_scope: 'city-wide' } },
-      { component: 'drag-drop-workflows', trigger: 'emergency-resource-assignment', data: { resources: 12, accuracy_requirement: 0.95, speed_priority: true } },
-      { component: 'achievement-system', trigger: 'emergency-leadership-demonstration', data: { competency: 'emergency-response', level: 'expert', verification_required: true } },
-      { component: 'municipal-compliance', trigger: 'emergency-protocol-validation', data: { protocols: ['swedish-emergency-law', 'municipal-emergency-procedures'], compliance_level: 'mandatory' } }
-    ],
-    expectedDataFlow: 'seamless-cross-component-coordination',
-    performanceRequirement: 'sub-100ms-total-propagation',
-    municipalRealism: 'authentic-emergency-response-procedures'
-  },
-  budgetApprovalWorkflow: {
-    scenario: 'municipal-budget-crisis-malmö',
-    dataFlowSequence: [
-      { component: 'municipal-compliance', trigger: 'budget-legal-constraints', data: { constraints: ['transparency-law', 'citizen-consultation'], compliance_mandatory: true } },
-      { component: 'branching-narratives', trigger: 'stakeholder-meeting-scenario', data: { stakeholders: ['mayor', 'citizens', 'department-heads'], complexity: 'high' } },
-      { component: 'character-system', trigger: 'stakeholder-relationship-update', data: { mayor_trust: 0.8, citizen_satisfaction: 0.6, colleague_support: 0.9 } },
-      { component: 'timed-challenges', trigger: 'consensus-building-challenge', data: { timeLimit: 1800000, stakeholder_alignment_required: 0.8, transparency_maintained: true } },
-      { component: 'drag-drop-workflows', trigger: 'budget-allocation-interface', data: { budget_categories: 8, precision_required: 0.98, stakeholder_visible: true } },
-      { component: 'achievement-system', trigger: 'municipal-leadership-competency', data: { competency: 'stakeholder-management', demonstration: 'consensus-building', municipal_impact: 'high' } }
-    ],
-    expectedDataFlow: 'stakeholder-aware-budget-coordination',
-    performanceRequirement: 'responsive-during-high-stakes-decisions',
-    municipalRealism: 'swedish-municipal-budget-processes'
-  },
-  citizenServiceDelivery: {
-    scenario: 'digital-service-launch-stockholm',
-    dataFlowSequence: [
-      { component: 'municipal-compliance', trigger: 'accessibility-requirements', data: { wcag_level: 'AA', swedish_accessibility_law: true, inclusion_priority: 'high' } },
-      { component: 'achievement-system', trigger: 'accessibility-champion-milestone', data: { competency: 'inclusive-design', progress: 0.8, certification_path: 'accessibility-expert' } },
-      { component: 'character-system', trigger: 'citizen-service-motivation', data: { service_orientation: 0.9, empathy_level: 0.85, municipal_responsibility: 0.95 } },
-      { component: 'branching-narratives', trigger: 'citizen-feedback-scenario', data: { feedback_complexity: 'diverse', accessibility_concerns: true, cultural_sensitivity: 'required' } },
-      { component: 'timed-challenges', trigger: 'service-optimization-challenge', data: { timeLimit: 600000, quality_threshold: 0.9, citizen_satisfaction_target: 0.85 } },
-      { component: 'drag-drop-workflows', trigger: 'service-design-interface', data: { accessibility_features: 12, citizen_journeys: 5, compliance_validation: 'real-time' } }
-    ],
-    expectedDataFlow: 'citizen-centric-service-coordination',
-    performanceRequirement: 'accessibility-optimized-data-flow',
-    municipalRealism: 'swedish-digital-government-standards'
-  }
-};
 
 describe('Cross-Component Testing and Data Flow Validation for Q2 Interactive Mechanics', () => {
   let crossComponentHarness: Record<string, unknown>;
@@ -153,7 +28,6 @@ describe('Cross-Component Testing and Data Flow Validation for Q2 Interactive Me
 
   describe('Component-to-Component Data Flow Validation', () => {
     it('should validate character system to drag-drop workflow data flow', async () => {
-      const characterDragDropFlow = await crossComponentHarness.testCharacterToDragDropDataFlow({
         sourceData: {
           characterState: {
             name: 'Anna Svensson',
@@ -210,7 +84,6 @@ describe('Cross-Component Testing and Data Flow Validation for Q2 Interactive Me
     });
 
     it('should validate narrative to timed challenge data flow', async () => {
-      const narrativeTimedChallengeFlow = await crossComponentHarness.testNarrativeToTimedChallengeDataFlow({
         sourceData: {
           narrativeContext: {
             currentScenario: 'municipal-budget-crisis',
@@ -266,7 +139,6 @@ describe('Cross-Component Testing and Data Flow Validation for Q2 Interactive Me
     });
 
     it('should validate timed challenge to achievement system data flow', async () => {
-      const timedChallengeAchievementFlow = await crossComponentHarness.testTimedChallengeToAchievementDataFlow({
         sourceData: {
           performanceMetrics: {
             completionTime: 720000, // 12 minutes of 15 minute challenge
@@ -334,7 +206,6 @@ describe('Cross-Component Testing and Data Flow Validation for Q2 Interactive Me
     });
 
     it('should validate achievement to compliance system data flow', async () => {
-      const achievementComplianceFlow = await crossComponentHarness.testAchievementToComplianceDataFlow({
         sourceData: {
           competencyValidation: {
             gdprExpertise: 'certified',
@@ -408,7 +279,6 @@ describe('Cross-Component Testing and Data Flow Validation for Q2 Interactive Me
 
   describe('Municipal Scenario Data Flow Integration', () => {
     it('should handle emergency response workflow data flow across all components', async () => {
-      const emergencyWorkflowFlow = await crossComponentHarness.testMunicipalScenarioDataFlow({
         scenario: MUNICIPAL_DATA_FLOW_SCENARIOS.emergencyResponseWorkflow,
         participant: 'anna-svensson',
         municipality: 'göteborg',
@@ -460,7 +330,6 @@ describe('Cross-Component Testing and Data Flow Validation for Q2 Interactive Me
     });
 
     it('should handle budget approval workflow data flow with stakeholder complexity', async () => {
-      const budgetWorkflowFlow = await crossComponentHarness.testMunicipalScenarioDataFlow({
         scenario: MUNICIPAL_DATA_FLOW_SCENARIOS.budgetApprovalWorkflow,
         participant: 'anna-svensson',
         municipality: 'malmö',
@@ -512,7 +381,6 @@ describe('Cross-Component Testing and Data Flow Validation for Q2 Interactive Me
     });
 
     it('should handle citizen service delivery workflow with accessibility focus', async () => {
-      const citizenServiceFlow = await crossComponentHarness.testMunicipalScenarioDataFlow({
         scenario: MUNICIPAL_DATA_FLOW_SCENARIOS.citizenServiceDelivery,
         participant: 'anna-svensson',
         municipality: 'stockholm',
@@ -566,7 +434,6 @@ describe('Cross-Component Testing and Data Flow Validation for Q2 Interactive Me
 
   describe('State Management and Synchronization', () => {
     it('should maintain state consistency across all Q2 components under concurrent load', async () => {
-      const stateConsistencyTest = await crossComponentHarness.testStateConsistencyUnderLoad({
         concurrentComponents: CROSS_COMPONENT_DATA_FLOW_SPECS.q2Components,
         simultaneousUpdates: 25, // 25 concurrent state updates
         updateTypes: ['user-interaction', 'system-triggered', 'external-event', 'performance-adjustment'],
@@ -610,7 +477,6 @@ describe('Cross-Component Testing and Data Flow Validation for Q2 Interactive Me
     });
 
     it('should optimize state synchronization for Anna Svensson iPhone 12 usage patterns', async () => {
-      const annaSwenssonStateOptimization = await crossComponentHarness.testAnnaSwenssonStateOptimization({
         device: 'iPhone 12',
         sessionDuration: CROSS_COMPONENT_DATA_FLOW_SPECS.annaSwenssonDataFlowOptimization.sessionDuration,
         dataFlowPriority: 'user-experience-first',
@@ -668,7 +534,6 @@ describe('Cross-Component Testing and Data Flow Validation for Q2 Interactive Me
 
   describe('Cross-Component Performance Optimization', () => {
     it('should optimize data flow performance across all Q2 components for municipal usage', async () => {
-      const dataFlowPerformanceOptimization = await crossComponentHarness.testDataFlowPerformanceOptimization({
         components: CROSS_COMPONENT_DATA_FLOW_SPECS.q2Components,
         dataFlowPatterns: Object.keys(CROSS_COMPONENT_DATA_FLOW_SPECS.dataFlowPatterns),
         optimizationStrategy: 'municipal-workflow-focused',
@@ -718,7 +583,6 @@ describe('Cross-Component Testing and Data Flow Validation for Q2 Interactive Me
 
   describe('Cross-Component Integration Quality Assurance', () => {
     it('should generate comprehensive cross-component data flow integration reports', async () => {
-      const integrationReporting = await crossComponentHarness.generateCrossComponentDataFlowIntegrationReport({
         componentsAnalyzed: CROSS_COMPONENT_DATA_FLOW_SPECS.q2Components,
         dataFlowPatternsValidated: Object.keys(CROSS_COMPONENT_DATA_FLOW_SPECS.dataFlowPatterns),
         municipalScenariosTestedCount: Object.keys(MUNICIPAL_DATA_FLOW_SCENARIOS).length,
@@ -872,11 +736,6 @@ function createCrossComponentHarness() {
       }
     }),
     testMunicipalScenarioDataFlow: vi.fn().mockImplementation(({ scenario }) => {
-      const baseResponse = {
-        scenarioDataFlowSuccessful: true,
-        allComponentsCoordinated: true,
-        performanceUnderPressure: true
-      };
 
       if (scenario.scenario === 'emergency-flood-response-göteborg') {
         return Promise.resolve({

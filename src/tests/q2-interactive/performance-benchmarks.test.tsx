@@ -10,46 +10,10 @@ import { describe, it, expect, beforeEach, vi } from 'vitest';
 import { render, screen, waitFor } from '@testing-library/react';
 
 // Mock performance utilities
-const mockPerformanceUtils = {
-  measureRenderTime: vi.fn(),
-  trackAnimationPerformance: vi.fn(),
-  monitorMemoryUsage: vi.fn(),
-  analyzeGPUAcceleration: vi.fn(),
-  measureNetworkImpact: vi.fn()
-};
 
 // Performance targets for municipal interactive elements
-const PERFORMANCE_TARGETS = {
-  renderTime: {
-    initial: 200,     // 200ms initial render
-    interaction: 50,  // 50ms interaction response
-    animation: 16.67  // 60fps animation (16.67ms per frame)
-  },
-  memoryUsage: {
-    maximum: 100,     // 100MB maximum memory
-    growth: 5,        // 5MB maximum growth per interaction
-    gc: 10            // 10s maximum garbage collection pause
-  },
-  networkUsage: {
-    bandwidth: 1.5,   // 1.5MB maximum per session
-    requests: 20,     // 20 maximum network requests
-    caching: 0.8      // 80% cache hit rate
-  },
-  batteryImpact: {
-    session: 0.05,    // 5% maximum battery per session
-    gpu: 0.3,         // 30% maximum GPU usage
-    cpu: 0.4          // 40% maximum CPU usage
-  }
-};
 
 // Anna Svensson 7-minute session requirements
-const ANNA_SVENSSON_SESSION = {
-  duration: 420000,           // 7 minutes
-  interactionCount: 50,       // 50 interactions per session
-  networkConditions: '3G',    // 3G network baseline
-  deviceTarget: 'iPhone 12',  // Primary device optimization
-  batteryConstraint: 0.05     // <5% battery usage
-};
 
 describe('Interactive Elements Performance Benchmarks', () => {
   let performanceHarness: Record<string, unknown>;
@@ -63,7 +27,7 @@ describe('Interactive Elements Performance Benchmarks', () => {
 
   describe('Drag-Drop Performance Optimization', () => {
     it('should maintain 60fps during drag operations', async () => {
-      const dragPerformanceHarness = createDragPerformanceHarness({
+      const _dragPerformanceHarness = createDragPerformanceHarness({
         targetFPS: 60,
         municipality: 'malmö',
         complexity: 'high'
@@ -77,7 +41,6 @@ describe('Interactive Elements Performance Benchmarks', () => {
         />
       );
 
-      const dragResults = await dragPerformanceHarness.measureDragPerformance({
         duration: 5000, // 5 seconds of dragging
         elementsCount: 50,
         simultaneous: 3,
@@ -104,7 +67,7 @@ describe('Interactive Elements Performance Benchmarks', () => {
     });
 
     it('should optimize drag preview rendering for municipal complexity', async () => {
-      const previewHarness = createDragPreviewHarness({
+      const _previewHarness = createDragPreviewHarness({
         municipality: 'malmö',
         previewComplexity: 'municipal-document',
         optimization: 'aggressive'
@@ -118,7 +81,6 @@ describe('Interactive Elements Performance Benchmarks', () => {
         />
       );
 
-      const previewResults = await previewHarness.measurePreviewPerformance({
         previewSize: { width: 300, height: 200 },
         municipalBranding: true,
         realTimeUpdates: true
@@ -136,7 +98,7 @@ describe('Interactive Elements Performance Benchmarks', () => {
 
   describe('Timer Animation Performance', () => {
     it('should maintain smooth countdown animations under load', async () => {
-      const timerAnimationHarness = createTimerAnimationHarness({
+      const _timerAnimationHarness = createTimerAnimationHarness({
         simultaneousTimers: 10,
         animationType: 'circular-progress',
         municipality: 'malmö'
@@ -150,7 +112,6 @@ describe('Interactive Elements Performance Benchmarks', () => {
         />
       );
 
-      const animationResults = await timerAnimationHarness.measureTimerAnimations({
         duration: 60000, // 1 minute
         updateFrequency: 100, // 100ms updates
         simultaneousAnimations: 10
@@ -170,7 +131,6 @@ describe('Interactive Elements Performance Benchmarks', () => {
     });
 
     it('should optimize timer performance for Anna Svensson session', async () => {
-      const sessionHarness = createSessionPerformanceHarness(ANNA_SVENSSON_SESSION);
 
       render(
         <AnnaSvenssonOptimizedTimer 
@@ -180,7 +140,6 @@ describe('Interactive Elements Performance Benchmarks', () => {
         />
       );
 
-      const sessionResults = await sessionHarness.measureSessionPerformance({
         totalDuration: 420000,
         interactions: 50,
         timerUpdates: 2520, // Every 10 seconds for 7 minutes
@@ -199,7 +158,7 @@ describe('Interactive Elements Performance Benchmarks', () => {
 
   describe('Touch Gesture Performance', () => {
     it('should optimize touch response times for mobile interactions', async () => {
-      const touchPerformanceHarness = createTouchPerformanceHarness({
+      const _touchPerformanceHarness = createTouchPerformanceHarness({
         device: 'iPhone 12',
         touchSensitivity: 'high',
         municipality: 'malmö'
@@ -213,7 +172,6 @@ describe('Interactive Elements Performance Benchmarks', () => {
         />
       );
 
-      const touchResults = await touchPerformanceHarness.measureTouchPerformance({
         gestures: ['single-tap', 'double-tap', 'swipe', 'pinch-zoom'],
         frequency: 'rapid',
         duration: 30000 // 30 seconds
@@ -233,12 +191,11 @@ describe('Interactive Elements Performance Benchmarks', () => {
     });
 
     it('should maintain gesture performance under network stress', async () => {
-      const networkStressHarness = createNetworkStressHarness({
+      const _networkStressHarness = createNetworkStressHarness({
         networkConditions: ['3G-slow', 'high-latency', 'packet-loss'],
         municipality: 'malmö'
       });
 
-      const stressResults = await networkStressHarness.testGestureUnderNetworkStress({
         networkProfile: '3G-slow',
         latency: 500, // 500ms latency
         packetLoss: 0.05, // 5% packet loss
@@ -257,7 +214,7 @@ describe('Interactive Elements Performance Benchmarks', () => {
 
   describe('Memory Management and Optimization', () => {
     it('should prevent memory leaks in interactive elements', async () => {
-      const memoryLeakHarness = createMemoryLeakHarness({
+      const _memoryLeakHarness = createMemoryLeakHarness({
         testDuration: 300000, // 5 minutes
         interactionIntensity: 'high',
         municipality: 'malmö'
@@ -271,7 +228,6 @@ describe('Interactive Elements Performance Benchmarks', () => {
         />
       );
 
-      const memoryResults = await memoryLeakHarness.runMemoryLeakTest({
         interactions: 1000,
         duration: 300000,
         gcTriggers: 'automatic',
@@ -298,13 +254,12 @@ describe('Interactive Elements Performance Benchmarks', () => {
     });
 
     it('should optimize object pooling for drag-drop operations', async () => {
-      const objectPoolHarness = createObjectPoolHarness({
+      const _objectPoolHarness = createObjectPoolHarness({
         poolSize: 50,
         objectType: 'drag-elements',
         municipality: 'malmö'
       });
 
-      const poolResults = await objectPoolHarness.testObjectPooling({
         simultaneousDrags: 20,
         poolReuse: true,
         memoryOptimization: 'aggressive'
@@ -327,13 +282,12 @@ describe('Interactive Elements Performance Benchmarks', () => {
 
   describe('Municipal Network Performance', () => {
     it('should optimize for Swedish municipal network conditions', async () => {
-      const municipalNetworkHarness = createMunicipalNetworkHarness({
+      const _municipalNetworkHarness = createMunicipalNetworkHarness({
         municipalities: ['malmö', 'stockholm', 'göteborg'],
         networkProfiles: ['government-wifi', '3G-municipal', 'edge-cases'],
         optimizations: ['compression', 'caching', 'preloading']
       });
 
-      const networkResults = await municipalNetworkHarness.testMunicipalNetworkPerformance({
         sessionDuration: 420000, // Anna Svensson session
         networkVariability: 'typical',
         municipalFirewalls: true
@@ -361,13 +315,12 @@ describe('Interactive Elements Performance Benchmarks', () => {
 
   describe('Battery and Resource Optimization', () => {
     it('should minimize battery impact during Anna Svensson sessions', async () => {
-      const batteryHarness = createBatteryOptimizationHarness({
+      const _batteryHarness = createBatteryOptimizationHarness({
         device: 'iPhone 12',
         sessionProfile: ANNA_SVENSSON_SESSION,
         optimizations: ['cpu-throttling', 'gpu-optimization', 'background-processing']
       });
 
-      const batteryResults = await batteryHarness.measureBatteryImpact({
         sessionDuration: 420000,
         interactionDensity: 'typical',
         backgroundTasks: 'minimal'
@@ -392,13 +345,12 @@ describe('Interactive Elements Performance Benchmarks', () => {
 
   describe('Performance Regression Detection', () => {
     it('should detect performance regressions in Q2 features', async () => {
-      const regressionHarness = createRegressionDetectionHarness({
+      const _regressionHarness = createRegressionDetectionHarness({
         baselineMetrics: PERFORMANCE_TARGETS,
         threshold: 0.1, // 10% regression threshold
         municipality: 'malmö'
       });
 
-      const regressionResults = await regressionHarness.detectPerformanceRegression({
         newFeatures: ['interactive-character', 'branching-narrative', 'timed-challenges'],
         baselineComparison: true,
         alertThreshold: 0.05 // 5% alert threshold

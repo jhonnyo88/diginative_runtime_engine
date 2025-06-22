@@ -31,7 +31,6 @@ describe('Swedish Cultural Intelligence Testing - Municipal Authenticity Verific
     test('Swedish Cultural Intelligence Testing Initialization', async () => {
       expect(culturalTesting).toBeDefined();
       
-      const summary = culturalTesting.getCulturalTestingSummary();
       expect(summary.cultural_testing_active).toBe(false);
       expect(summary.total_dimensions).toBe(0);
       expect(summary.success_rate).toBe(0);
@@ -40,7 +39,6 @@ describe('Swedish Cultural Intelligence Testing - Municipal Authenticity Verific
     test('Cultural Intelligence Testing Activation', async () => {
       await culturalTesting.initializeCulturalIntelligenceTesting();
       
-      const summary = culturalTesting.getCulturalTestingSummary();
       expect(summary.cultural_testing_active).toBe(true);
       expect(summary.total_dimensions).toBe(5); // 5 cultural dimensions
       expect(summary.tested_dimensions).toBe(5);
@@ -79,14 +77,11 @@ describe('Swedish Cultural Intelligence Testing - Municipal Authenticity Verific
     test('Lagom Cultural Dimension Validation', async () => {
       await culturalTesting.initializeCulturalIntelligenceTesting();
       
-      const results = await culturalTesting.executeComprehensiveCulturalTesting();
       
       // Validate Lagom dimension results
-      const lagomResults = results.get('dimension_lagom');
       expect(lagomResults).toBeDefined();
       expect(lagomResults!.length).toBe(1);
 
-      const lagomResult = lagomResults![0];
       expect(lagomResult.testType).toBe('cultural_dimension');
       expect(lagomResult.culturalDimension).toBe('lagom');
       expect(lagomResult.success).toBe(true);
@@ -102,14 +97,11 @@ describe('Swedish Cultural Intelligence Testing - Municipal Authenticity Verific
     test('Jantelagen Cultural Dimension Validation', async () => {
       await culturalTesting.initializeCulturalIntelligenceTesting();
       
-      const results = await culturalTesting.executeComprehensiveCulturalTesting();
       
       // Validate Jantelagen dimension results
-      const janteResults = results.get('dimension_jantelagen');
       expect(janteResults).toBeDefined();
       expect(janteResults!.length).toBe(1);
 
-      const janteResult = janteResults![0];
       expect(janteResult.testType).toBe('cultural_dimension');
       expect(janteResult.culturalDimension).toBe('jantelagen');
       expect(janteResult.success).toBe(true);
@@ -124,14 +116,11 @@ describe('Swedish Cultural Intelligence Testing - Municipal Authenticity Verific
     test('Consensus Cultural Dimension Validation', async () => {
       await culturalTesting.initializeCulturalIntelligenceTesting();
       
-      const results = await culturalTesting.executeComprehensiveCulturalTesting();
       
       // Validate Consensus dimension results
-      const consensusResults = results.get('dimension_consensus');
       expect(consensusResults).toBeDefined();
       expect(consensusResults!.length).toBe(1);
 
-      const consensusResult = consensusResults![0];
       expect(consensusResult.testType).toBe('cultural_dimension');
       expect(consensusResult.culturalDimension).toBe('consensus');
       expect(consensusResult.success).toBe(true);
@@ -146,14 +135,11 @@ describe('Swedish Cultural Intelligence Testing - Municipal Authenticity Verific
     test('Transparency Cultural Dimension Validation', async () => {
       await culturalTesting.initializeCulturalIntelligenceTesting();
       
-      const results = await culturalTesting.executeComprehensiveCulturalTesting();
       
       // Validate Transparency dimension results
-      const transparencyResults = results.get('dimension_transparency');
       expect(transparencyResults).toBeDefined();
       expect(transparencyResults!.length).toBe(1);
 
-      const transparencyResult = transparencyResults![0];
       expect(transparencyResult.testType).toBe('cultural_dimension');
       expect(transparencyResult.culturalDimension).toBe('transparency');
       expect(transparencyResult.success).toBe(true);
@@ -168,14 +154,11 @@ describe('Swedish Cultural Intelligence Testing - Municipal Authenticity Verific
     test('Sustainability Cultural Dimension Validation', async () => {
       await culturalTesting.initializeCulturalIntelligenceTesting();
       
-      const results = await culturalTesting.executeComprehensiveCulturalTesting();
       
       // Validate Sustainability dimension results
-      const sustainabilityResults = results.get('dimension_sustainability');
       expect(sustainabilityResults).toBeDefined();
       expect(sustainabilityResults!.length).toBe(1);
 
-      const sustainabilityResult = sustainabilityResults![0];
       expect(sustainabilityResult.testType).toBe('cultural_dimension');
       expect(sustainabilityResult.culturalDimension).toBe('sustainability');
       expect(sustainabilityResult.success).toBe(true);
@@ -195,14 +178,11 @@ describe('Swedish Cultural Intelligence Testing - Municipal Authenticity Verific
     test('Municipal Authenticity Validation', async () => {
       await culturalTesting.initializeCulturalIntelligenceTesting();
       
-      const results = await culturalTesting.executeComprehensiveCulturalTesting();
       
       // Validate municipal authenticity results
-      const municipalResults = results.get('municipal_authenticity');
       expect(municipalResults).toBeDefined();
       expect(municipalResults!.length).toBe(1);
 
-      const municipalResult = municipalResults![0];
       expect(municipalResult.testType).toBe('municipal_authenticity');
       expect(municipalResult.culturalDimension).toBe('municipal');
       expect(municipalResult.success).toBe(true);
@@ -216,7 +196,6 @@ describe('Swedish Cultural Intelligence Testing - Municipal Authenticity Verific
     });
 
     test('Municipal Communication Style Validation', () => {
-      const communicationStyle = SWEDISH_CULTURAL_INTELLIGENCE_SPECS.municipalAuthenticity.communicationStyle;
       
       // Validate communication style specifications
       expect(communicationStyle.style).toBe('formal-but-accessible');
@@ -238,7 +217,6 @@ describe('Swedish Cultural Intelligence Testing - Municipal Authenticity Verific
     });
 
     test('Municipal Decision Making Process Validation', () => {
-      const decisionMaking = SWEDISH_CULTURAL_INTELLIGENCE_SPECS.municipalAuthenticity.decisionMaking;
       
       // Validate decision making process
       expect(decisionMaking.process).toBe('consensus-based-collaborative');
@@ -267,14 +245,11 @@ describe('Swedish Cultural Intelligence Testing - Municipal Authenticity Verific
     test('Language Authenticity Validation', async () => {
       await culturalTesting.initializeCulturalIntelligenceTesting();
       
-      const results = await culturalTesting.executeComprehensiveCulturalTesting();
       
       // Validate language authenticity results
-      const languageResults = results.get('language_authenticity');
       expect(languageResults).toBeDefined();
       expect(languageResults!.length).toBe(1);
 
-      const languageResult = languageResults![0];
       expect(languageResult.testType).toBe('language_authenticity');
       expect(languageResult.culturalDimension).toBe('language');
       expect(languageResult.success).toBe(true);
@@ -288,7 +263,6 @@ describe('Swedish Cultural Intelligence Testing - Municipal Authenticity Verific
     });
 
     test('Swedish Terminology Validation', () => {
-      const swedishTerminology = SWEDISH_CULTURAL_INTELLIGENCE_SPECS.languageAuthenticity.swedishTerminology;
       
       // Validate Swedish terminology specifications
       expect(swedishTerminology.vocabulary).toContain('digital-transformation');
@@ -308,7 +282,6 @@ describe('Swedish Cultural Intelligence Testing - Municipal Authenticity Verific
     });
 
     test('Municipal Vocabulary Validation', () => {
-      const municipalVocabulary = SWEDISH_CULTURAL_INTELLIGENCE_SPECS.languageAuthenticity.municipalVocabulary;
       
       // Validate municipal vocabulary specifications
       expect(municipalVocabulary.vocabulary).toContain('kommunfullmäktige');
@@ -328,7 +301,6 @@ describe('Swedish Cultural Intelligence Testing - Municipal Authenticity Verific
     });
 
     test('Government Language Validation', () => {
-      const governmentLanguage = SWEDISH_CULTURAL_INTELLIGENCE_SPECS.languageAuthenticity.governmentLanguage;
       
       // Validate government language specifications
       expect(governmentLanguage.vocabulary).toContain('regeringsbeslut');
@@ -355,14 +327,11 @@ describe('Swedish Cultural Intelligence Testing - Municipal Authenticity Verific
     test('Government Standards Validation', async () => {
       await culturalTesting.initializeCulturalIntelligenceTesting();
       
-      const results = await culturalTesting.executeComprehensiveCulturalTesting();
       
       // Validate government standards results
-      const governmentResults = results.get('government_standards');
       expect(governmentResults).toBeDefined();
       expect(governmentResults!.length).toBe(1);
 
-      const governmentResult = governmentResults![0];
       expect(governmentResult.testType).toBe('government_standards');
       expect(governmentResult.culturalDimension).toBe('government');
       expect(governmentResult.success).toBe(true);
@@ -376,7 +345,6 @@ describe('Swedish Cultural Intelligence Testing - Municipal Authenticity Verific
     });
 
     test('Offentlighetsprincipen Standard Validation', () => {
-      const offentlighetsprincipen = SWEDISH_CULTURAL_INTELLIGENCE_SPECS.governmentStandards.offentlighetsprincipen;
       
       // Validate public access to information principle
       expect(offentlighetsprincipen.principle).toBe('Public Access to Information');
@@ -393,7 +361,6 @@ describe('Swedish Cultural Intelligence Testing - Municipal Authenticity Verific
     });
 
     test('Medborgarservice Standard Validation', () => {
-      const medborgarservice = SWEDISH_CULTURAL_INTELLIGENCE_SPECS.governmentStandards.medborgarservice;
       
       // Validate citizen service excellence principle
       expect(medborgarservice.principle).toBe('Citizen Service Excellence');
@@ -434,8 +401,6 @@ describe('Swedish Cultural Intelligence Testing - Municipal Authenticity Verific
     test('Comprehensive Cultural Intelligence Summary', async () => {
       await culturalTesting.initializeCulturalIntelligenceTesting();
       
-      const results = await culturalTesting.executeComprehensiveCulturalTesting();
-      const summary = culturalTesting.getCulturalTestingSummary();
 
       // Validate comprehensive testing completion
       expect(summary.cultural_testing_active).toBe(true);
@@ -461,11 +426,8 @@ describe('Swedish Cultural Intelligence Testing - Municipal Authenticity Verific
     test('Swedish Municipal Authenticity Verification', async () => {
       await culturalTesting.initializeCulturalIntelligenceTesting();
       
-      const results = await culturalTesting.executeComprehensiveCulturalTesting();
-      const summary = culturalTesting.getCulturalTestingSummary();
 
       // Swedish cultural authenticity requirements
-      const validationCriteria = SWEDISH_CULTURAL_INTELLIGENCE_SPECS.validationCriteria;
       expect(summary.overall_authenticity).toBeGreaterThan(validationCriteria.authenticityThreshold); // 95%
       expect(summary.government_appropriateness).toBeGreaterThan(validationCriteria.governmentAppropriateness); // 97%
       expect(summary.municipal_relevance).toBeGreaterThan(validationCriteria.municipalRelevance); // 96%
@@ -489,7 +451,6 @@ describe('Swedish Cultural Intelligence Testing - Municipal Authenticity Verific
  */
 describe('Swedish Cultural Intelligence Testing Integration', () => {
   test('Complete Cultural Intelligence Testing Lifecycle', async () => {
-    const culturalTesting = new SwedishCulturalIntelligenceTesting();
     
     // Complete lifecycle test
     expect(culturalTesting.getCulturalTestingSummary().cultural_testing_active).toBe(false);
@@ -499,11 +460,9 @@ describe('Swedish Cultural Intelligence Testing Integration', () => {
     expect(culturalTesting.getCulturalTestingSummary().cultural_testing_active).toBe(true);
     
     // Execute comprehensive cultural testing
-    const results = await culturalTesting.executeComprehensiveCulturalTesting();
     expect(results.size).toBeGreaterThan(8); // Multiple cultural testing categories
     
     // Validate final status
-    const summary = culturalTesting.getCulturalTestingSummary();
     expect(summary.total_dimensions).toBe(5);
     expect(summary.success_rate).toBe(100);
     expect(summary.government_ready).toBe(true);

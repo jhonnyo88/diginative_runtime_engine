@@ -11,10 +11,6 @@ export const MunicipalButtonExamples: React.FC = () => {
   const [culturalContext, setCulturalContext] = React.useState<'swedish' | 'german' | 'french' | 'dutch'>('swedish');
   const [isLoading, setIsLoading] = React.useState(false);
 
-  const handlePrimaryAction = () => {
-    setIsLoading(true);
-    setTimeout(() => setIsLoading(false), 2000);
-  };
 
   return (
     <VStack spacing={8} align="stretch" p={8}>

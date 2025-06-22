@@ -341,8 +341,6 @@ const achievementsConfig: Achievement[] = [
   }
 ];
 
-const MotionBox = motion(Box);
-const MotionBadge = motion(Badge);
 
 interface AchievementBadgeProps {
   achievement: Achievement;
@@ -355,18 +353,8 @@ const AchievementBadge: React.FC<AchievementBadgeProps> = ({
   culturalContext, 
   size = 'md' 
 }) => {
-  const badgeBg = useColorModeValue('white', 'gray.800');
-  const borderColor = achievement.earned ? achievement.color : 'gray.300';
   
-  const culturalVariant = achievement.culturalVariants[culturalContext];
-  const displayTitle = culturalVariant?.title || achievement.title;
-  const displayDescription = culturalVariant?.description || achievement.description;
 
-  const sizeConfig = {
-    sm: { w: '60px', h: '60px', iconSize: 4, fontSize: 'xs' },
-    md: { w: '80px', h: '80px', iconSize: 5, fontSize: 'sm' },
-    lg: { w: '100px', h: '100px', iconSize: 6, fontSize: 'md' }
-  };
 
   return (
     <Tooltip
@@ -466,10 +454,8 @@ const CompetencyLevelDisplay: React.FC<CompetencyLevelDisplayProps> = ({
   earnedAchievements,
   culturalContext
 }) => {
-  const currentLevelTitle = currentLevel.culturalTitles[culturalContext] || currentLevel.title;
-  const progressToNext = Math.min(100, (earnedAchievements / currentLevel.requiredAchievements) * 100);
   
-  const nextLevel = competencyLevels.find(level => 
+  const _nextLevel = competencyLevels.find(level => 
     level.requiredAchievements > currentLevel.requiredAchievements
   );
 
@@ -541,124 +527,3 @@ export const AchievementBadgeSystem: React.FC<AchievementBadgeSystemProps> = ({
   const { currentPersona } = useCharacterContext();
   
   // Determine cultural context
-  const culturalContext = useMemo(() => {
-    const personaThemeMap: Record<string, string> = {
-      'Anna': 'swedish',
-      'Klaus': 'german',
-      'Marie': 'french',
-      'Pieter': 'dutch'
-    };
-    return personaThemeMap[currentPersona?.name || 'Anna'] || 'swedish';
-  }, [currentPersona]);
-
-  // Calculate current competency level
-  const earnedAchievements = achievements.filter(a => a.earned).length;
-  const currentLevel = [...competencyLevels]
-    .reverse()
-    .find(level => earnedAchievements >= level.requiredAchievements) || competencyLevels[0];
-
-  // Group achievements by category
-  const achievementsByCategory = useMemo(() => {
-    return {
-      world_specific: achievements.filter(a => a.category === 'world_specific'),
-      cross_world_synthesis: achievements.filter(a => a.category === 'cross_world_synthesis'),
-      cultural_intelligence: achievements.filter(a => a.category === 'cultural_intelligence'),
-      professional_certification: achievements.filter(a => a.category === 'professional_certification')
-    };
-  }, [achievements]);
-
-  const categoryConfig = {
-    world_specific: {
-      title: 'Världsspecifika Prestationer',
-      description: 'Kompetenser inom enskilda kommunala domäner',
-      icon: FiShield
-    },
-    cross_world_synthesis: {
-      title: 'Tvärsektoriell Syntes',
-      description: 'Integration av kompetenser från flera domäner',
-      icon: FiTrendingUp
-    },
-    cultural_intelligence: {
-      title: 'Kulturell Intelligens',
-      description: 'Europeisk kommunal samverkan och diplomati',
-      icon: FiGlobe
-    },
-    professional_certification: {
-      title: 'Professionell Certifiering',
-      description: 'Officiellt erkända yrkeskompetenser',
-      icon: FiAward
-    }
-  };
-
-  return (
-    <VStack spacing={8} w="100%" align="stretch">
-      
-      {/* Current competency level */}
-      <CompetencyLevelDisplay
-        currentLevel={currentLevel}
-        earnedAchievements={earnedAchievements}
-        culturalContext={culturalContext}
-      />
-
-      {/* Achievement categories */}
-      <Accordion allowMultiple defaultIndex={[0, 1]}>
-        {Object.entries(achievementsByCategory).map(([category, categoryAchievements]) => {
-          const config = categoryConfig[category as keyof typeof categoryConfig];
-          const earnedInCategory = categoryAchievements.filter(a => a.earned).length;
-          
-          return (
-            <AccordionItem key={category}>
-              <AccordionButton
-                _expanded={{ bg: 'blue.50' }}
-                borderRadius="lg"
-                mb={2}
-              >
-                <Box flex={1} textAlign="left">
-                  <HStack spacing={3}>
-                    <Icon as={config.icon} w={5} h={5} color="blue.500" />
-                    <VStack spacing={0} align="start">
-                      <HStack spacing={2}>
-                        <Text fontSize="lg" fontWeight="600">
-                          {config.title}
-                        </Text>
-                        <Badge colorScheme="blue" variant="solid">
-                          {earnedInCategory}/{categoryAchievements.length}
-                        </Badge>
-                      </HStack>
-                      <Text fontSize="sm" color="gray.600">
-                        {config.description}
-                      </Text>
-                    </VStack>
-                  </HStack>
-                </Box>
-                <AccordionIcon />
-              </AccordionButton>
-              
-              <AccordionPanel pb={6}>
-                <Grid
-                  templateColumns={{
-                    base: 'repeat(3, 1fr)',
-                    md: 'repeat(4, 1fr)',
-                    lg: 'repeat(6, 1fr)'
-                  }}
-                  gap={4}
-                  justifyItems="center"
-                >
-                  {categoryAchievements.map((achievement) => (
-                    <AchievementBadge
-                      key={achievement.id}
-                      achievement={achievement}
-                      culturalContext={culturalContext}
-                      size="md"
-                    />
-                  ))}
-                </Grid>
-              </AccordionPanel>
-            </AccordionItem>
-          );
-        })}
-      </Accordion>
-
-    </VStack>
-  );
-};

@@ -11,58 +11,10 @@ import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 
 // Mock implementation utilities
-const mockUtils = {
-  createMockComponent: vi.fn(),
-  simulateApiResponse: vi.fn(),
-  mockStateManagement: vi.fn(),
-  generateMockData: vi.fn(),
-  validateMockBehavior: vi.fn()
-};
 
 // Q2 Interactive Mechanics mock configurations
-const Q2_MOCK_CONFIGURATIONS = {
-  dragDropWorkflow: {
-    name: 'Municipal Document Workflow',
-    elements: ['pending', 'review', 'approved', 'archived'],
-    complexity: 'municipal-governance',
-    municipality: 'malmö'
-  },
-  timedChallenge: {
-    name: 'Emergency Response Training',
-    duration: 300000, // 5 minutes
-    checkpoints: 3,
-    difficulty: 'realistic-municipal'
-  },
-  characterInteraction: {
-    name: 'Municipal Professional Dialogue',
-    characters: ['anna-supervisor', 'klaus-colleague', 'marie-citizen'],
-    emotionStates: ['professional', 'concerned', 'helpful'],
-    branchingNarratives: true
-  },
-  accessibilityFeatures: {
-    screenReader: true,
-    keyboardNavigation: true,
-    voiceControl: true,
-    cognitiveSupport: true
-  }
-};
 
 // Municipal context mock data
-const MUNICIPAL_MOCK_DATA = {
-  documents: [
-    { id: 'gdpr-001', type: 'training', status: 'pending', municipality: 'malmö' },
-    { id: 'emergency-002', type: 'protocol', status: 'review', municipality: 'malmö' },
-    { id: 'policy-003', type: 'update', status: 'approved', municipality: 'malmö' }
-  ],
-  workflows: [
-    { id: 'wf-001', name: 'Document Approval', steps: 4, municipality: 'malmö' },
-    { id: 'wf-002', name: 'Emergency Response', steps: 6, municipality: 'malmö' }
-  ],
-  users: [
-    { id: 'anna-001', role: 'employee', department: 'admin', municipality: 'malmö' },
-    { id: 'supervisor-001', role: 'supervisor', department: 'emergency', municipality: 'malmö' }
-  ]
-};
 
 describe('Q2 Interactive Mechanics Mock Implementations', () => {
   let mockHarness: Record<string, unknown>;
@@ -76,7 +28,7 @@ describe('Q2 Interactive Mechanics Mock Implementations', () => {
 
   describe('Drag-Drop Workflow Mocks', () => {
     it('should mock municipal document workflow with realistic behavior', async () => {
-      const dragDropMock = createDragDropMock({
+      const _dragDropMock = createDragDropMock({
         workflow: Q2_MOCK_CONFIGURATIONS.dragDropWorkflow,
         municipality: 'malmö',
         realism: 'high'
@@ -90,11 +42,8 @@ describe('Q2 Interactive Mechanics Mock Implementations', () => {
         />
       );
 
-      const pendingDocument = screen.getByTestId('mock-document-gdpr-001');
-      const reviewZone = screen.getByTestId('mock-zone-review');
 
       // Test mock drag-drop behavior
-      const mockResult = await dragDropMock.simulateDocumentMove({
         documentId: 'gdpr-001',
         fromZone: 'pending',
         toZone: 'review',
@@ -114,7 +63,7 @@ describe('Q2 Interactive Mechanics Mock Implementations', () => {
     });
 
     it('should mock workflow validation with municipal rules', async () => {
-      const workflowValidationMock = createWorkflowValidationMock({
+      const _workflowValidationMock = createWorkflowValidationMock({
         municipality: 'malmö',
         rules: ['gdpr-compliance', 'supervisor-approval', 'document-classification']
       });
@@ -127,7 +76,6 @@ describe('Q2 Interactive Mechanics Mock Implementations', () => {
         />
       );
 
-      const validationResult = await workflowValidationMock.validateDocumentTransition({
         documentType: 'gdpr-training',
         fromStatus: 'pending',
         toStatus: 'approved',
@@ -144,7 +92,7 @@ describe('Q2 Interactive Mechanics Mock Implementations', () => {
     });
 
     it('should mock accessibility-compliant drag-drop interactions', async () => {
-      const accessibilityMock = createAccessibilityDragDropMock({
+      const _accessibilityMock = createAccessibilityDragDropMock({
         features: Q2_MOCK_CONFIGURATIONS.accessibilityFeatures,
         municipality: 'malmö'
       });
@@ -158,7 +106,6 @@ describe('Q2 Interactive Mechanics Mock Implementations', () => {
       );
 
       // Test keyboard-based mock drag-drop
-      const keyboardResult = await accessibilityMock.simulateKeyboardDragDrop({
         element: 'document-001',
         target: 'approved-zone',
         method: 'space-arrow-enter'
@@ -176,7 +123,7 @@ describe('Q2 Interactive Mechanics Mock Implementations', () => {
 
   describe('Timed Challenge Mocks', () => {
     it('should mock emergency response training with realistic timing', async () => {
-      const timerChallengeMock = createTimerChallengeMock({
+      const _timerChallengeMock = createTimerChallengeMock({
         configuration: Q2_MOCK_CONFIGURATIONS.timedChallenge,
         municipality: 'malmö',
         realism: 'municipal-emergency'
@@ -190,7 +137,6 @@ describe('Q2 Interactive Mechanics Mock Implementations', () => {
         />
       );
 
-      const challengeResult = await timerChallengeMock.simulateEmergencyChallenge({
         scenario: 'coastal-flooding',
         participantRole: 'emergency-coordinator',
         timeConstraint: 300000,
@@ -215,7 +161,7 @@ describe('Q2 Interactive Mechanics Mock Implementations', () => {
     });
 
     it('should mock timer synchronization across multiple participants', async () => {
-      const multiParticipantMock = createMultiParticipantTimerMock({
+      const _multiParticipantMock = createMultiParticipantTimerMock({
         participants: 5,
         synchronization: 'real-time',
         municipality: 'malmö'
@@ -229,7 +175,6 @@ describe('Q2 Interactive Mechanics Mock Implementations', () => {
         />
       );
 
-      const syncResult = await multiParticipantMock.simulateMultiParticipantChallenge({
         participants: [
           { id: 'anna-001', role: 'coordinator' },
           { id: 'erik-002', role: 'responder' },
@@ -250,7 +195,7 @@ describe('Q2 Interactive Mechanics Mock Implementations', () => {
     });
 
     it('should mock adaptive difficulty based on municipal context', async () => {
-      const adaptiveDifficultyMock = createAdaptiveDifficultyMock({
+      const _adaptiveDifficultyMock = createAdaptiveDifficultyMock({
         baseDifficulty: 'intermediate',
         adaptationFactors: ['user-performance', 'municipal-complexity', 'time-pressure'],
         municipality: 'malmö'
@@ -264,7 +209,6 @@ describe('Q2 Interactive Mechanics Mock Implementations', () => {
         />
       );
 
-      const adaptationResult = await adaptiveDifficultyMock.simulateAdaptiveDifficulty({
         userPerformance: 0.7, // 70% performance
         municipalComplexity: 'high',
         timePressure: 'moderate'
@@ -282,7 +226,7 @@ describe('Q2 Interactive Mechanics Mock Implementations', () => {
 
   describe('Character Interaction Mocks', () => {
     it('should mock municipal professional character dialogues', async () => {
-      const characterMock = createCharacterInteractionMock({
+      const _characterMock = createCharacterInteractionMock({
         configuration: Q2_MOCK_CONFIGURATIONS.characterInteraction,
         municipality: 'malmö',
         culturalContext: 'swedish-professional'
@@ -296,7 +240,6 @@ describe('Q2 Interactive Mechanics Mock Implementations', () => {
         />
       );
 
-      const dialogueResult = await characterMock.simulateCharacterDialogue({
         initiator: 'anna-supervisor',
         responder: 'klaus-colleague',
         topic: 'emergency-preparedness',
@@ -319,7 +262,7 @@ describe('Q2 Interactive Mechanics Mock Implementations', () => {
     });
 
     it('should mock branching narrative system for municipal scenarios', async () => {
-      const branchingMock = createBranchingNarrativeMock({
+      const _branchingMock = createBranchingNarrativeMock({
         scenarios: ['budget-discussion', 'emergency-protocol', 'citizen-service'],
         branchingPoints: 3,
         municipality: 'malmö'
@@ -333,7 +276,6 @@ describe('Q2 Interactive Mechanics Mock Implementations', () => {
         />
       );
 
-      const narrativeResult = await branchingMock.simulateBranchingNarrative({
         startingScenario: 'budget-discussion',
         userChoices: ['conservative-approach', 'citizen-consultation', 'transparency-focus'],
         targetOutcome: 'consensus-building'
@@ -354,7 +296,7 @@ describe('Q2 Interactive Mechanics Mock Implementations', () => {
 
   describe('API and State Management Mocks', () => {
     it('should mock municipal API endpoints with realistic responses', async () => {
-      const apiMock = createMunicipalAPIMock({
+      const _apiMock = createMunicipalAPIMock({
         endpoints: ['documents', 'workflows', 'users', 'approvals'],
         responseTime: 200, // 200ms simulated latency
         municipality: 'malmö'
@@ -367,7 +309,6 @@ describe('Q2 Interactive Mechanics Mock Implementations', () => {
         />
       );
 
-      const apiResult = await apiMock.simulateAPICall({
         endpoint: '/api/documents',
         method: 'GET',
         municipality: 'malmö',
@@ -383,7 +324,6 @@ describe('Q2 Interactive Mechanics Mock Implementations', () => {
       expect(apiResult.permissions).toContain('read');
 
       // Test mock error scenarios
-      const errorResult = await apiMock.simulateAPICall({
         endpoint: '/api/restricted',
         method: 'POST',
         municipality: 'malmö',
@@ -395,7 +335,7 @@ describe('Q2 Interactive Mechanics Mock Implementations', () => {
     });
 
     it('should mock state management with municipal business logic', async () => {
-      const stateMock = createStateManagementMock({
+      const _stateMock = createStateManagementMock({
         stateStructure: 'municipal-workflow',
         persistenceStrategy: 'local-storage',
         municipality: 'malmö'
@@ -409,7 +349,6 @@ describe('Q2 Interactive Mechanics Mock Implementations', () => {
         />
       );
 
-      const stateResult = await stateMock.simulateStateTransition({
         action: 'DOCUMENT_SUBMITTED',
         payload: { documentId: 'gdpr-001', submittedBy: 'anna-001' },
         municipalValidation: true
@@ -431,7 +370,7 @@ describe('Q2 Interactive Mechanics Mock Implementations', () => {
 
   describe('Developer Experience and Rapid Prototyping', () => {
     it('should provide hot-reload mock components for rapid iteration', async () => {
-      const hotReloadMock = createHotReloadMock({
+      const _hotReloadMock = createHotReloadMock({
         componentTypes: ['drag-drop', 'timer', 'character'],
         reloadStrategy: 'instant',
         municipality: 'malmö'
@@ -444,7 +383,6 @@ describe('Q2 Interactive Mechanics Mock Implementations', () => {
         />
       );
 
-      const hotReloadResult = await hotReloadMock.simulateComponentUpdate({
         componentName: 'DragDropWorkflow',
         changes: { municipalBranding: 'updated', accessibility: 'enhanced' },
         preserveState: true
@@ -460,7 +398,7 @@ describe('Q2 Interactive Mechanics Mock Implementations', () => {
     });
 
     it('should mock design validation with municipal appropriateness checking', async () => {
-      const designValidationMock = createDesignValidationMock({
+      const _designValidationMock = createDesignValidationMock({
         criteria: ['municipal-appropriateness', 'accessibility', 'cultural-sensitivity'],
         municipality: 'malmö'
       });
@@ -472,7 +410,6 @@ describe('Q2 Interactive Mechanics Mock Implementations', () => {
         />
       );
 
-      const validationResult = await designValidationMock.validateDesign({
         componentType: 'interactive-workflow',
         municipalContext: 'malmö',
         designElements: ['colors', 'typography', 'iconography', 'interactions']

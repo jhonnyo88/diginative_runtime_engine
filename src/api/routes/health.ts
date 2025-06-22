@@ -8,7 +8,6 @@
 import { Request, Response, Router } from 'express';
 import { InfrastructureMonitoring } from '../../services/infrastructure-monitoring';
 
-const router = Router();
 
 /**
  * Basic health check endpoint
@@ -16,10 +15,8 @@ const router = Router();
  */
 router.get('/health', (_req: Request, res: Response) => {
   try {
-    const monitoring = InfrastructureMonitoring.getInstance();
-    const health = monitoring.getHealthStatus();
     
-    const statusCode = health.status === 'healthy' ? 200 : 
+    const _statusCode = health.status === 'healthy' ? 200 : 
                       health.status === 'degraded' ? 503 : 500;
     
     res.status(statusCode).json({
@@ -43,8 +40,6 @@ router.get('/health', (_req: Request, res: Response) => {
  */
 router.get('/health/detailed', (_req: Request, res: Response) => {
   try {
-    const monitoring = InfrastructureMonitoring.getInstance();
-    const health = monitoring.getHealthStatus();
     
     res.json({
       status: health.status,

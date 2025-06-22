@@ -26,15 +26,6 @@ interface QuizSceneProps {
 }
 
 // Data transformation helper to handle both option_text and text formats
-const transformQuizOptions = (options: Record<string, unknown>[]): QuizSceneType['options'] => {
-  return options.map(option => ({
-    id: option.id || option.option_id,
-    text: option.text || option.option_text || '',
-    isCorrect: option.isCorrect !== undefined ? option.isCorrect : option.is_correct,
-    feedback: option.feedback || option.feedback_text,
-    points: option.points || option.partial_credit || 1
-  }));
-};
 
 export const QuizScene: React.FC<QuizSceneProps> = ({
   scene,
@@ -42,11 +33,6 @@ export const QuizScene: React.FC<QuizSceneProps> = ({
   analytics,
 }) => {
   // Transform the scene to handle data format variations from different sources
-  const normalizedScene = {
-    ...scene,
-    question: scene.question || (scene as any).question_text || '',
-    options: transformQuizOptions(scene.options || (scene as any).questions?.[0]?.options || [])
-  };
   const [selectedAnswers, setSelectedAnswers] = useState<string[]>([]);
   const [showFeedback, setShowFeedback] = useState(false);
   const [attempts, setAttempts] = useState(0);
@@ -55,137 +41,12 @@ export const QuizScene: React.FC<QuizSceneProps> = ({
   
   // Game Designer spec: Animation support handled by CSS
 
-  const maxAttempts = normalizedScene.maxAttempts || 3;
-  const allowMultiple = normalizedScene.allowMultiple || false;
 
-  const handleAnswerSelect = (optionId: string) => {
-    if (isSubmitted) return;
 
-    analytics?.trackEvent('quiz_answer_select', {
-      sceneId: normalizedScene.id,
-      optionId,
-      attempt: attempts + 1,
-    });
 
-    if (allowMultiple) {
-      // Multiple selection
-      setSelectedAnswers(prev => 
-        prev.includes(optionId) 
-          ? prev.filter(id => id !== optionId)
-          : [...prev, optionId]
-      );
-    } else {
-      // Single selection
-      setSelectedAnswers([optionId]);
-    }
-  };
 
-  const handleSubmit = () => {
-    if (selectedAnswers.length === 0) return;
 
-    const newAttempts = attempts + 1;
-    setAttempts(newAttempts);
-    setIsSubmitted(true);
 
-    // Calculate score
-    const correctAnswers = normalizedScene.options.filter(option => option.isCorrect);
-    const selectedCorrect = selectedAnswers.filter(answerId => 
-      normalizedScene.options.find(opt => opt.id === answerId)?.isCorrect
-    );
-    
-    const isCorrect = allowMultiple 
-      ? selectedCorrect.length === correctAnswers.length && selectedAnswers.length === correctAnswers.length
-      : selectedCorrect.length > 0;
-
-    const score = isCorrect ? (selectedCorrect.reduce((sum, answerId) => {
-      const option = scene.options.find(opt => opt.id === answerId);
-      return sum + (option?.points || 1);
-    }, 0)) : 0;
-
-    const maxScore = correctAnswers.reduce((sum, option) => sum + (option.points || 1), 0);
-
-    analytics?.trackEvent('quiz_submit', {
-      sceneId: normalizedScene.id,
-      selectedAnswers,
-      isCorrect,
-      score,
-      attempt: newAttempts,
-    });
-
-    // Show feedback if enabled
-    if (normalizedScene.showFeedback !== false) {
-      setShowFeedback(true);
-      
-      // TASK-HD-014: Removed intrusive celebration popup
-      // Achievement System Redesign: No interruptions during quiz workflow
-      
-      // Auto-advance after feedback delay
-      setTimeout(() => {
-        if (isCorrect || newAttempts >= maxAttempts) {
-          onComplete({
-            nextScene: normalizedScene.navigation?.next,
-            score,
-            maxScore,
-            answers: selectedAnswers,
-            attempts: newAttempts,
-            isCorrect,
-          });
-        } else {
-          // Allow retry
-          setIsSubmitted(false);
-          setShowFeedback(false);
-          setSelectedAnswers([]);
-        }
-      }, 3000);
-    } else {
-      // No feedback, complete immediately
-      onComplete({
-        nextScene: scene.navigation?.next,
-        score,
-        maxScore,
-        answers: selectedAnswers,
-        attempts: newAttempts,
-        isCorrect,
-      });
-    }
-  };
-
-  const getSelectedFeedback = () => {
-    return selectedAnswers.map(answerId => {
-      const option = normalizedScene.options.find(opt => opt.id === answerId);
-      return option?.feedback;
-    }).filter(Boolean).join(' ');
-  };
-
-  const isCorrectAnswer = (optionId: string) => {
-    return normalizedScene.options.find(opt => opt.id === optionId)?.isCorrect || false;
-  };
-
-  const getButtonVariant = (optionId: string) => {
-    if (!isSubmitted) {
-      return selectedAnswers.includes(optionId) ? 'solid' : 'outline';
-    }
-    
-    // After submission, show correct/incorrect styling
-    if (selectedAnswers.includes(optionId)) {
-      return isCorrectAnswer(optionId) ? 'solid' : 'outline';
-    }
-    
-    // Show correct answers that weren't selected
-    return isCorrectAnswer(optionId) ? 'outline' : 'ghost';
-  };
-
-  const getButtonColorScheme = (optionId: string) => {
-    if (!isSubmitted) {
-      return selectedAnswers.includes(optionId) ? 'brand' : 'gray';
-    }
-    
-    if (selectedAnswers.includes(optionId)) {
-      return isCorrectAnswer(optionId) ? 'green' : 'red';
-    }
-    
-    return isCorrectAnswer(optionId) ? 'green' : 'gray';
-  };
 
   return (
     <Box p={4} maxW="600px" mx="auto">

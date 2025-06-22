@@ -16,70 +16,8 @@ const TestWrapper: React.FC<{ children: React.ReactNode }> = ({ children }) => (
 );
 
 // Mock DevTeam JSON data matching System Architect specification
-const mockDialogueSceneData = {
-  scene_id: 'dialogue-privacy-001',
-  scene_type: 'DialogueScene' as const,
-  title: 'Privacy Protection Dialogue',
-  description: 'Learn about GDPR compliance through interactive dialogue',
-  characters: [
-    {
-      character_id: 'anna',
-      name: 'Anna Svensson',
-      role: 'Data Protection Officer',
-      avatar_description: 'Professional Swedish municipal worker'
-    },
-    {
-      character_id: 'user',
-      name: 'Du',
-      role: 'Municipal Employee',
-      avatar_description: 'Municipal employee learning about privacy'
-    }
-  ],
-  dialogue_turns: [
-    {
-      speaker: 'Anna Svensson',
-      character_id: 'anna',
-      text: 'Hej! Welcome to our privacy training session.',
-      emotion: 'neutral' as const,
-      timing: 0
-    },
-    {
-      speaker: 'Anna Svensson',
-      character_id: 'anna', 
-      text: 'Today we will learn about GDPR compliance in municipal work.',
-      emotion: 'confident' as const,
-      timing: 2000
-    },
-    {
-      speaker: 'Du',
-      character_id: 'user',
-      text: 'I understand. Please tell me more.',
-      emotion: 'questioning' as const,
-      timing: 4000
-    },
-    {
-      speaker: 'Anna Svensson',
-      character_id: 'anna',
-      text: 'Perfect! Let\'s start with basic privacy principles.',
-      emotion: 'confident' as const,
-      timing: 6000
-    }
-  ],
-  learning_objectives: [
-    'Understand GDPR basic principles',
-    'Apply privacy rules in municipal work',
-    'Recognize data protection violations'
-  ],
-  scene_duration: 420 // 7 minutes - Anna Svensson optimization
-};
 
-const mockMunicipalBranding = {
-  primaryColor: '#1e40af',
-  logoUrl: 'https://example.se/stockholm-logo.svg',
-  municipality: 'Stockholm Kommun'
-};
 
-const mockOnComplete = vi.fn();
 
 describe('DialogueScene Component Tests', () => {
   beforeEach(() => {
@@ -119,7 +57,6 @@ describe('DialogueScene Component Tests', () => {
         </TestWrapper>
       );
 
-      const progressBar = screen.getByRole('progressbar');
       expect(progressBar).toBeInTheDocument();
       expect(progressBar).toHaveAttribute('aria-valuenow', '25'); // 1 of 4 turns
     });
@@ -262,7 +199,6 @@ describe('DialogueScene Component Tests', () => {
         </TestWrapper>
       );
 
-      const nextButton = screen.getByText('Nästa');
       fireEvent.click(nextButton);
 
       await waitFor(() => {
@@ -281,11 +217,9 @@ describe('DialogueScene Component Tests', () => {
         </TestWrapper>
       );
 
-      const nextButton = screen.getByText('Nästa');
       fireEvent.click(nextButton);
 
       await waitFor(() => {
-        const progressBar = screen.getByRole('progressbar');
         expect(progressBar).toHaveAttribute('aria-valuenow', '50'); // 2 of 4 turns
       });
     });
@@ -302,7 +236,6 @@ describe('DialogueScene Component Tests', () => {
       );
 
       // Advance to last turn
-      const nextButton = screen.getByText('Nästa');
       fireEvent.click(nextButton); // Turn 2
       
       await waitFor(() => {
@@ -402,7 +335,6 @@ describe('DialogueScene Component Tests', () => {
         </TestWrapper>
       );
 
-      const preventDefault = vi.fn();
       fireEvent.keyDown(window, { key: 'Space', preventDefault });
 
       expect(preventDefault).toHaveBeenCalled();
@@ -421,7 +353,6 @@ describe('DialogueScene Component Tests', () => {
         </TestWrapper>
       );
 
-      const nextButton = screen.getByText('Nästa');
       expect(nextButton).toHaveStyle({ minHeight: '48px', minWidth: '120px' });
     });
 
@@ -436,7 +367,6 @@ describe('DialogueScene Component Tests', () => {
         </TestWrapper>
       );
 
-      const dialogueText = screen.getByText('Hej! Welcome to our privacy training session.');
       expect(dialogueText).toHaveStyle({ minHeight: '3em' });
     });
 
@@ -452,7 +382,6 @@ describe('DialogueScene Component Tests', () => {
       );
 
       // Avatar should be 48px on mobile (isMobile = true in component)
-      const avatar = screen.getByRole('img', { name: /anna svensson/i });
       expect(avatar).toHaveStyle({ width: '48px', height: '48px' });
     });
   });
@@ -469,7 +398,6 @@ describe('DialogueScene Component Tests', () => {
         </TestWrapper>
       );
 
-      const results = await axe(container);
       expect(results).toHaveNoViolations();
     }, 20000); // Increased timeout for axe accessibility tests
 
@@ -485,7 +413,6 @@ describe('DialogueScene Component Tests', () => {
       );
 
       // Check for aria-live region (it exists but may not have role="status")
-      const liveRegion = screen.getByText('Dialogue turn 1 of 4. 25% complete.');
       expect(liveRegion).toBeInTheDocument();
     });
 
@@ -500,10 +427,8 @@ describe('DialogueScene Component Tests', () => {
         </TestWrapper>
       );
 
-      const progressBar = screen.getByRole('progressbar');
       expect(progressBar).toHaveAttribute('aria-label');
 
-      const nextButton = screen.getByText('Nästa');
       expect(nextButton).toHaveAttribute('aria-label');
     });
 
@@ -557,7 +482,6 @@ describe('DialogueScene Component Tests', () => {
         </TestWrapper>
       );
 
-      const nextButton = screen.getByText('Nästa');
       fireEvent.click(nextButton);
       fireEvent.click(nextButton); // Should be ignored during animation
 
@@ -574,10 +498,6 @@ describe('DialogueScene Component Tests', () => {
 
   describe('Error Handling', () => {
     it('handles missing character gracefully', () => {
-      const invalidSceneData = {
-        ...mockDialogueSceneData,
-        characters: [] // No characters
-      };
 
       render(
         <TestWrapper>
@@ -594,10 +514,6 @@ describe('DialogueScene Component Tests', () => {
     });
 
     it('handles empty dialogue turns', () => {
-      const emptySceneData = {
-        ...mockDialogueSceneData,
-        dialogue_turns: [] // No turns
-      };
 
       render(
         <TestWrapper>

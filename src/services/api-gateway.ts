@@ -113,11 +113,9 @@ export class APIGateway {
     };
 
     // Clone for other Swedish municipalities with adjusted limits
-    const gothenburgProfile = { ...swedenBasic };
     gothenburgProfile.municipalityId = 'goteborg_stad';
     gothenburgProfile.municipalityName = 'Göteborgs Stad';
 
-    const stockholmProfile = { ...swedenBasic };
     stockholmProfile.municipalityId = 'stockholm_stad';
     stockholmProfile.municipalityName = 'Stockholms Stad';
 
@@ -225,15 +223,10 @@ export class APIGateway {
   public createRateLimitMiddleware(limitType: 'api' | 'validation' | 'authentication' | 'contentUpload') {
     return async (req: Request, res: Response, next: NextFunction): Promise<void> => {
       try {
-        const municipalityId = this.extractMunicipalityId(req);
-        const profile = this.municipalProfiles.get(municipalityId) || this.getDefaultProfile();
-        const config = { ...profile.limits[limitType] };
 
         // Apply SAML user privilege adjustments
-        const adjustedConfig = this.applySAMLPrivilegeAdjustments(req, config, limitType);
         
         // Check rate limit with adjusted configuration
-        const result = await this.checkRateLimit(req, adjustedConfig);
         
         if (!result.allowed) {
           // Record rate limit violation
@@ -303,26 +296,17 @@ export class APIGateway {
   public createDDoSProtectionMiddleware() {
     return async (req: Request, res: Response, next: NextFunction): Promise<void> => {
       try {
-        const municipalityId = this.extractMunicipalityId(req);
-        const profile = this.municipalProfiles.get(municipalityId) || this.getDefaultProfile();
 
         if (!profile.ddosProtection.enabled) {
           next();
           return;
         }
 
-        const clientKey = `ddos:${req.ip}:${municipalityId}`;
-        const windowMs = 60 * 1000; // 1 minute window
-        const currentTime = Date.now();
-        const windowStart = currentTime - windowMs;
 
         // Get request count in current window
-        const requests = await this.redis.zrangebyscore(clientKey, windowStart, currentTime);
-        const requestCount = requests.length;
 
         if (requestCount >= profile.ddosProtection.suspiciousThreshold) {
           // Block this IP
-          const blockKey = `blocked:${req.ip}`;
           await this.redis.set(blockKey, 'blocked', profile.ddosProtection.blockDuration / 1000);
 
           // Record DDoS attempt
@@ -348,7 +332,6 @@ export class APIGateway {
         }
 
         // Check if IP is currently blocked
-        const isBlocked = await this.redis.get(`blocked:${req.ip}`);
         if (isBlocked) {
           res.status(429).json({
             success: false,
@@ -379,7 +362,6 @@ export class APIGateway {
   public createAPIKeyMiddleware(requiredPermissions: string[] = []) {
     return async (req: Request, res: Response, next: NextFunction): Promise<void> => {
       try {
-        const apiKey = this.extractAPIKey(req);
         if (!apiKey) {
           res.status(401).json({
             success: false,
@@ -389,7 +371,6 @@ export class APIGateway {
         }
 
         // Validate API key
-        const keyConfig = await this.validateAPIKey(apiKey);
         if (!keyConfig) {
           res.status(401).json({
             success: false,
@@ -400,7 +381,7 @@ export class APIGateway {
 
         // Check permissions
         if (requiredPermissions.length > 0) {
-          const hasPermission = requiredPermissions.some(permission => 
+          const _hasPermission = requiredPermissions.some(permission => 
             keyConfig.permissions.includes(permission) || 
             keyConfig.permissions.includes('admin:*')
           );
@@ -415,7 +396,6 @@ export class APIGateway {
         }
 
         // Check API key rate limit
-        const result = await this.checkRateLimit(req, keyConfig.rateLimit);
         if (!result.allowed) {
           res.status(429).json({
             success: false,
@@ -444,18 +424,13 @@ export class APIGateway {
   }
 
   private async checkRateLimit(req: Request, config: RateLimitConfig): Promise<RateLimitResult> {
-    const key = config.keyGenerator(req);
-    const currentTime = Date.now();
-    const windowStart = currentTime - config.windowMs;
 
     // Clean old entries and count current requests
     await this.redis.zremrangebyscore(key, 0, windowStart);
-    const currentCount = await this.redis.zcard(key);
 
     if (currentCount >= config.maxRequests) {
       // Get the oldest request in current window to calculate reset time
-      const oldestRequests = await this.redis.zrange(key, 0, 0, 'WITHSCORES');
-      const resetTime = oldestRequests.length > 0 
+      const _resetTime = oldestRequests.length > 0 
         ? new Date(parseInt(oldestRequests[1]) + config.windowMs)
         : new Date(currentTime + config.windowMs);
 
@@ -502,11 +477,9 @@ export class APIGateway {
   }
 
   private extractMunicipalityFromSAMLSession(req: Request): string | null {
-    const samlUser = (req as any).samlUser;
     if (!samlUser) return null;
 
     // Extract municipality from SAML attributes
-    const municipality = samlUser.municipality;
     if (municipality) {
       // Map municipality names to IDs
       const municipalityMap: Record<string, string> = {
@@ -519,9 +492,7 @@ export class APIGateway {
     }
 
     // Extract from email domain if available
-    const email = samlUser.email;
     if (email) {
-      const domain = email.split('@')[1];
       const domainMap: Record<string, string> = {
         'malmo.se': 'malmo_stad',
         'goteborg.se': 'goteborg_stad',
@@ -536,13 +507,11 @@ export class APIGateway {
 
   private extractAPIKey(req: Request): string | null {
     // Check Authorization header: Bearer <key>
-    const authHeader = req.headers.authorization;
     if (authHeader && authHeader.startsWith('Bearer ')) {
       return authHeader.substring(7);
     }
 
     // Check X-API-Key header
-    const apiKeyHeader = req.headers['x-api-key'];
     if (apiKeyHeader) {
       return apiKeyHeader as string;
     }
@@ -603,11 +572,8 @@ export class APIGateway {
     apiKeyUsage: Record<string, number>;
     ddosBlocks: number;
   }> {
-    const pattern = municipalityId ? `*:${municipalityId}:*` : '*';
-    const keys = await this.redis.keys(pattern);
     
     let totalRequests = 0;
-    const blockedRequests = 0;
     let ddosBlocks = 0;
     const apiKeyUsage: Record<string, number> = {};
 
@@ -615,11 +581,8 @@ export class APIGateway {
       if (key.startsWith('blocked:')) {
         ddosBlocks++;
       } else if (key.includes('devteam:') || key.includes('admin:')) {
-        const usage = await this.redis.zcard(key);
-        const keyType = key.split(':')[0];
         apiKeyUsage[keyType] = (apiKeyUsage[keyType] || 0) + usage;
       } else {
-        const requests = await this.redis.zcard(key);
         totalRequests += requests;
       }
     }
@@ -639,9 +602,7 @@ export class APIGateway {
     keyId: string;
     apiKey: string;
   }> {
-    const keyId = `api_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
-    const apiKey = `dk_${Buffer.from(`${keyId}:${Date.now()}`).toString('base64')}`;
-    const keyHash = Buffer.from(apiKey).toString('base64'); // In production, use proper hashing
+    const _keyHash = Buffer.from(apiKey).toString('base64'); // In production, use proper hashing
 
     const keyConfig: APIKeyConfig = {
       keyId,
@@ -659,12 +620,10 @@ export class APIGateway {
    * Update municipality rate limit profile
    */
   public updateMunicipalityProfile(municipalityId: string, updates: Partial<MunicipalRateLimitProfile>): boolean {
-    const existing = this.municipalProfiles.get(municipalityId);
     if (!existing) {
       return false;
     }
 
-    const updated = { ...existing, ...updates };
     this.municipalProfiles.set(municipalityId, updated);
     return true;
   }
@@ -677,11 +636,8 @@ export class APIGateway {
     config: RateLimitConfig, 
     limitType: string
   ): RateLimitConfig {
-    const samlUser = (req as any).samlUser;
     if (!samlUser) return config;
 
-    const adjustedConfig = { ...config };
-    const userRoles = samlUser.roles || [];
 
     // Municipal administrator privileges
     if (userRoles.includes('municipal_admin') || userRoles.includes('admin')) {
@@ -715,8 +671,6 @@ export class APIGateway {
     limitType: string, 
     outcome: 'allowed' | 'blocked'
   ): Promise<void> {
-    const samlUser = (req as any).samlUser;
-    const municipalityId = this.extractMunicipalityId(req);
     
     await this.monitoring.recordMetric({
       name: 'api_gateway_saml_context',
@@ -744,7 +698,6 @@ export class APIGateway {
     privileges?: string[];
     sessionExpiry?: Date;
   }> {
-    const samlUser = (req as any).samlUser;
     if (!samlUser) {
       return { valid: false };
     }
@@ -754,8 +707,6 @@ export class APIGateway {
       return { valid: false };
     }
 
-    const municipalityId = this.extractMunicipalityId(req);
-    const privileges = this.extractSAMLPrivileges(samlUser);
 
     return {
       valid: true,
@@ -770,7 +721,6 @@ export class APIGateway {
    */
   private extractSAMLPrivileges(samlUser: Record<string, unknown>): string[] {
     const privileges: string[] = [];
-    const roles = samlUser.roles || [];
 
     if (roles.includes('municipal_admin') || roles.includes('admin')) {
       privileges.push('admin_privileges');
@@ -793,21 +743,18 @@ export class APIGateway {
    */
   public async createAdminOverrideMiddleware() {
     return async (req: Request, res: Response, next: NextFunction): Promise<void> => {
-      const samlUser = (req as any).samlUser;
       
       if (!samlUser) {
         next();
         return;
       }
 
-      const userRoles = samlUser.roles || [];
-      const isAdmin = userRoles.includes('municipal_admin') || 
+      const _isAdmin = userRoles.includes('municipal_admin') || 
                      userRoles.includes('admin') ||
                      userRoles.includes('saml_admin');
 
       if (isAdmin) {
         // Check for emergency override header
-        const emergencyOverride = req.headers['x-emergency-override'];
         if (emergencyOverride === 'true') {
           // Log emergency override usage
           await this.monitoring.recordMetric({
@@ -841,7 +788,6 @@ export class APIGateway {
     privilegeDistribution: Record<string, number>;
     municipalityBreakdown: Record<string, number>;
   }> {
-    const baseStats = await this.getRateLimitStats(municipalityId);
     
     // Enhanced stats would be calculated from monitoring metrics
     // For now, return basic structure with mock data
@@ -865,12 +811,5 @@ export class APIGateway {
 }
 
 // Singleton instance
-export const apiGateway = new APIGateway();
 
 // Export convenience middleware functions
-export const rateLimitAPI = () => apiGateway.createRateLimitMiddleware('api');
-export const rateLimitValidation = () => apiGateway.createRateLimitMiddleware('validation');
-export const rateLimitAuth = () => apiGateway.createRateLimitMiddleware('authentication');
-export const rateLimitUpload = () => apiGateway.createRateLimitMiddleware('contentUpload');
-export const ddosProtection = () => apiGateway.createDDoSProtectionMiddleware();
-export const requireAPIKey = (permissions: string[] = []) => apiGateway.createAPIKeyMiddleware(permissions);

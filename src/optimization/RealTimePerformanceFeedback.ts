@@ -142,8 +142,6 @@ export class RealTimePerformanceFeedback {
    * Get current performance indicator
    */
   getCurrentIndicator(): PerformanceIndicator {
-    const overallStatus = this.calculateOverallStatus();
-    const messages = this.getLocalizedMessages();
     
     return {
       status: overallStatus,
@@ -180,8 +178,6 @@ export class RealTimePerformanceFeedback {
     compliance: boolean;
     recommendations: string[];
   } {
-    const indicator = this.getCurrentIndicator();
-    const recommendations = this.generateRecommendations();
     
     return {
       currentStatus: indicator.status,
@@ -238,14 +234,7 @@ export class RealTimePerformanceFeedback {
   private applyMunicipalStyling(): void {
     if (!this.feedbackElement) return;
     
-    const themeColors = {
-      swedish: { primary: '#006AA7', secondary: '#FFCD00' },
-      german: { primary: '#000000', secondary: '#FF0000' },
-      french: { primary: '#002654', secondary: '#CE1126' },
-      dutch: { primary: '#FF9B00', secondary: '#21468B' }
-    };
     
-    const colors = themeColors[this.config.municipalTheme];
     
     this.feedbackElement.style.cssText = `
       position: fixed;
@@ -268,14 +257,7 @@ export class RealTimePerformanceFeedback {
   private positionFeedbackElement(): void {
     if (!this.feedbackElement) return;
     
-    const positions = {
-      'top-right': { top: '20px', right: '20px' },
-      'top-left': { top: '20px', left: '20px' },
-      'bottom-right': { bottom: '20px', right: '20px' },
-      'bottom-left': { bottom: '20px', left: '20px' }
-    };
     
-    const pos = positions[this.config.position];
     Object.assign(this.feedbackElement.style, pos);
   }
 
@@ -315,9 +297,7 @@ export class RealTimePerformanceFeedback {
   private updateFeedbackDisplay(): void {
     if (!this.feedbackElement) return;
     
-    const indicator = this.getCurrentIndicator();
     
-    const html = this.generateFeedbackHTML(indicator);
     this.feedbackElement.innerHTML = html;
     
     // Update border color based on status
@@ -325,8 +305,6 @@ export class RealTimePerformanceFeedback {
   }
 
   private generateFeedbackHTML(indicator: PerformanceIndicator): string {
-    const statusIcon = this.getStatusIcon(indicator.status);
-    const detailsHTML = this.config.detailLevel !== 'minimal' 
       ? `<div class="performance-details">${indicator.details}</div>` 
       : '';
     
@@ -346,7 +324,6 @@ export class RealTimePerformanceFeedback {
     // Check each metric against thresholds
     for (const [metric, value] of Object.entries(this.currentMetrics)) {
       if (value > 0) { // Only check metrics that have been measured
-        const status = this.getMetricStatus(metric as keyof PerformanceMetrics, value);
         statuses.push(status);
       }
     }
@@ -359,7 +336,6 @@ export class RealTimePerformanceFeedback {
   }
 
   private getMetricStatus(metric: keyof PerformanceMetrics, value: number): PerformanceIndicator['status'] {
-    const thresholds = this.PERFORMANCE_THRESHOLDS[metric as keyof typeof this.PERFORMANCE_THRESHOLDS];
     if (!thresholds) return 'good';
     
     if (value <= thresholds.excellent) return 'excellent';
@@ -369,52 +345,14 @@ export class RealTimePerformanceFeedback {
   }
 
   private getStatusColor(status: PerformanceIndicator['status']): string {
-    const colors = {
-      excellent: '#22C55E', // Green
-      good: '#84CC16',      // Light green
-      warning: '#F59E0B',   // Orange
-      critical: '#EF4444'   // Red
-    };
     return colors[status];
   }
 
   private getStatusIcon(status: PerformanceIndicator['status']): string {
-    const icons = {
-      excellent: '🟢',
-      good: '🟡',
-      warning: '🟠',
-      critical: '🔴'
-    };
     return icons[status];
   }
 
   private getLocalizedMessages(): Record<PerformanceIndicator['status'], string> {
-    const messages = {
-      swedish: {
-        excellent: 'Utmärkt prestanda',
-        good: 'Bra prestanda',
-        warning: 'Prestandavarning',
-        critical: 'Kritisk prestanda'
-      },
-      german: {
-        excellent: 'Ausgezeichnete Leistung',
-        good: 'Gute Leistung',
-        warning: 'Leistungswarnung',
-        critical: 'Kritische Leistung'
-      },
-      french: {
-        excellent: 'Performance excellente',
-        good: 'Bonne performance',
-        warning: 'Avertissement de performance',
-        critical: 'Performance critique'
-      },
-      dutch: {
-        excellent: 'Uitstekende prestaties',
-        good: 'Goede prestaties',
-        warning: 'Prestatie waarschuwing',
-        critical: 'Kritieke prestaties'
-      }
-    };
     
     return messages[this.config.municipalTheme];
   }
@@ -433,7 +371,6 @@ export class RealTimePerformanceFeedback {
     }
     
     if (this.currentMetrics.memoryUsage > 0) {
-      const memoryMB = Math.round(this.currentMetrics.memoryUsage / (1024 * 1024));
       details.push(`Minne: ${memoryMB}MB`);
     }
     
@@ -442,7 +379,6 @@ export class RealTimePerformanceFeedback {
 
   private generateRecommendations(): string[] {
     const recommendations: string[] = [];
-    const indicator = this.getCurrentIndicator();
     
     if (indicator.status === 'warning' || indicator.status === 'critical') {
       recommendations.push('Stäng onödiga flikar för bättre prestanda');
@@ -460,27 +396,15 @@ export class RealTimePerformanceFeedback {
   }
 
   private isSignificantChange(metric: keyof PerformanceMetrics, newValue: number): boolean {
-    const threshold = 0.2; // 20% change
-    const oldValue = this.currentMetrics[metric];
     
     if (oldValue === 0) return true; // First measurement
     
-    const change = Math.abs(newValue - oldValue) / oldValue;
     return change > threshold;
   }
 
   private getMetricUnit(metric: keyof PerformanceMetrics): string {
-    const units = {
-      hubLoading: 'ms',
-      worldTransition: 'ms',
-      memoryUsage: 'MB',
-      networkLatency: 'ms',
-      renderTime: 'ms',
-      userInteractionDelay: 'ms'
-    };
     return units[metric] || '';
   }
 }
 
 // Export singleton instance
-export const realTimePerformanceFeedback = new RealTimePerformanceFeedback();

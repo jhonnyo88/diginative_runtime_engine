@@ -23,8 +23,6 @@ test.describe('Municipal Branding Integration', () => {
     await expect(page.locator('h1')).toContainText('Malmö Stad');
     
     // Verify municipal color scheme (primary blue #0066CC)
-    const primaryButton = page.locator('button').first();
-    const buttonColor = await primaryButton.evaluate(el => 
       getComputedStyle(el).backgroundColor
     );
     
@@ -48,11 +46,9 @@ test.describe('Municipal Branding Integration', () => {
     await expect(page.locator('text=Starta GDPR-utbildningen')).toBeVisible();
     
     // Check navigation elements use Swedish
-    const buttons = page.locator('button');
-    const buttonTexts = await buttons.allTextContents();
     
     // Should contain Swedish municipal terms
-    const swedishTerms = buttonTexts.some(text => 
+    const _swedishTerms = buttonTexts.some(text => 
       text.includes('Börja') || text.includes('Nästa') || text.includes('Fortsätt')
     );
     expect(swedishTerms).toBe(true);
@@ -72,9 +68,7 @@ test.describe('Municipal Branding Integration', () => {
     await expect(page.locator('h2')).toContainText('GDPR-utbildning');
     
     // Verify municipal button styling throughout
-    const gameButtons = page.locator('button[data-testid*="municipal"]');
     if (await gameButtons.count() > 0) {
-      const buttonStyle = await gameButtons.first().evaluate(el => ({
         backgroundColor: getComputedStyle(el).backgroundColor,
         borderRadius: getComputedStyle(el).borderRadius,
         fontFamily: getComputedStyle(el).fontFamily
@@ -88,11 +82,6 @@ test.describe('Municipal Branding Integration', () => {
 
   test('should handle multi-tenant branding scenarios', async ({ page }) => {
     // Test different municipal contexts
-    const municipalities = [
-      { name: 'malmö', expectedColor: 'rgb(0, 102, 204)' },
-      { name: 'stockholm', expectedText: 'Stockholm' },
-      { name: 'göteborg', expectedText: 'Göteborg' }
-    ];
     
     for (const municipality of municipalities) {
       // Mock municipal context
@@ -104,7 +93,6 @@ test.describe('Municipal Branding Integration', () => {
       await page.waitForLoadState('networkidle');
       
       // Verify branding changes based on context
-      const titleElement = page.locator('h1, h2').first();
       if (municipality.expectedText) {
         await expect(titleElement).toContainText(municipality.expectedText);
       }
@@ -115,8 +103,6 @@ test.describe('Municipal Branding Integration', () => {
     await page.click('text=Se Digitaliseringsstrategi Demo');
     
     // Check color contrast ratios
-    const primaryButton = page.locator('button').first();
-    const styles = await primaryButton.evaluate(el => ({
       backgroundColor: getComputedStyle(el).backgroundColor,
       color: getComputedStyle(el).color
     }));
@@ -128,8 +114,6 @@ test.describe('Municipal Branding Integration', () => {
     expect(styles.color).toBeTruthy();
     
     // Check for accessible font sizes
-    const textElements = page.locator('p, span, div');
-    const fontSize = await textElements.first().evaluate(el => 
       parseFloat(getComputedStyle(el).fontSize)
     );
     
@@ -138,8 +122,6 @@ test.describe('Municipal Branding Integration', () => {
     
     // Verify focus indicators on interactive elements
     await page.keyboard.press('Tab');
-    const focusedElement = page.locator(':focus');
-    const focusStyle = await focusedElement.evaluate(el => 
       getComputedStyle(el).outline
     );
     
@@ -158,11 +140,6 @@ test.describe('Municipal Branding Integration', () => {
     await expect(page.locator('text=7 minuter')).toBeVisible();
     
     // Check for municipal authority indicators
-    const municipalIndicators = [
-      'Malmö Stad',
-      'DigiNativa',
-      'Säker kommunal plattform'
-    ];
     
     for (const indicator of municipalIndicators) {
       await expect(page.locator(`text=${indicator}`)).toBeVisible();
@@ -174,8 +151,6 @@ test.describe('Municipal Branding Integration', () => {
     await page.setViewportSize({ width: 1920, height: 1080 });
     await page.click('text=Se Digitaliseringsstrategi Demo');
     
-    const desktopHeader = page.locator('h1').first();
-    const desktopFontSize = await desktopHeader.evaluate(el => 
       parseFloat(getComputedStyle(el).fontSize)
     );
     
@@ -184,8 +159,6 @@ test.describe('Municipal Branding Integration', () => {
     await page.reload();
     await page.waitForLoadState('networkidle');
     
-    const mobileHeader = page.locator('h1').first();
-    const mobileFontSize = await mobileHeader.evaluate(el => 
       parseFloat(getComputedStyle(el).fontSize)
     );
     
@@ -214,28 +187,12 @@ test.describe('Municipal Branding Integration', () => {
     await expect(page.locator('text=Malmö Stad')).toBeVisible();
     
     // Error messages should use municipal language
-    const errorElement = page.locator('[data-testid="error-message"]');
     if (await errorElement.isVisible()) {
-      const errorText = await errorElement.textContent();
       expect(errorText).toMatch(/(Fel|Försök|Kontakta)/); // Swedish error terms
     }
   });
 
   test('should inject correct cultural context for different municipalities', async ({ page }) => {
-    const culturalContexts = [
-      {
-        municipality: 'malmö',
-        expectedLanguage: 'sv-SE',
-        expectedCurrency: 'SEK',
-        expectedTime: '24-hour'
-      },
-      {
-        municipality: 'berlin',
-        expectedLanguage: 'de-DE',
-        expectedCurrency: 'EUR',
-        expectedTime: '24-hour'
-      }
-    ];
     
     for (const context of culturalContexts) {
       await page.addInitScript((ctx) => {
@@ -247,7 +204,6 @@ test.describe('Municipal Branding Integration', () => {
       await page.waitForLoadState('networkidle');
       
       // Verify cultural adaptations
-      const htmlLang = await page.getAttribute('html', 'lang');
       if (htmlLang) {
         expect(htmlLang).toContain(context.expectedLanguage.split('-')[0]);
       }

@@ -18,14 +18,12 @@ export interface MunicipalButtonProps extends ChakraButtonProps {
 }
 
 // Motion component for button animations
-const MotionButton = motion(ChakraButton);
 
 /**
  * Enhanced Municipal Button Component
  * Implements professional button design system for government services
  * Based on Game Designer task-gd-007 specifications
  */
-export const MunicipalButton = forwardRef<MunicipalButtonProps, 'button'>(
   (props, ref) => {
     const {
       variant = 'municipal-primary',
@@ -44,34 +42,8 @@ export const MunicipalButton = forwardRef<MunicipalButtonProps, 'button'>(
     } = props;
 
     // Get cultural loading text
-    const getCulturalLoadingText = () => {
-      if (loadingText) return loadingText;
-      switch (culturalContext) {
-        case 'swedish': return 'Bearbetar...';
-        case 'german': return 'Verarbeitung...';
-        case 'french': return 'Traitement...';
-        case 'dutch': return 'Verwerken...';
-        default: return 'Bearbetar...';
-      }
-    };
 
     // Motion variants for professional interactions
-    const buttonVariants = {
-      rest: {
-        scale: 1,
-        y: 0,
-      },
-      hover: {
-        scale: 1,
-        y: variant === 'municipal-primary' ? -1 : -0.5,
-        transition: { duration: 0.15, ease: 'easeOut' }
-      },
-      tap: {
-        scale: 0.98,
-        y: 0,
-        transition: { duration: 0.1 }
-      }
-    };
 
     return (
       <MotionButton

@@ -68,7 +68,6 @@ describe('SAMLProductionManager', () => {
         contractReference: 'CONTRACT-SE-2025-001'
       };
 
-      const result = await manager.registerMunicipalTenant(request);
 
       expect(result.success).toBe(true);
       expect(result.tenantId).toBe('malmo_stad_se');
@@ -79,12 +78,6 @@ describe('SAMLProductionManager', () => {
     });
 
     it('should handle Swedish characters correctly in tenant ID generation', async () => {
-      const testCases = [
-        { name: 'Göteborg Stad', expected: 'goteborg_stad_se' },
-        { name: 'Västerås kommun', expected: 'vasteras_kommun_se' },
-        { name: 'Örebro', expected: 'orebro_se' },
-        { name: 'Hässleholm', expected: 'hassleholm_se' }
-      ];
 
       for (const testCase of testCases) {
         const request: TenantRegistrationRequest = {
@@ -97,18 +90,12 @@ describe('SAMLProductionManager', () => {
           deploymentTarget: 'pilot'
         };
 
-        const result = await manager.registerMunicipalTenant(request);
         expect(result.tenantId).toBe(testCase.expected);
         expect(result.success).toBe(true);
       }
     });
 
     it('should handle German characters correctly in tenant ID generation', async () => {
-      const testCases = [
-        { name: 'München Stadt', expected: 'munchen_stadt_de' },
-        { name: 'Düsseldorf', expected: 'dusseldorf_de' },
-        { name: 'Straße Hamburg', expected: 'strasse_hamburg_de' }
-      ];
 
       for (const testCase of testCases) {
         const request: TenantRegistrationRequest = {
@@ -121,7 +108,6 @@ describe('SAMLProductionManager', () => {
           deploymentTarget: 'pilot'
         };
 
-        const result = await manager.registerMunicipalTenant(request);
         expect(result.tenantId).toBe(testCase.expected);
         expect(result.success).toBe(true);
       }
@@ -138,7 +124,6 @@ describe('SAMLProductionManager', () => {
         deploymentTarget: 'full_rollout'
       };
 
-      const result = await manager.registerMunicipalTenant(request);
 
       expect(result.success).toBe(true);
       expect(result.tenantId).toBe('stadt_berlin_de');
@@ -158,11 +143,9 @@ describe('SAMLProductionManager', () => {
       };
 
       // Register once
-      const firstResult = await manager.registerMunicipalTenant(request);
       expect(firstResult.success).toBe(true);
 
       // Try to register again
-      const secondResult = await manager.registerMunicipalTenant(request);
       expect(secondResult.success).toBe(false);
       expect(secondResult.error).toContain('already registered');
     });
@@ -180,7 +163,6 @@ describe('SAMLProductionManager', () => {
 
       // This should be caught by validation in the API layer
       // but the manager should handle it gracefully
-      const result = await manager.registerMunicipalTenant(request);
       
       // The manager might still process it, but the tenant ID would be malformed
       expect(result.tenantId).toBe('invalid_municipality_xx');
@@ -200,17 +182,10 @@ describe('SAMLProductionManager', () => {
         deploymentTarget: 'pilot'
       };
 
-      const registrationResult = await manager.registerMunicipalTenant(registrationRequest);
       expect(registrationResult.success).toBe(true);
 
       // Now activate with SAML config
-      const samlConfig = {
-        cert: '-----BEGIN CERTIFICATE-----\nMIIC...test-cert...==\n-----END CERTIFICATE-----',
-        entryPoint: 'https://test-idp.okta.com/app/saml/sso',
-        issuer: 'diginativa-activation-test'
-      };
 
-      const activationResult = await manager.activateTenant(
         registrationResult.tenantId,
         registrationResult.activationCode!,
         samlConfig
@@ -222,7 +197,6 @@ describe('SAMLProductionManager', () => {
     });
 
     it('should reject activation with invalid activation code', async () => {
-      const result = await manager.activateTenant(
         'nonexistent_tenant',
         'INVALID-CODE-123',
         {
@@ -247,16 +221,9 @@ describe('SAMLProductionManager', () => {
         deploymentTarget: 'immediate'
       };
 
-      const registrationResult = await manager.registerMunicipalTenant(registrationRequest);
 
       // Try to activate with invalid SAML config
-      const invalidSamlConfig = {
-        cert: 'invalid-certificate-format',
-        entryPoint: 'http://insecure-endpoint.com', // HTTP instead of HTTPS
-        issuer: ''
-      };
 
-      const activationResult = await manager.activateTenant(
         registrationResult.tenantId,
         registrationResult.activationCode!,
         invalidSamlConfig
@@ -269,7 +236,6 @@ describe('SAMLProductionManager', () => {
 
   describe('Security Auditing', () => {
     it('should audit authentication events', async () => {
-      const tenantId = 'test_audit_tenant';
       
       // Audit successful login
       await manager.auditAuthenticationEvent(tenantId, 'login_success', {
@@ -302,9 +268,6 @@ describe('SAMLProductionManager', () => {
     });
 
     it('should generate security audit report', async () => {
-      const tenantId = 'test_audit_report';
-      const startDate = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000); // 7 days ago
-      const endDate = new Date();
 
       // Generate some audit events first
       await manager.auditAuthenticationEvent(tenantId, 'login_success', {
@@ -321,7 +284,6 @@ describe('SAMLProductionManager', () => {
         error: 'Authentication failed'
       });
 
-      const report = await manager.generateSecurityAuditReport(tenantId, startDate, endDate);
 
       expect(report.tenantId).toBe(tenantId);
       expect(report.auditPeriod.start).toBe(startDate.toISOString());
@@ -333,8 +295,6 @@ describe('SAMLProductionManager', () => {
     });
 
     it('should detect excessive failed login attempts', async () => {
-      const tenantId = 'test_failed_logins';
-      const ipAddress = '192.168.1.999';
 
       // Simulate multiple failed login attempts
       for (let i = 0; i < 6; i++) {
@@ -354,7 +314,6 @@ describe('SAMLProductionManager', () => {
 
   describe('Production Environment', () => {
     it('should report production status correctly', async () => {
-      const status = manager.getProductionStatus();
 
       expect(status.environment).toBe('development'); // Our test environment
       expect(status.activeTenants).toBeGreaterThanOrEqual(0);
@@ -378,7 +337,6 @@ describe('SAMLProductionManager', () => {
         });
       }
 
-      const results = await Promise.all(
         requests.map(req => manager.registerMunicipalTenant(req))
       );
 
@@ -386,15 +344,11 @@ describe('SAMLProductionManager', () => {
       expect(results.every(r => r.success)).toBe(true);
       
       // All tenant IDs should be unique
-      const tenantIds = results.map(r => r.tenantId);
-      const uniqueIds = new Set(tenantIds);
       expect(uniqueIds.size).toBe(tenantIds.length);
     });
 
     it('should validate required environment variables', async () => {
       // Test with missing environment variables
-      const originalBaseUrl = process.env.BASE_URL;
-      const originalPrivateKey = process.env.SAML_PRIVATE_KEY;
       
       delete process.env.BASE_URL;
       delete process.env.SAML_PRIVATE_KEY;
@@ -425,7 +379,6 @@ describe('SAMLProductionManager', () => {
         deploymentTarget: 'pilot'
       };
 
-      const result = await manager.registerMunicipalTenant(request);
       
       // Manager should handle potential Redis issues gracefully
       // Either succeed or fail gracefully with proper error message
@@ -437,17 +390,7 @@ describe('SAMLProductionManager', () => {
     });
 
     it('should handle malformed tenant data', async () => {
-      const malformedRequest = {
-        municipalityName: '', // Empty name
-        country: 'INVALID' as any, // Invalid country
-        contactEmail: 'not-an-email', // Invalid email
-        administratorName: '',
-        idpType: 'invalid-idp' as any,
-        expectedUsers: -1, // Negative users
-        deploymentTarget: 'invalid-target' as any
-      };
 
-      const result = await manager.registerMunicipalTenant(malformedRequest);
       
       // Should handle malformed data gracefully
       expect(result.success).toBe(false);
@@ -467,7 +410,6 @@ describe('SAMLProductionManager', () => {
         deploymentTarget: 'full_rollout'
       };
 
-      const result = await manager.registerMunicipalTenant(request);
 
       expect(result.success).toBe(true);
       expect(result.setupInstructions).toContain('Azure AD Admin Center');
@@ -486,7 +428,6 @@ describe('SAMLProductionManager', () => {
         deploymentTarget: 'pilot'
       };
 
-      const result = await manager.registerMunicipalTenant(request);
 
       expect(result.success).toBe(true);
       expect(result.setupInstructions).toContain('Okta Admin Console');
@@ -505,7 +446,6 @@ describe('SAMLProductionManager', () => {
         deploymentTarget: 'immediate'
       };
 
-      const result = await manager.registerMunicipalTenant(request);
 
       expect(result.success).toBe(true);
       expect(result.setupInstructions).toContain('ADFS Management Console');

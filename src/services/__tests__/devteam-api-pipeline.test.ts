@@ -86,13 +86,9 @@ describe('DevTeamAPIPipeline', () => {
         }
       };
 
-      const startTime = Date.now();
-      const processingId = await pipeline.submitContent(request);
       
       // Poll for result
       let result = null;
-      const timeout = 32000; // 32 seconds to test <30s target
-      const pollStart = Date.now();
       
       while (!result && (Date.now() - pollStart) < timeout) {
         result = await pipeline.getResult(processingId);
@@ -101,7 +97,6 @@ describe('DevTeamAPIPipeline', () => {
         }
       }
 
-      const totalTime = Date.now() - startTime;
       
       expect(result).toBeTruthy();
       expect(result?.success).toBe(true);
@@ -181,8 +176,6 @@ describe('DevTeamAPIPipeline', () => {
       // Wait for processing
       await new Promise(resolve => setTimeout(resolve, 1000));
 
-      const urgentResult = await pipeline.getResult('urgent-test');
-      const normalResult = await pipeline.getResult('normal-test');
 
       // Urgent should complete first despite being submitted later
       expect(urgentResult).toBeTruthy();
@@ -221,12 +214,10 @@ describe('DevTeamAPIPipeline', () => {
         }
       };
 
-      const processingId = await pipeline.submitContent(request);
       
       // Wait for processing
       await new Promise(resolve => setTimeout(resolve, 2000));
       
-      const result = await pipeline.getResult(processingId);
       
       expect(result).toBeTruthy();
       expect(result?.success).toBe(true);
@@ -273,9 +264,6 @@ describe('DevTeamAPIPipeline', () => {
         });
       }
 
-      const startTime = Date.now();
-      const results = await pipeline.processBatch(requests);
-      const batchTime = Date.now() - startTime;
 
       expect(results.size).toBe(5);
       expect(batchTime).toBeLessThan(60000); // Should complete within 1 minute
@@ -335,12 +323,9 @@ describe('DevTeamAPIPipeline', () => {
         }
       ];
 
-      const results = await pipeline.processBatch(requests);
       
       expect(results.size).toBe(2);
       
-      const urgentResult = results.get('batch-urgent');
-      const lowResult = results.get('batch-low');
       
       expect(urgentResult?.success).toBe(true);
       expect(lowResult?.success).toBe(true);
@@ -349,26 +334,6 @@ describe('DevTeamAPIPipeline', () => {
 
   describe('Caching Strategy', () => {
     it('should cache identical content effectively', async () => {
-      const content = {
-        gameId: 'cache-test',
-        version: '1.0',
-        metadata: {
-          title: 'Cache Test Game',
-          description: 'Testing caching functionality',
-          duration: '10 minutes',
-          targetAudience: 'Adults',
-          language: 'en'
-        },
-        scenes: [{
-          id: 'cache-scene',
-          type: 'dialogue',
-          messages: [{
-            speaker: 'Cacher',
-            text: 'Testing cache functionality',
-            character: 'cache-char'
-          }]
-        }]
-      };
 
       const request1: ContentProcessingRequest = {
         id: 'cache-test-1',
@@ -395,18 +360,12 @@ describe('DevTeamAPIPipeline', () => {
       };
 
       // Process first request
-      const startTime1 = Date.now();
       await pipeline.submitContent(request1);
       await new Promise(resolve => setTimeout(resolve, 1000));
-      const result1 = await pipeline.getResult('cache-test-1');
-      const time1 = Date.now() - startTime1;
 
       // Process second request (should use cache)
-      const startTime2 = Date.now();
       await pipeline.submitContent(request2);
       await new Promise(resolve => setTimeout(resolve, 500));
-      const result2 = await pipeline.getResult('cache-test-2');
-      const time2 = Date.now() - startTime2;
 
       expect(result1?.success).toBe(true);
       expect(result2?.success).toBe(true);
@@ -415,7 +374,6 @@ describe('DevTeamAPIPipeline', () => {
       expect(time2).toBeLessThan(time1);
       
       // Check cache metrics
-      const stats = pipeline.getStats();
       expect(stats.cacheEfficiency).toBeGreaterThan(0);
     });
   });
@@ -423,7 +381,6 @@ describe('DevTeamAPIPipeline', () => {
   describe('Performance Validation', () => {
     it('should reject content that exceeds size limits', async () => {
       // Create content with very large scenes
-      const largeScenes = [];
       for (let i = 0; i < 100; i++) {
         largeScenes.push({
           id: `large-scene-${i}`,
@@ -459,12 +416,10 @@ describe('DevTeamAPIPipeline', () => {
         }
       };
 
-      const processingId = await pipeline.submitContent(request);
       
       // Wait for processing
       await new Promise(resolve => setTimeout(resolve, 2000));
       
-      const result = await pipeline.getResult(processingId);
       
       // Should fail due to size limits
       expect(result).toBeTruthy();
@@ -512,20 +467,15 @@ describe('DevTeamAPIPipeline', () => {
         });
       }
 
-      const startTime = Date.now();
       
       // Submit all requests
-      const submissionPromises = requests.map(req => pipeline.submitContent(req));
       await Promise.all(submissionPromises);
 
       // Wait for all to complete
-      const results = new Map();
-      const timeout = 45000; // 45 seconds
       
       while (results.size < requests.length && (Date.now() - startTime) < timeout) {
         for (const request of requests) {
           if (!results.has(request.id)) {
-            const result = await pipeline.getResult(request.id);
             if (result) {
               results.set(request.id, result);
             }
@@ -534,7 +484,6 @@ describe('DevTeamAPIPipeline', () => {
         await new Promise(resolve => setTimeout(resolve, 200));
       }
 
-      const totalTime = Date.now() - startTime;
       
       expect(results.size).toBe(requests.length);
       expect(totalTime).toBeLessThan(45000); // Should handle load efficiently
@@ -564,12 +513,10 @@ describe('DevTeamAPIPipeline', () => {
         }
       };
 
-      const processingId = await pipeline.submitContent(request);
       
       // Wait for processing
       await new Promise(resolve => setTimeout(resolve, 1000));
       
-      const result = await pipeline.getResult(processingId);
       
       expect(result).toBeTruthy();
       // Should handle gracefully, either success with warnings or controlled failure
@@ -580,7 +527,6 @@ describe('DevTeamAPIPipeline', () => {
 
     it('should handle timeout scenarios', async () => {
       // Create a pipeline with very short timeout
-      const fastTimeoutPipeline = new DevTeamAPIPipeline({
         ...defaultPipelineConfig,
         contentValidationTimeout: 100, // Very short timeout
         deploymentTimeout: 100
@@ -617,12 +563,10 @@ describe('DevTeamAPIPipeline', () => {
         }
       };
 
-      const processingId = await fastTimeoutPipeline.submitContent(request);
       
       // Wait for processing
       await new Promise(resolve => setTimeout(resolve, 1000));
       
-      const result = await fastTimeoutPipeline.getResult(processingId);
       
       // Should handle timeout gracefully
       expect(result).toBeTruthy();
@@ -671,8 +615,6 @@ describe('DevTeamAPIPipeline', () => {
       // Wait for processing
       await new Promise(resolve => setTimeout(resolve, 1500));
       
-      const result = await pipeline.getResult('metrics-test');
-      const stats = pipeline.getStats();
 
       expect(result?.metrics).toBeTruthy();
       expect(result?.metrics.validationTime).toBeGreaterThanOrEqual(0);

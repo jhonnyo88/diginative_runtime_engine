@@ -101,7 +101,6 @@ export class SAMLProductionManager {
   async registerMunicipalTenant(request: TenantRegistrationRequest): Promise<TenantActivationResult> {
     try {
       // Generate tenant ID
-      const tenantId = this.generateTenantId(request.municipalityName, request.country);
       
       // Validate tenant doesn't exist
       if (this.activeTenants.has(tenantId)) {
@@ -130,7 +129,6 @@ export class SAMLProductionManager {
       });
 
       // Get appropriate SAML template
-      const template = this.getSAMLTemplate(request.idpType);
       
       // Create initial tenant configuration
       const { tenant, validation } = createTenantConfig(
@@ -158,8 +156,6 @@ export class SAMLProductionManager {
       this.activeTenants.set(tenantId, tenant);
 
       // Generate activation materials
-      const activationCode = this.generateActivationCode(tenantId);
-      const setupInstructions = this.generateSetupInstructions(tenant, template);
 
       // Store activation details
       await this.redis.set(`saml:activation:${tenantId}`, {
@@ -222,7 +218,6 @@ export class SAMLProductionManager {
   async activateTenant(tenantId: string, activationCode: string, samlConfig: Partial<SAMLConfiguration>): Promise<TenantActivationResult> {
     try {
       // Verify activation code
-      const activation = await this.redis.get(`saml:activation:${tenantId}`);
       if (!activation || activation.code !== activationCode) {
         await this.logAuditEvent({
           tenantId,
@@ -255,7 +250,6 @@ export class SAMLProductionManager {
       }
 
       // Get tenant
-      const tenant = this.activeTenants.get(tenantId);
       if (!tenant) {
         return {
           success: false,
@@ -266,13 +260,8 @@ export class SAMLProductionManager {
       }
 
       // Merge provided SAML configuration
-      const updatedSamlConfig = {
-        ...tenant.samlConfig,
-        ...samlConfig
-      };
 
       // Validate SAML configuration
-      const validation = validateSAMLConfig(updatedSamlConfig, tenantId);
       if (!validation.isValid) {
         await this.logAuditEvent({
           tenantId,
@@ -296,7 +285,6 @@ export class SAMLProductionManager {
       }
 
       // Test SAML connection
-      const connectionTest = await this.testSAMLConnection(updatedSamlConfig);
       if (!connectionTest.success) {
         return {
           success: false,
@@ -364,7 +352,7 @@ export class SAMLProductionManager {
         tenantId,
         action: 'security_violation',
         details: {
-          operation: 'tenant_activation_error',
+          operation: 'tenant_activationerror',
           error: error instanceof Error ? error.message : 'Unknown error'
         },
         ipAddress: 'system',
@@ -396,7 +384,6 @@ export class SAMLProductionManager {
       error?: string;
     }
   ): Promise<void> {
-    const severity = action === 'login_failure' ? 'warning' : 'info';
     
     await this.logAuditEvent({
       tenantId,
@@ -422,16 +409,8 @@ export class SAMLProductionManager {
   async generateSecurityAuditReport(tenantId: string, startDate: Date, endDate: Date): Promise<SecurityAuditReport> {
     try {
       // Get audit logs for period
-      const logs = await this.getAuditLogs(tenantId, startDate, endDate);
       
       // Calculate summary statistics
-      const summary = {
-        totalLogins: logs.filter(l => l.action === 'login_success').length,
-        failedLogins: logs.filter(l => l.action === 'login_failure').length,
-        securityViolations: logs.filter(l => l.action === 'security_violation').length,
-        configChanges: logs.filter(l => l.action === 'config_change').length,
-        activeUsers: new Set(logs.filter(l => l.details.userId).map(l => l.details.userId)).size
-      };
 
       // Identify security risks
       const risks: SecurityRisk[] = [];
@@ -459,19 +438,16 @@ export class SAMLProductionManager {
       }
 
       // Certificate expiration check
-      const tenant = this.activeTenants.get(tenantId);
       if (tenant) {
-        const certRisk = await this.checkCertificateExpiration(tenant);
         if (certRisk) {
           risks.push(certRisk);
         }
       }
 
       // Generate recommendations
-      const recommendations = this.generateSecurityRecommendations(summary, risks);
 
       // Determine compliance status
-      const complianceStatus = risks.some(r => r.level === 'critical') ? 'non_compliant' :
+      const _complianceStatus = risks.some(r => r.level === 'critical') ? 'non_compliant' :
                               risks.some(r => r.level === 'high') ? 'warning' : 'compliant';
 
       return {
@@ -511,10 +487,8 @@ export class SAMLProductionManager {
 
   private async loadExistingTenants(): Promise<void> {
     try {
-      const tenantKeys = await this.redis.keys('saml:tenant:*');
       
       for (const key of tenantKeys) {
-        const tenant = await this.redis.get<MunicipalTenant>(key);
         if (tenant && tenant.isActive) {
           this.activeTenants.set(tenant.id, tenant);
           enterpriseSAMLProvider.registerTenant(tenant);
@@ -528,19 +502,13 @@ export class SAMLProductionManager {
   }
 
   private async validateProductionReadiness(): Promise<void> {
-    const requiredEnvVars = [
-      'BASE_URL',
-      'SAML_PRIVATE_KEY'
-    ];
 
-    const missing = requiredEnvVars.filter(env => !process.env[env]);
     if (missing.length > 0) {
       throw new Error(`Missing required environment variables: ${missing.join(', ')}`);
     }
 
     // Test Redis connectivity
     await this.redis.set('saml:health:test', 'ok');
-    const testResult = await this.redis.get('saml:health:test');
     if (testResult !== 'ok') {
       throw new Error('Redis connectivity test failed');
     }
@@ -550,7 +518,7 @@ export class SAMLProductionManager {
   }
 
   private generateTenantId(municipalityName: string, country: string): string {
-    const normalized = municipalityName
+    const _normalized = municipalityName
       .toLowerCase()
       // Handle Swedish characters (ö → o, ä → a, å → a)
       .replace(/ö/g, 'o')
@@ -584,40 +552,15 @@ export class SAMLProductionManager {
   }
 
   private generateActivationCode(tenantId: string): string {
-    const timestamp = Date.now().toString(36);
-    const random = Math.random().toString(36).substring(2, 8);
-    const hash = Buffer.from(`${tenantId}:${timestamp}:${random}`).toString('base64').substring(0, 12);
     return `${timestamp}-${hash}`.toUpperCase();
   }
 
   private generateSetupInstructions(tenant: MunicipalTenant, template: SAMLConfigTemplate): string[] {
-    const instructions = [
-      `Municipal SSO Setup Instructions for ${tenant.name}`,
-      '',
-      'Step 1: Identity Provider Configuration',
-      ...template.setupInstructions.map(step => `  ${step}`),
-      '',
-      'Step 2: Certificate Configuration',
-      `  - Download and configure IdP certificate`,
-      `  - Set environment variable: SAML_${tenant.id.toUpperCase()}_CERT`,
-      `  - Set IdP entry point: SAML_${tenant.id.toUpperCase()}_ENTRY_POINT`,
-      '',
-      'Step 3: Testing',
-      `  - Test SSO login at: ${process.env.BASE_URL}/auth/saml/login/${tenant.id}`,
-      `  - Verify Service Provider metadata: ${process.env.BASE_URL}/auth/saml/metadata/${tenant.id}`,
-      '',
-      'Step 4: Production Activation',
-      '  - Complete this setup form with your SAML configuration',
-      '  - Your tenant will be activated automatically upon validation',
-      '',
-      `Support: ${this.getSupportContact()}`
-    ];
 
     return instructions;
   }
 
   private async storeTenantConfig(tenant: MunicipalTenant): Promise<void> {
-    const key = `saml:tenant:${tenant.id}`;
     await this.redis.set(key, tenant, { 
       ttl: 0, // No expiration
       tags: ['saml-tenant', tenant.country, tenant.idpType]
@@ -628,7 +571,6 @@ export class SAMLProductionManager {
     try {
       // Basic URL validation
       if (config.entryPoint) {
-        const url = new URL(config.entryPoint);
         if (url.protocol !== 'https:') {
           return { success: false, error: 'IdP entry point must use HTTPS' };
         }
@@ -664,7 +606,6 @@ export class SAMLProductionManager {
     }
 
     // Store in Redis for persistence
-    const key = `saml:audit:${auditLog.tenantId}:${auditLog.timestamp}`;
     await this.redis.set(key, auditLog, { 
       ttl: 30 * 24 * 3600, // 30 days
       tags: ['saml-audit', auditLog.tenantId, auditLog.action]
@@ -685,14 +626,10 @@ export class SAMLProductionManager {
   }
 
   private async getAuditLogs(tenantId: string, startDate: Date, endDate: Date): Promise<SAMLAuditLog[]> {
-    const pattern = `saml:audit:${tenantId}:*`;
-    const keys = await this.redis.keys(pattern);
     const logs: SAMLAuditLog[] = [];
 
     for (const key of keys) {
-      const log = await this.redis.get<SAMLAuditLog>(key);
       if (log) {
-        const logDate = new Date(log.timestamp);
         if (logDate >= startDate && logDate <= endDate) {
           logs.push(log);
         }
@@ -703,8 +640,6 @@ export class SAMLProductionManager {
   }
 
   private async updateTenantStats(tenantId: string, action: string): Promise<void> {
-    const statsKey = `saml:stats:${tenantId}`;
-    const stats = await this.redis.get(statsKey) || {
       totalLogins: 0,
       failedLogins: 0,
       lastActivity: null
@@ -721,8 +656,6 @@ export class SAMLProductionManager {
   }
 
   private async checkFailedLoginPattern(tenantId: string, ipAddress: string): Promise<void> {
-    const failureKey = `saml:failures:${tenantId}:${ipAddress}`;
-    const failures = await this.redis.incr(failureKey, 1);
     await this.redis.expire(failureKey, 3600); // 1 hour window
 
     if (failures >= 5) {
@@ -797,8 +730,6 @@ export class SAMLProductionManager {
       // Check for inactive tenants
       for (const [tenantId, tenant] of this.activeTenants) {
         if (tenant.isActive && tenant.lastLogin) {
-          const lastLoginDate = new Date(tenant.lastLogin);
-          const daysSinceLogin = (Date.now() - lastLoginDate.getTime()) / (1000 * 60 * 60 * 24);
           
           if (daysSinceLogin > 90) { // 90 days inactive
             await this.logAuditEvent({

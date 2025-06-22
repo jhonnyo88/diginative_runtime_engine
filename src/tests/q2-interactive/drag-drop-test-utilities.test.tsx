@@ -12,35 +12,8 @@ import userEvent from '@testing-library/user-event';
 import { PermitProcessingWorkflow } from '../../components/q2-interactive/PermitProcessingWorkflow';
 
 // Mock drag-drop utilities
-const mockDragDropUtils = {
-  createDragEvent: vi.fn(),
-  createDropEvent: vi.fn(),
-  simulateDragSequence: vi.fn(),
-  validateDropZone: vi.fn(),
-  trackDragPerformance: vi.fn()
-};
 
 // Municipal drag-drop scenarios
-const MUNICIPAL_DRAG_DROP_SCENARIOS = {
-  documentRouting: {
-    source: 'pending-documents',
-    target: 'approved-documents',
-    dataType: 'municipal-document',
-    validation: 'gdpr-compliant'
-  },
-  processFlowAssembly: {
-    source: 'process-components',
-    target: 'workflow-canvas',
-    dataType: 'workflow-step',
-    validation: 'municipal-compliance'
-  },
-  emergencyResponsePlanning: {
-    source: 'response-resources',
-    target: 'deployment-zones',
-    dataType: 'emergency-resource',
-    validation: 'time-critical'
-  }
-};
 
 describe('Drag & Drop Test Utilities', () => {
   let dragDropHarness: Record<string, unknown>;
@@ -52,18 +25,6 @@ describe('Drag & Drop Test Utilities', () => {
 
   describe('Municipal Document Routing', () => {
     it('should support drag-drop for municipal document routing workflow', async () => {
-      const user = userEvent.setup();
-      const mockPermits = [
-        {
-          id: 'permit-001',
-          type: 'building' as const,
-          applicant: 'Test Applicant',
-          municipality: 'malmö',
-          urgency: 'medium' as const,
-          submittedDate: '2025-06-22',
-          requiredDocuments: ['blueprint', 'safety-plan']
-        }
-      ];
       
       const { container } = render(
         <PermitProcessingWorkflow 
@@ -74,8 +35,6 @@ describe('Drag & Drop Test Utilities', () => {
         />
       );
 
-      const pendingDocument = screen.getByTestId('document-gdpr-training-001');
-      const approvedZone = screen.getByTestId('approved-documents-zone');
 
       // Test drag initiation
       await user.pointer([
@@ -94,7 +53,6 @@ describe('Drag & Drop Test Utilities', () => {
       });
 
       // Verify municipal branding during drag
-      const dragPreview = screen.getByTestId('drag-preview');
       expect(dragPreview).toHaveClass('municipal-drag-preview', 'malmö-branding');
       
       // Verify accessibility announcements
@@ -102,14 +60,12 @@ describe('Drag & Drop Test Utilities', () => {
     });
 
     it('should handle Anna Svensson iPhone 12 touch drag interactions', async () => {
-      const touchHarness = createTouchDragHarness({
+      const _touchHarness = createTouchDragHarness({
         device: 'iPhone 12',
         user: 'anna-svensson',
         viewport: { width: 390, height: 844 }
       });
 
-      const document = screen.getByTestId('touch-document-001');
-      const dropZone = screen.getByTestId('touch-drop-zone');
 
       // Simulate touch drag sequence
       await touchHarness.touchDrag({
@@ -133,11 +89,7 @@ describe('Drag & Drop Test Utilities', () => {
     });
 
     it('should validate keyboard accessibility for drag-drop operations', async () => {
-      const user = userEvent.setup();
-      const accessibilityHarness = createAccessibilityDragHarness();
 
-      const draggableItem = screen.getByTestId('keyboard-draggable-document');
-      const dropTarget = screen.getByTestId('keyboard-drop-target');
 
       // Focus draggable item
       await user.tab();
@@ -163,14 +115,12 @@ describe('Drag & Drop Test Utilities', () => {
 
   describe('Process Flow Assembly Testing', () => {
     it('should test municipal workflow step drag-drop assembly', async () => {
-      const workflowHarness = createWorkflowTestHarness({
+      const _workflowHarness = createWorkflowTestHarness({
         municipality: 'malmö',
         workflowType: 'emergency-preparedness',
         locale: 'sv-SE'
       });
 
-      const processStep = screen.getByTestId('process-step-evacuation');
-      const workflowCanvas = screen.getByTestId('workflow-assembly-canvas');
 
       await workflowHarness.dragProcessStep({
         step: processStep,
@@ -188,7 +138,6 @@ describe('Drag & Drop Test Utilities', () => {
       });
 
       // Test workflow step connections
-      const connectionPoint = screen.getByTestId('connection-point-1');
       await workflowHarness.connectWorkflowSteps({
         from: processStep,
         to: connectionPoint,
@@ -207,16 +156,13 @@ describe('Drag & Drop Test Utilities', () => {
     });
 
     it('should validate performance under municipal network conditions', async () => {
-      const performanceHarness = createDragDropPerformanceHarness({
+      const _performanceHarness = createDragDropPerformanceHarness({
         networkConditions: '3G',
         userPersona: 'anna-svensson',
         municipality: 'malmö'
       });
 
-      const heavyWorkflowComponent = screen.getByTestId('complex-workflow-step');
-      const targetCanvas = screen.getByTestId('workflow-canvas');
 
-      const performanceMetrics = await performanceHarness.measureDragDropPerformance({
         element: heavyWorkflowComponent,
         target: targetCanvas,
         networkThrottling: '3G',
@@ -238,16 +184,13 @@ describe('Drag & Drop Test Utilities', () => {
 
   describe('Emergency Response Planning Drag-Drop', () => {
     it('should test time-critical emergency resource deployment', async () => {
-      const emergencyHarness = createEmergencyDragDropHarness({
+      const _emergencyHarness = createEmergencyDragDropHarness({
         scenario: 'flood-response',
         municipality: 'malmö',
         timeConstraint: 300000 // 5 minutes
       });
 
-      const emergencyResource = screen.getByTestId('emergency-resource-ambulance');
-      const deploymentZone = screen.getByTestId('deployment-zone-sector-a');
 
-      const deploymentResult = await emergencyHarness.deployResource({
         resource: emergencyResource,
         zone: deploymentZone,
         priority: 'critical',
@@ -270,26 +213,15 @@ describe('Drag & Drop Test Utilities', () => {
     });
 
     it('should test multi-touch emergency resource coordination', async () => {
-      const multiTouchHarness = createMultiTouchDragHarness({
+      const _multiTouchHarness = createMultiTouchDragHarness({
         device: 'iPad',
         scenario: 'multi-incident-response',
         municipality: 'malmö'
       });
 
       // Simulate coordinator managing multiple resources simultaneously
-      const resources = [
-        screen.getByTestId('resource-fire-truck'),
-        screen.getByTestId('resource-police-unit'),
-        screen.getByTestId('resource-medical-team')
-      ];
 
-      const deploymentZones = [
-        screen.getByTestId('zone-incident-1'),
-        screen.getByTestId('zone-incident-2'),
-        screen.getByTestId('zone-incident-3')
-      ];
 
-      const multiDeploymentResult = await multiTouchHarness.simultaneousDeployment({
         resources,
         zones: deploymentZones,
         coordinatorPersona: 'municipal-emergency-coordinator',
@@ -303,13 +235,10 @@ describe('Drag & Drop Test Utilities', () => {
   });
 
   describe('Cross-Browser Compatibility', () => {
-    const browsers = ['chrome', 'firefox', 'safari', 'edge'];
     
     browsers.forEach(browser => {
       it(`should work correctly in ${browser}`, async () => {
-        const browserHarness = createBrowserSpecificHarness(browser);
         
-        const testResult = await browserHarness.runDragDropCompatibilityTest({
           scenarios: MUNICIPAL_DRAG_DROP_SCENARIOS,
           municipality: 'malmö',
           userPersona: 'anna-svensson'
@@ -324,12 +253,8 @@ describe('Drag & Drop Test Utilities', () => {
 
   describe('GDPR Compliance for Drag-Drop Data', () => {
     it('should ensure GDPR compliance during drag-drop operations', async () => {
-      const gdprHarness = createGDPRDragDropHarness();
 
-      const sensitiveDocument = screen.getByTestId('gdpr-sensitive-document');
-      const secureZone = screen.getByTestId('gdpr-compliant-zone');
 
-      const dragResult = await gdprHarness.dragSensitiveData({
         source: sensitiveDocument,
         target: secureZone,
         dataClassification: 'personal',

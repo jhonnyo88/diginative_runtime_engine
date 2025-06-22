@@ -11,38 +11,8 @@ import { render, screen, waitFor, act } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 
 // Mock timer utilities
-const mockTimerUtils = {
-  createCountdownTimer: vi.fn(),
-  trackTimerPerformance: vi.fn(),
-  validateTimerAccuracy: vi.fn(),
-  simulateNetworkDelay: vi.fn(),
-  measureTimerSync: vi.fn()
-};
 
 // Municipal emergency scenarios with time constraints
-const MUNICIPAL_TIMER_SCENARIOS = {
-  floodResponse: {
-    name: 'Malmö Flood Response Training',
-    timeLimit: 300000, // 5 minutes
-    checkpoints: [60000, 180000, 240000], // 1min, 3min, 4min
-    municipality: 'malmö',
-    difficulty: 'intermediate'
-  },
-  evacuationProcedure: {
-    name: 'Stockholm Evacuation Protocol',
-    timeLimit: 420000, // 7 minutes
-    checkpoints: [120000, 300000], // 2min, 5min
-    municipality: 'stockholm',
-    difficulty: 'advanced'
-  },
-  emergencyResponse: {
-    name: 'Göteborg Emergency Coordination',
-    timeLimit: 180000, // 3 minutes
-    checkpoints: [60000, 120000], // 1min, 2min
-    municipality: 'göteborg',
-    difficulty: 'expert'
-  }
-};
 
 describe('Timer-Based Challenge Framework', () => {
   let timerHarness: Record<string, unknown>;
@@ -64,7 +34,6 @@ describe('Timer-Based Challenge Framework', () => {
 
   describe('Emergency Preparedness Timer Scenarios', () => {
     it('should run Malmö flood response training with accurate timing', async () => {
-      const user = userEvent.setup({ advanceTimers: vi.advanceTimersByTime });
       
       render(
         <EmergencyTimerChallenge 
@@ -74,8 +43,6 @@ describe('Timer-Based Challenge Framework', () => {
         />
       );
 
-      const startButton = screen.getByTestId('start-flood-response-timer');
-      const timerDisplay = screen.getByTestId('timer-display');
 
       // Start the challenge
       await user.click(startButton);
@@ -117,7 +84,7 @@ describe('Timer-Based Challenge Framework', () => {
     });
 
     it('should handle Anna Svensson iPhone 12 timer performance on 3G', async () => {
-      const mobileTimerHarness = createMobileTimerHarness({
+      const _mobileTimerHarness = createMobileTimerHarness({
         device: 'iPhone 12',
         user: 'anna-svensson',
         networkConditions: '3G',
@@ -131,7 +98,6 @@ describe('Timer-Based Challenge Framework', () => {
         />
       );
 
-      const performanceMetrics = await mobileTimerHarness.measureTimerPerformance({
         duration: 420000, // 7 minutes
         networkThrottling: '3G',
         expectedAccuracy: 99.5 // 99.5% accuracy target
@@ -159,13 +125,12 @@ describe('Timer-Based Challenge Framework', () => {
     });
 
     it('should validate timer synchronization across municipal network', async () => {
-      const networkTimerHarness = createNetworkTimerHarness({
+      const _networkTimerHarness = createNetworkTimerHarness({
         municipality: 'stockholm',
         networkConditions: ['wifi', '4G', '3G', '2G'],
         simultaneousUsers: 50
       });
 
-      const syncResults = await networkTimerHarness.testTimerSynchronization({
         scenario: MUNICIPAL_TIMER_SCENARIOS.emergencyResponse,
         participants: 50,
         networkVariability: 'high',
@@ -190,13 +155,12 @@ describe('Timer-Based Challenge Framework', () => {
 
   describe('Timer Accuracy and Performance', () => {
     it('should maintain sub-100ms accuracy under municipal network stress', async () => {
-      const stressTestHarness = createTimerStressHarness({
+      const _stressTestHarness = createTimerStressHarness({
         simultaneousTimers: 100,
         networkConditions: 'degraded-3G',
         municipality: 'malmö'
       });
 
-      const stressResults = await stressTestHarness.runTimerStressTest({
         duration: 300000, // 5 minutes
         timerCount: 100,
         networkJitter: 'high',
@@ -221,7 +185,7 @@ describe('Timer-Based Challenge Framework', () => {
     });
 
     it('should validate timer persistence across browser refresh', async () => {
-      const persistenceHarness = createTimerPersistenceHarness({
+      const _persistenceHarness = createTimerPersistenceHarness({
         scenario: MUNICIPAL_TIMER_SCENARIOS.floodResponse,
         municipality: 'göteborg'
       });
@@ -240,7 +204,6 @@ describe('Timer-Based Challenge Framework', () => {
       await persistenceHarness.simulateBrowserRefresh();
 
       // Verify timer restoration
-      const restoredState = await persistenceHarness.getRestoredTimerState();
 
       expect(restoredState.isRunning).toBe(true);
       expect(restoredState.remainingTime).toBeCloseTo(180000, 1000); // ~3 minutes left
@@ -255,13 +218,12 @@ describe('Timer-Based Challenge Framework', () => {
 
   describe('Municipal Emergency Scenarios', () => {
     it('should test complex evacuation procedure with multiple checkpoints', async () => {
-      const evacuationHarness = createEvacuationTimerHarness({
+      const _evacuationHarness = createEvacuationTimerHarness({
         municipality: 'stockholm',
         building: 'municipality-headquarters',
         participants: 150
       });
 
-      const evacuationResult = await evacuationHarness.runEvacuationDrill({
         timeLimit: 420000, // 7 minutes
         checkpoints: [
           { time: 60000, action: 'initial-alert' },
@@ -294,13 +256,12 @@ describe('Timer-Based Challenge Framework', () => {
     });
 
     it('should handle time-critical resource deployment scenario', async () => {
-      const resourceHarness = createResourceDeploymentHarness({
+      const _resourceHarness = createResourceDeploymentHarness({
         municipality: 'malmö',
         scenario: 'coastal-flooding',
         resourceTypes: ['fire', 'medical', 'rescue', 'logistics']
       });
 
-      const deploymentResult = await resourceHarness.runResourceDeployment({
         timeConstraint: 180000, // 3 minutes
         resources: [
           { type: 'fire', count: 3, deploymentTime: 45000 },
@@ -326,12 +287,11 @@ describe('Timer-Based Challenge Framework', () => {
 
   describe('Progress Tracking and Analytics', () => {
     it('should track detailed progress analytics for municipal training', async () => {
-      const analyticsHarness = createTimerAnalyticsHarness({
+      const _analyticsHarness = createTimerAnalyticsHarness({
         municipality: 'göteborg',
         trackingLevel: 'detailed'
       });
 
-      const sessionResult = await analyticsHarness.trackTimerSession({
         scenario: MUNICIPAL_TIMER_SCENARIOS.emergencyResponse,
         participant: {
           id: 'anna-svensson-001',
@@ -367,12 +327,11 @@ describe('Timer-Based Challenge Framework', () => {
 
   describe('Accessibility and Inclusion', () => {
     it('should support timer challenges for users with disabilities', async () => {
-      const accessibilityHarness = createTimerAccessibilityHarness({
+      const _accessibilityHarness = createTimerAccessibilityHarness({
         supportedDisabilities: ['visual', 'hearing', 'motor', 'cognitive'],
         municipality: 'malmö'
       });
 
-      const accessibilityResults = await accessibilityHarness.testAccessibleTimer({
         scenario: MUNICIPAL_TIMER_SCENARIOS.floodResponse,
         assistiveTechnologies: ['screen-reader', 'voice-control', 'switch-navigation'],
         adaptiveSettings: {

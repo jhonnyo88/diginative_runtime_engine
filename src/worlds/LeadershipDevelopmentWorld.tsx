@@ -16,7 +16,6 @@ export const LeadershipDevelopmentWorld: React.FC<WorldComponentProps> = ({
   culturalContext,
   worldDefinition
 }) => {
-  const navigate = useNavigate();
   const [loading, setLoading] = useState(true);
   const [worldState, setWorldState] = useState<Record<string, unknown>>(null);
 
@@ -24,11 +23,10 @@ export const LeadershipDevelopmentWorld: React.FC<WorldComponentProps> = ({
     initializeWorld();
   }, []);
 
-  const initializeWorld = async () => {
+  const _initializeWorld = async () => {
     try {
       setLoading(true);
       
-      const worldSession = await multiWorldStateManager.startWorldSession(
         hubSessionId,
         4, // World 4: Leadership Development
         'leadership-development-game'
@@ -48,9 +46,6 @@ export const LeadershipDevelopmentWorld: React.FC<WorldComponentProps> = ({
     }
   };
 
-  const handleReturnToHub = () => {
-    navigate(`/hub/${uniqueCode}`);
-  };
 
   if (loading) {
     return (

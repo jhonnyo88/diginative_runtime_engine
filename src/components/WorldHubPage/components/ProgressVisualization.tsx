@@ -18,91 +18,8 @@ export const ProgressVisualization: React.FC<ProgressVisualizationProps> = ({
   hubState,
   culturalContext
 }) => {
-  const getCompetencyTranslation = (competency: CompetencyType) => {
-    const translations = {
-      swedish_municipal: {
-        municipal_administration: 'Kommunal Administration',
-        citizen_service_excellence: 'Medborgartjänst',
-        emergency_management: 'Krishantering',
-        leadership_skills: 'Ledarskap',
-        digital_innovation: 'Digital Innovation',
-        cultural_adaptation: 'Kulturell Anpassning',
-        compliance_knowledge: 'Regelefterlevnad'
-      },
-      german_municipal: {
-        municipal_administration: 'Kommunalverwaltung',
-        citizen_service_excellence: 'Bürgerdienst',
-        emergency_management: 'Krisenmanagement',
-        leadership_skills: 'Führung',
-        digital_innovation: 'Digitale Innovation',
-        cultural_adaptation: 'Kulturelle Anpassung',
-        compliance_knowledge: 'Compliance-Wissen'
-      },
-      french_municipal: {
-        municipal_administration: 'Administration Municipale',
-        citizen_service_excellence: 'Service Citoyen',
-        emergency_management: 'Gestion de Crise',
-        leadership_skills: 'Leadership',
-        digital_innovation: 'Innovation Numérique',
-        cultural_adaptation: 'Adaptation Culturelle',
-        compliance_knowledge: 'Conformité'
-      },
-      dutch_municipal: {
-        municipal_administration: 'Gemeentelijke Administratie',
-        citizen_service_excellence: 'Burgerdienst',
-        emergency_management: 'Crisismanagement',
-        leadership_skills: 'Leiderschap',
-        digital_innovation: 'Digitale Innovatie',
-        cultural_adaptation: 'Culturele Aanpassing',
-        compliance_knowledge: 'Compliance Kennis'
-      }
-    };
-    return translations[culturalContext]?.[competency] || competency;
-  };
 
-  const getProgressTexts = () => {
-    const texts = {
-      swedish_municipal: {
-        overallProgress: 'Total Framsteg',
-        competencyLevels: 'Kompetensnivåer',
-        worldProgression: 'Världsframsteg',
-        achievements: 'Prestationer',
-        certification: 'Certifiering',
-        timeSpent: 'Tid Spenderad',
-        progressPath: 'Utvecklingsväg'
-      },
-      german_municipal: {
-        overallProgress: 'Gesamtfortschritt',
-        competencyLevels: 'Kompetenzniveaus',
-        worldProgression: 'Weltfortschritt',
-        achievements: 'Errungenschaften',
-        certification: 'Zertifizierung',
-        timeSpent: 'Zeitaufwand',
-        progressPath: 'Entwicklungspfad'
-      },
-      french_municipal: {
-        overallProgress: 'Progrès Global',
-        competencyLevels: 'Niveaux de Compétence',
-        worldProgression: 'Progression des Mondes',
-        achievements: 'Réalisations',
-        certification: 'Certification',
-        timeSpent: 'Temps Passé',
-        progressPath: 'Chemin de Développement'
-      },
-      dutch_municipal: {
-        overallProgress: 'Totale Voortgang',
-        competencyLevels: 'Competentieniveaus',
-        worldProgression: 'Wereldprogressie',
-        achievements: 'Prestaties',
-        certification: 'Certificering',
-        timeSpent: 'Tijd Besteed',
-        progressPath: 'Ontwikkelingspad'
-      }
-    };
-    return texts[culturalContext] || texts.swedish_municipal;
-  };
 
-  const progressTexts = getProgressTexts();
   
   // Calculate competency levels (mock data since it's not fully populated in state)
   const competencyLevels: Record<CompetencyType, number> = {
@@ -115,20 +32,7 @@ export const ProgressVisualization: React.FC<ProgressVisualizationProps> = ({
     compliance_knowledge: 80
   };
 
-  const getCompetencyColor = (level: number) => {
-    if (level >= 80) return '#2E7D32'; // Expert
-    if (level >= 60) return '#388E3C'; // Advanced
-    if (level >= 40) return '#66BB6A'; // Intermediate
-    if (level >= 20) return '#FFA726'; // Beginner
-    return '#90A4AE'; // Not started
-  };
 
-  const worldProgressData = hubState.worldCompletionStatus.map(world => ({
-    worldIndex: world.worldIndex,
-    completion: world.completionPercentage,
-    status: world.status,
-    score: world.score
-  }));
 
   return (
     <div className="progress-visualization" data-cultural-context={culturalContext}>

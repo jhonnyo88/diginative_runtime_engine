@@ -12,71 +12,12 @@ import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 
 // Mock municipal compliance utilities
-const mockComplianceUtils = {
-  validateGDPRCompliance: vi.fn(),
-  checkAccessibility: vi.fn(),
-  validateCulturalAppropriateness: vi.fn(),
-  monitorCompliancePerformance: vi.fn(),
-  generateComplianceReport: vi.fn()
-};
 
 // Municipal compliance specifications
-const MUNICIPAL_COMPLIANCE_SPECS = {
-  gdpr: {
-    dataMinimization: 'enforced',
-    consentManagement: 'real-time',
-    dataRetention: 'automated',
-    auditTrail: 'complete',
-    performanceOverhead: 10 // max 10ms
-  },
-  accessibility: {
-    wcagLevel: 'AA',
-    screenReaderSupport: 'full',
-    keyboardNavigation: 'complete',
-    colorContrast: 4.5, // minimum ratio
-    performanceImpact: 15 // max 15ms
-  },
-  culturalAppropriateness: {
-    swedishMunicipalStandards: 'strict',
-    politicalNeutrality: 'enforced',
-    culturalSensitivity: 'high',
-    professionalTone: 'maintained',
-    validationLatency: 20 // max 20ms
-  }
-};
 
 // Municipal workflow compliance scenarios
-const MUNICIPAL_COMPLIANCE_SCENARIOS = {
-  invoiceApprovalCompliance: {
-    workflowType: 'invoice-approval',
-    gdprRequirements: ['personal-data-protection', 'financial-data-encryption', 'audit-logging'],
-    accessibilityRequirements: ['screen-reader-approval', 'keyboard-financial-navigation', 'high-contrast-currency'],
-    culturalRequirements: ['professional-financial-language', 'municipal-appropriate-terminology']
-  },
-  permitProcessingCompliance: {
-    workflowType: 'permit-processing',
-    gdprRequirements: ['citizen-data-minimization', 'permit-data-retention', 'consent-tracking'],
-    accessibilityRequirements: ['permit-form-accessibility', 'document-upload-accessibility', 'approval-notification-accessibility'],
-    culturalRequirements: ['swedish-permit-terminology', 'cultural-event-appropriateness', 'municipal-brand-consistency']
-  }
-};
 
 // Performance compliance integration requirements
-const PERFORMANCE_COMPLIANCE_INTEGRATION = {
-  concurrentCompliance: {
-    gdprProcessingTime: 10, // ms
-    accessibilityRenderTime: 15, // ms
-    culturalValidationTime: 20, // ms
-    totalComplianceOverhead: 50, // ms
-    targetFPS: 60
-  },
-  complianceUnderLoad: {
-    concurrentUsers: 200,
-    complianceAccuracy: 0.99, // 99% accuracy under load
-    performanceDegradation: 0.05, // <5% degradation
-    municipalSLA: 'maintained'
-  }
-};
 
 describe('Municipal Compliance Performance Testing for Q2 Workflows', () => {
   let complianceHarness: Record<string, unknown>;
@@ -90,7 +31,6 @@ describe('Municipal Compliance Performance Testing for Q2 Workflows', () => {
 
   describe('GDPR Compliance Performance Testing', () => {
     it('should maintain GDPR compliance during high-performance drag-drop operations', async () => {
-      const gdprPerformanceTest = await complianceHarness.testGDPRCompliancePerformance({
         workflowType: 'invoice-approval',
         personalDataTypes: ['citizen-info', 'financial-records', 'municipal-employee-data'],
         targetFPS: 60,
@@ -134,7 +74,6 @@ describe('Municipal Compliance Performance Testing for Q2 Workflows', () => {
     });
 
     it('should handle GDPR data subject rights during workflow operations', async () => {
-      const dataSubjectRightsTest = await complianceHarness.testDataSubjectRightsPerformance({
         rightsRequests: ['access', 'rectification', 'erasure', 'portability'],
         activeWorkflows: ['invoice-approval', 'permit-processing'],
         municipality: 'malmö',
@@ -169,7 +108,6 @@ describe('Municipal Compliance Performance Testing for Q2 Workflows', () => {
     });
 
     it('should maintain GDPR audit trails with minimal performance impact', async () => {
-      const auditTrailPerformanceTest = await complianceHarness.testAuditTrailPerformance({
         auditEvents: ['drag-start', 'drag-move', 'drag-end', 'approval-action', 'data-access'],
         workflowType: 'permit-processing',
         municipality: 'malmö',
@@ -205,7 +143,6 @@ describe('Municipal Compliance Performance Testing for Q2 Workflows', () => {
 
   describe('Accessibility Compliance Performance Testing', () => {
     it('should maintain WCAG 2.1 AA compliance during drag-drop interactions', async () => {
-      const accessibilityPerformanceTest = await complianceHarness.testAccessibilityCompliancePerformance({
         wcagLevel: 'AA',
         assistiveTechnologies: ['screen-reader', 'keyboard-navigation', 'voice-control'],
         workflowType: 'invoice-approval',
@@ -248,7 +185,6 @@ describe('Municipal Compliance Performance Testing for Q2 Workflows', () => {
     });
 
     it('should provide accessible alternatives for drag-drop operations', async () => {
-      const accessibleAlternativesTest = await complianceHarness.testAccessibleDragDropAlternatives({
         alternativeMethods: ['keyboard-selection', 'voice-commands', 'button-interface'],
         workflowType: 'permit-processing',
         municipality: 'malmö',
@@ -283,7 +219,6 @@ describe('Municipal Compliance Performance Testing for Q2 Workflows', () => {
     });
 
     it('should maintain color contrast and visual accessibility during interactions', async () => {
-      const visualAccessibilityTest = await complianceHarness.testVisualAccessibilityPerformance({
         colorContrastRatio: 4.5,
         visualElements: ['drag-indicators', 'drop-zones', 'approval-buttons', 'status-indicators'],
         workflowType: 'invoice-approval',
@@ -320,7 +255,6 @@ describe('Municipal Compliance Performance Testing for Q2 Workflows', () => {
 
   describe('Cultural Appropriateness Performance Testing', () => {
     it('should validate Swedish municipal cultural appropriateness in real-time', async () => {
-      const culturalAppropriatenessTest = await complianceHarness.testCulturalAppropriatenessPerformance({
         culturalContext: 'swedish-municipal',
         contentTypes: ['workflow-instructions', 'approval-messages', 'error-messages', 'help-text'],
         workflowType: 'permit-processing',
@@ -356,7 +290,6 @@ describe('Municipal Compliance Performance Testing for Q2 Workflows', () => {
     });
 
     it('should handle cultural validation for different permit types', async () => {
-      const permitCulturalValidation = await complianceHarness.testPermitCulturalValidation({
         permitTypes: ['building', 'business', 'event', 'parking'],
         culturalValidationTypes: ['content-appropriateness', 'terminology-accuracy', 'cultural-sensitivity'],
         municipality: 'malmö',
@@ -391,7 +324,6 @@ describe('Municipal Compliance Performance Testing for Q2 Workflows', () => {
     });
 
     it('should maintain professional municipal tone during high-performance operations', async () => {
-      const professionalToneTest = await complianceHarness.testProfessionalTonePerformance({
         contentElements: ['user-messages', 'system-feedback', 'error-handling', 'success-notifications'],
         workflowType: 'invoice-approval',
         municipality: 'malmö',
@@ -428,7 +360,6 @@ describe('Municipal Compliance Performance Testing for Q2 Workflows', () => {
 
   describe('Integrated Compliance Performance Testing', () => {
     it('should maintain all compliance standards simultaneously during peak performance', async () => {
-      const integratedComplianceTest = await complianceHarness.testIntegratedCompliancePerformance({
         complianceStandards: ['gdpr', 'accessibility', 'cultural-appropriateness'],
         workflowTypes: ['invoice-approval', 'permit-processing'],
         targetFPS: 60,
@@ -464,7 +395,6 @@ describe('Municipal Compliance Performance Testing for Q2 Workflows', () => {
     });
 
     it('should handle compliance validation under municipal load conditions', async () => {
-      const complianceUnderLoadTest = await complianceHarness.testCompliancePerformanceUnderLoad({
         concurrentUsers: PERFORMANCE_COMPLIANCE_INTEGRATION.complianceUnderLoad.concurrentUsers,
         complianceStandards: ['gdpr', 'accessibility', 'cultural-appropriateness'],
         municipality: 'malmö',
@@ -499,7 +429,6 @@ describe('Municipal Compliance Performance Testing for Q2 Workflows', () => {
     });
 
     it('should provide comprehensive compliance reporting with minimal performance impact', async () => {
-      const complianceReportingTest = await complianceHarness.testComplianceReportingPerformance({
         reportingFrequency: 'real-time',
         reportingScope: 'comprehensive',
         municipality: 'malmö',

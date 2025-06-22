@@ -128,7 +128,6 @@ export class GracefulDegradationService {
     
     // Network failure fallback
     this.registerFallbackProvider(DegradationReason.NETWORK_FAILURE, (reason, originalContent) => {
-      const cachedContent = this.getCachedContent(originalContent?.gameId);
       if (cachedContent) {
         return {
           ...cachedContent,
@@ -147,7 +146,6 @@ export class GracefulDegradationService {
     // Validation error fallback
     this.registerFallbackProvider(DegradationReason.VALIDATION_ERROR, (reason, originalContent) => {
       // Try to repair the content first
-      const repairedContent = this.attemptContentRepair(originalContent);
       if (repairedContent) {
         return {
           ...repairedContent,
@@ -206,8 +204,6 @@ export class GracefulDegradationService {
       }
       
       // Validate content with timeout
-      const validationPromise = this.validateContentWithTimeout(content, timeout);
-      const result = await validationPromise;
       
       if (result.isValid) {
         // Cache valid content
@@ -227,7 +223,6 @@ export class GracefulDegradationService {
       console.error('Content handling error:', error);
       
       // Determine error type and appropriate degradation
-      const reason = this.classifyError(error);
       
       // Retry logic
       if (retryCount < maxRetries && this.shouldRetry(reason)) {
@@ -247,7 +242,6 @@ export class GracefulDegradationService {
   private async validateContentWithTimeout(content: Record<string, unknown>, timeout: number): Promise<Record<string, unknown>> {
     return Promise.race([
       new Promise((resolve) => {
-        const result = this.validator.validateGameManifest(content);
         resolve(result);
       }),
       new Promise((_, reject) => {
@@ -260,7 +254,6 @@ export class GracefulDegradationService {
    * Classify error type for appropriate degradation
    */
   private classifyError(error: Record<string, unknown>): DegradationReason {
-    const errorMessage = error?.message?.toLowerCase() || '';
     
     if (errorMessage.includes('network') || errorMessage.includes('fetch')) {
       return DegradationReason.NETWORK_FAILURE;
@@ -289,11 +282,6 @@ export class GracefulDegradationService {
    * Determine if error should trigger retry
    */
   private shouldRetry(reason: DegradationReason): boolean {
-    const retryableReasons = [
-      DegradationReason.NETWORK_FAILURE,
-      DegradationReason.SERVICE_DISRUPTION,
-      DegradationReason.TIMEOUT_ERROR
-    ];
     
     return retryableReasons.includes(reason);
   }
@@ -313,10 +301,7 @@ export class GracefulDegradationService {
     const { retryCount = 0, maxRetries = 3, metadata = {} } = options;
     
     // Create degradation context
-    const level = this.determineDegradationLevel(reason, retryCount, maxRetries);
-    const strategy = this.determineRecoveryStrategy(reason, level);
     
-    const context = this.createDegradationContext(level, reason, strategy, {
       retryCount,
       maxRetries,
       ...metadata
@@ -326,12 +311,10 @@ export class GracefulDegradationService {
     this.logDegradation(context, originalContent);
     
     // Get fallback content
-    const fallbackProvider = this.fallbackProviders.get(reason);
     if (!fallbackProvider) {
       return this.createGenericErrorManifest(reason, originalContent);
     }
     
-    const fallbackContent = fallbackProvider(reason, originalContent);
     
     // Add degradation info to content
     if (fallbackContent && typeof fallbackContent === 'object') {
@@ -349,7 +332,6 @@ export class GracefulDegradationService {
     retryCount: number,
     maxRetries: number
   ): DegradationLevel {
-    const retryRatio = retryCount / maxRetries;
     
     switch (reason) {
       case DegradationReason.MALFORMED_CONTENT:
@@ -425,16 +407,6 @@ export class GracefulDegradationService {
    * Get user-friendly degradation message
    */
   private getDegradationMessage(level: DegradationLevel, reason: DegradationReason): string {
-    const messages = {
-      [DegradationReason.MALFORMED_CONTENT]: 'Content format issue detected - using simplified version',
-      [DegradationReason.NETWORK_FAILURE]: 'Network connectivity issue - using cached content',
-      [DegradationReason.SERVICE_DISRUPTION]: 'Service temporarily unavailable - using fallback',
-      [DegradationReason.VALIDATION_ERROR]: 'Content validation issue - using corrected version',
-      [DegradationReason.RENDERING_ERROR]: 'Display issue detected - using simplified layout',
-      [DegradationReason.DATA_CORRUPTION]: 'Data integrity issue - using backup content',
-      [DegradationReason.TIMEOUT_ERROR]: 'Loading timeout - using cached version',
-      [DegradationReason.MEMORY_PRESSURE]: 'System resources limited - using optimized content'
-    };
     
     return messages[reason] || 'Technical issue detected - using alternative content';
   }
@@ -473,7 +445,6 @@ export class GracefulDegradationService {
     }
     
     try {
-      const repaired = { ...content };
       
       // Fix common structure issues
       if (!repaired.gameId) {
@@ -506,7 +477,6 @@ export class GracefulDegradationService {
       }
       
       // Validate repaired content
-      const validation = this.validator.validateGameManifest(repaired);
       return validation.isValid ? repaired : null;
       
     } catch (error) {
@@ -679,7 +649,6 @@ export class GracefulDegradationService {
       
       // Also cache in localStorage for persistence
       if (typeof window !== 'undefined' && window.localStorage) {
-        const cacheKey = `diginativa-content-${gameId}`;
         localStorage.setItem(cacheKey, JSON.stringify({
           content,
           timestamp: Date.now(),
@@ -698,7 +667,6 @@ export class GracefulDegradationService {
     if (!gameId) return null;
     
     // Try memory cache first
-    const memoryCache = this.contentCache.get(gameId);
     if (memoryCache) {
       return memoryCache;
     }
@@ -706,10 +674,7 @@ export class GracefulDegradationService {
     // Try localStorage
     if (typeof window !== 'undefined' && window.localStorage) {
       try {
-        const cacheKey = `diginativa-content-${gameId}`;
-        const cached = localStorage.getItem(cacheKey);
         if (cached) {
-          const parsed = JSON.parse(cached);
           // Check if cache is not too old (24 hours)
           if (Date.now() - parsed.timestamp < 24 * 60 * 60 * 1000) {
             return parsed.content;
@@ -730,7 +695,6 @@ export class GracefulDegradationService {
     console.log('Network connection restored');
     
     // Trigger recovery callbacks
-    const networkCallbacks = this.recoveryCallbacks.get(DegradationReason.NETWORK_FAILURE);
     if (networkCallbacks) {
       networkCallbacks(this.createDegradationContext(
         DegradationLevel.NONE,
@@ -770,8 +734,6 @@ export class GracefulDegradationService {
     byLevel: Record<DegradationLevel, number>;
     recentEvents: DegradationContext[];
   } {
-    const byReason = {} as Record<DegradationReason, number>;
-    const byLevel = {} as Record<DegradationLevel, number>;
     
     this.degradationHistory.forEach(event => {
       byReason[event.reason] = (byReason[event.reason] || 0) + 1;
@@ -802,5 +764,4 @@ export class GracefulDegradationService {
 }
 
 // Export singleton instance
-export const gracefulDegradation = GracefulDegradationService.getInstance();
 export default gracefulDegradation;

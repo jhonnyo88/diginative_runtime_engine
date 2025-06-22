@@ -22,51 +22,10 @@ export const HubScoreDisplay: React.FC<HubScoreDisplayProps> = ({
   hubState, 
   performanceMetrics 
 }) => {
-  const completionPercentage = hubState.hubProgressData.overallCompletionPercentage;
-  const totalScore = hubState.totalScore;
-  const worldsCompleted = hubState.worldsCompleted;
   
-  const getCulturalScoreText = (culturalContext: string) => {
-    const scoreTexts = {
-      swedish_municipal: {
-        totalScore: 'Total Poäng',
-        worldsCompleted: 'Världar Klara',
-        completion: 'Slutförande',
-        professionalLevel: 'Professionell Nivå'
-      },
-      german_municipal: {
-        totalScore: 'Gesamtpunkte',
-        worldsCompleted: 'Welten Abgeschlossen',
-        completion: 'Vollendung',
-        professionalLevel: 'Professionelles Niveau'
-      },
-      french_municipal: {
-        totalScore: 'Score Total',
-        worldsCompleted: 'Mondes Terminés',
-        completion: 'Achèvement',
-        professionalLevel: 'Niveau Professionnel'
-      },
-      dutch_municipal: {
-        totalScore: 'Totale Score',
-        worldsCompleted: 'Werelden Voltooid',
-        completion: 'Voltooiing',
-        professionalLevel: 'Professioneel Niveau'
-      }
-    };
-    return scoreTexts[culturalContext as keyof typeof scoreTexts] || scoreTexts.swedish_municipal;
-  };
 
-  const scoreText = getCulturalScoreText(hubState.culturalContext);
   
-  const getProfessionalLevel = (score: number) => {
-    if (score >= 450) return { level: 'Expert', color: '#2E7D32' };
-    if (score >= 350) return { level: 'Avancerad', color: '#388E3C' };
-    if (score >= 250) return { level: 'Kompetent', color: '#66BB6A' };
-    if (score >= 150) return { level: 'Utvecklande', color: '#FFA726' };
-    return { level: 'Nybörjare', color: '#90A4AE' };
-  };
 
-  const professionalLevel = getProfessionalLevel(totalScore);
 
   return (
     <div className="hub-score-display" data-cultural-context={hubState.culturalContext}>

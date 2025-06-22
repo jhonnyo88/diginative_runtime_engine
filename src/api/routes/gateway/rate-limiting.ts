@@ -10,8 +10,6 @@ import { Router, type Request, type Response } from 'express';
 import { apiGateway, requireAPIKey } from '../../services/api-gateway';
 import { InfrastructureMonitoring } from '../../services/infrastructure-monitoring';
 
-const router = Router();
-const monitoring = InfrastructureMonitoring.getInstance();
 
 /**
  * GET /api/gateway/stats - Get rate limiting statistics
@@ -20,7 +18,6 @@ router.get('/stats', requireAPIKey(['admin:monitoring', 'admin:rate_limits']), a
   try {
     const { municipalityId } = req.query;
     
-    const stats = await apiGateway.getRateLimitStats(municipalityId as string);
     
     res.json({
       success: true,
@@ -57,9 +54,7 @@ router.post('/api-keys', requireAPIKey(['admin:api_keys']), async (req: Request,
       });
     }
 
-    const expiresAt = new Date(Date.now() + expiresInDays * 24 * 60 * 60 * 1000);
     
-    const result = await apiGateway.createAPIKey({
       municipalityId,
       permissions,
       rateLimit: {
@@ -114,9 +109,7 @@ router.post('/api-keys', requireAPIKey(['admin:api_keys']), async (req: Request,
 router.put('/municipality/:municipalityId/limits', requireAPIKey(['admin:rate_limits']), async (req: Request, res: Response) => {
   try {
     const { municipalityId } = req.params;
-    const updates = req.body;
 
-    const success = apiGateway.updateMunicipalityProfile(municipalityId, updates);
     
     if (!success) {
       return res.status(404).json({
@@ -163,7 +156,7 @@ router.put('/municipality/:municipalityId/limits', requireAPIKey(['admin:rate_li
 router.get('/blocked-ips', requireAPIKey(['admin:monitoring', 'admin:security']), async (req: Request, res: Response) => {
   try {
     // This would typically fetch from Redis in a production implementation
-    const blockedIPs = []; // Placeholder - implement Redis scanning for blocked: keys
+    const _blockedIPs = []; // Placeholder - implement Redis scanning for blocked: keys
     
     res.json({
       success: true,
@@ -222,7 +215,6 @@ router.delete('/blocked-ips/:ip', requireAPIKey(['admin:security']), async (req:
  */
 router.get('/health', async (req: Request, res: Response) => {
   try {
-    const stats = await apiGateway.getRateLimitStats();
     
     res.json({
       success: true,

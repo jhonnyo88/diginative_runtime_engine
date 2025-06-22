@@ -41,81 +41,21 @@ export const MonitoringDashboard: React.FC<MonitoringDashboardProps> = ({
   const [performanceMetrics, setPerformanceMetrics] = useState<Record<string, unknown>>(null);
   const [isEnabled, setIsEnabled] = useState(false);
 
-  const bgColor = useColorModeValue('white', 'gray.800');
-  const borderColor = useColorModeValue('gray.200', 'gray.600');
 
   useEffect(() => {
     // Only show in development or when explicitly enabled
-    const isDev = import.meta.env.DEV;
-    const isEnabledByConfig = localStorage.getItem('diginativa_monitoring_enabled') === 'true';
     setIsEnabled(isDev || isEnabledByConfig);
 
     if (!isEnabled) return;
 
-    const interval = setInterval(() => {
-      updateMetrics();
     }, 2000);
 
     return () => clearInterval(interval);
   }, [isEnabled]);
 
-  const updateMetrics = () => {
-    try {
-      const session = performanceAnalytics.getCurrentSession();
-      const summary = performanceAnalytics.getSessionSummary();
-      
-      setSessionData({
-        ...session,
-        summary
-      });
 
-      // Collect current browser performance
-      if ('performance' in window && 'memory' in performance) {
-        const memory = (performance as any).memory;
-        setPerformanceMetrics({
-          memoryUsage: memory.usedJSHeapSize,
-          memoryLimit: memory.jsHeapSizeLimit,
-          memoryPercent: (memory.usedJSHeapSize / memory.jsHeapSizeLimit) * 100
-        });
-      }
-    } catch (error) {
-      console.warn('Failed to update monitoring metrics:', error);
-    }
-  };
 
-  const getPositionStyles = () => {
-    const baseStyles = {
-      position: 'fixed' as const,
-      zIndex: 9999,
-      maxWidth: '300px',
-      maxHeight: '80vh',
-      overflowY: 'auto' as const
-    };
 
-    switch (position) {
-      case 'top-right':
-        return { ...baseStyles, top: '20px', right: '20px' };
-      case 'bottom-right':
-        return { ...baseStyles, bottom: '20px', right: '20px' };
-      case 'bottom-left':
-        return { ...baseStyles, bottom: '20px', left: '20px' };
-      case 'top-left':
-        return { ...baseStyles, top: '20px', left: '20px' };
-      default:
-        return { ...baseStyles, bottom: '20px', right: '20px' };
-    }
-  };
-
-  const formatDuration = (ms: number) => {
-    const seconds = Math.floor(ms / 1000);
-    const minutes = Math.floor(seconds / 60);
-    return minutes > 0 ? `${minutes}m ${seconds % 60}s` : `${seconds}s`;
-  };
-
-  const formatBytes = (bytes: number) => {
-    const mb = bytes / 1024 / 1024;
-    return `${mb.toFixed(1)}MB`;
-  };
 
   if (!isEnabled) return null;
 
@@ -285,7 +225,6 @@ export function useMonitoringDashboard(autoShow = false) {
 
   useEffect(() => {
     // Only show dashboard if explicitly enabled in localStorage
-    const isEnabled = localStorage.getItem('diginativa_monitoring_enabled') === 'true';
     
     if (isEnabled) {
       setShowDashboard(true);
@@ -295,13 +234,6 @@ export function useMonitoringDashboard(autoShow = false) {
     }
 
     // Keyboard shortcut to toggle (Ctrl+Shift+M)
-    const handleKeyDown = (event: KeyboardEvent) => {
-      if (event.ctrlKey && event.shiftKey && event.key === 'M') {
-        event.preventDefault();
-        setShowDashboard(prev => !prev);
-        localStorage.setItem('diginativa_monitoring_enabled', (!showDashboard).toString());
-      }
-    };
 
     document.addEventListener('keydown', handleKeyDown);
     return () => document.removeEventListener('keydown', handleKeyDown);

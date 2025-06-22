@@ -29,15 +29,6 @@ export const LoadingState: React.FC<LoadingStateProps> = ({
   progress,
   showProgress = false
 }) => {
-  const getLoadingMessage = () => {
-    const messages = {
-      scene: 'Laddar scen...',
-      content: 'Förbereder innehåll...',
-      quiz: 'Förbereder frågor...',
-      assessment: 'Beräknar resultat...'
-    };
-    return message || messages[type];
-  };
 
   return (
     <VStack gap={6} p={8} textAlign="center" maxW="400px" mx="auto">
@@ -97,7 +88,7 @@ export const LoadingState: React.FC<LoadingStateProps> = ({
 export const SceneLoadingSkeleton: React.FC<{
   sceneType: 'dialogue' | 'quiz' | 'assessment';
 }> = ({ sceneType }) => {
-  const renderDialogueSkeleton = () => (
+  const _renderDialogueSkeleton = () => (
     <VStack gap={4} p={4} maxW="500px" mx="auto">
       {/* Avatar skeleton */}
       <HStack gap={3} alignSelf="flex-start" w="100%">
@@ -122,7 +113,7 @@ export const SceneLoadingSkeleton: React.FC<{
     </VStack>
   );
 
-  const renderQuizSkeleton = () => (
+  const _renderQuizSkeleton = () => (
     <VStack gap={4} p={4} maxW="600px" mx="auto">
       {/* Question skeleton */}
       <Card w="100%" bg="blue.50">
@@ -143,7 +134,7 @@ export const SceneLoadingSkeleton: React.FC<{
     </VStack>
   );
 
-  const renderAssessmentSkeleton = () => (
+  const _renderAssessmentSkeleton = () => (
     <VStack gap={6} p={4} maxW="600px" mx="auto">
       {/* Score circle skeleton */}
       <Box w="160px" h="160px" bg="gray.200" borderRadius="full" mx="auto" />
@@ -171,11 +162,6 @@ export const SceneLoadingSkeleton: React.FC<{
     </VStack>
   );
 
-  const skeletonRenderers = {
-    dialogue: renderDialogueSkeleton,
-    quiz: renderQuizSkeleton,
-    assessment: renderAssessmentSkeleton
-  };
 
   return (
     <Box 
@@ -259,12 +245,6 @@ export const ProgressiveLoader: React.FC<{
       return;
     }
 
-    const stage = stages[currentStage];
-    const interval = setInterval(() => {
-      setStageProgress(prev => {
-        const next = prev + (100 / (stage.duration / 100));
-        if (next >= 100) {
-          setCurrentStage(curr => curr + 1);
           setStageProgress(0);
           return 0;
         }
@@ -275,8 +255,6 @@ export const ProgressiveLoader: React.FC<{
     return () => clearInterval(interval);
   }, [currentStage, stages, onComplete]);
 
-  const currentStageData = stages[currentStage];
-  const overallProgress = ((currentStage * 100) + stageProgress) / stages.length;
 
   if (!currentStageData) return null;
 

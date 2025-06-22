@@ -108,41 +108,35 @@ class Q2ProductionDeploymentManager {
     const recommendations: string[] = [];
 
     // Performance validation
-    const performanceResult = await this.validatePerformance();
     results['performance'] = performanceResult;
     if (!performanceResult.passed) {
       recommendations.push('Optimize Q2 component loading and reduce memory footprint');
     }
 
     // Security validation
-    const securityResult = await this.validateSecurity();
     results['security'] = securityResult;
     if (!securityResult.passed) {
       recommendations.push('Address security vulnerabilities before production deployment');
     }
 
     // Municipal compliance validation
-    const complianceResult = await this.validateMunicipalCompliance();
     results['municipal_compliance'] = complianceResult;
     if (!complianceResult.passed) {
       recommendations.push('Ensure GDPR and accessibility compliance för municipal deployment');
     }
 
     // Cultural localization validation
-    const localizationResult = await this.validateCulturalLocalization();
     results['cultural_localization'] = localizationResult;
     if (!localizationResult.passed) {
       recommendations.push('Complete cultural adaptation för all supported markets');
     }
 
     // Integration testing validation
-    const integrationResult = await this.validateIntegration();
     results['integration'] = integrationResult;
     if (!integrationResult.passed) {
       recommendations.push('Resolve Q2 component integration issues');
     }
 
-    const allPassed = Object.values(results).every(result => result.passed);
 
     return {
       passed: allPassed,
@@ -154,17 +148,8 @@ class Q2ProductionDeploymentManager {
   private async validatePerformance(): Promise<{ passed: boolean; details: string }> {
     try {
       // Simulate performance testing för Q2 components
-      const loadTimes = await this.measureComponentLoadTimes();
-      const memoryUsage = await this.measureMemoryUsage();
-      const fpsPerformance = await this.measureFPSPerformance();
 
-      const maxLoadTime = Math.max(...Object.values(loadTimes));
-      const avgMemoryUsage = memoryUsage.reduce((a, b) => a + b, 0) / memoryUsage.length;
-      const minFPS = Math.min(...fpsPerformance);
 
-      const loadTimeOK = maxLoadTime <= this.config.performance.maxLoadTime;
-      const memoryOK = avgMemoryUsage <= this.config.performance.maxMemoryUsage;
-      const fpsOK = minFPS >= this.config.performance.targetFPS * 0.9;
 
       return {
         passed: loadTimeOK && memoryOK && fpsOK,
@@ -183,17 +168,7 @@ class Q2ProductionDeploymentManager {
   private async validateSecurity(): Promise<{ passed: boolean; details: string }> {
     try {
       // Municipal security validation
-      const securityChecks = {
-        xssProtection: await this.checkXSSProtection(),
-        sqlInjectionPrevention: await this.checkSQLInjectionPrevention(),
-        dataEncryption: await this.checkDataEncryption(),
-        accessControl: await this.checkAccessControl(),
-        auditLogging: await this.checkAuditLogging()
-      };
 
-      const passedChecks = Object.values(securityChecks).filter(Boolean).length;
-      const totalChecks = Object.keys(securityChecks).length;
-      const securityScore = passedChecks / totalChecks;
 
       return {
         passed: securityScore >= 0.95, // 95% security compliance required
@@ -209,16 +184,7 @@ class Q2ProductionDeploymentManager {
 
   private async validateMunicipalCompliance(): Promise<{ passed: boolean; details: string }> {
     try {
-      const complianceChecks = {
-        gdpr: this.config.municipalCompliance.gdprEnabled,
-        accessibility: await this.checkAccessibilityCompliance(),
-        governmentSecurity: this.config.municipalCompliance.securityLevel === 'government',
-        auditTrails: this.config.municipalCompliance.auditLogging,
-        dataLocality: await this.checkDataLocality()
-      };
 
-      const passedChecks = Object.values(complianceChecks).filter(Boolean).length;
-      const totalChecks = Object.keys(complianceChecks).length;
 
       return {
         passed: passedChecks === totalChecks,
@@ -234,8 +200,6 @@ class Q2ProductionDeploymentManager {
 
   private async validateCulturalLocalization(): Promise<{ passed: boolean; details: string }> {
     try {
-      const supportedLocales = this.config.culturalLocalization.supportedLocales;
-      const localizationResults = await Promise.all(
         supportedLocales.map(async locale => {
           return {
             locale,
@@ -245,11 +209,7 @@ class Q2ProductionDeploymentManager {
         })
       );
 
-      const completeLocalizations = localizationResults.filter(
-        result => result.complete && result.culturallyAppropriate
-      );
 
-      const localizationScore = completeLocalizations.length / localizationResults.length;
 
       return {
         passed: localizationScore >= 0.9, // 90% localization completeness required
@@ -265,16 +225,7 @@ class Q2ProductionDeploymentManager {
 
   private async validateIntegration(): Promise<{ passed: boolean; details: string }> {
     try {
-      const integrationTests = {
-        dragDropCharacterIntegration: await this.testDragDropCharacterIntegration(),
-        timedChallengeNarrativeIntegration: await this.testTimedChallengeNarrativeIntegration(),
-        achievementSystemIntegration: await this.testAchievementSystemIntegration(),
-        municipalComplianceIntegration: await this.testMunicipalComplianceIntegration(),
-        crossComponentDataFlow: await this.testCrossComponentDataFlow()
-      };
 
-      const passedTests = Object.values(integrationTests).filter(Boolean).length;
-      const totalTests = Object.keys(integrationTests).length;
 
       return {
         passed: passedTests === totalTests,
@@ -295,18 +246,14 @@ class Q2ProductionDeploymentManager {
     rollbackPlan: Q2RollbackPlan;
     postDeploymentChecks: Q2HealthCheck;
   }> {
-    const deploymentId = `q2-deployment-${Date.now()}-${environment}`;
-    const timestamp = Date.now();
 
     try {
       // Pre-deployment validation
-      const validation = await this.performPreDeploymentValidation();
       if (!validation.passed) {
         throw new Error(`Pre-deployment validation failed: ${validation.recommendations.join(', ')}`);
       }
 
       // Create rollback plan
-      const rollbackPlan = this.createRollbackPlan(deploymentId);
 
       // Deploy Q2 components
       await this.deployQ2Components(environment);
@@ -315,7 +262,6 @@ class Q2ProductionDeploymentManager {
       this.startHealthMonitoring();
 
       // Perform post-deployment health check
-      const postDeploymentChecks = await this.performHealthCheck();
 
       // Verify deployment success
       if (postDeploymentChecks.status === 'critical') {
@@ -402,23 +348,10 @@ class Q2ProductionDeploymentManager {
   }
 
   async performHealthCheck(): Promise<Q2HealthCheck> {
-    const timestamp = Date.now();
 
-    const components = {
-      'drag_drop_workflows': await this.checkComponentHealth('dragDropWorkflows'),
-      'timed_challenges': await this.checkComponentHealth('timedChallenges'),
-      'branching_narratives': await this.checkComponentHealth('branchingNarratives'),
-      'character_system': await this.checkComponentHealth('characterSystem'),
-      'achievement_system': await this.checkComponentHealth('achievementSystem'),
-      'municipal_compliance': await this.checkComponentHealth('municipalCompliance'),
-      'cultural_localization': await this.checkComponentHealth('culturalLocalization')
-    };
 
-    const performance = await this.gatherPerformanceMetrics();
-    const municipalMetrics = await this.gatherMunicipalMetrics();
 
     // Determine overall status
-    const componentStatuses = Object.values(components).map(comp => comp.status);
     let overallStatus: Q2HealthCheck['status'] = 'healthy';
 
     if (componentStatuses.includes('down')) {
@@ -444,7 +377,6 @@ class Q2ProductionDeploymentManager {
     lastCheck: number;
     errors: string[];
   }> {
-    const startTime = Date.now();
     const errors: string[] = [];
 
     try {
@@ -469,7 +401,6 @@ class Q2ProductionDeploymentManager {
           await new Promise(resolve => setTimeout(resolve, 50)); // Generic ping
       }
 
-      const responseTime = Date.now() - startTime;
       let status: 'operational' | 'degraded' | 'down' = 'operational';
 
       if (responseTime > this.config.performance.maxLoadTime) {
@@ -547,7 +478,6 @@ class Q2ProductionDeploymentManager {
   }
 
   private async measureFPSPerformance(): Promise<number[]> {
-    const targetFPS = this.config.performance.targetFPS;
     return [
       targetFPS - Math.random() * 5,  // Normal variance
       targetFPS - Math.random() * 3,
@@ -558,8 +488,6 @@ class Q2ProductionDeploymentManager {
   }
 
   private async gatherPerformanceMetrics(): Promise<Q2HealthCheck['performance']> {
-    const loadTimes = await this.measureComponentLoadTimes();
-    const memoryUsage = await this.measureMemoryUsage();
 
     return {
       averageLoadTime: Object.values(loadTimes).reduce((a, b) => a + b, 0) / Object.values(loadTimes).length,
@@ -616,12 +544,6 @@ class Q2ProductionDeploymentManager {
 
   private async checkLocalizationCompleteness(locale: string): Promise<boolean> {
     // Simulate localization completeness check
-    const completenessRates = {
-      'sv': 0.98,
-      'de': 0.95,
-      'fr': 0.92,
-      'nl': 0.90
-    };
     return Math.random() < (completenessRates[locale as keyof typeof completenessRates] || 0.85);
   }
 
@@ -642,7 +564,6 @@ class Q2ProductionDeploymentManager {
     }
 
     this.healthCheckInterval = setInterval(async () => {
-      const healthCheck = await this.performHealthCheck();
       
       if (healthCheck.status === 'critical') {
         console.error('CRITICAL: Q2 system health check failed', healthCheck);

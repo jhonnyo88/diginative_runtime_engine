@@ -16,11 +16,6 @@ import { describe, it, expect, beforeEach, afterEach, vi, Mock } from 'vitest';
 import { performanceAnalytics } from '../../services/performance-analytics';
 
 // Mock global objects
-const mockPerformanceObserver = vi.fn();
-const mockObserverInstance = {
-  observe: vi.fn(),
-  disconnect: vi.fn(),
-};
 
 // Mock PerformanceObserver
 global.PerformanceObserver = mockPerformanceObserver.mockImplementation((callback) => {
@@ -29,39 +24,10 @@ global.PerformanceObserver = mockPerformanceObserver.mockImplementation((callbac
 });
 
 // Mock performance API
-const mockPerformance = {
-  now: vi.fn(() => 1000),
-  memory: {
-    usedJSHeapSize: 50 * 1024 * 1024, // 50MB
-  },
-  timing: {
-    navigationStart: 1000,
-    loadEventEnd: 3000,
-  },
-};
 
 // Mock window and document
-const mockWindow = {
-  innerWidth: 375, // iPhone width for Anna Svensson
-  addEventListener: vi.fn(),
-  setTimeout: vi.fn((fn, delay) => {
-    fn();
-    return 123;
-  }),
-  requestAnimationFrame: vi.fn((callback) => {
-    callback(1000);
-    return 1;
-  }),
-};
 
-const mockDocument = {
-  addEventListener: vi.fn(),
-};
 
-const mockSessionStorage = {
-  getItem: vi.fn(),
-  setItem: vi.fn(),
-};
 
 // Set up global mocks
 Object.defineProperty(global, 'performance', {
@@ -98,7 +64,6 @@ describe('PerformanceAnalyticsService Unit Tests', () => {
     consoleInfoSpy = vi.spyOn(console, 'info').mockImplementation(() => {});
 
     // Reset performance analytics state
-    const currentSession = (performanceAnalytics as any).currentSession;
     if (currentSession) {
       currentSession.gamesSessions = [];
       currentSession.performanceMetrics = [];
@@ -121,7 +86,6 @@ describe('PerformanceAnalyticsService Unit Tests', () => {
 
   describe('Service Initialization', () => {
     it('should initialize with correct session metrics', () => {
-      const session = performanceAnalytics.getCurrentSession();
       
       expect(session).toMatchObject({
         sessionId: expect.stringMatching(/^session_\d+_[a-z0-9]{9}$/),
@@ -168,7 +132,6 @@ describe('PerformanceAnalyticsService Unit Tests', () => {
     it('should start game session correctly', () => {
       performanceAnalytics.startGameSession('quiz-municipal-1');
       
-      const session = performanceAnalytics.getCurrentSession();
       expect(session.gamesSessions).toHaveLength(1);
       expect(session.gamesSessions[0]).toMatchObject({
         gameId: 'quiz-municipal-1',
@@ -188,8 +151,6 @@ describe('PerformanceAnalyticsService Unit Tests', () => {
       
       performanceAnalytics.endGameSession('quiz-municipal-2', true, 85);
       
-      const session = performanceAnalytics.getCurrentSession();
-      const gameSession = session.gamesSessions[0];
       
       expect(gameSession).toMatchObject({
         gameId: 'quiz-municipal-2',
@@ -205,9 +166,6 @@ describe('PerformanceAnalyticsService Unit Tests', () => {
       
       performanceAnalytics.trackGameInteraction('quiz-1', 'scene-1', 'answer-selected', 250);
       
-      const session = performanceAnalytics.getCurrentSession();
-      const gameSession = session.gamesSessions[0];
-      const interaction = session.userInteractions.find(i => i.type === 'game-action');
       
       expect(gameSession.interactions).toBe(1);
       expect(interaction).toMatchObject({
@@ -229,8 +187,6 @@ describe('PerformanceAnalyticsService Unit Tests', () => {
       performanceAnalytics.trackGameError('quiz-error-test', 'scene-error');
       performanceAnalytics.trackGameError('quiz-error-test', 'scene-error');
       
-      const session = performanceAnalytics.getCurrentSession();
-      const gameSession = session.gamesSessions[0];
       
       expect(gameSession.errors).toBe(2);
     });
@@ -239,7 +195,6 @@ describe('PerformanceAnalyticsService Unit Tests', () => {
       performanceAnalytics.endGameSession('non-existent-game', true);
       
       // Should not throw error
-      const session = performanceAnalytics.getCurrentSession();
       expect(session.gamesSessions).toHaveLength(0);
     });
 
@@ -276,9 +231,8 @@ describe('PerformanceAnalyticsService Unit Tests', () => {
   describe('Core Web Vitals Tracking', () => {
     it('should setup LCP tracking', () => {
       // Verify LCP observer was created
-      const lcpObserverCall = mockPerformanceObserver.mock.calls.find(
+      const _lcpObserverCall = mockPerformanceObserver.mock.calls.find(
         call => {
-          const callback = call[0];
           // Test if this is the LCP observer by checking what it observes
           return true; // Would need to track observe calls per instance
         }
@@ -289,19 +243,13 @@ describe('PerformanceAnalyticsService Unit Tests', () => {
 
     it('should track LCP value correctly', () => {
       // Simulate LCP entry
-      const lcpEntry = {
-        entryType: 'largest-contentful-paint',
-        startTime: 2500,
-        name: 'largest-contentful-paint'
-      };
 
       // Find and call the LCP observer callback
       mockObserverInstance.callback?.({
         getEntries: () => [lcpEntry]
       });
 
-      const metricsBuffer = (performanceAnalytics as any).metricsBuffer;
-      const hasLCP = metricsBuffer.some((snapshot: Record<string, unknown>) => 
+      const _hasLCP = metricsBuffer.some((snapshot: Record<string, unknown>) => 
         snapshot.metrics.coreWebVitals?.lcp === 2500
       );
       
@@ -310,19 +258,12 @@ describe('PerformanceAnalyticsService Unit Tests', () => {
 
     it('should track FID value correctly', () => {
       // Simulate FID entry
-      const fidEntry = {
-        entryType: 'first-input',
-        startTime: 1000,
-        processingStart: 1050,
-        name: 'first-input'
-      };
 
       mockObserverInstance.callback?.({
         getEntries: () => [fidEntry]
       });
 
-      const metricsBuffer = (performanceAnalytics as any).metricsBuffer;
-      const hasFID = metricsBuffer.some((snapshot: Record<string, unknown>) => 
+      const _hasFID = metricsBuffer.some((snapshot: Record<string, unknown>) => 
         snapshot.metrics.coreWebVitals?.fid === 50
       );
       
@@ -331,18 +272,12 @@ describe('PerformanceAnalyticsService Unit Tests', () => {
 
     it('should track CLS value correctly', () => {
       // Simulate layout shift entries
-      const clsEntry = {
-        entryType: 'layout-shift',
-        value: 0.05,
-        hadRecentInput: false
-      };
 
       mockObserverInstance.callback?.({
         getEntries: () => [clsEntry]
       });
 
-      const metricsBuffer = (performanceAnalytics as any).metricsBuffer;
-      const hasCLS = metricsBuffer.some((snapshot: Record<string, unknown>) => 
+      const _hasCLS = metricsBuffer.some((snapshot: Record<string, unknown>) => 
         snapshot.metrics.coreWebVitals?.cls === 0.05
       );
       
@@ -351,18 +286,12 @@ describe('PerformanceAnalyticsService Unit Tests', () => {
 
     it('should track FCP value correctly', () => {
       // Simulate paint entry
-      const fcpEntry = {
-        entryType: 'paint',
-        name: 'first-contentful-paint',
-        startTime: 1200
-      };
 
       mockObserverInstance.callback?.({
         getEntries: () => [fcpEntry]
       });
 
-      const metricsBuffer = (performanceAnalytics as any).metricsBuffer;
-      const hasFCP = metricsBuffer.some((snapshot: Record<string, unknown>) => 
+      const _hasFCP = metricsBuffer.some((snapshot: Record<string, unknown>) => 
         snapshot.metrics.coreWebVitals?.fcp === 1200
       );
       
@@ -389,21 +318,12 @@ describe('PerformanceAnalyticsService Unit Tests', () => {
 
   describe('Interaction Tracking', () => {
     it('should track click interactions', () => {
-      const clickHandler = mockDocument.addEventListener.mock.calls
+      const _clickHandler = mockDocument.addEventListener.mock.calls
         .find(call => call[0] === 'click')?.[1];
 
-      const mockEvent = {
-        target: {
-          id: 'submit-button',
-          className: 'btn primary',
-          tagName: 'BUTTON'
-        }
-      };
 
       clickHandler?.(mockEvent);
 
-      const session = performanceAnalytics.getCurrentSession();
-      const clickInteraction = session.userInteractions.find(i => i.type === 'click');
       
       expect(clickInteraction).toMatchObject({
         type: 'click',
@@ -414,20 +334,12 @@ describe('PerformanceAnalyticsService Unit Tests', () => {
     });
 
     it('should track touch interactions', () => {
-      const touchHandler = mockDocument.addEventListener.mock.calls
+      const _touchHandler = mockDocument.addEventListener.mock.calls
         .find(call => call[0] === 'touchend')?.[1];
 
-      const mockEvent = {
-        target: {
-          className: 'card-container',
-          tagName: 'DIV'
-        }
-      };
 
       touchHandler?.(mockEvent);
 
-      const session = performanceAnalytics.getCurrentSession();
-      const touchInteraction = session.userInteractions.find(i => i.type === 'touch');
       
       expect(touchInteraction).toMatchObject({
         type: 'touch',
@@ -437,17 +349,12 @@ describe('PerformanceAnalyticsService Unit Tests', () => {
     });
 
     it('should track keyboard interactions', () => {
-      const keyHandler = mockDocument.addEventListener.mock.calls
+      const _keyHandler = mockDocument.addEventListener.mock.calls
         .find(call => call[0] === 'keydown')?.[1];
 
-      const mockEvent = {
-        key: 'Enter'
-      };
 
       keyHandler?.(mockEvent);
 
-      const session = performanceAnalytics.getCurrentSession();
-      const keyInteraction = session.userInteractions.find(i => i.type === 'keyboard');
       
       expect(keyInteraction).toMatchObject({
         type: 'keyboard',
@@ -457,7 +364,7 @@ describe('PerformanceAnalyticsService Unit Tests', () => {
     });
 
     it('should track scroll interactions with debouncing', () => {
-      const scrollHandler = mockDocument.addEventListener.mock.calls
+      const _scrollHandler = mockDocument.addEventListener.mock.calls
         .find(call => call[0] === 'scroll')?.[1];
 
       // Trigger multiple scroll events
@@ -466,8 +373,6 @@ describe('PerformanceAnalyticsService Unit Tests', () => {
       scrollHandler?.();
 
       // Should only record one interaction after debounce
-      const session = performanceAnalytics.getCurrentSession();
-      const scrollInteractions = session.userInteractions.filter(i => i.type === 'scroll');
       
       expect(scrollInteractions).toHaveLength(1);
       expect(scrollInteractions[0]).toMatchObject({
@@ -489,12 +394,10 @@ describe('PerformanceAnalyticsService Unit Tests', () => {
         });
       }
 
-      const session = performanceAnalytics.getCurrentSession();
       expect(session.userInteractions).toHaveLength(100); // Limited to 100
     });
 
     it('should get element identifier correctly', () => {
-      const getElementIdentifier = (performanceAnalytics as any).getElementIdentifier;
       
       // Test with ID
       expect(getElementIdentifier({ id: 'test-id', className: 'test-class', tagName: 'DIV' }))
@@ -520,26 +423,16 @@ describe('PerformanceAnalyticsService Unit Tests', () => {
       // Fast-forward 30 seconds
       vi.advanceTimersByTime(30000);
       
-      const metricsBuffer = (performanceAnalytics as any).metricsBuffer;
       expect(metricsBuffer.length).toBeGreaterThan(0);
       
       vi.useRealTimers();
     });
 
     it('should track page load metrics', () => {
-      const navEntry = {
-        entryType: 'navigation',
-        loadEventEnd: 3000,
-        fetchStart: 1000,
-        responseStart: 1200,
-        requestStart: 1100,
-        domContentLoadedEventEnd: 2500
-      };
 
       (performanceAnalytics as any).processPerformanceEntry(navEntry);
 
-      const session = performanceAnalytics.getCurrentSession();
-      const hasPageLoadMetric = session.performanceMetrics.some(
+      const _hasPageLoadMetric = session.performanceMetrics.some(
         snapshot => snapshot.metrics.pageLoadTime === 2000
       );
       
@@ -547,11 +440,6 @@ describe('PerformanceAnalyticsService Unit Tests', () => {
     });
 
     it('should track slow resource loads', () => {
-      const resourceEntry = {
-        entryType: 'resource',
-        name: 'https://example.com/large-image.jpg',
-        duration: 2000
-      };
 
       (performanceAnalytics as any).processPerformanceEntry(resourceEntry);
 
@@ -563,8 +451,7 @@ describe('PerformanceAnalyticsService Unit Tests', () => {
     it('should track memory usage when available', () => {
       (performanceAnalytics as any).collectCurrentMetrics();
 
-      const metricsBuffer = (performanceAnalytics as any).metricsBuffer;
-      const hasMemoryMetric = metricsBuffer.some(
+      const _hasMemoryMetric = metricsBuffer.some(
         (snapshot: Record<string, unknown>) => snapshot.metrics.memoryUsage === 50 * 1024 * 1024
       );
       
@@ -572,7 +459,6 @@ describe('PerformanceAnalyticsService Unit Tests', () => {
     });
 
     it('should estimate FPS', () => {
-      const fps = (performanceAnalytics as any).estimateFPS();
       expect(fps).toBe(60); // Default assumption
     });
 
@@ -585,7 +471,6 @@ describe('PerformanceAnalyticsService Unit Tests', () => {
         });
       }
 
-      const metricsBuffer = (performanceAnalytics as any).metricsBuffer;
       expect(metricsBuffer).toHaveLength(50); // Limited to 50
     });
 
@@ -598,15 +483,12 @@ describe('PerformanceAnalyticsService Unit Tests', () => {
         });
       }
 
-      const session = performanceAnalytics.getCurrentSession();
       expect(session.performanceMetrics).toHaveLength(100); // Limited to 100
     });
   });
 
   describe('Session Management', () => {
     it('should generate unique session IDs', () => {
-      const sessionId1 = (performanceAnalytics as any).generateSessionId();
-      const sessionId2 = (performanceAnalytics as any).generateSessionId();
       
       expect(sessionId1).toMatch(/^session_\d+_[a-z0-9]{9}$/);
       expect(sessionId2).toMatch(/^session_\d+_[a-z0-9]{9}$/);
@@ -616,14 +498,12 @@ describe('PerformanceAnalyticsService Unit Tests', () => {
     it('should get municipality from sessionStorage', () => {
       mockSessionStorage.getItem.mockReturnValue('gothenburg');
       
-      const municipality = (performanceAnalytics as any).getMunicipality();
       expect(municipality).toBe('gothenburg');
     });
 
     it('should use default municipality when not set', () => {
       mockSessionStorage.getItem.mockReturnValue(null);
       
-      const municipality = (performanceAnalytics as any).getMunicipality();
       expect(municipality).toBe('stockholm');
     });
 
@@ -664,7 +544,6 @@ describe('PerformanceAnalyticsService Unit Tests', () => {
       
       mockPerformance.now.mockReturnValue(10000);
       
-      const summary = performanceAnalytics.getSessionSummary();
       
       expect(summary).toMatchObject({
         duration: 9000, // 10000 - 1000
@@ -676,7 +555,6 @@ describe('PerformanceAnalyticsService Unit Tests', () => {
     });
 
     it('should handle empty session summary', () => {
-      const summary = performanceAnalytics.getSessionSummary();
       
       expect(summary).toMatchObject({
         duration: expect.any(Number),
@@ -710,10 +588,8 @@ describe('PerformanceAnalyticsService Unit Tests', () => {
     });
 
     it('should handle flush errors gracefully', async () => {
-      const consoleErrorSpy = vi.spyOn(console, 'error').mockImplementation(() => {});
       
       // Mock sendMetricsToService to throw error
-      const originalSend = (performanceAnalytics as any).sendMetricsToService;
       (performanceAnalytics as any).sendMetricsToService = vi.fn().mockRejectedValue(
         new Error('Network error')
       );
@@ -738,9 +614,6 @@ describe('PerformanceAnalyticsService Unit Tests', () => {
       await (performanceAnalytics as any).flushMetricsBuffer();
       
       // Should not call console.info for empty buffer
-      const flushCalls = consoleInfoSpy.mock.calls.filter(
-        call => call[0] === '[Performance Analytics]'
-      );
       expect(flushCalls).toHaveLength(0);
     });
   });
@@ -751,7 +624,6 @@ describe('PerformanceAnalyticsService Integration Tests', () => {
     vi.clearAllMocks();
     
     // Reset state
-    const currentSession = (performanceAnalytics as any).currentSession;
     if (currentSession) {
       currentSession.gamesSessions = [];
       currentSession.performanceMetrics = [];
@@ -776,8 +648,6 @@ describe('PerformanceAnalyticsService Integration Tests', () => {
     mockPerformance.now.mockReturnValue(300000); // 5 minutes
     performanceAnalytics.endGameSession('integration-quiz', true, 75);
     
-    const session = performanceAnalytics.getCurrentSession();
-    const gameSession = session.gamesSessions[0];
     
     expect(gameSession).toMatchObject({
       gameId: 'integration-quiz',
@@ -789,17 +659,11 @@ describe('PerformanceAnalyticsService Integration Tests', () => {
     });
     
     // Verify interactions were tracked
-    const gameInteractions = session.userInteractions.filter(i => i.type === 'game-action');
     expect(gameInteractions).toHaveLength(3);
   });
 
   it('should track mixed interaction types', () => {
     // Simulate various user interactions
-    const handlers = {
-      click: mockDocument.addEventListener.mock.calls.find(c => c[0] === 'click')?.[1],
-      touch: mockDocument.addEventListener.mock.calls.find(c => c[0] === 'touchend')?.[1],
-      key: mockDocument.addEventListener.mock.calls.find(c => c[0] === 'keydown')?.[1],
-    };
 
     handlers.click?.({ target: { id: 'menu-button' } });
     handlers.touch?.({ target: { className: 'game-card' } });
@@ -808,8 +672,6 @@ describe('PerformanceAnalyticsService Integration Tests', () => {
     performanceAnalytics.startGameSession('test-game');
     performanceAnalytics.trackGameInteraction('test-game', 'scene-1', 'action', 100);
     
-    const session = performanceAnalytics.getCurrentSession();
-    const interactionTypes = new Set(session.userInteractions.map(i => i.type));
     
     expect(interactionTypes).toContain('click');
     expect(interactionTypes).toContain('touch');
@@ -828,10 +690,8 @@ describe('PerformanceAnalyticsService Integration Tests', () => {
     performanceAnalytics.endGameSession('game-A', false);
     performanceAnalytics.endGameSession('game-C', true, 100);
     
-    const session = performanceAnalytics.getCurrentSession();
     expect(session.gamesSessions).toHaveLength(3);
     
-    const completedGames = session.gamesSessions.filter(g => g.completed);
     expect(completedGames).toHaveLength(2);
   });
 });
@@ -844,14 +704,6 @@ describe('PerformanceAnalyticsService Health Checks', () => {
   });
 
   it('should validate essential methods exist', () => {
-    const essentialMethods = [
-      'startGameSession',
-      'endGameSession',
-      'trackGameInteraction',
-      'trackGameError',
-      'getCurrentSession',
-      'getSessionSummary'
-    ];
 
     essentialMethods.forEach(method => {
       expect(typeof (performanceAnalytics as any)[method]).toBe('function');
@@ -859,7 +711,6 @@ describe('PerformanceAnalyticsService Health Checks', () => {
   });
 
   it('should validate data structures', () => {
-    const session = performanceAnalytics.getCurrentSession();
     
     expect(session).toHaveProperty('sessionId');
     expect(session).toHaveProperty('municipality');
@@ -873,7 +724,6 @@ describe('PerformanceAnalyticsService Health Checks', () => {
 
 describe('PerformanceAnalyticsService Municipal Tests', () => {
   it('should optimize for Anna Svensson mobile experience', () => {
-    const session = performanceAnalytics.getCurrentSession();
     
     // Should detect iPhone as mobile
     expect(session.deviceType).toBe('mobile');
@@ -890,8 +740,7 @@ describe('PerformanceAnalyticsService Municipal Tests', () => {
     performanceAnalytics.endGameSession('municipal-training', true, 95);
     
     // Should not warn for sessions under 7 minutes
-    const warnCalls = vi.mocked(console.warn).mock.calls;
-    const hasWarning = warnCalls.some(call => 
+    const _hasWarning = warnCalls.some(call => 
       call[0]?.includes('exceeded 7-minute target')
     );
     expect(hasWarning).toBe(false);
@@ -904,8 +753,6 @@ describe('PerformanceAnalyticsService Municipal Tests', () => {
     });
 
     // Create new instance to pick up municipality
-    const newAnalytics = new (performanceAnalytics.constructor as any)();
-    const session = newAnalytics.getCurrentSession();
     
     expect(session.municipality).toBe('gothenburg');
   });
@@ -917,7 +764,6 @@ describe('PerformanceAnalyticsService Performance Tests', () => {
   });
 
   it('should handle high-frequency interactions efficiently', () => {
-    const startTime = Date.now();
     
     // Track 1000 interactions rapidly
     for (let i = 0; i < 1000; i++) {
@@ -929,26 +775,20 @@ describe('PerformanceAnalyticsService Performance Tests', () => {
       );
     }
     
-    const endTime = Date.now();
-    const duration = endTime - startTime;
     
     expect(duration).toBeLessThan(100); // Should complete in under 100ms
     
     // Should limit to 100 interactions
-    const session = performanceAnalytics.getCurrentSession();
     expect(session.userInteractions).toHaveLength(100);
   });
 
   it('should handle rapid metric collection', () => {
-    const startTime = Date.now();
     
     // Collect metrics 100 times
     for (let i = 0; i < 100; i++) {
       (performanceAnalytics as any).collectCurrentMetrics();
     }
     
-    const endTime = Date.now();
-    const duration = endTime - startTime;
     
     expect(duration).toBeLessThan(50); // Should complete quickly
   });
@@ -972,7 +812,6 @@ describe('PerformanceAnalyticsService Performance Tests', () => {
     
     // Check buffers are limited
     expect((performanceAnalytics as any).metricsBuffer).toHaveLength(50);
-    const session = performanceAnalytics.getCurrentSession();
     expect(session.performanceMetrics).toHaveLength(100);
     expect(session.userInteractions).toHaveLength(100);
   });
@@ -991,7 +830,6 @@ describe('PerformanceAnalyticsService Error Handling', () => {
 
   it('should handle PerformanceObserver not supported', () => {
     // Temporarily remove PerformanceObserver
-    const originalPO = global.PerformanceObserver;
     delete (global as any).PerformanceObserver;
     
     // Should not throw
@@ -1016,14 +854,12 @@ describe('PerformanceAnalyticsService Error Handling', () => {
   });
 
   it('should handle invalid element in interaction tracking', () => {
-    const clickHandler = mockDocument.addEventListener.mock.calls
+    const _clickHandler = mockDocument.addEventListener.mock.calls
       .find(call => call[0] === 'click')?.[1];
 
     // Click with null target
     clickHandler?.({ target: null });
     
-    const session = performanceAnalytics.getCurrentSession();
-    const unknownInteraction = session.userInteractions.find(i => i.target === 'unknown');
     
     expect(unknownInteraction).toBeDefined();
   });

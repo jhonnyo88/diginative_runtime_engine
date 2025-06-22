@@ -21,13 +21,6 @@ vi.mock('../../services/municipal-integration-apis', () => ({
   validateMunicipalAccess: vi.fn()
 }));
 
-const renderWithChakra = (component: React.ReactElement) => {
-  return render(
-    <ChakraProvider>
-      {component}
-    </ChakraProvider>
-  );
-};
 
 describe('MunicipalButtonExamples', () => {
   beforeEach(() => {
@@ -38,14 +31,10 @@ describe('MunicipalButtonExamples', () => {
     it('renders without crashing', () => {
       renderWithChakra(<MunicipalButtonExamples />);
       
-      const component = screen.getByTestId('-municipal-button-examples');
       expect(component).toBeInTheDocument();
     });
 
     it('handles props correctly', () => {
-      const testProps = {
-        // Add relevant props based on component analysis
-      };
       
       renderWithChakra(<MunicipalButtonExamples {...testProps} />);
       
@@ -69,7 +58,6 @@ describe('MunicipalButtonExamples', () => {
         />
       );
 
-      const element = screen.getByTestId('-municipal-button-examples');
       expect(element).toHaveAttribute('data-municipality', 'malmö');
     });
 
@@ -85,14 +73,12 @@ describe('MunicipalButtonExamples', () => {
     });
 
     it('handles multiple municipality contexts', () => {
-      const municipalities = ['malmö', 'stockholm', 'göteborg'];
       
       municipalities.forEach(municipality => {
         const { rerender } = renderWithChakra(
           <MunicipalButtonExamples municipality={municipality} />
         );
 
-        const element = screen.getByTestId('-municipal-button-examples');
         expect(element).toHaveAttribute('data-municipality', municipality);
       });
     });
@@ -103,7 +89,6 @@ describe('MunicipalButtonExamples', () => {
     it('provides proper ARIA attributes', () => {
       renderWithChakra(<MunicipalButtonExamples />);
       
-      const element = screen.getByTestId('-municipal-button-examples');
       
       // Check for appropriate ARIA attributes
       expect(element).toHaveAttribute('role');
@@ -112,7 +97,6 @@ describe('MunicipalButtonExamples', () => {
     it('supports keyboard navigation', () => {
       renderWithChakra(<MunicipalButtonExamples />);
       
-      const element = screen.getByTestId('-municipal-button-examples');
       
       // Test tab navigation
       element.focus();
@@ -123,7 +107,6 @@ describe('MunicipalButtonExamples', () => {
       renderWithChakra(<MunicipalButtonExamples />);
       
       // Basic contrast check
-      const element = screen.getByTestId('-municipal-button-examples');
       expect(element).toBeInTheDocument();
     });
   });

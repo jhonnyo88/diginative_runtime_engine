@@ -12,49 +12,10 @@ import path from 'path';
 import { execSync } from 'child_process';
 
 // Mock bundle analysis utilities
-const mockBundleUtils = {
-  analyzeBundleSize: vi.fn(),
-  generateBundleReport: vi.fn(),
-  checkBudgetViolations: vi.fn(),
-  optimizeBundles: vi.fn(),
-  trackBundleHistory: vi.fn()
-};
 
 // Municipal performance budgets (bytes)
-const MUNICIPAL_BUNDLE_BUDGETS = {
-  javascript: {
-    main: 400 * 1024,      // 400KB main bundle
-    vendor: 300 * 1024,    // 300KB vendor bundle
-    q2Interactive: 200 * 1024, // 200KB Q2 features
-    total: 500 * 1024      // 500KB total gzipped
-  },
-  css: {
-    main: 80 * 1024,       // 80KB main styles
-    municipal: 30 * 1024,   // 30KB municipal branding
-    q2Styles: 20 * 1024,    // 20KB Q2 interactive styles
-    total: 100 * 1024      // 100KB total gzipped
-  },
-  assets: {
-    images: 1.5 * 1024 * 1024,  // 1.5MB images
-    fonts: 200 * 1024,          // 200KB fonts
-    icons: 100 * 1024,          // 100KB municipal icons
-    total: 2 * 1024 * 1024      // 2MB total assets
-  },
-  session: {
-    totalBudget: 3 * 1024 * 1024, // 3MB total session
-    cacheEfficiency: 0.8,         // 80% cache hit rate
-    compressionRatio: 0.7         // 70% compression ratio
-  }
-};
 
 // Anna Svensson 7-minute session constraints
-const ANNA_SVENSSON_CONSTRAINTS = {
-  networkSpeed: '3G',           // 3G baseline
-  sessionDuration: 420000,      // 7 minutes
-  interactionCount: 50,         // 50 interactions
-  bandwidthBudget: 2 * 1024 * 1024, // 2MB for 7-minute session
-  batteryBudget: 0.05          // 5% battery maximum
-};
 
 describe('Bundle Size Monitoring and Prevention', () => {
   let bundleAnalyzer: Record<string, unknown>;
@@ -68,7 +29,6 @@ describe('Bundle Size Monitoring and Prevention', () => {
 
   describe('JavaScript Bundle Size Monitoring', () => {
     it('should enforce main bundle size limits for municipal performance', async () => {
-      const bundleAnalysis = await bundleAnalyzer.analyzeJavaScriptBundles({
         buildPath: 'dist',
         compression: 'gzip',
         municipalOptimization: true
@@ -100,7 +60,6 @@ describe('Bundle Size Monitoring and Prevention', () => {
     });
 
     it('should track bundle size growth over time for Q2 features', async () => {
-      const bundleHistory = await bundleAnalyzer.trackBundleGrowth({
         timeframe: '30-days',
         features: ['q2-drag-drop', 'q2-timer', 'q2-character-interaction'],
         municipality: 'malmö'
@@ -122,9 +81,7 @@ describe('Bundle Size Monitoring and Prevention', () => {
     });
 
     it('should optimize bundles for Anna Svensson network conditions', async () => {
-      const networkOptimizer = createNetworkOptimizer(ANNA_SVENSSON_CONSTRAINTS);
 
-      const optimizationResult = await networkOptimizer.optimizeForNetworkConditions({
         targetNetwork: '3G',
         userPersona: 'anna-svensson',
         sessionConstraints: ANNA_SVENSSON_CONSTRAINTS
@@ -153,7 +110,6 @@ describe('Bundle Size Monitoring and Prevention', () => {
 
   describe('CSS Bundle Optimization', () => {
     it('should manage CSS bundle sizes with municipal branding', async () => {
-      const cssAnalysis = await bundleAnalyzer.analyzeCSSBundles({
         includeMunicipalThemes: true,
         includeAccessibilityStyles: true,
         includeQ2Styles: true
@@ -182,7 +138,6 @@ describe('Bundle Size Monitoring and Prevention', () => {
     });
 
     it('should optimize CSS for accessibility and Q2 interactive features', async () => {
-      const accessibilityCSS = await bundleAnalyzer.analyzeAccessibilityCSS({
         wcagCompliance: 'AA',
         municipalAccessibility: true,
         q2InteractiveAccessibility: true
@@ -210,7 +165,6 @@ describe('Bundle Size Monitoring and Prevention', () => {
 
   describe('Asset Budget Management', () => {
     it('should manage image and font budgets for municipal performance', async () => {
-      const assetAnalysis = await bundleAnalyzer.analyzeAssets({
         includeImages: true,
         includeFonts: true,
         includeMunicipalIcons: true,
@@ -246,7 +200,6 @@ describe('Bundle Size Monitoring and Prevention', () => {
     });
 
     it('should validate asset caching strategy for municipal networks', async () => {
-      const cachingAnalysis = await bundleAnalyzer.analyzeCachingStrategy({
         municipalNetworks: true,
         targetCacheHitRate: 0.8,
         cacheInvalidationStrategy: 'content-hash'
@@ -273,7 +226,6 @@ describe('Bundle Size Monitoring and Prevention', () => {
 
   describe('Performance Budget Violations and Alerts', () => {
     it('should detect and alert on budget violations', async () => {
-      const budgetViolations = await budgetMonitor.checkBudgetViolations({
         currentBuild: 'latest',
         budgets: MUNICIPAL_BUNDLE_BUDGETS,
         alertThresholds: [0.8, 0.9, 1.0] // 80%, 90%, 100% of budget
@@ -302,7 +254,6 @@ describe('Bundle Size Monitoring and Prevention', () => {
     });
 
     it('should generate performance regression reports', async () => {
-      const regressionReport = await budgetMonitor.generateRegressionReport({
         timeframe: '7-days',
         includeFeatureImpact: true,
         includeMunicipalMetrics: true,
@@ -334,7 +285,6 @@ describe('Bundle Size Monitoring and Prevention', () => {
     });
 
     it('should implement automated performance optimization suggestions', async () => {
-      const optimizationSuggestions = await budgetMonitor.generateOptimizationSuggestions({
         currentPerformance: 'baseline',
         targetImprovement: 0.15, // 15% improvement target
         municipalFocus: true
@@ -344,15 +294,11 @@ describe('Bundle Size Monitoring and Prevention', () => {
       expect(optimizationSuggestions.estimatedImpact).toBeGreaterThan(0.1); // >10% improvement
 
       // Verify suggestion categories
-      const suggestionCategories = optimizationSuggestions.suggestions.map((s: Record<string, unknown>) => s.category);
       expect(suggestionCategories).toContain('bundle-splitting');
       expect(suggestionCategories).toContain('asset-optimization');
       expect(suggestionCategories).toContain('caching-strategy');
 
       // Test municipal-specific optimizations
-      const municipalSuggestions = optimizationSuggestions.suggestions.filter(
-        (s: Record<string, unknown>) => s.municipalSpecific === true
-      );
       expect(municipalSuggestions.length).toBeGreaterThan(0);
 
       // Verify implementation priorities
@@ -370,7 +316,6 @@ describe('Bundle Size Monitoring and Prevention', () => {
 
   describe('CI/CD Performance Gates', () => {
     it('should integrate with CI/CD pipeline for performance validation', async () => {
-      const cicdIntegration = await bundleAnalyzer.validateCICDPerformance({
         pullRequestId: 'pr-123',
         baselineComparison: true,
         performanceGates: true,

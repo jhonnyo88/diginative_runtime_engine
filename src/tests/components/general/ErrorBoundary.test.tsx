@@ -16,13 +16,6 @@ import ErrorBoundary from '../../../components/ErrorBoundary.tsx';
 // Mock dependencies if needed
 
 
-const renderWithChakra = (component: React.ReactElement) => {
-  return render(
-    <ChakraProvider>
-      {component}
-    </ChakraProvider>
-  );
-};
 
 describe('ErrorBoundary', () => {
   beforeEach(() => {
@@ -33,14 +26,10 @@ describe('ErrorBoundary', () => {
     it('renders without crashing', () => {
       renderWithChakra(<ErrorBoundary />);
       
-      const component = screen.getByTestId('-error-boundary');
       expect(component).toBeInTheDocument();
     });
 
     it('handles props correctly', () => {
-      const testProps = {
-        // Add relevant props based on component analysis
-      };
       
       renderWithChakra(<ErrorBoundary {...testProps} />);
       
@@ -60,7 +49,6 @@ describe('ErrorBoundary', () => {
     it('provides proper ARIA attributes', () => {
       renderWithChakra(<ErrorBoundary />);
       
-      const element = screen.getByTestId('-error-boundary');
       
       // Check for appropriate ARIA attributes
       expect(element).toHaveAttribute('role');
@@ -69,7 +57,6 @@ describe('ErrorBoundary', () => {
     it('supports keyboard navigation', () => {
       renderWithChakra(<ErrorBoundary />);
       
-      const element = screen.getByTestId('-error-boundary');
       
       // Test tab navigation
       element.focus();
@@ -80,7 +67,6 @@ describe('ErrorBoundary', () => {
       renderWithChakra(<ErrorBoundary />);
       
       // Basic contrast check
-      const element = screen.getByTestId('-error-boundary');
       expect(element).toBeInTheDocument();
     });
   });

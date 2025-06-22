@@ -562,13 +562,11 @@ export class AIContentGenerationReliability extends EventEmitter {
     this.testResults.clear();
     
     // Initialize content type testing
-    const contentTypes = Object.keys(this.reliabilitySpecs.contentTypes);
     for (const contentType of contentTypes) {
       this.testResults.set(`content_${contentType}`, []);
     }
 
     // Initialize testing scenarios
-    const scenarios = Object.keys(this.reliabilitySpecs.testingScenarios);
     for (const scenario of scenarios) {
       this.testResults.set(`scenario_${scenario}`, []);
     }
@@ -630,7 +628,6 @@ export class AIContentGenerationReliability extends EventEmitter {
     };
 
     // Store results
-    const contentResults = this.testResults.get(`content_${contentTypeName}`) || [];
     contentResults.push(result);
     this.testResults.set(`content_${contentTypeName}`, contentResults);
 
@@ -657,7 +654,6 @@ export class AIContentGenerationReliability extends EventEmitter {
     };
 
     // Store results
-    const scenarioResults = this.testResults.get(`scenario_${scenarioName}`) || [];
     scenarioResults.push(result);
     this.testResults.set(`scenario_${scenarioName}`, scenarioResults);
 
@@ -668,7 +664,6 @@ export class AIContentGenerationReliability extends EventEmitter {
    * Validate Content Type Reliability
    */
   private async validateContentTypeReliability(contentTypeSpec: ContentTypeSpec): Promise<boolean> {
-    const standards = contentTypeSpec.qualityStandards;
     return standards.accuracyThreshold >= 95 && 
            standards.governmentComplianceThreshold >= 98 &&
            contentTypeSpec.governmentRelevance === 'critical';
@@ -678,14 +673,6 @@ export class AIContentGenerationReliability extends EventEmitter {
    * Calculate Reliability Score
    */
   private async calculateReliabilityScore(contentTypeSpec: ContentTypeSpec): Promise<number> {
-    const standards = contentTypeSpec.qualityStandards;
-    const weights = {
-      accuracy: 0.25,
-      consistency: 0.20,
-      cultural: 0.25,
-      government: 0.20,
-      language: 0.10
-    };
 
     return Math.round(
       standards.accuracyThreshold * weights.accuracy +
@@ -700,8 +687,6 @@ export class AIContentGenerationReliability extends EventEmitter {
    * Measure Content Quality
    */
   private async measureContentQuality(contentTypeSpec: ContentTypeSpec): Promise<ContentQualityMetrics> {
-    const standards = contentTypeSpec.qualityStandards;
-    const variance = Math.random() * 2 - 1; // ±1% variance
     
     return {
       accuracy: Math.min(standards.accuracyThreshold + variance, 100),
@@ -717,8 +702,6 @@ export class AIContentGenerationReliability extends EventEmitter {
    * Measure AI Content Performance
    */
   private async measureAIContentPerformance(contentTypeName: string): Promise<AIContentPerformanceMetrics> {
-    const performanceTargets = this.reliabilitySpecs.qualityAssurance.continuousMonitoring.performanceTargets;
-    const complexityFactor = contentTypeName.includes('municipal') ? 1.2 : 1.0;
     
     return {
       generationTime: Math.round(performanceTargets.responseTime * 0.6 * complexityFactor),
@@ -734,8 +717,6 @@ export class AIContentGenerationReliability extends EventEmitter {
    * Measure Cultural Validation
    */
   private async measureCulturalValidation(contentTypeSpec: ContentTypeSpec): Promise<CulturalValidationMetrics> {
-    const baseCultural = this.reliabilitySpecs.validationCriteria.swedishCulturalAccuracy;
-    const sensitivityBonus = contentTypeSpec.culturalSensitivity === 'critical' ? 2 : 1;
     
     return {
       swedishCulturalAccuracy: Math.min(baseCultural + sensitivityBonus, 100),
@@ -788,9 +769,6 @@ export class AIContentGenerationReliability extends EventEmitter {
    * Calculate Scenario Reliability Score
    */
   private async calculateScenarioReliabilityScore(scenarioSpec: TestingScenarioSpec): Promise<number> {
-    const baseScore = 94;
-    const durationBonus = scenarioSpec.durationMinutes >= 20 ? 3 : 1;
-    const validationBonus = scenarioSpec.validationCriteria.length >= 4 ? 2 : 1;
     return Math.min(baseScore + durationBonus + validationBonus, 100);
   }
 
@@ -798,8 +776,6 @@ export class AIContentGenerationReliability extends EventEmitter {
    * Measure Scenario Content Quality
    */
   private async measureScenarioContentQuality(scenarioSpec: TestingScenarioSpec): Promise<ContentQualityMetrics> {
-    const complexity = scenarioSpec.durationMinutes / 30;
-    const baseScore = 96;
     
     return {
       accuracy: baseScore + (1 - complexity) * 2,
@@ -815,8 +791,6 @@ export class AIContentGenerationReliability extends EventEmitter {
    * Measure Scenario Performance
    */
   private async measureScenarioPerformance(scenarioName: string): Promise<AIContentPerformanceMetrics> {
-    const isHighLoad = scenarioName === 'highLoad';
-    const performanceTargets = this.reliabilitySpecs.qualityAssurance.continuousMonitoring.performanceTargets;
     
     return {
       generationTime: Math.round(performanceTargets.responseTime * (isHighLoad ? 1.5 : 0.8)),
@@ -832,8 +806,6 @@ export class AIContentGenerationReliability extends EventEmitter {
    * Measure Scenario Cultural Validation
    */
   private async measureScenarioCulturalValidation(scenarioSpec: TestingScenarioSpec): Promise<CulturalValidationMetrics> {
-    const isCulturalScenario = scenarioSpec.scenarioName.includes('cultural');
-    const bonus = isCulturalScenario ? 2 : 0;
     
     return {
       swedishCulturalAccuracy: 97 + bonus,
@@ -870,8 +842,6 @@ export class AIContentGenerationReliability extends EventEmitter {
    * Generate AI Content Analysis
    */
   private async generateAIContentAnalysis(): Promise<void> {
-    const contentTypes = Object.keys(this.reliabilitySpecs.contentTypes);
-    const scenarios = Object.keys(this.reliabilitySpecs.testingScenarios);
     
     // Generate reliability summary
     const summary: AIContentTestResult = {
@@ -915,9 +885,6 @@ export class AIContentGenerationReliability extends EventEmitter {
    * Get AI Content Reliability Summary
    */
   getAIContentReliabilitySummary(): Record<string, unknown> {
-    const summary = this.testResults.get('reliability_summary')?.[0];
-    const contentTypes = Object.keys(this.reliabilitySpecs.contentTypes);
-    const scenarios = Object.keys(this.reliabilitySpecs.testingScenarios);
     
     return {
       ai_content_testing_active: this.testingActive,

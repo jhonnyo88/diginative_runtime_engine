@@ -16,13 +16,6 @@ import AdminApp from '../../../components/admin/AdminApp.tsx';
 // Mock dependencies if needed
 
 
-const renderWithChakra = (component: React.ReactElement) => {
-  return render(
-    <ChakraProvider>
-      {component}
-    </ChakraProvider>
-  );
-};
 
 describe('AdminApp', () => {
   beforeEach(() => {
@@ -33,14 +26,10 @@ describe('AdminApp', () => {
     it('renders without crashing', () => {
       renderWithChakra(<AdminApp />);
       
-      const component = screen.getByTestId('-admin-app');
       expect(component).toBeInTheDocument();
     });
 
     it('handles props correctly', () => {
-      const testProps = {
-        // Add relevant props based on component analysis
-      };
       
       renderWithChakra(<AdminApp {...testProps} />);
       
@@ -60,7 +49,6 @@ describe('AdminApp', () => {
     it('provides proper ARIA attributes', () => {
       renderWithChakra(<AdminApp />);
       
-      const element = screen.getByTestId('-admin-app');
       
       // Check for appropriate ARIA attributes
       expect(element).toHaveAttribute('role');
@@ -69,7 +57,6 @@ describe('AdminApp', () => {
     it('supports keyboard navigation', () => {
       renderWithChakra(<AdminApp />);
       
-      const element = screen.getByTestId('-admin-app');
       
       // Test tab navigation
       element.focus();
@@ -80,7 +67,6 @@ describe('AdminApp', () => {
       renderWithChakra(<AdminApp />);
       
       // Basic contrast check
-      const element = screen.getByTestId('-admin-app');
       expect(element).toBeInTheDocument();
     });
   });
@@ -88,12 +74,9 @@ describe('AdminApp', () => {
 
   describe('Performance and Municipal Network Optimization', () => {
     it('renders efficiently', () => {
-      const startTime = performance.now();
       
       renderWithChakra(<AdminApp />);
       
-      const endTime = performance.now();
-      const renderTime = endTime - startTime;
       
       // Should render within performance budget
       expect(renderTime).toBeLessThan(100); // 100ms budget
@@ -102,7 +85,6 @@ describe('AdminApp', () => {
     it('handles frequent updates efficiently', () => {
       const { rerender } = renderWithChakra(<AdminApp />);
       
-      const startTime = performance.now();
       
       // Simulate multiple re-renders
       for (let i = 0; i < 10; i++) {
@@ -113,8 +95,6 @@ describe('AdminApp', () => {
         );
       }
       
-      const endTime = performance.now();
-      const updateTime = endTime - startTime;
       
       // Should handle updates efficiently
       expect(updateTime).toBeLessThan(200); // 200ms for 10 updates

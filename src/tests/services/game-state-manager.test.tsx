@@ -24,39 +24,6 @@ import {
 } from '../../services/game-state-manager';
 
 // Mock Supabase
-const mockSupabase = {
-  from: vi.fn(() => ({
-    select: vi.fn(() => ({
-      eq: vi.fn(() => ({
-        eq: vi.fn(() => ({
-          single: vi.fn()
-        })),
-        is: vi.fn(() => ({
-          order: vi.fn(() => ({
-            limit: vi.fn()
-          }))
-        })),
-        lt: vi.fn()
-      })),
-      is: vi.fn(() => ({
-        lt: vi.fn()
-      })),
-      order: vi.fn(() => ({
-        limit: vi.fn()
-      }))
-    })),
-    upsert: vi.fn(),
-    update: vi.fn(() => ({
-      eq: vi.fn()
-    })),
-    insert: vi.fn(),
-    delete: vi.fn(() => ({
-      is: vi.fn(() => ({
-        lt: vi.fn()
-      }))
-    }))
-  }))
-};
 
 vi.mock('../../lib/supabase', () => ({
   supabase: mockSupabase
@@ -87,9 +54,6 @@ Object.defineProperty(global, 'window', {
 });
 
 // Mock console methods to reduce noise
-const consoleSpy = vi.spyOn(console, 'log').mockImplementation(() => {});
-const consoleErrorSpy = vi.spyOn(console, 'error').mockImplementation(() => {});
-const consoleWarnSpy = vi.spyOn(console, 'warn').mockImplementation(() => {});
 
 describe('GameStateManager Unit Tests', () => {
   beforeEach(() => {
@@ -108,15 +72,12 @@ describe('GameStateManager Unit Tests', () => {
   describe('Game Session Management', () => {
     it('should start a new game session successfully', async () => {
       // Mock successful database save
-      const mockUpsert = vi.fn().mockResolvedValue({ data: null, error: null });
-      const mockInsert = vi.fn().mockResolvedValue({ data: null, error: null });
       
       mockSupabase.from.mockReturnValue({
         upsert: mockUpsert,
         insert: mockInsert
       });
 
-      const gameState = await gameStateManager.startGameSession(
         'anna.svensson@malmo.se',
         'gdpr-training-v2',
         'malmo_municipality',
@@ -167,32 +128,8 @@ describe('GameStateManager Unit Tests', () => {
     });
 
     it('should resume existing game session with valid data', async () => {
-      const mockSessionData = {
-        id: 'existing-session-123',
-        user_id: 'anna.svensson@malmo.se',
-        game_id: 'gdpr-training-v2',
-        tenant_id: 'malmo_municipality',
-        started_at: new Date(Date.now() - 30 * 60 * 1000).toISOString(), // 30 minutes ago
-        completed_at: null,
-        progress: {
-          currentSceneId: 'scene-3',
-          sceneIndex: 2,
-          completedScenes: ['scene-1', 'scene-2'],
-          sceneResults: {
-            'scene-1': { score: 85, maxScore: 100 },
-            'scene-2': { score: 92, maxScore: 100 }
-          },
-          totalTimeSpent: 180000, // 3 minutes
-          culturalContext: 'swedish_municipal',
-          deviceInfo: {
-            isMobile: true,
-            userAgent: 'test-agent',
-            screenSize: '375x812'
-          }
-        }
-      };
 
-      const mockSelect = vi.fn().mockReturnValue({
+      const _mockSelect = vi.fn().mockReturnValue({
         eq: vi.fn().mockReturnValue({
           eq: vi.fn().mockReturnValue({
             single: vi.fn().mockResolvedValue({ data: mockSessionData, error: null })
@@ -200,14 +137,12 @@ describe('GameStateManager Unit Tests', () => {
         })
       });
 
-      const mockInsert = vi.fn().mockResolvedValue({ data: null, error: null });
 
       mockSupabase.from.mockReturnValue({
         select: mockSelect,
         insert: mockInsert
       });
 
-      const resumedState = await gameStateManager.resumeGameSession('existing-session-123');
 
       expect(resumedState).toMatchObject({
         sessionId: 'existing-session-123',
@@ -234,7 +169,7 @@ describe('GameStateManager Unit Tests', () => {
     });
 
     it('should return null for non-existent session', async () => {
-      const mockSelect = vi.fn().mockReturnValue({
+      const _mockSelect = vi.fn().mockReturnValue({
         eq: vi.fn().mockReturnValue({
           eq: vi.fn().mockReturnValue({
             single: vi.fn().mockResolvedValue({ data: null, error: { code: 'PGRST116' } })
@@ -246,7 +181,6 @@ describe('GameStateManager Unit Tests', () => {
         select: mockSelect
       });
 
-      const result = await gameStateManager.resumeGameSession('non-existent-session');
 
       expect(result).toBeNull();
       expect(consoleErrorSpy).toHaveBeenCalledWith(
@@ -256,15 +190,8 @@ describe('GameStateManager Unit Tests', () => {
     });
 
     it('should reject sessions older than 24 hours', async () => {
-      const oldSessionData = {
-        id: 'old-session-123',
-        user_id: 'anna.svensson@malmo.se',
-        started_at: new Date(Date.now() - 25 * 60 * 60 * 1000).toISOString(), // 25 hours ago
-        completed_at: null,
-        progress: Record<string, unknown>
-      };
 
-      const mockSelect = vi.fn().mockReturnValue({
+      const _mockSelect = vi.fn().mockReturnValue({
         eq: vi.fn().mockReturnValue({
           eq: vi.fn().mockReturnValue({
             single: vi.fn().mockResolvedValue({ data: oldSessionData, error: null })
@@ -276,7 +203,6 @@ describe('GameStateManager Unit Tests', () => {
         select: mockSelect
       });
 
-      const result = await gameStateManager.resumeGameSession('old-session-123');
 
       expect(result).toBeNull();
       expect(consoleWarnSpy).toHaveBeenCalledWith(
@@ -288,8 +214,6 @@ describe('GameStateManager Unit Tests', () => {
   describe('State Updates and Progress Tracking', () => {
     beforeEach(async () => {
       // Start a session for update tests
-      const mockUpsert = vi.fn().mockResolvedValue({ data: null, error: null });
-      const mockInsert = vi.fn().mockResolvedValue({ data: null, error: null });
       
       mockSupabase.from.mockReturnValue({
         upsert: mockUpsert,
@@ -305,8 +229,6 @@ describe('GameStateManager Unit Tests', () => {
     });
 
     it('should update game state with scene completion', async () => {
-      const mockUpsert = vi.fn().mockResolvedValue({ data: null, error: null });
-      const mockInsert = vi.fn().mockResolvedValue({ data: null, error: null });
       
       mockSupabase.from.mockReturnValue({
         upsert: mockUpsert,
@@ -357,8 +279,6 @@ describe('GameStateManager Unit Tests', () => {
     });
 
     it('should not duplicate completed scenes', async () => {
-      const mockUpsert = vi.fn().mockResolvedValue({ data: null, error: null });
-      const mockInsert = vi.fn().mockResolvedValue({ data: null, error: null });
       
       mockSupabase.from.mockReturnValue({
         upsert: mockUpsert,
@@ -377,7 +297,6 @@ describe('GameStateManager Unit Tests', () => {
       });
 
       // Verify scene-1 appears only once in completed scenes
-      const lastCall = mockUpsert.mock.calls[mockUpsert.mock.calls.length - 1][0];
       expect(lastCall.progress.completedScenes).toEqual(['scene-1']);
     });
   });
@@ -385,8 +304,6 @@ describe('GameStateManager Unit Tests', () => {
   describe('Game Completion and Results', () => {
     beforeEach(async () => {
       // Start a session and complete some scenes
-      const mockUpsert = vi.fn().mockResolvedValue({ data: null, error: null });
-      const mockInsert = vi.fn().mockResolvedValue({ data: null, error: null });
       
       mockSupabase.from.mockReturnValue({
         upsert: mockUpsert,
@@ -413,17 +330,15 @@ describe('GameStateManager Unit Tests', () => {
     });
 
     it('should complete game session and generate results', async () => {
-      const mockUpdate = vi.fn().mockReturnValue({
+      const _mockUpdate = vi.fn().mockReturnValue({
         eq: vi.fn().mockResolvedValue({ data: null, error: null })
       });
-      const mockInsert = vi.fn().mockResolvedValue({ data: null, error: null });
       
       mockSupabase.from.mockReturnValue({
         update: mockUpdate,
         insert: mockInsert
       });
 
-      const results = await gameStateManager.completeGameSession('test-session-id-12345');
 
       expect(results).toMatchObject({
         sessionId: 'test-session-id-12345',
@@ -459,11 +374,9 @@ describe('GameStateManager Unit Tests', () => {
 
     it('should award excellence achievement for high scores', async () => {
       // Update with perfect scores
-      const mockUpsert = vi.fn().mockResolvedValue({ data: null, error: null });
-      const mockUpdate = vi.fn().mockReturnValue({
+      const _mockUpdate = vi.fn().mockReturnValue({
         eq: vi.fn().mockResolvedValue({ data: null, error: null })
       });
-      const mockInsert = vi.fn().mockResolvedValue({ data: null, error: null });
       
       mockSupabase.from.mockReturnValue({
         upsert: mockUpsert,
@@ -481,14 +394,12 @@ describe('GameStateManager Unit Tests', () => {
         sceneResult: { score: 98, maxScore: 100 }
       });
 
-      const results = await gameStateManager.completeGameSession('test-session-id-12345');
 
       expect(results?.achievements).toContain('excellence_award');
       expect(results?.totalScore).toBeGreaterThanOrEqual(95);
     });
 
     it('should handle completion without active session', async () => {
-      const results = await gameStateManager.completeGameSession('non-existent-session');
 
       expect(results).toBeNull();
       expect(consoleErrorSpy).toHaveBeenCalledWith('No active session to complete');
@@ -497,31 +408,8 @@ describe('GameStateManager Unit Tests', () => {
 
   describe('Session Management and Cleanup', () => {
     it('should fetch user incomplete sessions', async () => {
-      const mockSessionsData = [
-        {
-          id: 'session-1',
-          user_id: 'anna.svensson@malmo.se',
-          game_id: 'gdpr-training-v2',
-          tenant_id: 'malmo_municipality',
-          started_at: new Date().toISOString(),
-          progress: {
-            currentSceneId: 'scene-2',
-            sceneIndex: 1,
-            completedScenes: ['scene-1'],
-            culturalContext: 'swedish_municipal'
-          }
-        },
-        {
-          id: 'session-2',
-          user_id: 'anna.svensson@malmo.se',
-          game_id: 'ethics-training',
-          tenant_id: 'malmo_municipality',
-          started_at: new Date().toISOString(),
-          progress: null
-        }
-      ];
 
-      const mockSelect = vi.fn().mockReturnValue({
+      const _mockSelect = vi.fn().mockReturnValue({
         eq: vi.fn().mockReturnValue({
           is: vi.fn().mockReturnValue({
             order: vi.fn().mockReturnValue({
@@ -535,7 +423,6 @@ describe('GameStateManager Unit Tests', () => {
         select: mockSelect
       });
 
-      const sessions = await gameStateManager.getUserIncompleteSessions('anna.svensson@malmo.se');
 
       expect(sessions).toHaveLength(2);
       expect(sessions[0]).toMatchObject({
@@ -558,7 +445,7 @@ describe('GameStateManager Unit Tests', () => {
     });
 
     it('should handle fetch sessions database error', async () => {
-      const mockSelect = vi.fn().mockReturnValue({
+      const _mockSelect = vi.fn().mockReturnValue({
         eq: vi.fn().mockReturnValue({
           is: vi.fn().mockReturnValue({
             order: vi.fn().mockReturnValue({
@@ -572,7 +459,6 @@ describe('GameStateManager Unit Tests', () => {
         select: mockSelect
       });
 
-      const sessions = await gameStateManager.getUserIncompleteSessions('anna.svensson@malmo.se');
 
       expect(sessions).toEqual([]);
       expect(consoleErrorSpy).toHaveBeenCalledWith(
@@ -582,7 +468,7 @@ describe('GameStateManager Unit Tests', () => {
     });
 
     it('should cleanup old incomplete sessions', async () => {
-      const mockDelete = vi.fn().mockReturnValue({
+      const _mockDelete = vi.fn().mockReturnValue({
         is: vi.fn().mockReturnValue({
           lt: vi.fn().mockResolvedValue({ data: null, error: null })
         })
@@ -596,12 +482,11 @@ describe('GameStateManager Unit Tests', () => {
 
       expect(mockDelete).toHaveBeenCalled();
       
-      const deleteCall = mockDelete.mock.results[0].value;
       expect(deleteCall.is).toHaveBeenCalledWith('completed_at', null);
     });
 
     it('should handle cleanup database errors gracefully', async () => {
-      const mockDelete = vi.fn().mockReturnValue({
+      const _mockDelete = vi.fn().mockReturnValue({
         is: vi.fn().mockReturnValue({
           lt: vi.fn().mockRejectedValue(new Error('Delete failed'))
         })
@@ -622,8 +507,6 @@ describe('GameStateManager Unit Tests', () => {
 
   describe('Autosave Functionality', () => {
     it('should setup autosave when starting session', async () => {
-      const mockUpsert = vi.fn().mockResolvedValue({ data: null, error: null });
-      const mockInsert = vi.fn().mockResolvedValue({ data: null, error: null });
       
       mockSupabase.from.mockReturnValue({
         upsert: mockUpsert,
@@ -648,11 +531,9 @@ describe('GameStateManager Unit Tests', () => {
     });
 
     it('should stop autosave when completing session', async () => {
-      const mockUpsert = vi.fn().mockResolvedValue({ data: null, error: null });
-      const mockUpdate = vi.fn().mockReturnValue({
+      const _mockUpdate = vi.fn().mockReturnValue({
         eq: vi.fn().mockResolvedValue({ data: null, error: null })
       });
-      const mockInsert = vi.fn().mockResolvedValue({ data: null, error: null });
       
       mockSupabase.from.mockReturnValue({
         upsert: mockUpsert,
@@ -670,7 +551,6 @@ describe('GameStateManager Unit Tests', () => {
       await gameStateManager.completeGameSession('test-session-id-12345');
 
       // Fast-forward time - autosave should not trigger
-      const saveCallCount = mockUpsert.mock.calls.length;
       vi.advanceTimersByTime(60000); // 1 minute
       await vi.runAllTimersAsync();
 
@@ -728,9 +608,7 @@ describe('useGameState React Hook Tests', () => {
     vi.clearAllMocks();
     
     // Mock successful database operations
-    const mockUpsert = vi.fn().mockResolvedValue({ data: null, error: null });
-    const mockInsert = vi.fn().mockResolvedValue({ data: null, error: null });
-    const mockUpdate = vi.fn().mockReturnValue({
+    const _mockUpdate = vi.fn().mockReturnValue({
       eq: vi.fn().mockResolvedValue({ data: null, error: null })
     });
     
@@ -769,7 +647,7 @@ describe('useGameState React Hook Tests', () => {
 
   it('should resume game through hook', async () => {
     // Mock resume session response
-    const mockSelect = vi.fn().mockReturnValue({
+    const _mockSelect = vi.fn().mockReturnValue({
       eq: vi.fn().mockReturnValue({
         eq: vi.fn().mockReturnValue({
           single: vi.fn().mockResolvedValue({
@@ -908,8 +786,6 @@ describe('ResumeGameDialog Component Tests', () => {
   ];
 
   it('should render resume dialog with incomplete sessions', () => {
-    const mockOnResume = vi.fn();
-    const mockOnStartNew = vi.fn();
 
     render(
       <ResumeGameDialog
@@ -932,8 +808,6 @@ describe('ResumeGameDialog Component Tests', () => {
   });
 
   it('should call onResume when resume button clicked', () => {
-    const mockOnResume = vi.fn();
-    const mockOnStartNew = vi.fn();
 
     render(
       <ResumeGameDialog
@@ -943,15 +817,12 @@ describe('ResumeGameDialog Component Tests', () => {
       />
     );
 
-    const resumeButtons = screen.getAllByText('Fortsätt');
     fireEvent.click(resumeButtons[0]);
 
     expect(mockOnResume).toHaveBeenCalledWith('session-1');
   });
 
   it('should call onStartNew when start new button clicked', () => {
-    const mockOnResume = vi.fn();
-    const mockOnStartNew = vi.fn();
 
     render(
       <ResumeGameDialog
@@ -967,8 +838,6 @@ describe('ResumeGameDialog Component Tests', () => {
   });
 
   it('should not render when no incomplete sessions', () => {
-    const mockOnResume = vi.fn();
-    const mockOnStartNew = vi.fn();
 
     const { container } = render(
       <ResumeGameDialog
@@ -982,8 +851,6 @@ describe('ResumeGameDialog Component Tests', () => {
   });
 
   it('should format dates in Swedish locale', () => {
-    const mockOnResume = vi.fn();
-    const mockOnStartNew = vi.fn();
 
     render(
       <ResumeGameDialog
@@ -1000,8 +867,6 @@ describe('ResumeGameDialog Component Tests', () => {
 
 describe('Health Checks and Error Handling', () => {
   it('should handle database save failures gracefully', async () => {
-    const mockUpsert = vi.fn().mockRejectedValue(new Error('Database connection failed'));
-    const mockInsert = vi.fn().mockResolvedValue({ data: null, error: null });
     
     mockSupabase.from.mockReturnValue({
       upsert: mockUpsert,
@@ -1022,8 +887,6 @@ describe('Health Checks and Error Handling', () => {
   });
 
   it('should handle analytics tracking failures gracefully', async () => {
-    const mockUpsert = vi.fn().mockResolvedValue({ data: null, error: null });
-    const mockInsert = vi.fn().mockRejectedValue(new Error('Analytics service unavailable'));
     
     mockSupabase.from.mockReturnValue({
       upsert: mockUpsert,
@@ -1031,7 +894,6 @@ describe('Health Checks and Error Handling', () => {
     });
 
     // Should not throw error despite analytics failure
-    const gameState = await gameStateManager.startGameSession(
       'anna.svensson@malmo.se',
       'gdpr-training-v2',
       'malmo_municipality',
@@ -1054,15 +916,12 @@ describe('Health Checks and Error Handling', () => {
       writable: true
     });
 
-    const mockUpsert = vi.fn().mockResolvedValue({ data: null, error: null });
-    const mockInsert = vi.fn().mockResolvedValue({ data: null, error: null });
     
     mockSupabase.from.mockReturnValue({
       upsert: mockUpsert,
       insert: mockInsert
     });
 
-    const gameState = await gameStateManager.startGameSession(
       'anna.svensson@malmo.se',
       'gdpr-training-v2',
       'malmo_municipality',
@@ -1081,11 +940,9 @@ describe('Health Checks and Error Handling', () => {
   });
 
   it('should handle score calculation edge cases', async () => {
-    const mockUpsert = vi.fn().mockResolvedValue({ data: null, error: null });
-    const mockUpdate = vi.fn().mockReturnValue({
+    const _mockUpdate = vi.fn().mockReturnValue({
       eq: vi.fn().mockResolvedValue({ data: null, error: null })
     });
-    const mockInsert = vi.fn().mockResolvedValue({ data: null, error: null });
     
     mockSupabase.from.mockReturnValue({
       upsert: mockUpsert,
@@ -1111,7 +968,6 @@ describe('Health Checks and Error Handling', () => {
       sceneResult: Record<string, unknown> // Empty result
     });
 
-    const results = await gameStateManager.completeGameSession('test-session-id-12345');
 
     expect(results?.totalScore).toBe(0); // Should handle invalid scores gracefully
   });

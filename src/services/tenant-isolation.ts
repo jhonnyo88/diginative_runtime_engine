@@ -80,10 +80,8 @@ export class TenantRedisService {
    * Tenant-aware cache GET operation
    */
   async get(municipalityId: string, key: string): Promise<string | null> {
-    const tenantKey = this.getTenantKey(municipalityId, key);
     
     try {
-      const result = await this.redis.get(tenantKey);
       
       // Record cache access for monitoring
       await this.monitoring.recordMetric({
@@ -118,7 +116,6 @@ export class TenantRedisService {
     value: string, 
     ttl?: number
   ): Promise<void> {
-    const tenantKey = this.getTenantKey(municipalityId, key);
     
     try {
       if (ttl) {
@@ -152,10 +149,8 @@ export class TenantRedisService {
    * Tenant-aware bulk GET operation
    */
   async mget(municipalityId: string, keys: string[]): Promise<(string | null)[]> {
-    const tenantKeys = keys.map(key => this.getTenantKey(municipalityId, key));
     
     try {
-      const results = await this.redis.mget(...tenantKeys);
       
       await this.monitoring.recordMetric({
         name: 'tenant_cache_bulk_access',
@@ -183,8 +178,6 @@ export class TenantRedisService {
    * Get all keys for specific tenant (admin operations only)
    */
   async getTenantKeys(municipalityId: string, pattern: string = '*'): Promise<string[]> {
-    const tenantPattern = this.getTenantKey(municipalityId, pattern);
-    const keys = await this.redis.keys(tenantPattern);
     
     // Strip tenant prefix for return
     return keys.map(key => key.replace(`tenant:${municipalityId}:`, ''));
@@ -194,8 +187,6 @@ export class TenantRedisService {
    * Delete all data for a tenant (GDPR compliance)
    */
   async deleteTenantData(municipalityId: string): Promise<number> {
-    const pattern = `tenant:${municipalityId}:*`;
-    const keys = await this.redis.keys(pattern);
     
     if (keys.length === 0) {
       return 0;
@@ -205,11 +196,9 @@ export class TenantRedisService {
     await this.logTenantDataDeletion(municipalityId, keys.length);
     
     // Delete in batches to avoid blocking Redis
-    const batchSize = 100;
     let deletedCount = 0;
     
     for (let i = 0; i < keys.length; i += batchSize) {
-      const batch = keys.slice(i, i + batchSize);
       deletedCount += await this.redis.del(...batch);
     }
     
@@ -240,7 +229,6 @@ export class TenantRedisService {
 /**
  * Cache key patterns with tenant isolation
  */
-export const TenantCacheKeys = {
   AI_CONTENT: (contentId: string) => `ai_content:${contentId}`,
   GAME_SESSION: (sessionId: string) => `game_session:${sessionId}`,
   BRANDING: () => `branding:active`,
@@ -296,7 +284,6 @@ export abstract class TenantAwareService {
     params: Record<string, unknown>[],
     expectedMunicipalityId: string
   ): void {
-    const queryLower = query.toLowerCase();
     
     // All queries must include municipality_id filtering
     if (!queryLower.includes('municipality_id')) {
@@ -304,7 +291,7 @@ export abstract class TenantAwareService {
     }
     
     // Validate municipality parameter matches expected
-    const municipalityParam = params.find(p => 
+    const _municipalityParam = params.find(p => 
       typeof p === 'string' && p.match(/^[a-z0-9_]+$/) && p === expectedMunicipalityId
     );
     
@@ -440,7 +427,7 @@ export function tenantContextMiddleware() {
   return async (req: Request, res: Response, next: NextFunction): Promise<void> => {
     try {
       // Extract municipality ID from multiple sources with priority order
-      const municipalityId = 
+      const _municipalityId = 
         req.headers['x-municipality-id'] as string ||
         req.query.municipalityId as string ||
         (req as any).samlUser?.municipalityId;
@@ -464,7 +451,6 @@ export function tenantContextMiddleware() {
       }
       
       // Validate municipality exists and is active
-      const municipality = await validateMunicipality(municipalityId);
       if (!municipality) {
         res.status(404).json({
           success: false,
@@ -619,11 +605,9 @@ export class GDPRComplianceTenantManager {
     let totalRecords = 0;
     
     // Export from cache
-    const cacheKeys = await this.tenantRedis.getTenantKeys(municipalityId);
     if (cacheKeys.length > 0) {
       exportData.cacheData = {};
       for (const key of cacheKeys.slice(0, 100)) { // Limit to prevent overflow
-        const value = await this.tenantRedis.get(municipalityId, key);
         if (value) {
           exportData.cacheData[key] = value;
           totalRecords++;
@@ -654,10 +638,8 @@ export class GDPRComplianceTenantManager {
     municipalityId: string,
     subjectId?: string
   ): Promise<ComplianceResult> {
-    const deletedRecords = 0;
     
     // Delete from Redis cache
-    const deletedCacheKeys = await this.tenantRedis.deleteTenantData(municipalityId);
     
     // In production, would also delete from database with proper cascading
     
@@ -716,6 +698,3 @@ export class GDPRComplianceTenantManager {
 }
 
 // Export singleton instances
-export const tenantRedis = new TenantRedisService();
-export const tenantSecurityValidator = new TenantSecurityValidator();
-export const gdprComplianceManager = new GDPRComplianceTenantManager();

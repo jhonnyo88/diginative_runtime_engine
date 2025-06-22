@@ -11,74 +11,12 @@ import { render, screen, waitFor } from '@testing-library/react';
 import { performance } from 'perf_hooks';
 
 // Mock performance measurement utilities
-const mockPerformanceUtils = {
-  measureComponentRender: vi.fn(),
-  trackLoadingTimes: vi.fn(),
-  analyzePerformanceMetrics: vi.fn(),
-  generatePerformanceReport: vi.fn(),
-  detectPerformanceRegressions: vi.fn()
-};
 
 // Municipal component performance budgets (milliseconds)
-const MUNICIPAL_COMPONENT_BUDGETS = {
-  core: {
-    GameContainer: 200,           // Main game container
-    DialogueScene: 150,           // Dialogue rendering
-    QuizScene: 180,              // Quiz interface
-    ProgressIndicator: 50,       // Progress tracking
-    MunicipalButton: 30          // Municipal styled buttons
-  },
-  municipal: {
-    MunicipalHeader: 100,        // Municipal branding header
-    BrandingSwitcher: 80,        // Municipality context switching
-    ComplianceIndicator: 60,     // GDPR/compliance status
-    SwedishLocalization: 40,     // Language switching
-    AccessibilityControls: 70   // A11y control panel
-  },
-  q2Interactive: {
-    DragDropWorkflow: 250,       // Q2 drag-drop components
-    TimerChallenge: 120,         // Emergency timer challenges
-    CharacterInteraction: 200,   // Character dialogue system
-    TouchGestureHandler: 80,     // Mobile gesture recognition
-    BranchingNarrative: 300     // Narrative decision trees
-  },
-  infrastructure: {
-    ErrorBoundary: 20,           // Error handling
-    LoadingSpinner: 15,          // Loading indicators
-    ToastNotification: 40,       // System notifications
-    ModalDialog: 100,            // Modal windows
-    FormValidation: 60           // Form validation feedback
-  }
-};
 
 // Anna Svensson 7-minute session loading budgets
-const ANNA_SVENSSON_LOADING_BUDGETS = {
-  initialLoad: 2000,             // 2s initial application load
-  pageTransitions: 500,          // 500ms between pages
-  featureActivation: 300,        // 300ms to activate Q2 features
-  formSubmission: 1000,          // 1s form processing
-  documentUpload: 3000,          // 3s document processing
-  totalSession: 12000            // 12s total loading time per session
-};
 
 // Municipal network performance targets
-const MUNICIPAL_NETWORK_TARGETS = {
-  '3G': {
-    initialRender: 3000,         // 3s on 3G
-    interactiveDelay: 5000,      // 5s to interactive
-    componentBudgetMultiplier: 1.5  // 50% longer on 3G
-  },
-  'wifi': {
-    initialRender: 1500,         // 1.5s on WiFi
-    interactiveDelay: 2500,      // 2.5s to interactive
-    componentBudgetMultiplier: 1.0  // Baseline on WiFi
-  },
-  'municipal-restricted': {
-    initialRender: 4000,         // 4s on restricted networks
-    interactiveDelay: 6000,      // 6s to interactive
-    componentBudgetMultiplier: 2.0  // 100% longer on restricted
-  }
-};
 
 describe('Component Loading Time Budgets', () => {
   let performanceMonitor: Record<string, unknown>;
@@ -92,7 +30,6 @@ describe('Component Loading Time Budgets', () => {
 
   describe('Core Component Performance Budgets', () => {
     it('should enforce GameContainer loading time budget', async () => {
-      const startTime = performance.now();
       
       render(
         <PerformanceTrackedGameContainer 
@@ -106,11 +43,9 @@ describe('Component Loading Time Budgets', () => {
         expect(screen.getByTestId('game-container-ready')).toBeInTheDocument();
       });
 
-      const loadingTime = performance.now() - startTime;
       expect(loadingTime).toBeLessThan(MUNICIPAL_COMPONENT_BUDGETS.core.GameContainer);
 
       // Verify Q2 features don't exceed budget
-      const q2LoadingTime = await performanceMonitor.measureQ2FeatureImpact({
         component: 'GameContainer',
         features: ['drag-drop', 'timer', 'character-interaction']
       });
@@ -124,7 +59,6 @@ describe('Component Loading Time Budgets', () => {
     });
 
     it('should validate DialogueScene rendering performance', async () => {
-      const dialoguePerformance = await performanceMonitor.measureComponentPerformance({
         component: 'DialogueScene',
         props: {
           characters: ['anna-supervisor', 'klaus-colleague'],
@@ -148,7 +82,6 @@ describe('Component Loading Time Budgets', () => {
     });
 
     it('should monitor QuizScene performance with Q2 features', async () => {
-      const quizPerformance = await performanceMonitor.measureQuizScenePerformance({
         questionCount: 10,
         q2Features: ['drag-drop-answers', 'timed-challenges', 'interactive-feedback'],
         municipality: 'malmö',
@@ -172,7 +105,6 @@ describe('Component Loading Time Budgets', () => {
 
   describe('Municipal Component Performance', () => {
     it('should optimize municipal branding component loading', async () => {
-      const brandingPerformance = await performanceMonitor.measureMunicipalBranding({
         municipality: 'malmö',
         brandingComplexity: 'full',
         dynamicSwitching: true
@@ -182,7 +114,6 @@ describe('Component Loading Time Budgets', () => {
       expect(brandingPerformance.brandingSwitcher).toBeLessThan(MUNICIPAL_COMPONENT_BUDGETS.municipal.BrandingSwitcher);
 
       // Test municipality switching performance
-      const switchingPerformance = await performanceMonitor.measureMunicipalitySwitching({
         fromMunicipality: 'malmö',
         toMunicipality: 'stockholm',
         preserveState: true
@@ -194,7 +125,6 @@ describe('Component Loading Time Budgets', () => {
     });
 
     it('should validate Swedish localization performance impact', async () => {
-      const localizationPerformance = await performanceMonitor.measureLocalizationImpact({
         sourceLanguage: 'en',
         targetLanguage: 'sv-SE',
         textComplexity: 'municipal-terminology',
@@ -216,7 +146,6 @@ describe('Component Loading Time Budgets', () => {
     });
 
     it('should monitor accessibility controls performance', async () => {
-      const accessibilityPerformance = await performanceMonitor.measureAccessibilityControls({
         features: ['high-contrast', 'large-text', 'screen-reader', 'keyboard-navigation'],
         q2Interactive: true,
         municipality: 'malmö'
@@ -239,7 +168,6 @@ describe('Component Loading Time Budgets', () => {
 
   describe('Q2 Interactive Feature Performance', () => {
     it('should enforce drag-drop workflow performance budgets', async () => {
-      const dragDropPerformance = await performanceMonitor.measureDragDropPerformance({
         workflowComplexity: 'municipal-document-approval',
         elementsCount: 20,
         accessibility: 'full',
@@ -266,7 +194,6 @@ describe('Component Loading Time Budgets', () => {
     });
 
     it('should validate timer challenge performance under stress', async () => {
-      const timerPerformance = await performanceMonitor.measureTimerChallengePerformance({
         simultaneousTimers: 5,
         updateFrequency: 100, // 100ms updates
         challengeComplexity: 'emergency-coordination',
@@ -289,7 +216,6 @@ describe('Component Loading Time Budgets', () => {
     });
 
     it('should monitor character interaction performance', async () => {
-      const characterPerformance = await performanceMonitor.measureCharacterInteraction({
         characters: ['anna', 'klaus', 'marie'],
         interactionComplexity: 'branching-dialogue',
         emotionStates: true,
@@ -318,7 +244,6 @@ describe('Component Loading Time Budgets', () => {
 
   describe('Network-Specific Performance Budgets', () => {
     it('should adjust component budgets for 3G municipal networks', async () => {
-      const networkAdjustedBudgets = await loadingTimeTracker.calculateNetworkAdjustedBudgets({
         networkType: '3G',
         userPersona: 'anna-svensson',
         municipality: 'malmö'
@@ -326,15 +251,11 @@ describe('Component Loading Time Budgets', () => {
 
       // Verify 3G budget adjustments
       Object.keys(MUNICIPAL_COMPONENT_BUDGETS.core).forEach(component => {
-        const baseBudget = MUNICIPAL_COMPONENT_BUDGETS.core[component];
-        const adjustedBudget = networkAdjustedBudgets.core[component];
-        const expectedBudget = baseBudget * MUNICIPAL_NETWORK_TARGETS['3G'].componentBudgetMultiplier;
         
         expect(adjustedBudget).toBeCloseTo(expectedBudget, 10);
       });
 
       // Test 3G performance validation
-      const performanceTest = await loadingTimeTracker.validateNetworkPerformance({
         networkType: '3G',
         testSuite: 'comprehensive',
         municipality: 'malmö'
@@ -345,7 +266,6 @@ describe('Component Loading Time Budgets', () => {
     });
 
     it('should validate municipal restricted network performance', async () => {
-      const restrictedNetworkPerformance = await loadingTimeTracker.testRestrictedNetworkPerformance({
         restrictions: ['firewall', 'proxy', 'bandwidth-limit'],
         municipality: 'malmö',
         security: 'enhanced'
@@ -372,7 +292,6 @@ describe('Component Loading Time Budgets', () => {
 
   describe('Performance Regression Detection', () => {
     it('should detect component performance regressions', async () => {
-      const regressionAnalysis = await performanceMonitor.detectComponentRegressions({
         timeframe: '7-days',
         components: ['GameContainer', 'DialogueScene', 'DragDropWorkflow'],
         alertThreshold: 0.15 // 15% regression threshold
@@ -400,7 +319,6 @@ describe('Component Loading Time Budgets', () => {
     });
 
     it('should generate performance optimization recommendations', async () => {
-      const optimizationRecommendations = await performanceMonitor.generateOptimizationRecommendations({
         performanceData: 'latest-week',
         targetImprovement: 0.2, // 20% improvement target
         municipalFocus: true,
@@ -422,9 +340,6 @@ describe('Component Loading Time Budgets', () => {
       });
 
       // Verify municipal-specific recommendations
-      const municipalRecommendations = optimizationRecommendations.recommendations.filter(
-        (rec: Record<string, unknown>) => rec.municipalSpecific === true
-      );
       expect(municipalRecommendations.length).toBeGreaterThan(0);
     });
   });

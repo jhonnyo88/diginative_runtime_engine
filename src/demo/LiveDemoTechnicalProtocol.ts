@@ -274,8 +274,6 @@ export class LiveDemoTechnicalProtocol {
     console.log(`👥 Audience: ${this.config.audienceProfile.primaryAudience}, Size: ${this.config.audienceProfile.audienceSize}`);
     console.log(`⏱️ Duration: ${this.config.duration} minutes`);
     
-    const executionId = this.generateExecutionId();
-    const startTime = Date.now();
     
     this.currentExecution = {
       executionId,
@@ -299,7 +297,6 @@ export class LiveDemoTechnicalProtocol {
         await this.executePhase(phase);
         
         // Validate phase completion
-        const phaseValidation = await this.validatePhaseCompletion(phase);
         if (!phaseValidation.success) {
           console.warn(`⚠️ Phase ${phase.name} validation failed: ${phaseValidation.issues.join(', ')}`);
           
@@ -316,8 +313,6 @@ export class LiveDemoTechnicalProtocol {
       // Post-demo wrap-up
       await this.executePostDemoWrapUp();
       
-      const endTime = Date.now();
-      const totalDuration = endTime - startTime;
       
       const executionResult: DemoExecutionResult = {
         success: true,
@@ -354,7 +349,6 @@ export class LiveDemoTechnicalProtocol {
    * Execute specific demo phase
    */
   async executePhase(phase: DemoPhase): Promise<PhaseExecutionResult> {
-    const phaseStartTime = Date.now();
     
     console.log(`🎭 Starting ${phase.name}`);
     console.log(`🎯 Objectives: ${phase.objectives.join(', ')}`);
@@ -365,7 +359,6 @@ export class LiveDemoTechnicalProtocol {
     for (const step of phase.technicalSteps) {
       console.log(`⚡ Executing: ${step.description}`);
       
-      const stepResult = await this.executeTechnicalStep(step, phase);
       stepResults.push(stepResult);
       
       if (!stepResult.success) {
@@ -374,7 +367,6 @@ export class LiveDemoTechnicalProtocol {
         // Try fallback actions
         for (const fallbackAction of step.fallbackActions) {
           console.log(`🔄 Attempting fallback: ${fallbackAction}`);
-          const fallbackResult = await this.executeFallbackAction(fallbackAction, step);
           
           if (fallbackResult.success) {
             console.log(`✅ Fallback successful: ${fallbackAction}`);
@@ -395,8 +387,6 @@ export class LiveDemoTechnicalProtocol {
       await this.executePerformanceChecks(phase.performanceChecks);
     }
     
-    const phaseDuration = Date.now() - phaseStartTime;
-    const phaseSuccess = stepResults.every(r => r.success);
     
     console.log(`${phaseSuccess ? '✅' : '⚠️'} ${phase.name} completed in ${Math.round(phaseDuration / 1000)}s`);
     
@@ -432,8 +422,6 @@ export class LiveDemoTechnicalProtocol {
   async activateEmergencyContingency(error: Record<string, unknown>): Promise<void> {
     console.log('🚨 Activating Emergency Contingency Protocol');
     
-    const contingencyAction = await this.contingencyManager.selectEmergencyContingency(error);
-    const result = await this.contingencyManager.executeContingency(contingencyAction);
     
     if (this.currentExecution) {
       this.currentExecution.contingencyActivations.push({
@@ -452,7 +440,6 @@ export class LiveDemoTechnicalProtocol {
    * Generate comprehensive demo report
    */
   generateDemoReport(): DemoReport {
-    const latestExecution = this.executionHistory[this.executionHistory.length - 1];
     
     return {
       executiveSummary: this.generateExecutiveSummary(),
@@ -494,16 +481,12 @@ export class LiveDemoTechnicalProtocol {
   }
 
   private async executeTechnicalStep(step: TechnicalStep, phase: DemoPhase): Promise<StepExecutionResult> {
-    const stepStartTime = Date.now();
     
     try {
       // Execute the technical action
-      const actionResult = await this.performTechnicalAction(step.technicalAction, step);
       
       // Validate against criteria
-      const validation = await this.validateStepCriteria(step.validationCriteria, actionResult);
       
-      const stepDuration = Date.now() - stepStartTime;
       
       return {
         stepId: step.stepId,
@@ -571,7 +554,6 @@ export class LiveDemoTechnicalProtocol {
       validationResults[criterion] = await this.validateCriterion(criterion, actionResult);
     }
     
-    const passed = Object.values(validationResults).every(Boolean);
     
     return {
       passed,
@@ -651,8 +633,6 @@ export class LiveDemoTechnicalProtocol {
 
   private async executePerformanceChecks(checks: PerformanceCheck[]): Promise<void> {
     for (const check of checks) {
-      const currentValue = await this.performanceMonitor.getMetricValue(check.metric);
-      const passed = currentValue <= check.target;
       
       if (!passed && check.critical) {
         console.warn(`⚠️ Critical performance check failed: ${check.metric} = ${currentValue} (target: ${check.target})`);
@@ -663,11 +643,7 @@ export class LiveDemoTechnicalProtocol {
 
   private async validatePhaseCompletion(phase: DemoPhase): Promise<PhaseValidationResult> {
     // Validate that phase completed successfully
-    const performanceValidation = await this.validatePhasePerformance(phase);
-    const technicalValidation = await this.validatePhaseTechnicalRequirements(phase);
     
-    const success = performanceValidation.success && technicalValidation.success;
-    const critical = !success && phase.phaseId.includes('hub') || phase.phaseId.includes('stakeholder');
     
     return {
       success,
@@ -680,8 +656,6 @@ export class LiveDemoTechnicalProtocol {
   private async activateContingency(phase: DemoPhase, issues: string[]): Promise<void> {
     console.log(`🚨 Activating contingency for ${phase.name}: ${issues.join(', ')}`);
     
-    const contingency = await this.contingencyManager.selectContingency(phase, issues);
-    const result = await this.contingencyManager.executeContingency(contingency);
     
     if (this.currentExecution) {
       this.currentExecution.contingencyActivations.push({
@@ -723,9 +697,7 @@ export class LiveDemoTechnicalProtocol {
   }
 
   private async loadQ3HubWithTiming(): Promise<Record<string, unknown>> {
-    const startTime = Date.now();
     await new Promise(resolve => setTimeout(resolve, 450)); // Simulate 450ms loading
-    const loadingTime = Date.now() - startTime;
     return { loadingTime, uiResponsiveness: 97 };
   }
 
@@ -735,9 +707,7 @@ export class LiveDemoTechnicalProtocol {
   }
 
   private async executeWorldTransitions(): Promise<Record<string, unknown>> {
-    const startTime = Date.now();
     await new Promise(resolve => setTimeout(resolve, 750)); // Simulate 750ms transition
-    const transitionTime = Date.now() - startTime;
     return { transitionTime, errors: [] };
   }
 
@@ -752,9 +722,7 @@ export class LiveDemoTechnicalProtocol {
   }
 
   private async demonstrateAnnaSvenssonJourney(): Promise<Record<string, unknown>> {
-    const startTime = Date.now();
     await new Promise(resolve => setTimeout(resolve, 2000));
-    const syncTime = Date.now() - startTime;
     return { mobilePerformance: 95, syncTime: 180 };
   }
 
@@ -1174,5 +1142,4 @@ interface MonitoringProtocol {
 }
 
 // Export factory function for creating demo protocol
-export const createLiveDemoProtocol = (config: DemoProtocolConfiguration) => 
   new LiveDemoTechnicalProtocol(config);

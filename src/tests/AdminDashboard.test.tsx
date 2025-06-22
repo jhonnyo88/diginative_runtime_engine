@@ -18,11 +18,6 @@ const TestWrapper: React.FC<{ children: React.ReactNode }> = ({ children }) => (
 );
 
 describe('AdminDashboard', () => {
-  const defaultProps = {
-    tenantId: 'test-tenant',
-    tenantName: 'Test Municipality',
-    userRole: 'tenant_admin' as const
-  };
 
   it('renders dashboard header with tenant information', () => {
     render(
@@ -130,7 +125,6 @@ describe('AdminDashboard', () => {
       </TestWrapper>
     );
 
-    const timeframeButton = screen.getByText('Last 30 days');
     fireEvent.click(timeframeButton);
 
     expect(screen.getByText('Last 7 days')).toBeInTheDocument();
@@ -150,10 +144,6 @@ describe('AdminDashboard', () => {
   });
 
   it('shows appropriate content based on user permissions', () => {
-    const superAdminProps = {
-      ...defaultProps,
-      userRole: 'super_admin' as const
-    };
 
     render(
       <TestWrapper>
@@ -173,11 +163,6 @@ describe('AdminDashboard', () => {
 // Integration tests for admin workflow
 describe('AdminDashboard Integration', () => {
   it('completes full admin workflow', async () => {
-    const props = {
-      tenantId: 'malmo-stad',
-      tenantName: 'Malmö Stad',
-      userRole: 'tenant_admin' as const
-    };
 
     render(
       <TestWrapper>
@@ -206,7 +191,6 @@ describe('AdminDashboard Integration', () => {
   });
 
   it('handles different user roles appropriately', () => {
-    const roles = ['super_admin', 'tenant_admin', 'content_manager'] as const;
 
     roles.forEach(role => {
       const { unmount } = render(

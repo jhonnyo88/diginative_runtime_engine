@@ -45,8 +45,6 @@ import {
 import { useCulturalTheme } from './CulturalThemeProvider';
 import { MunicipalBrandingDisplay } from './MunicipalBrandingSystem';
 
-const MotionBox = motion(Box);
-const MotionCard = motion(Card);
 
 // Executive Dashboard Data Interfaces
 interface ROIMetrics {
@@ -149,14 +147,6 @@ interface ExecutiveROIDisplayProps {
 const ExecutiveROIDisplay: React.FC<ExecutiveROIDisplayProps> = ({ roiData, municipalName }) => {
   const { currentTheme } = useCulturalTheme();
 
-  const formatCurrency = (amount: number) => {
-    return new Intl.NumberFormat('sv-SE', {
-      style: 'currency',
-      currency: 'SEK',
-      minimumFractionDigits: 0,
-      maximumFractionDigits: 0
-    }).format(amount);
-  };
 
   return (
     <VStack spacing={6} align="stretch">
@@ -547,14 +537,6 @@ const EuropeanExpansionExecutiveView: React.FC<EuropeanExpansionExecutiveViewPro
 }) => {
   const { currentTheme } = useCulturalTheme();
 
-  const formatEUR = (amount: number) => {
-    return new Intl.NumberFormat('sv-SE', {
-      style: 'currency',
-      currency: 'EUR',
-      minimumFractionDigits: 0,
-      maximumFractionDigits: 0
-    }).format(amount);
-  };
 
   return (
     <VStack spacing={6} align="stretch">
@@ -630,14 +612,7 @@ const EuropeanExpansionExecutiveView: React.FC<EuropeanExpansionExecutiveViewPro
         <Grid templateColumns="repeat(2, 1fr)" gap={4}>
           
           {Object.entries(metrics.marketPenetration).map(([market, penetration], index) => {
-            const marketConfig = {
-              svenska: { name: 'Svenska Marknaden', color: 'blue', icon: FiGlobe },
-              deutsche: { name: 'Deutsche Markt', color: 'purple', icon: FiTarget },
-              française: { name: 'Marché Français', color: 'pink', icon: FiUsers },
-              nederlandse: { name: 'Nederlandse Markt', color: 'orange', icon: FiTrendingUp }
-            };
             
-            const config = marketConfig[market as keyof typeof marketConfig];
             if (!config) return null;
 
             return (
@@ -739,11 +714,6 @@ export const ExecutiveMunicipalDashboard: React.FC<ExecutiveMunicipalDashboardPr
   const { currentTheme } = useCulturalTheme();
   const [activeTab, setActiveTab] = useState(0);
 
-  const tabData = [
-    { label: 'Municipal ROI', icon: FiDollarSign },
-    { label: 'Professional Development', icon: FiUsers },
-    { label: 'European Expansion', icon: FiGlobe }
-  ];
 
   return (
     <Container maxW="7xl" py={8}>

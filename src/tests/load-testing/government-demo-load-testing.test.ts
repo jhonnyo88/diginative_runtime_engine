@@ -31,7 +31,6 @@ describe('Government Demo Load Testing - Multi-User Concurrent Access Validation
     test('Government Demo Load Testing Initialization', async () => {
       expect(loadTesting).toBeDefined();
       
-      const summary = loadTesting.getLoadTestingSummary();
       expect(summary.load_testing_active).toBe(false);
       expect(summary.total_scenarios).toBe(0);
       expect(summary.success_rate).toBe(0);
@@ -40,7 +39,6 @@ describe('Government Demo Load Testing - Multi-User Concurrent Access Validation
     test('Government Load Testing Activation', async () => {
       await loadTesting.initializeGovernmentLoadTesting();
       
-      const summary = loadTesting.getLoadTestingSummary();
       expect(summary.load_testing_active).toBe(true);
       expect(summary.total_scenarios).toBe(5); // 5 load scenarios
       expect(summary.max_concurrent_users).toBe(100);
@@ -78,14 +76,11 @@ describe('Government Demo Load Testing - Multi-User Concurrent Access Validation
     test('Baseline Performance Load Scenario', async () => {
       await loadTesting.initializeGovernmentLoadTesting();
       
-      const results = await loadTesting.executeComprehensiveLoadTesting();
       
       // Validate baseline scenario results
-      const baselineResults = results.get('scenario_baseline');
       expect(baselineResults).toBeDefined();
       expect(baselineResults!.length).toBe(1);
 
-      const baselineResult = baselineResults![0];
       expect(baselineResult.testType).toBe('load_scenario');
       expect(baselineResult.scenario).toBe('baseline');
       expect(baselineResult.concurrentUsers).toBe(10);
@@ -100,14 +95,11 @@ describe('Government Demo Load Testing - Multi-User Concurrent Access Validation
     test('Ministerial Presentation Load Scenario', async () => {
       await loadTesting.initializeGovernmentLoadTesting();
       
-      const results = await loadTesting.executeComprehensiveLoadTesting();
       
       // Validate ministerial presentation scenario results
-      const ministerialResults = results.get('scenario_ministerialPresentation');
       expect(ministerialResults).toBeDefined();
       expect(ministerialResults!.length).toBe(1);
 
-      const ministerialResult = ministerialResults![0];
       expect(ministerialResult.testType).toBe('load_scenario');
       expect(ministerialResult.scenario).toBe('ministerialPresentation');
       expect(ministerialResult.concurrentUsers).toBe(25);
@@ -123,14 +115,11 @@ describe('Government Demo Load Testing - Multi-User Concurrent Access Validation
     test('Parliament Demo Load Scenario', async () => {
       await loadTesting.initializeGovernmentLoadTesting();
       
-      const results = await loadTesting.executeComprehensiveLoadTesting();
       
       // Validate parliament demo scenario results
-      const parliamentResults = results.get('scenario_parliamentDemo');
       expect(parliamentResults).toBeDefined();
       expect(parliamentResults!.length).toBe(1);
 
-      const parliamentResult = parliamentResults![0];
       expect(parliamentResult.testType).toBe('load_scenario');
       expect(parliamentResult.scenario).toBe('parliamentDemo');
       expect(parliamentResult.concurrentUsers).toBe(50);
@@ -146,14 +135,11 @@ describe('Government Demo Load Testing - Multi-User Concurrent Access Validation
     test('Municipal Roadshow Load Scenario', async () => {
       await loadTesting.initializeGovernmentLoadTesting();
       
-      const results = await loadTesting.executeComprehensiveLoadTesting();
       
       // Validate municipal roadshow scenario results
-      const municipalResults = results.get('scenario_municipalRoadshow');
       expect(municipalResults).toBeDefined();
       expect(municipalResults!.length).toBe(1);
 
-      const municipalResult = municipalResults![0];
       expect(municipalResult.testType).toBe('load_scenario');
       expect(municipalResult.scenario).toBe('municipalRoadshow');
       expect(municipalResult.concurrentUsers).toBe(35);
@@ -169,14 +155,11 @@ describe('Government Demo Load Testing - Multi-User Concurrent Access Validation
     test('Peak Government Usage Stress Test', async () => {
       await loadTesting.initializeGovernmentLoadTesting();
       
-      const results = await loadTesting.executeComprehensiveLoadTesting();
       
       // Validate peak government usage scenario results
-      const peakResults = results.get('scenario_peakGovernmentUsage');
       expect(peakResults).toBeDefined();
       expect(peakResults!.length).toBe(1);
 
-      const peakResult = peakResults![0];
       expect(peakResult.testType).toBe('load_scenario');
       expect(peakResult.scenario).toBe('peakGovernmentUsage');
       expect(peakResult.concurrentUsers).toBe(100);
@@ -197,14 +180,11 @@ describe('Government Demo Load Testing - Multi-User Concurrent Access Validation
     test('Response Time Performance Under Load', async () => {
       await loadTesting.initializeGovernmentLoadTesting();
       
-      const results = await loadTesting.executeComprehensiveLoadTesting();
       
       // Validate performance analysis results
-      const performanceResults = results.get('performance_analysis');
       expect(performanceResults).toBeDefined();
       expect(performanceResults!.length).toBe(1);
 
-      const performanceResult = performanceResults![0];
       expect(performanceResult.testType).toBe('performance_analysis');
       expect(performanceResult.success).toBe(true);
       expect(performanceResult.performanceMetrics.averageResponseTime).toBeLessThan(800); // Average under load
@@ -219,15 +199,12 @@ describe('Government Demo Load Testing - Multi-User Concurrent Access Validation
     test('Throughput Performance Under Load', async () => {
       await loadTesting.initializeGovernmentLoadTesting();
       
-      const results = await loadTesting.executeComprehensiveLoadTesting();
-      const summary = loadTesting.getLoadTestingSummary();
 
       // Validate throughput metrics
       expect(summary.average_performance.throughput).toBeGreaterThan(400); // Throughput under load
       expect(summary.average_performance.errorRate).toBeLessThan(2.0); // Low error rate
 
       // Validate government throughput requirements
-      const performanceTargets = GOVERNMENT_DEMO_LOAD_TESTING_SPECS.performanceTargets.throughputTargets;
       expect(summary.average_performance.throughput).toBeGreaterThan(performanceTargets.requestsPerSecond * 0.8); // 80% of target
 
       console.log(`Throughput Under Load: ${summary.average_performance.throughput} req/sec, ${summary.average_performance.errorRate}% errors`);
@@ -236,8 +213,6 @@ describe('Government Demo Load Testing - Multi-User Concurrent Access Validation
     test('Resource Usage Under Load', async () => {
       await loadTesting.initializeGovernmentLoadTesting();
       
-      const results = await loadTesting.executeComprehensiveLoadTesting();
-      const summary = loadTesting.getLoadTestingSummary();
 
       // Validate resource usage metrics
       expect(summary.resource_usage.peakCpuUsage).toBeLessThan(85); // CPU under control
@@ -246,7 +221,6 @@ describe('Government Demo Load Testing - Multi-User Concurrent Access Validation
       expect(summary.resource_usage.connectionCount).toBeLessThan(150); // Connection pool
 
       // Validate government resource requirements
-      const resourceTargets = GOVERNMENT_DEMO_LOAD_TESTING_SPECS.performanceTargets.resourceUsageTargets;
       expect(summary.resource_usage.peakCpuUsage).toBeLessThan(resourceTargets.maxCpuUsage);
       expect(summary.resource_usage.peakMemoryUsage).toBeLessThan(resourceTargets.maxMemoryUsage);
 
@@ -261,8 +235,6 @@ describe('Government Demo Load Testing - Multi-User Concurrent Access Validation
     test('System Reliability Under Load', async () => {
       await loadTesting.initializeGovernmentLoadTesting();
       
-      const results = await loadTesting.executeComprehensiveLoadTesting();
-      const summary = loadTesting.getLoadTestingSummary();
 
       // Validate reliability metrics
       expect(summary.reliability_metrics.uptime).toBeGreaterThan(99.5); // High uptime under load
@@ -272,7 +244,6 @@ describe('Government Demo Load Testing - Multi-User Concurrent Access Validation
       expect(summary.reliability_metrics.sessionPersistence).toBeGreaterThan(98.5); // Session persistence
 
       // Validate government reliability requirements
-      const reliabilityTargets = GOVERNMENT_DEMO_LOAD_TESTING_SPECS.performanceTargets.reliabilityTargets;
       expect(summary.reliability_metrics.uptime).toBeGreaterThan(reliabilityTargets.uptime * 0.995); // 99.5% of target
 
       console.log(`Reliability Under Load: ${summary.reliability_metrics.uptime}% uptime, ${summary.reliability_metrics.recoveryTime}ms recovery`);
@@ -281,11 +252,8 @@ describe('Government Demo Load Testing - Multi-User Concurrent Access Validation
     test('Government Requirements Compliance Under Load', async () => {
       await loadTesting.initializeGovernmentLoadTesting();
       
-      const results = await loadTesting.executeComprehensiveLoadTesting();
-      const summary = loadTesting.getLoadTestingSummary();
 
       // Validate government requirements compliance
-      const govRequirements = GOVERNMENT_DEMO_LOAD_TESTING_SPECS.governmentRequirements;
       expect(govRequirements.zeroFailureTolerance).toBe(true);
       expect(govRequirements.gracefulDegradation).toBe(true);
       expect(govRequirements.realTimeMonitoring).toBe(true);
@@ -306,7 +274,6 @@ describe('Government Demo Load Testing - Multi-User Concurrent Access Validation
    */
   describe('User Profile Testing Excellence', () => {
     test('Minister User Profile Load Testing', () => {
-      const ministerProfile = GOVERNMENT_DEMO_LOAD_TESTING_SPECS.userProfiles.minister;
       
       // Validate minister profile specifications
       expect(ministerProfile.profileName).toBe('Minister User Profile');
@@ -321,7 +288,6 @@ describe('Government Demo Load Testing - Multi-User Concurrent Access Validation
     });
 
     test('Municipal Manager User Profile Load Testing', () => {
-      const municipalProfile = GOVERNMENT_DEMO_LOAD_TESTING_SPECS.userProfiles.municipalManager;
       
       // Validate municipal manager profile specifications
       expect(municipalProfile.profileName).toBe('Municipal Manager Profile');
@@ -336,7 +302,6 @@ describe('Government Demo Load Testing - Multi-User Concurrent Access Validation
     });
 
     test('Government Official User Profile Load Testing', () => {
-      const officialProfile = GOVERNMENT_DEMO_LOAD_TESTING_SPECS.userProfiles.governmentOfficial;
       
       // Validate government official profile specifications
       expect(officialProfile.profileName).toBe('Government Official Profile');
@@ -351,7 +316,6 @@ describe('Government Demo Load Testing - Multi-User Concurrent Access Validation
     });
 
     test('Technical Staff User Profile Load Testing', () => {
-      const technicalProfile = GOVERNMENT_DEMO_LOAD_TESTING_SPECS.userProfiles.technicalStaff;
       
       // Validate technical staff profile specifications
       expect(technicalProfile.profileName).toBe('Technical Staff Profile');
@@ -366,7 +330,6 @@ describe('Government Demo Load Testing - Multi-User Concurrent Access Validation
     });
 
     test('Audience Member User Profile Load Testing', () => {
-      const audienceProfile = GOVERNMENT_DEMO_LOAD_TESTING_SPECS.userProfiles.audienceMember;
       
       // Validate audience member profile specifications
       expect(audienceProfile.profileName).toBe('Audience Member Profile');
@@ -388,8 +351,6 @@ describe('Government Demo Load Testing - Multi-User Concurrent Access Validation
     test('Comprehensive Load Testing Summary', async () => {
       await loadTesting.initializeGovernmentLoadTesting();
       
-      const results = await loadTesting.executeComprehensiveLoadTesting();
-      const summary = loadTesting.getLoadTestingSummary();
 
       // Validate comprehensive testing completion
       expect(summary.load_testing_active).toBe(true);
@@ -411,8 +372,6 @@ describe('Government Demo Load Testing - Multi-User Concurrent Access Validation
     test('Government Demo Load Readiness Validation', async () => {
       await loadTesting.initializeGovernmentLoadTesting();
       
-      const results = await loadTesting.executeComprehensiveLoadTesting();
-      const summary = loadTesting.getLoadTestingSummary();
 
       // Government demo readiness requirements
       expect(summary.government_ready).toBe(true); // Demo ready under load
@@ -437,7 +396,6 @@ describe('Government Demo Load Testing - Multi-User Concurrent Access Validation
  */
 describe('Government Demo Load Testing Integration', () => {
   test('Complete Government Load Testing Lifecycle', async () => {
-    const loadTesting = new GovernmentDemoLoadTesting();
     
     // Complete lifecycle test
     expect(loadTesting.getLoadTestingSummary().load_testing_active).toBe(false);
@@ -447,11 +405,9 @@ describe('Government Demo Load Testing Integration', () => {
     expect(loadTesting.getLoadTestingSummary().load_testing_active).toBe(true);
     
     // Execute comprehensive load testing
-    const results = await loadTesting.executeComprehensiveLoadTesting();
     expect(results.size).toBeGreaterThan(8); // Multiple load testing categories
     
     // Validate final status
-    const summary = loadTesting.getLoadTestingSummary();
     expect(summary.total_scenarios).toBe(5);
     expect(summary.success_rate).toBe(100);
     expect(summary.government_ready).toBe(true);

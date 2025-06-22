@@ -41,8 +41,6 @@ import {
 
 import { useCulturalTheme } from './CulturalThemeProvider';
 
-const MotionBox = motion(Box);
-const MotionCard = motion(Card);
 
 // Professional Achievement Categories för Municipal Contexts
 interface ProfessionalAchievement {
@@ -169,13 +167,6 @@ const professionalAchievements: ProfessionalAchievement[] = [
 ];
 
 // Government-Appropriate Achievement Icons
-const categoryIcons = {
-  competency: FiBriefcase,
-  certification: FiCertificate,
-  collaboration: FiUsers,
-  innovation: FiStar,
-  leadership: FiFlag
-};
 
 // Professional Achievement Celebration Components
 interface AchievementBadgeProps {
@@ -192,16 +183,8 @@ const ProfessionalAchievementBadge: React.FC<AchievementBadgeProps> = ({
   onAchievementSelect = () => {}
 }) => {
   const { currentTheme } = useCulturalTheme();
-  const CategoryIcon = categoryIcons[achievement.category];
   
-  const culturalColors = {
-    swedish: { primary: '#4A90A4', accent: '#7FB069' },
-    german: { primary: '#1E3A8A', accent: '#6B7280' },
-    french: { primary: '#1E40AF', accent: '#7C3AED' },
-    dutch: { primary: '#2563EB', accent: '#F97316' }
-  };
 
-  const colors = culturalColors[culturalContext as keyof typeof culturalColors] || culturalColors.swedish;
 
   return (
     <MotionCard
@@ -324,10 +307,7 @@ const ProfessionalAchievementDetailModal: React.FC<AchievementDetailModalProps> 
   if (!achievement) return null;
 
   const { currentTheme } = useCulturalTheme();
-  const CategoryIcon = categoryIcons[achievement.category];
-  const isEarned = !!achievement.earnedDate;
   
-  const culturalAdaptationText = achievement.culturalAdaptation[culturalContext as keyof typeof achievement.culturalAdaptation];
 
   return (
     <Modal isOpen={isOpen} onClose={onClose} size="xl">
@@ -490,219 +470,6 @@ export const ProfessionalAchievementCelebration: React.FC<ProfessionalAchievemen
   const [selectedAchievement, setSelectedAchievement] = useState<ProfessionalAchievement | null>(null);
   
   // Calculate achievement statistics
-  const earnedAchievements = professionalAchievements.filter(a => a.earnedDate);
-  const totalAchievements = professionalAchievements.length;
-  const completionPercentage = (earnedAchievements.length / totalAchievements) * 100;
 
-  const handleAchievementSelect = (achievement: ProfessionalAchievement) => {
-    setSelectedAchievement(achievement);
-    onOpen();
-  };
 
   // Group achievements by category
-  const achievementsByCategory = useMemo(() => {
-    return professionalAchievements.reduce((acc, achievement) => {
-      if (!acc[achievement.category]) {
-        acc[achievement.category] = [];
-      }
-      acc[achievement.category].push(achievement);
-      return acc;
-    }, {} as Record<string, ProfessionalAchievement[]>);
-  }, []);
-
-  return (
-    <VStack spacing={8} align="stretch">
-      
-      {/* Professional Achievement Overview */}
-      <MotionBox
-        initial={{ opacity: 0, y: -20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.6 }}
-      >
-        <Card bg={currentTheme.colors.surface} borderColor={currentTheme.colors.primary + '30'}>
-          <CardBody p={6}>
-            <VStack spacing={6} align="stretch">
-              
-              <HStack justify="space-between">
-                <HStack spacing={3}>
-                  <Icon as={FiAward} w={8} h={8} color={currentTheme.colors.primary} />
-                  <VStack align="start" spacing={0}>
-                    <Text fontSize="2xl" fontWeight="800" color={currentTheme.colors.primary}>
-                      Professional Achievement Excellence
-                    </Text>
-                    <Text fontSize="md" color="gray.600">
-                      Government-appropriate professional development recognition
-                    </Text>
-                  </VStack>
-                </HStack>
-                
-                <VStack align="end" spacing={1}>
-                  <Badge colorScheme="green" variant="solid" p={2} borderRadius="lg">
-                    Workplace Appropriate
-                  </Badge>
-                  <Text fontSize="xs" color="gray.600">
-                    Government Professional Standards
-                  </Text>
-                </VStack>
-              </HStack>
-
-              {/* Professional Progress Dashboard */}
-              <Grid templateColumns="repeat(4, 1fr)" gap={6}>
-                <VStack spacing={2}>
-                  <Text fontSize="2xl" fontWeight="800" color="green.500">
-                    {earnedAchievements.length}
-                  </Text>
-                  <Text fontSize="sm" color="gray.600" textAlign="center">
-                    Achievements Earned
-                  </Text>
-                </VStack>
-                <VStack spacing={2}>
-                  <Text fontSize="2xl" fontWeight="800" color="blue.500">
-                    {Math.round(completionPercentage)}%
-                  </Text>
-                  <Text fontSize="sm" color="gray.600" textAlign="center">
-                    Professional Progress
-                  </Text>
-                </VStack>
-                <VStack spacing={2}>
-                  <Text fontSize="2xl" fontWeight="800" color="purple.500">
-                    {earnedAchievements.filter(a => a.governmentRecognized).length}
-                  </Text>
-                  <Text fontSize="sm" color="gray.600" textAlign="center">
-                    Gov. Recognized
-                  </Text>
-                </VStack>
-                <VStack spacing={2}>
-                  <Text fontSize="2xl" fontWeight="800" color="orange.500">
-                    {new Set(earnedAchievements.map(a => a.category)).size}
-                  </Text>
-                  <Text fontSize="sm" color="gray.600" textAlign="center">
-                    Competency Areas
-                  </Text>
-                </VStack>
-              </Grid>
-
-              {/* Overall Progress Bar */}
-              <Box>
-                <HStack justify="space-between" mb={2}>
-                  <Text fontSize="md" fontWeight="600" color={currentTheme.colors.primary}>
-                    Overall Professional Development Progress:
-                  </Text>
-                  <Text fontSize="md" fontWeight="700" color={currentTheme.colors.primary}>
-                    {Math.round(completionPercentage)}%
-                  </Text>
-                </HStack>
-                <Progress
-                  value={completionPercentage}
-                  colorScheme="green"
-                  size="lg"
-                  borderRadius="full"
-                  bg="gray.200"
-                />
-              </Box>
-
-            </VStack>
-          </CardBody>
-        </Card>
-      </MotionBox>
-
-      {/* Achievement Categories */}
-      {Object.entries(achievementsByCategory).map(([category, achievements], categoryIndex) => (
-        <MotionBox
-          key={category}
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6, delay: categoryIndex * 0.2 }}
-        >
-          <VStack spacing={4} align="stretch">
-            
-            <HStack spacing={3}>
-              <Icon as={categoryIcons[category as keyof typeof categoryIcons]} w={6} h={6} color={currentTheme.colors.primary} />
-              <Text fontSize="lg" fontWeight="700" color={currentTheme.colors.primary} textTransform="capitalize">
-                {category} Excellence
-              </Text>
-              <Badge colorScheme="blue" variant="outline">
-                {achievements.filter(a => a.earnedDate).length}/{achievements.length}
-              </Badge>
-            </HStack>
-
-            <Grid templateColumns={{ base: "1fr", md: "repeat(2, 1fr)", lg: "repeat(3, 1fr)" }} gap={4}>
-              {achievements.map((achievement) => (
-                <ProfessionalAchievementBadge
-                  key={achievement.id}
-                  achievement={achievement}
-                  isEarned={!!achievement.earnedDate}
-                  culturalContext={culturalContext}
-                  onAchievementSelect={handleAchievementSelect}
-                />
-              ))}
-            </Grid>
-
-          </VStack>
-        </MotionBox>
-      ))}
-
-      {/* Municipal Professional Excellence Summary */}
-      <MotionBox
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.6, delay: 0.8 }}
-      >
-        <Card bg="blue.50" borderColor="blue.200">
-          <CardBody p={6}>
-            <VStack spacing={4} align="stretch">
-              
-              <HStack spacing={3}>
-                <Icon as={FiStar} w={6} h={6} color="blue.500" />
-                <Text fontSize="lg" fontWeight="700" color="blue.700">
-                  Municipal Professional Excellence Achievement System
-                </Text>
-              </HStack>
-
-              <Text fontSize="sm" color="blue.700" lineHeight="tall">
-                Government-appropriate professional achievement recognition that maintains workplace appropriateness while delivering meaningful career advancement motivation. Each achievement is aligned with European qualification frameworks and municipal professional development standards.
-              </Text>
-
-              <Grid templateColumns="repeat(3, 1fr)" gap={4}>
-                <VStack spacing={2}>
-                  <Text fontSize="xl" fontWeight="800" color="blue.500">
-                    320%+
-                  </Text>
-                  <Text fontSize="sm" color="blue.600" textAlign="center">
-                    Professional Engagement Increase
-                  </Text>
-                </VStack>
-                <VStack spacing={2}>
-                  <Text fontSize="xl" fontWeight="800" color="green.500">
-                    100%
-                  </Text>
-                  <Text fontSize="sm" color="blue.600" textAlign="center">
-                    Workplace Appropriate
-                  </Text>
-                </VStack>
-                <VStack spacing={2}>
-                  <Text fontSize="xl" fontWeight="800" color="purple.500">
-                    EQF
-                  </Text>
-                  <Text fontSize="sm" color="blue.600" textAlign="center">
-                    Qualification Aligned
-                  </Text>
-                </VStack>
-              </Grid>
-
-            </VStack>
-          </CardBody>
-        </Card>
-      </MotionBox>
-
-      {/* Achievement Detail Modal */}
-      <ProfessionalAchievementDetailModal
-        achievement={selectedAchievement}
-        isOpen={isOpen}
-        onClose={onClose}
-        culturalContext={culturalContext}
-      />
-
-    </VStack>
-  );
-};

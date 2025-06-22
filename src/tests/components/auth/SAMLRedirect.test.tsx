@@ -24,13 +24,6 @@ vi.mock('../../services/enterprise-saml-provider', () => ({
   }
 }));
 
-const renderWithChakra = (component: React.ReactElement) => {
-  return render(
-    <ChakraProvider>
-      {component}
-    </ChakraProvider>
-  );
-};
 
 describe('SAMLRedirect', () => {
   beforeEach(() => {
@@ -41,14 +34,10 @@ describe('SAMLRedirect', () => {
     it('renders without crashing', () => {
       renderWithChakra(<SAMLRedirect />);
       
-      const component = screen.getByTestId('-s-a-m-l-redirect');
       expect(component).toBeInTheDocument();
     });
 
     it('handles props correctly', () => {
-      const testProps = {
-        // Add relevant props based on component analysis
-      };
       
       renderWithChakra(<SAMLRedirect {...testProps} />);
       
@@ -68,7 +57,6 @@ describe('SAMLRedirect', () => {
     it('provides proper ARIA attributes', () => {
       renderWithChakra(<SAMLRedirect />);
       
-      const element = screen.getByTestId('-s-a-m-l-redirect');
       
       // Check for appropriate ARIA attributes
       expect(element).toHaveAttribute('role');
@@ -77,7 +65,6 @@ describe('SAMLRedirect', () => {
     it('supports keyboard navigation', () => {
       renderWithChakra(<SAMLRedirect />);
       
-      const element = screen.getByTestId('-s-a-m-l-redirect');
       
       // Test tab navigation
       element.focus();
@@ -88,7 +75,6 @@ describe('SAMLRedirect', () => {
       renderWithChakra(<SAMLRedirect />);
       
       // Basic contrast check
-      const element = screen.getByTestId('-s-a-m-l-redirect');
       expect(element).toBeInTheDocument();
     });
   });

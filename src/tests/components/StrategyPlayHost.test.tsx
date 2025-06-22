@@ -6,11 +6,6 @@ import { ChakraThemeProvider } from '../../theme/ChakraThemeProvider';
 import type { GameManifest } from '../../types/game-manifest';
 
 // Mock analytics
-const mockAnalytics = {
-  trackEvent: vi.fn(),
-  identify: vi.fn(),
-  page: vi.fn()
-};
 
 // Test wrapper with providers
 const TestWrapper: React.FC<{ children: React.ReactNode }> = ({ children }) => (
@@ -133,22 +128,12 @@ const sampleGameManifest: GameManifest = {
   ]
 };
 
-const mockOnGameComplete = vi.fn();
-const mockOnGameExit = vi.fn();
 
 describe('StrategyPlayHost', () => {
   beforeEach(() => {
     vi.clearAllMocks();
   });
 
-  const defaultProps = {
-    gameManifest: sampleGameManifest,
-    onGameComplete: mockOnGameComplete,
-    onGameExit: mockOnGameExit,
-    analytics: mockAnalytics,
-    userId: 'test-user-123',
-    tenantId: 'test-tenant'
-  };
 
   it('renders game host with initial scene', () => {
     render(
@@ -173,7 +158,6 @@ describe('StrategyPlayHost', () => {
     expect(screen.getByText('1 / 3')).toBeInTheDocument();
     
     // Progress bar should be at 33.33%
-    const progressBar = screen.getByRole('progressbar');
     expect(progressBar).toHaveAttribute('aria-valuenow', '33.33');
   });
 
@@ -188,7 +172,6 @@ describe('StrategyPlayHost', () => {
     expect(screen.getByText('GDPR Introduction')).toBeInTheDocument();
 
     // Click continue to go to quiz
-    const continueButton = screen.getByText('Continue');
     fireEvent.click(continueButton);
 
     await waitFor(() => {
@@ -215,11 +198,9 @@ describe('StrategyPlayHost', () => {
     });
 
     // Select correct answer
-    const correctOption = screen.getByText('General Data Protection Regulation');
     fireEvent.click(correctOption);
 
     // Submit answer
-    const submitButton = screen.getByText('Submit Answer');
     fireEvent.click(submitButton);
 
     await waitFor(() => {
@@ -227,7 +208,6 @@ describe('StrategyPlayHost', () => {
     });
 
     // Continue to next scene
-    const nextButton = screen.getByText('Next Scene');
     fireEvent.click(nextButton);
 
     await waitFor(() => {
@@ -262,7 +242,6 @@ describe('StrategyPlayHost', () => {
     });
 
     // Complete game
-    const completeButton = screen.getByText('Complete Training');
     fireEvent.click(completeButton);
 
     expect(mockOnGameComplete).toHaveBeenCalledWith({
@@ -308,7 +287,6 @@ describe('StrategyPlayHost', () => {
       </TestWrapper>
     );
 
-    const exitButton = screen.getByLabelText('Exit game');
     fireEvent.click(exitButton);
 
     expect(mockOnGameExit).toHaveBeenCalledWith({
@@ -321,10 +299,6 @@ describe('StrategyPlayHost', () => {
   });
 
   it('shows error state for invalid game manifest', () => {
-    const invalidManifest = {
-      ...sampleGameManifest,
-      scenes: [] // Empty scenes array
-    };
 
     render(
       <TestWrapper>
@@ -346,7 +320,6 @@ describe('StrategyPlayHost', () => {
       </TestWrapper>
     );
 
-    const continueButton = screen.getByText('Continue');
     
     // Focus should be on the continue button
     continueButton.focus();
@@ -372,7 +345,6 @@ describe('StrategyPlayHost', () => {
 
     await waitFor(() => {
       // Focus should move to the quiz question
-      const questionElement = screen.getByText('What does GDPR stand for?');
       expect(document.activeElement?.textContent).toContain('What does GDPR stand for?');
     });
   });
@@ -398,18 +370,6 @@ describe('StrategyPlayHost', () => {
   });
 
   it('handles scene timeout correctly', async () => {
-    const timedGameManifest = {
-      ...sampleGameManifest,
-      scenes: [
-        {
-          ...sampleGameManifest.scenes[1], // Quiz scene with timeout
-          content: {
-            ...sampleGameManifest.scenes[1].content,
-            timeLimit: 1 // 1 second timeout for testing
-          }
-        }
-      ]
-    };
 
     render(
       <TestWrapper>
@@ -444,7 +404,6 @@ describe('StrategyPlayHost Performance', () => {
       }))
     };
 
-    const startTime = performance.now();
     
     render(
       <TestWrapper>
@@ -459,8 +418,6 @@ describe('StrategyPlayHost Performance', () => {
       </TestWrapper>
     );
 
-    const endTime = performance.now();
-    const renderTime = endTime - startTime;
 
     // Should render in less than 100ms
     expect(renderTime).toBeLessThan(100);
@@ -475,7 +432,6 @@ describe('StrategyPlayHost Performance', () => {
 
     // Rapidly navigate through scenes
     for (let i = 0; i < 10; i++) {
-      const continueButton = screen.queryByText('Continue');
       if (continueButton) {
         fireEvent.click(continueButton);
         await waitFor(() => {}, { timeout: 100 });

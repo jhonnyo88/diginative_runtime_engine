@@ -16,13 +16,6 @@ import MonitoringDashboard from '../../../components/monitoring/MonitoringDashbo
 // Mock dependencies if needed
 
 
-const renderWithChakra = (component: React.ReactElement) => {
-  return render(
-    <ChakraProvider>
-      {component}
-    </ChakraProvider>
-  );
-};
 
 describe('MonitoringDashboard', () => {
   beforeEach(() => {
@@ -33,14 +26,10 @@ describe('MonitoringDashboard', () => {
     it('renders without crashing', () => {
       renderWithChakra(<MonitoringDashboard />);
       
-      const component = screen.getByTestId('-monitoring-dashboard');
       expect(component).toBeInTheDocument();
     });
 
     it('handles props correctly', () => {
-      const testProps = {
-        // Add relevant props based on component analysis
-      };
       
       renderWithChakra(<MonitoringDashboard {...testProps} />);
       
@@ -60,7 +49,6 @@ describe('MonitoringDashboard', () => {
     it('provides proper ARIA attributes', () => {
       renderWithChakra(<MonitoringDashboard />);
       
-      const element = screen.getByTestId('-monitoring-dashboard');
       
       // Check for appropriate ARIA attributes
       expect(element).toHaveAttribute('role');
@@ -69,7 +57,6 @@ describe('MonitoringDashboard', () => {
     it('supports keyboard navigation', () => {
       renderWithChakra(<MonitoringDashboard />);
       
-      const element = screen.getByTestId('-monitoring-dashboard');
       
       // Test tab navigation
       element.focus();
@@ -80,7 +67,6 @@ describe('MonitoringDashboard', () => {
       renderWithChakra(<MonitoringDashboard />);
       
       // Basic contrast check
-      const element = screen.getByTestId('-monitoring-dashboard');
       expect(element).toBeInTheDocument();
     });
   });
@@ -88,12 +74,9 @@ describe('MonitoringDashboard', () => {
 
   describe('Performance and Municipal Network Optimization', () => {
     it('renders efficiently', () => {
-      const startTime = performance.now();
       
       renderWithChakra(<MonitoringDashboard />);
       
-      const endTime = performance.now();
-      const renderTime = endTime - startTime;
       
       // Should render within performance budget
       expect(renderTime).toBeLessThan(100); // 100ms budget
@@ -102,7 +85,6 @@ describe('MonitoringDashboard', () => {
     it('handles frequent updates efficiently', () => {
       const { rerender } = renderWithChakra(<MonitoringDashboard />);
       
-      const startTime = performance.now();
       
       // Simulate multiple re-renders
       for (let i = 0; i < 10; i++) {
@@ -113,8 +95,6 @@ describe('MonitoringDashboard', () => {
         );
       }
       
-      const endTime = performance.now();
-      const updateTime = endTime - startTime;
       
       // Should handle updates efficiently
       expect(updateTime).toBeLessThan(200); // 200ms for 10 updates

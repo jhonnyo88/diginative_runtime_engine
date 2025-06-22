@@ -40,27 +40,8 @@ export const EnterpriseAdminCore: React.FC<EnterpriseAdminProps> = ({
   const [activeView, setActiveView] = useState('overview');
   
   // Expert requirement: Real-time enterprise metrics
-  const enterpriseMetrics = {
-    totalUsers: 2847,
-    activeGames: 15,
-    completionRate: 89.3,
-    complianceScore: 96.8,
-    concurrentUsers: 234,
-    systemHealth: 98.2,
-    dataResidency: 'EU-GDPR-Compliant',
-    ssoStatus: 'Active',
-    multiTenantIsolation: 'Verified'
-  };
 
   // Expert requirement: Cultural adaptation display
-  const getCulturalDisplay = (context: string) => {
-    switch (context) {
-      case 'german_systematic':
-        return {
-          title: 'Systemverwaltung',
-          style: 'hierarchical',
-          dataDisplay: 'detailed'
-        };
       case 'french_collaborative':
         return {
           title: 'Administration Collaborative',
@@ -82,7 +63,6 @@ export const EnterpriseAdminCore: React.FC<EnterpriseAdminProps> = ({
     }
   };
 
-  const cultural = getCulturalDisplay(culturalContext);
 
   return (
     <Box p={6} bg="gray.50" minH="100vh">

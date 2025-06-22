@@ -11,15 +11,11 @@ import { getDevTeamPipeline, type ContentProcessingRequest, type DevTeamPipeline
 import { InfrastructureMonitoring } from '../services/infrastructure-monitoring';
 import type { GameManifest } from '../types/game-manifest';
 
-const router = Router();
-const monitoring = InfrastructureMonitoring.getInstance();
-const pipeline = getDevTeamPipeline();
 
 /**
  * POST /api/devteam/process - Submit content for processing
  */
 router.post('/process', async (req: Request, res: Response) => {
-  const startTime = Date.now();
   
   try {
     const { content, metadata } = req.body;
@@ -39,7 +35,6 @@ router.post('/process', async (req: Request, res: Response) => {
     }
 
     // Generate unique processing ID
-    const processingId = `proc_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
     
     // Create processing request
     const request: ContentProcessingRequest = {
@@ -56,12 +51,9 @@ router.post('/process', async (req: Request, res: Response) => {
     };
 
     // Submit to pipeline
-    const submittedId = await pipeline.submitContent(request);
     
     // Poll for result with timeout
-    const result = await pollForResult(submittedId, 35000); // 35 second timeout
     
-    const processingTime = Date.now() - startTime;
 
     if (!result) {
       // Content is still processing or timed out
@@ -91,7 +83,6 @@ router.post('/process', async (req: Request, res: Response) => {
     });
 
     // Check if we met the <30 second target
-    const metTarget = processingTime < 30000;
     monitoring.recordMetric({
       name: 'devteam_pipeline_target_met',
       value: metTarget ? 1 : 0,
@@ -120,7 +111,6 @@ router.post('/process', async (req: Request, res: Response) => {
     });
 
   } catch (error) {
-    const processingTime = Date.now() - startTime;
     
     monitoring.reportError(error as Error, {
       endpoint: 'devteam-pipeline-process',
@@ -139,7 +129,6 @@ router.post('/process', async (req: Request, res: Response) => {
  * POST /api/devteam/process/batch - Batch content processing
  */
 router.post('/process/batch', async (req: Request, res: Response) => {
-  const startTime = Date.now();
   
   try {
     const { items, batchMetadata } = req.body;
@@ -173,11 +162,7 @@ router.post('/process/batch', async (req: Request, res: Response) => {
     }));
 
     // Process batch
-    const results = await pipeline.processBatch(requests);
     
-    const processingTime = Date.now() - startTime;
-    const successCount = Array.from(results.values()).filter(r => r.success).length;
-    const failureCount = items.length - successCount;
 
     // Record batch metrics
     monitoring.recordMetric({
@@ -193,21 +178,6 @@ router.post('/process/batch', async (req: Request, res: Response) => {
     });
 
     // Convert results to array format
-    const resultArray = requests.map(req => {
-      const result = results.get(req.id);
-      return {
-        id: req.id,
-        success: result?.success || false,
-        content: result?.success ? {
-          validatedContent: result.validatedContent,
-          optimizedAssets: result.optimizedAssets,
-          deploymentPackage: result.deploymentPackage,
-          metrics: result.metrics
-        } : undefined,
-        error: result?.error,
-        warnings: result?.warnings
-      };
-    });
 
     res.json({
       success: failureCount === 0,
@@ -241,7 +211,6 @@ router.post('/process/batch', async (req: Request, res: Response) => {
 router.get('/status/:id', async (req: Request, res: Response) => {
   try {
     const { id } = req.params;
-    const result = await pipeline.getResult(id);
     
     if (!result) {
       return res.status(404).json({
@@ -282,7 +251,6 @@ router.get('/status/:id', async (req: Request, res: Response) => {
  */
 router.get('/metrics', async (req: Request, res: Response) => {
   try {
-    const stats = pipeline.getStats();
     
     res.json({
       success: true,
@@ -330,7 +298,6 @@ router.get('/metrics', async (req: Request, res: Response) => {
  * POST /api/devteam/optimize - Optimize specific content type
  */
 router.post('/optimize', async (req: Request, res: Response) => {
-  const startTime = Date.now();
   
   try {
     const { content, optimizationLevel = 'balanced' } = req.body;
@@ -356,15 +323,12 @@ router.post('/optimize', async (req: Request, res: Response) => {
     };
 
     // Use optimized pipeline configuration
-    const optimizedPipeline = getDevTeamPipeline({
+    const _optimizedPipeline = getDevTeamPipeline({
       optimizationLevel: optimizationLevel as 'fast' | 'balanced' | 'thorough',
       maxConcurrentProcessing: 5
     });
 
-    const submittedId = await optimizedPipeline.submitContent(request);
-    const result = await pollForResult(submittedId, 25000); // 25 second timeout for optimization
 
-    const processingTime = Date.now() - startTime;
 
     if (!result) {
       return res.status(408).json({
@@ -375,10 +339,6 @@ router.post('/optimize', async (req: Request, res: Response) => {
     }
 
     // Calculate optimization benefits
-    const originalSize = JSON.stringify(content).length;
-    const optimizedSize = result.optimizedAssets?.totalSize || originalSize;
-    const compressionRatio = originalSize > 0 ? optimizedSize / originalSize : 1;
-    const sizeSavings = originalSize - optimizedSize;
 
     res.json({
       success: result.success,
@@ -401,7 +361,6 @@ router.post('/optimize', async (req: Request, res: Response) => {
     });
 
   } catch (error) {
-    const processingTime = Date.now() - startTime;
     
     monitoring.reportError(error as Error, {
       endpoint: 'devteam-pipeline-optimize',
@@ -421,9 +380,8 @@ router.post('/optimize', async (req: Request, res: Response) => {
  */
 router.get('/health', async (req: Request, res: Response) => {
   try {
-    const stats = pipeline.getStats();
     
-    const isHealthy = 
+    const _isHealthy = 
       stats.averageProcessingTime < 40000 && // Allow some buffer above 30s target
       stats.activeJobs < 15 && // Not overloaded
       stats.cacheEfficiency > 0.5; // Reasonable cache performance
@@ -474,11 +432,8 @@ router.get('/health', async (req: Request, res: Response) => {
  * Helper function to poll for processing result
  */
 async function pollForResult(processingId: string, timeoutMs: number): Promise<Record<string, unknown>> {
-  const startTime = Date.now();
-  const pollInterval = 500; // Check every 500ms
   
   while (Date.now() - startTime < timeoutMs) {
-    const result = await pipeline.getResult(processingId);
     if (result) {
       return result;
     }

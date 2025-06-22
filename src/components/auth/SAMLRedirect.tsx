@@ -38,7 +38,7 @@ export const SAMLRedirect: React.FC<SAMLRedirectProps> = ({
     initiateLogin();
   }, [tenantId]);
 
-  const initiateLogin = async () => {
+  const _initiateLogin = async () => {
     try {
       setLoadingState('initiating');
       setProgress(20);
@@ -46,14 +46,12 @@ export const SAMLRedirect: React.FC<SAMLRedirectProps> = ({
       // Small delay for better UX
       await new Promise(resolve => setTimeout(resolve, 500));
 
-      const response = await fetch(`/auth/saml/login/${tenantId}`, {
         method: 'GET',
         headers: {
           'Accept': 'application/json'
         }
       });
 
-      const data = await response.json();
       setProgress(60);
 
       if (!data.success) {
@@ -80,39 +78,8 @@ export const SAMLRedirect: React.FC<SAMLRedirectProps> = ({
     }
   };
 
-  const getLoadingMessage = () => {
-    switch (loadingState) {
-      case 'initiating':
-        return 'Connecting to your organization...';
-      case 'redirecting':
-        return `Redirecting to ${tenantName} login...`;
-      case 'processing':
-        return 'Processing authentication...';
-      case 'success':
-        return 'Login successful! Redirecting...';
-      case 'error':
-        return 'Authentication failed';
-      default:
-        return 'Preparing login...';
-    }
-  };
 
-  const getLoadingIcon = () => {
-    switch (loadingState) {
-      case 'success':
-        return <CheckCircle className="h-8 w-8 text-green-600" />;
-      case 'error':
-        return <AlertCircle className="h-8 w-8 text-red-600" />;
-      default:
-        return <RotateCw className="h-8 w-8 text-blue-600 animate-spin" />;
-    }
-  };
 
-  const retryLogin = () => {
-    setError('');
-    setProgress(0);
-    initiateLogin();
-  };
 
   return (
     <div className={`max-w-2xl mx-auto p-8 ${className}`}>

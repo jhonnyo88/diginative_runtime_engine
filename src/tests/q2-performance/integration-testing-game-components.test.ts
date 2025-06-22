@@ -11,83 +11,12 @@ import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 
 // Mock integration testing utilities
-const mockIntegrationUtils = {
-  testComponentIntegration: vi.fn(),
-  validateGameSystemCompatibility: vi.fn(),
-  measureIntegrationPerformance: vi.fn(),
-  testWorkflowIntegration: vi.fn(),
-  generateIntegrationReport: vi.fn()
-};
 
 // Integration testing specifications
-const INTEGRATION_TEST_SPECS = {
-  existingGameComponents: [
-    'game-engine', 'rendering-system', 'state-management', 'ui-framework', 
-    'animation-system', 'audio-manager', 'input-handler', 'resource-loader'
-  ],
-  q2Components: [
-    'drag-drop-system', 'municipal-workflows', 'touch-gesture-handler',
-    'performance-monitor', 'compliance-validator', 'anna-svensson-optimizer'
-  ],
-  integrationPoints: [
-    'state-synchronization', 'event-handling', 'performance-coordination',
-    'resource-sharing', 'ui-composition', 'data-flow'
-  ],
-  performanceRequirements: {
-    integrationOverhead: 15, // max 15ms
-    memoryImpact: 0.1, // max 10% increase
-    fpsImpact: 5, // max 5fps degradation
-    loadTimeImpact: 200 // max 200ms increase
-  }
-};
 
 // Municipal workflow integration scenarios
-const MUNICIPAL_INTEGRATION_SCENARIOS = {
-  invoiceApprovalIntegration: {
-    workflowType: 'invoice-approval',
-    gameComponents: ['state-management', 'ui-framework', 'input-handler'],
-    integrationComplexity: 'high',
-    dataFlow: 'bidirectional',
-    performanceRequirements: {
-      stateUpdateLatency: 20, // ms
-      uiRenderTime: 50, // ms
-      inputResponseTime: 30 // ms
-    }
-  },
-  permitProcessingIntegration: {
-    workflowType: 'permit-processing',
-    gameComponents: ['rendering-system', 'animation-system', 'audio-manager'],
-    integrationComplexity: 'medium',
-    dataFlow: 'unidirectional',
-    performanceRequirements: {
-      renderingLatency: 16.67, // 60fps
-      animationSmoothness: 0.95,
-      audioFeedbackDelay: 100 // ms
-    }
-  }
-};
 
 // Game system compatibility matrix
-const GAME_SYSTEM_COMPATIBILITY = {
-  gameEngine: {
-    q2Compatibility: 'full',
-    integrationPoints: ['state-sync', 'lifecycle-hooks', 'performance-monitoring'],
-    requiredAdaptations: ['drag-drop-events', 'municipal-state-management'],
-    performanceImpact: 'minimal'
-  },
-  renderingSystem: {
-    q2Compatibility: 'full',
-    integrationPoints: ['ui-composition', 'animation-coordination', 'performance-optimization'],
-    requiredAdaptations: ['municipal-ui-themes', 'drag-drop-animations'],
-    performanceImpact: 'low'
-  },
-  stateManagement: {
-    q2Compatibility: 'requires-extension',
-    integrationPoints: ['municipal-data-store', 'workflow-state', 'compliance-tracking'],
-    requiredAdaptations: ['municipal-reducers', 'workflow-middleware', 'gdpr-compliance'],
-    performanceImpact: 'medium'
-  }
-};
 
 describe('Integration Testing with Existing Game Components for Q2 Drag-Drop Workflows', () => {
   let integrationHarness: Record<string, unknown>;
@@ -101,7 +30,6 @@ describe('Integration Testing with Existing Game Components for Q2 Drag-Drop Wor
 
   describe('Game Engine Integration Testing', () => {
     it('should integrate Q2 drag-drop workflows with existing game engine', async () => {
-      const gameEngineIntegration = await integrationHarness.testGameEngineIntegration({
         q2Components: ['drag-drop-system', 'municipal-workflows'],
         gameEngine: 'existing-game-engine',
         municipality: 'malmö',
@@ -143,7 +71,6 @@ describe('Integration Testing with Existing Game Components for Q2 Drag-Drop Wor
     });
 
     it('should maintain game engine performance with Q2 municipal workflows', async () => {
-      const gameEnginePerformance = await integrationHarness.testGameEnginePerformanceWithQ2({
         workflowTypes: ['invoice-approval', 'permit-processing'],
         concurrentWorkflows: 50,
         municipality: 'malmö',
@@ -181,7 +108,6 @@ describe('Integration Testing with Existing Game Components for Q2 Drag-Drop Wor
 
   describe('UI Framework Integration Testing', () => {
     it('should integrate Q2 municipal UI components with existing UI framework', async () => {
-      const uiFrameworkIntegration = await integrationHarness.testUIFrameworkIntegration({
         municipalUIComponents: ['invoice-approval-ui', 'permit-processing-ui', 'drag-drop-interface'],
         existingUIFramework: 'game-ui-framework',
         municipality: 'malmö',
@@ -222,7 +148,6 @@ describe('Integration Testing with Existing Game Components for Q2 Drag-Drop Wor
     });
 
     it('should maintain UI accessibility across game and municipal components', async () => {
-      const uiAccessibilityIntegration = await integrationHarness.testUIAccessibilityIntegration({
         accessibilityFeatures: ['screen-reader', 'keyboard-navigation', 'high-contrast'],
         municipalComponents: ['invoice-approval', 'permit-processing'],
         gameComponents: ['main-menu', 'settings', 'help-system'],
@@ -258,7 +183,6 @@ describe('Integration Testing with Existing Game Components for Q2 Drag-Drop Wor
 
   describe('State Management Integration Testing', () => {
     it('should integrate municipal workflow state with existing game state management', async () => {
-      const stateIntegration = await integrationHarness.testStateManagementIntegration({
         municipalState: ['invoice-data', 'permit-data', 'workflow-progress', 'compliance-status'],
         gameState: ['player-progress', 'settings', 'session-data', 'ui-state'],
         municipality: 'malmö',
@@ -300,7 +224,6 @@ describe('Integration Testing with Existing Game Components for Q2 Drag-Drop Wor
     });
 
     it('should handle state conflicts between game and municipal systems gracefully', async () => {
-      const stateConflictHandling = await integrationHarness.testStateConflictResolution({
         conflictScenarios: ['concurrent-updates', 'data-type-conflicts', 'performance-contention'],
         municipality: 'malmö',
         resolutionStrategy: 'priority-based'
@@ -331,7 +254,6 @@ describe('Integration Testing with Existing Game Components for Q2 Drag-Drop Wor
 
   describe('Performance System Integration Testing', () => {
     it('should coordinate Q2 performance monitoring with existing game performance systems', async () => {
-      const performanceIntegration = await integrationHarness.testPerformanceSystemIntegration({
         q2PerformanceMonitors: ['drag-drop-performance', 'touch-accuracy-monitor', 'compliance-performance'],
         gamePerformanceMonitors: ['fps-monitor', 'memory-tracker', 'loading-performance'],
         municipality: 'malmö',
@@ -369,7 +291,6 @@ describe('Integration Testing with Existing Game Components for Q2 Drag-Drop Wor
     });
 
     it('should maintain system-wide performance targets with Q2 integration', async () => {
-      const systemWidePerformance = await integrationHarness.testSystemWidePerformanceWithQ2({
         performanceTargets: {
           overallFPS: 60,
           memoryUsage: 0.8, // 80% max
@@ -409,7 +330,6 @@ describe('Integration Testing with Existing Game Components for Q2 Drag-Drop Wor
 
   describe('Event System Integration Testing', () => {
     it('should integrate Q2 drag-drop events with existing game event system', async () => {
-      const eventSystemIntegration = await integrationHarness.testEventSystemIntegration({
         q2Events: ['drag-start', 'drag-move', 'drag-end', 'approval-complete', 'compliance-validated'],
         gameEvents: ['input-event', 'state-change', 'ui-update', 'performance-alert'],
         municipality: 'malmö',
@@ -452,7 +372,6 @@ describe('Integration Testing with Existing Game Components for Q2 Drag-Drop Wor
 
   describe('Data Flow Integration Testing', () => {
     it('should ensure seamless data flow between Q2 municipal workflows and game systems', async () => {
-      const dataFlowIntegration = await integrationHarness.testDataFlowIntegration({
         municipalDataSources: ['invoice-api', 'permit-database', 'compliance-service'],
         gameDataSources: ['player-api', 'settings-store', 'analytics-service'],
         municipality: 'malmö',
@@ -492,7 +411,6 @@ describe('Integration Testing with Existing Game Components for Q2 Drag-Drop Wor
 
   describe('Integration Testing Reporting and Analysis', () => {
     it('should generate comprehensive integration testing reports for stakeholders', async () => {
-      const integrationReporting = await integrationHarness.generateIntegrationReport({
         testScenarios: Object.keys(MUNICIPAL_INTEGRATION_SCENARIOS),
         gameComponents: INTEGRATION_TEST_SPECS.existingGameComponents,
         q2Components: INTEGRATION_TEST_SPECS.q2Components,

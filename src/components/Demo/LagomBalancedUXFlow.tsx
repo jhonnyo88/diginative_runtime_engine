@@ -48,8 +48,6 @@ import {
 
 import { useCulturalTheme } from '../WorldHub/CulturalThemeProvider';
 
-const MotionBox = motion(Box);
-const MotionCard = motion(Card);
 
 // Lagom UX Flow Principles and Framework
 interface LagomPrinciple {
@@ -155,9 +153,6 @@ const LagomFlowVisualization: React.FC<LagomFlowVisualizationProps> = ({
   lagomState,
   isActive
 }) => {
-  const controls = useAnimation();
-  const swedishBlue = '#003366';
-  const swedishYellow = '#FFCC00';
 
   useEffect(() => {
     if (isActive) {
@@ -175,7 +170,6 @@ const LagomFlowVisualization: React.FC<LagomFlowVisualizationProps> = ({
     }
   }, [isActive, controls]);
 
-  const overallBalance = Math.round(
     (lagomState.balance + lagomState.inclusivity + lagomState.sustainability + 
      lagomState.moderation + lagomState.consensus + lagomState.transparency) / 6
   );
@@ -238,10 +232,6 @@ const LagomFlowVisualization: React.FC<LagomFlowVisualizationProps> = ({
 
       {/* Lagom Principle Indicators */}
       {Object.entries(lagomState).map(([key, value], index) => {
-        const angle = (index / 6) * 2 * Math.PI - Math.PI / 2;
-        const radius = 140;
-        const x = Math.cos(angle) * radius;
-        const y = Math.sin(angle) * radius;
 
         return (
           <Box
@@ -283,12 +273,7 @@ const LagomUXControlPanel: React.FC<LagomUXControlPanelProps> = ({
   onSettingsChange,
   lagomState
 }) => {
-  const swedishBlue = '#003366';
-  const swedishYellow = '#FFCC00';
 
-  const handleSettingChange = (key: keyof LagomUXSettings, value: number) => {
-    onSettingsChange({ ...settings, [key]: value });
-  };
 
   return (
     <Card bg="blue.50" borderColor="blue.200" borderWidth="2px">
@@ -516,7 +501,6 @@ const LagomUXControlPanel: React.FC<LagomUXControlPanelProps> = ({
 
 // Lagom Principle Display Component
 const LagomPrincipleDisplay: React.FC = () => {
-  const swedishBlue = '#003366';
 
   return (
     <VStack spacing={6} align="stretch">
@@ -614,8 +598,6 @@ export const LagomBalancedUXFlow: React.FC<LagomBalancedUXFlowProps> = ({
   onSettingsUpdate = () => console.log('Lagom UX settings updated'),
   onFlowStateChange = () => console.log('Lagom flow state changed')
 }) => {
-  const swedishBlue = '#003366';
-  const swedishYellow = '#FFCC00';
 
   const [lagomSettings, setLagomSettings] = useState<LagomUXSettings>({
     paceModeration: 75,
@@ -629,24 +611,18 @@ export const LagomBalancedUXFlow: React.FC<LagomBalancedUXFlowProps> = ({
   const [isFlowActive, setIsFlowActive] = useState(false);
 
   // Calculate Lagom Flow State based on settings
-  const lagomState = useMemo<LagomFlowState>(() => {
+  const _lagomState = useMemo<LagomFlowState>(() => {
     // Calculate balanced scores based on lagom principles
-    const balance = Math.round(
       (100 - Math.abs(lagomSettings.paceModeration - 75)) * 0.4 +
       (100 - Math.abs(lagomSettings.informationDensity - 70)) * 0.6
     );
 
-    const inclusivity = Math.round(lagomSettings.inclusivityLevel * 0.9 + 10);
-    const sustainability = Math.round(
       (lagomSettings.paceModeration * 0.3) + 
       (lagomSettings.culturalAuthenticity * 0.7)
     );
-    const moderation = Math.round(
       100 - (Math.abs(lagomSettings.paceModeration - 75) + 
              Math.abs(lagomSettings.informationDensity - 70)) / 2
     );
-    const consensus = Math.round(lagomSettings.consensusBuilding);
-    const transparency = Math.round(
       (lagomSettings.informationDensity * 0.6) + 
       (lagomSettings.governmentFormality * 0.4)
     );
@@ -661,16 +637,11 @@ export const LagomBalancedUXFlow: React.FC<LagomBalancedUXFlowProps> = ({
     };
   }, [lagomSettings]);
 
-  const handleSettingsChange = (settings: LagomUXSettings) => {
-    setLagomSettings(settings);
-    onSettingsUpdate(settings);
-  };
 
   useEffect(() => {
     onFlowStateChange(lagomState);
   }, [lagomState, onFlowStateChange]);
 
-  const overallLagomScore = Math.round(
     (lagomState.balance + lagomState.inclusivity + lagomState.sustainability + 
      lagomState.moderation + lagomState.consensus + lagomState.transparency) / 6
   );

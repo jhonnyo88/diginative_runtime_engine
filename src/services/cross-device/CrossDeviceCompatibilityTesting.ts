@@ -592,7 +592,6 @@ export class CrossDeviceCompatibilityTesting extends EventEmitter {
     this.testResults.clear();
     
     // Initialize device category testing
-    const categories = Object.keys(this.compatibilitySpecs.deviceCategories);
     for (const category of categories) {
       this.testResults.set(`category_${category}`, []);
     }
@@ -664,7 +663,6 @@ export class CrossDeviceCompatibilityTesting extends EventEmitter {
     };
 
     // Store results
-    const categoryResults = this.testResults.get(`category_${categoryName}`) || [];
     categoryResults.push(result);
     this.testResults.set(`category_${categoryName}`, categoryResults);
 
@@ -695,10 +693,8 @@ export class CrossDeviceCompatibilityTesting extends EventEmitter {
    * Measure Device Performance
    */
   private async measureDevicePerformance(categoryName: string, device: DeviceSpec): Promise<CrossDevicePerformanceMetrics> {
-    const targets = this.compatibilitySpecs.performanceTargets[categoryName as keyof typeof this.compatibilitySpecs.performanceTargets];
     
     // Simulate performance based on device specs
-    const performanceFactor = device.performanceSpec.ramSize >= 16 ? 0.9 : 1.1;
     
     return {
       hubLoadTime: Math.round(targets.hubLoadTime * performanceFactor),
@@ -715,8 +711,6 @@ export class CrossDeviceCompatibilityTesting extends EventEmitter {
    * Measure Visual Compatibility
    */
   private async measureVisualCompatibility(device: DeviceSpec): Promise<VisualCompatibilityMetrics> {
-    const highResolution = parseInt(device.screenSpec.resolution.split('x')[0]) >= 1920;
-    const highDensity = parseInt(device.screenSpec.density) >= 144;
     
     return {
       layoutConsistency: highResolution ? 98 : 94,
@@ -732,8 +726,6 @@ export class CrossDeviceCompatibilityTesting extends EventEmitter {
    * Measure Functional Compatibility
    */
   private async measureFunctionalCompatibility(device: DeviceSpec): Promise<FunctionalCompatibilityMetrics> {
-    const modernBrowser = device.browserSupport.includes('Chrome') || device.browserSupport.includes('Edge');
-    const touchSupport = device.screenSpec.touchCapable;
     
     return {
       interactionAccuracy: touchSupport ? 97 : 99,
@@ -788,7 +780,6 @@ export class CrossDeviceCompatibilityTesting extends EventEmitter {
    * Generate Cross-Device Analysis
    */
   private async generateCrossDeviceAnalysis(): Promise<void> {
-    const categories = Object.keys(this.compatibilitySpecs.deviceCategories);
     
     // Generate compatibility summary
     const summary: CrossDeviceTestResult = {
@@ -834,8 +825,6 @@ export class CrossDeviceCompatibilityTesting extends EventEmitter {
    * Get Cross-Device Testing Summary
    */
   getCrossDeviceTestingSummary(): Record<string, unknown> {
-    const summary = this.testResults.get('compatibility_summary')?.[0];
-    const categories = Object.keys(this.compatibilitySpecs.deviceCategories);
     
     return {
       cross_device_testing_active: this.testingActive,

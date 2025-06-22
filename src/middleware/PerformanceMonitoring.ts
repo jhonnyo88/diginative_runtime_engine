@@ -39,15 +39,9 @@ export class CulturalPerformanceMonitor {
   // Expert middleware: Performance tracking middleware
   middleware() {
     return (req: Request, res: Response, next: NextFunction) => {
-      const startTime = performance.now();
-      const culturalContext = this.extractCulturalContext(req);
-      const persona = this.mapCulturalContextToPersona(culturalContext);
 
       // Expert tracking: Override response.end to capture completion time
-      const originalEnd = res.end;
       res.end = function(this: Response, ...args: Record<string, unknown>[]) {
-        const endTime = performance.now();
-        const responseTime = endTime - startTime;
 
         // Expert analysis: Record performance metrics
         const metrics: CulturalPerformanceMetrics = {
@@ -84,14 +78,11 @@ export class CulturalPerformanceMonitor {
   // Expert function: Extract cultural context from request
   private extractCulturalContext(req: Request): CulturalContext {
     // Expert priority: Check explicit cultural context header
-    const explicitContext = req.headers['x-cultural-context'] as CulturalContext;
     if (explicitContext && this.isValidCulturalContext(explicitContext)) {
       return explicitContext;
     }
 
     // Expert fallback: Determine från Accept-Language and User-Agent
-    const acceptLanguage = req.headers['accept-language'] || '';
-    const userAgent = req.headers['user-agent'] || '';
 
     // Expert mapping: Language to cultural context
     if (acceptLanguage.includes('de')) {
@@ -122,12 +113,6 @@ export class CulturalPerformanceMonitor {
 
   // Expert function: Get target response time för persona
   private getTargetResponseTime(persona: PersonaOptimization['persona']): number {
-    const targets = {
-      'anna_svensson': 100,    // Swedish mobile: <100ms
-      'klaus_mueller': 50,     // German systematic: <50ms
-      'marie_dubois': 75,      // French collaborative: <75ms
-      'pieter_van_berg': 25    // Dutch progressive: <25ms
-    };
 
     return targets[persona];
   }
@@ -137,7 +122,6 @@ export class CulturalPerformanceMonitor {
     persona: PersonaOptimization['persona'], 
     actualTime: number
   ): PersonaOptimization['performanceRating'] {
-    const target = this.getTargetResponseTime(persona);
 
     if (actualTime <= target) {
       return 'excellent';
@@ -155,7 +139,6 @@ export class CulturalPerformanceMonitor {
     persona: PersonaOptimization['persona'], 
     actualTime: number
   ): string[] {
-    const target = this.getTargetResponseTime(persona);
     const suggestions: string[] = [];
 
     if (actualTime > target) {
@@ -233,11 +216,9 @@ export class CulturalPerformanceMonitor {
   private flushMetrics(): void {
     if (this.metricsBuffer.length === 0) return;
 
-    const metricsToFlush = [...this.metricsBuffer];
     this.metricsBuffer = [];
 
     // Expert analysis: Calculate aggregated metrics
-    const aggregatedMetrics = this.calculateAggregatedMetrics(metricsToFlush);
 
     // Expert output: Send to monitoring system (Prometheus/Grafana)
     this.sendToMonitoringSystem(aggregatedMetrics);
@@ -254,25 +235,21 @@ export class CulturalPerformanceMonitor {
 
   // Expert function: Calculate aggregated metrics
   private calculateAggregatedMetrics(metrics: CulturalPerformanceMetrics[]) {
-    const totalRequests = metrics.length;
-    const averageResponseTime = metrics.reduce((sum, m) => sum + m.responseTime, 0) / totalRequests;
 
     // Expert analysis: Cultural context distribution
-    const culturalDistribution = metrics.reduce((acc, m) => {
+    const _culturalDistribution = metrics.reduce((acc, m) => {
       acc[m.culturalContext] = (acc[m.culturalContext] || 0) + 1;
       return acc;
     }, {} as Record<CulturalContext, number>);
 
     // Expert analysis: Performance ratings distribution
-    const performanceRatings = metrics.reduce((acc, m) => {
-      const rating = m.personaOptimization.performanceRating;
+    const _performanceRatings = metrics.reduce((acc, m) => {
       acc[rating] = (acc[rating] || 0) + 1;
       return acc;
     }, {} as Record<string, number>);
 
     // Expert analysis: Persona-specific metrics
-    const personaMetrics = metrics.reduce((acc, m) => {
-      const persona = m.personaOptimization.persona;
+    const _personaMetrics = metrics.reduce((acc, m) => {
       if (!acc[persona]) {
         acc[persona] = {
           count: 0,
@@ -309,7 +286,6 @@ export class CulturalPerformanceMonitor {
     // This would integrate with the Prometheus pushgateway or direct scraping endpoint
     
     // Expert requirement: Emit metrics för Prometheus scraping
-    const prometheusMetrics = this.formatPrometheusMetrics(aggregatedMetrics);
     
     // Expert logging: Make metrics available för scraping endpoint
     // In production, this would be exposed via /metrics endpoint
@@ -354,18 +330,11 @@ export class CulturalPerformanceMonitor {
 
   // Expert function: Get persona-specific statistics
   public getPersonaStats(persona: PersonaOptimization['persona']) {
-    const personaMetrics = this.metricsBuffer.filter(
-      m => m.personaOptimization.persona === persona
-    );
 
     if (personaMetrics.length === 0) {
       return { message: `No data för persona: ${persona}` };
     }
 
-    const averageTime = personaMetrics.reduce((sum, m) => sum + m.responseTime, 0) / personaMetrics.length;
-    const targetTime = this.getTargetResponseTime(persona);
-    const targetMet = personaMetrics.filter(m => m.responseTime <= targetTime).length;
-    const complianceRate = (targetMet / personaMetrics.length) * 100;
 
     return {
       persona,
@@ -381,4 +350,3 @@ export class CulturalPerformanceMonitor {
 }
 
 // Expert export: Singleton instance för application-wide use
-export const culturalPerformanceMonitor = new CulturalPerformanceMonitor();

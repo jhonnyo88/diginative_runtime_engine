@@ -11,11 +11,6 @@ import { performance } from 'perf_hooks';
 import { vi } from 'vitest';
 
 // Mock dependencies for testing
-const mockMonitoring = {
-  recordMetric: vi.fn(),
-  reportError: vi.fn(),
-  getInstance: vi.fn()
-};
 
 vi.mock('../../services/infrastructure-monitoring', () => ({
   InfrastructureMonitoring: {
@@ -156,15 +151,10 @@ describe('Q2 Interactive Mechanics Performance Benchmarking', () => {
 
   describe('Drag-Drop Performance Baselines', () => {
     it('should validate municipal document workflow benchmark (<50ms response)', async () => {
-      const baseline = performanceBaselines.get('drag_drop_municipal_document_response')!;
       
       // Simulate municipal document drag operation
-      const startTime = performance.now();
       await simulateMunicipalDocumentDrag();
-      const endTime = performance.now();
       
-      const actualTime = endTime - startTime;
-      const result = validatePerformanceBaseline(baseline, actualTime);
       
       expect(result.passed).toBe(true);
       expect(result.actualTime).toBeLessThan(baseline.target + baseline.tolerance);
@@ -177,14 +167,9 @@ describe('Q2 Interactive Mechanics Performance Benchmarking', () => {
     });
 
     it('should validate emergency resource deployment thresholds', async () => {
-      const baseline = performanceBaselines.get('drag_drop_emergency_resource_deployment')!;
       
-      const startTime = performance.now();
       await simulateEmergencyResourceDeployment();
-      const endTime = performance.now();
       
-      const actualTime = endTime - startTime;
-      const result = validatePerformanceBaseline(baseline, actualTime);
       
       expect(result.passed).toBe(true);
       expect(result.actualTime).toBeLessThan(baseline.target + baseline.tolerance);
@@ -195,17 +180,11 @@ describe('Q2 Interactive Mechanics Performance Benchmarking', () => {
     });
 
     it('should validate cross-browser performance parity', async () => {
-      const baseline = performanceBaselines.get('drag_drop_cross_browser_parity')!;
-      const browsers = ['chrome', 'firefox', 'safari', 'edge'];
       const results: BenchmarkResult[] = [];
       
       for (const browser of browsers) {
-        const startTime = performance.now();
         await simulateCrossBrowserDragOperation(browser);
-        const endTime = performance.now();
         
-        const actualTime = endTime - startTime;
-        const result = validatePerformanceBaseline(baseline, actualTime);
         results.push(result);
       }
       
@@ -213,29 +192,21 @@ describe('Q2 Interactive Mechanics Performance Benchmarking', () => {
       expect(results.every(r => r.passed)).toBe(true);
       
       // Performance variance should be within 5ms (baseline.tolerance)
-      const times = results.map(r => r.actualTime);
-      const maxVariance = Math.max(...times) - Math.min(...times);
       expect(maxVariance).toBeLessThanOrEqual(baseline.tolerance * 2);
     });
   });
 
   describe('Timer Challenge Performance Standards', () => {
     it('should maintain 60fps animation under load', async () => {
-      const baseline = performanceBaselines.get('timer_60fps_animation_maintenance')!;
       
       // Simulate high load conditions with multiple concurrent timers
-      const concurrentTimers = 10;
       const frameTimings: number[] = [];
       
       for (let i = 0; i < concurrentTimers; i++) {
-        const startTime = performance.now();
         await simulateAnimationFrame();
-        const endTime = performance.now();
         frameTimings.push(endTime - startTime);
       }
       
-      const averageFrameTime = frameTimings.reduce((a, b) => a + b, 0) / frameTimings.length;
-      const result = validatePerformanceBaseline(baseline, averageFrameTime);
       
       expect(result.passed).toBe(true);
       expect(averageFrameTime).toBeLessThan(16.67 + baseline.tolerance); // 60fps + tolerance
@@ -247,14 +218,9 @@ describe('Q2 Interactive Mechanics Performance Benchmarking', () => {
     });
 
     it('should validate emergency scenario coordination benchmarks', async () => {
-      const baseline = performanceBaselines.get('timer_emergency_scenario_coordination')!;
       
-      const startTime = performance.now();
       await simulateEmergencyScenarioCoordination();
-      const endTime = performance.now();
       
-      const actualTime = endTime - startTime;
-      const result = validatePerformanceBaseline(baseline, actualTime);
       
       expect(result.passed).toBe(true);
       expect(result.actualTime).toBeLessThan(baseline.target + baseline.tolerance);
@@ -265,15 +231,9 @@ describe('Q2 Interactive Mechanics Performance Benchmarking', () => {
     });
 
     it('should validate multi-participant synchronization thresholds', async () => {
-      const baseline = performanceBaselines.get('timer_multi_participant_synchronization')!;
-      const participantCount = 5;
       
-      const startTime = performance.now();
       await simulateMultiParticipantSync(participantCount);
-      const endTime = performance.now();
       
-      const actualTime = endTime - startTime;
-      const result = validatePerformanceBaseline(baseline, actualTime);
       
       expect(result.passed).toBe(true);
       expect(result.actualTime).toBeLessThan(baseline.target + baseline.tolerance);
@@ -286,14 +246,9 @@ describe('Q2 Interactive Mechanics Performance Benchmarking', () => {
 
   describe('Touch Gesture Optimization Metrics', () => {
     it('should validate Anna Svensson iPhone 12 gesture response (<100ms)', async () => {
-      const baseline = performanceBaselines.get('touch_anna_svensson_gesture_response')!;
       
-      const startTime = performance.now();
       await simulateAnnaSwenssonTouchGesture();
-      const endTime = performance.now();
       
-      const actualTime = endTime - startTime;
-      const result = validatePerformanceBaseline(baseline, actualTime);
       
       expect(result.passed).toBe(true);
       expect(result.actualTime).toBeLessThan(100 + baseline.tolerance);
@@ -306,41 +261,28 @@ describe('Q2 Interactive Mechanics Performance Benchmarking', () => {
     });
 
     it('should validate accessibility-compliant gesture alternatives', async () => {
-      const baseline = performanceBaselines.get('touch_accessibility_gesture_alternatives')!;
       
-      const accessibilityGestures = ['voice_control', 'switch_control', 'assistive_touch'];
       const results: BenchmarkResult[] = [];
       
       for (const gestureType of accessibilityGestures) {
-        const startTime = performance.now();
         await simulateAccessibilityGesture(gestureType);
-        const endTime = performance.now();
         
-        const actualTime = endTime - startTime;
-        const result = validatePerformanceBaseline(baseline, actualTime);
         results.push(result);
       }
       
       // All accessibility gestures should meet performance baseline
       expect(results.every(r => r.passed)).toBe(true);
       
-      const averageTime = results.reduce((sum, r) => sum + r.actualTime, 0) / results.length;
       expect(averageTime).toBeLessThan(baseline.target + baseline.tolerance);
     });
 
     it('should validate cultural appropriateness performance', async () => {
-      const baseline = performanceBaselines.get('touch_cultural_appropriateness_validation')!;
-      const culturalContexts = ['nordic', 'german', 'french', 'dutch'];
       
       const results: BenchmarkResult[] = [];
       
       for (const context of culturalContexts) {
-        const startTime = performance.now();
         await simulateCulturalGestureValidation(context);
-        const endTime = performance.now();
         
-        const actualTime = endTime - startTime;
-        const result = validatePerformanceBaseline(baseline, actualTime);
         results.push(result);
       }
       
@@ -355,14 +297,9 @@ describe('Q2 Interactive Mechanics Performance Benchmarking', () => {
 
   describe('Character Interaction Performance Budgets', () => {
     it('should validate dialogue rendering thresholds (<150ms)', async () => {
-      const baseline = performanceBaselines.get('character_dialogue_rendering')!;
       
-      const startTime = performance.now();
       await simulateCharacterDialogueRendering();
-      const endTime = performance.now();
       
-      const actualTime = endTime - startTime;
-      const result = validatePerformanceBaseline(baseline, actualTime);
       
       expect(result.passed).toBe(true);
       expect(result.actualTime).toBeLessThan(150 + baseline.tolerance);
@@ -374,41 +311,29 @@ describe('Q2 Interactive Mechanics Performance Benchmarking', () => {
     });
 
     it('should validate emotion state transition benchmarks', async () => {
-      const baseline = performanceBaselines.get('character_emotion_state_transition')!;
-      const emotionStates = ['neutral', 'concerned', 'focused', 'satisfied', 'stressed', 'confident'];
       
       const results: BenchmarkResult[] = [];
       
       for (const emotion of emotionStates) {
-        const startTime = performance.now();
         await simulateCharacterEmotionTransition(emotion);
-        const endTime = performance.now();
         
-        const actualTime = endTime - startTime;
-        const result = validatePerformanceBaseline(baseline, actualTime);
         results.push(result);
       }
       
       // All emotion transitions should meet performance baseline
       expect(results.every(r => r.passed)).toBe(true);
       
-      const averageTime = results.reduce((sum, r) => sum + r.actualTime, 0) / results.length;
       expect(averageTime).toBeLessThan(baseline.target + baseline.tolerance);
     });
 
     it('should validate branching narrative performance standards', async () => {
-      const baseline = performanceBaselines.get('character_branching_narrative_performance')!;
       
-      const complexityLevels = [1, 3, 5, 7, 9]; // Narrative complexity levels
+      const _complexityLevels = [1, 3, 5, 7, 9]; // Narrative complexity levels
       const results: BenchmarkResult[] = [];
       
       for (const complexity of complexityLevels) {
-        const startTime = performance.now();
         await simulateBranchingNarrativeProcessing(complexity);
-        const endTime = performance.now();
         
-        const actualTime = endTime - startTime;
-        const result = validatePerformanceBaseline(baseline, actualTime);
         results.push(result);
       }
       
@@ -423,22 +348,14 @@ describe('Q2 Interactive Mechanics Performance Benchmarking', () => {
 
   describe('Municipal Network Performance Validation', () => {
     it('should validate performance across all municipal network conditions', async () => {
-      const networkConditions = ['wifi', '3g', 'municipal_restricted'];
-      const allBaselines = Array.from(performanceBaselines.values());
       
-      const networkResults = new Map<string, BenchmarkResult[]>();
       
       for (const network of networkConditions) {
-        const networkBaselines = allBaselines.filter(b => b.network === network);
         const results: BenchmarkResult[] = [];
         
         for (const baseline of networkBaselines) {
-          const startTime = performance.now();
           await simulateNetworkSpecificOperation(baseline, network);
-          const endTime = performance.now();
           
-          const actualTime = endTime - startTime;
-          const result = validatePerformanceBaseline(baseline, actualTime);
           results.push(result);
         }
         
@@ -456,7 +373,7 @@ describe('Q2 Interactive Mechanics Performance Benchmarking', () => {
     });
 
     it('should validate Anna Svensson 7-minute session performance', async () => {
-      const annaSwenssonBaselines = Array.from(performanceBaselines.values())
+      const _annaSwenssonBaselines = Array.from(performanceBaselines.values())
         .filter(b => b.device === 'anna_svensson_iphone12');
       
       let totalSessionTime = 0;
@@ -464,14 +381,10 @@ describe('Q2 Interactive Mechanics Performance Benchmarking', () => {
       
       // Simulate 7-minute session with multiple Q2 interactions
       for (const baseline of annaSwenssonBaselines) {
-        const startTime = performance.now();
         await simulateAnnaSwenssonInteraction(baseline);
-        const endTime = performance.now();
         
-        const actualTime = endTime - startTime;
         totalSessionTime += actualTime;
         
-        const result = validatePerformanceBaseline(baseline, actualTime);
         sessionResults.push(result);
       }
       
@@ -479,7 +392,6 @@ describe('Q2 Interactive Mechanics Performance Benchmarking', () => {
       expect(sessionResults.every(r => r.annaSwenssonCompliant)).toBe(true);
       
       // Total session performance should support 7-minute sessions
-      const sessionTimeInSeconds = totalSessionTime / 1000;
       expect(sessionTimeInSeconds).toBeLessThan(12); // <12s total loading time for 7-minute session
       
       // Validate Anna Svensson session metrics
@@ -490,17 +402,12 @@ describe('Q2 Interactive Mechanics Performance Benchmarking', () => {
 
   describe('Integration with Performance Regression Prevention', () => {
     it('should integrate with CI/CD performance gates', async () => {
-      const allBaselines = Array.from(performanceBaselines.values());
       const cicdResults: { passed: boolean; baseline: string; actualTime: number }[] = [];
       
       // Simulate CI/CD performance gate validation
       for (const baseline of allBaselines) {
-        const startTime = performance.now();
         await simulatePerformanceGateValidation(baseline);
-        const endTime = performance.now();
         
-        const actualTime = endTime - startTime;
-        const result = validatePerformanceBaseline(baseline, actualTime);
         
         cicdResults.push({
           passed: result.passed,
@@ -510,7 +417,6 @@ describe('Q2 Interactive Mechanics Performance Benchmarking', () => {
       }
       
       // All performance gates should pass
-      const allPassed = cicdResults.every(r => r.passed);
       expect(allPassed).toBe(true);
       
       // Validate CI/CD gate coverage
@@ -519,23 +425,14 @@ describe('Q2 Interactive Mechanics Performance Benchmarking', () => {
     });
 
     it('should provide real-time benchmark validation during development', async () => {
-      const developmentSimulations = [
-        'drag_drop_feature_development',
-        'timer_challenge_enhancement',
-        'character_interaction_improvement'
-      ];
       
       for (const simulation of developmentSimulations) {
-        const relevantBaselines = Array.from(performanceBaselines.values())
+        const _relevantBaselines = Array.from(performanceBaselines.values())
           .filter(b => simulation.includes(b.category.replace('_', '_')));
         
         for (const baseline of relevantBaselines) {
-          const startTime = performance.now();
           await simulateDevelopmentValidation(simulation, baseline);
-          const endTime = performance.now();
           
-          const actualTime = endTime - startTime;
-          const result = validatePerformanceBaseline(baseline, actualTime);
           
           expect(result.passed).toBe(true);
           
@@ -560,7 +457,7 @@ describe('Q2 Interactive Mechanics Performance Benchmarking', () => {
 
   async function simulateCrossBrowserDragOperation(browser: string): Promise<void> {
     // Simulate cross-browser drag operation
-    const browserDelay = browser === 'safari' ? 5 : 0; // Safari slightly slower
+    const _browserDelay = browser === 'safari' ? 5 : 0; // Safari slightly slower
     await new Promise(resolve => setTimeout(resolve, 45 + browserDelay));
   }
 
@@ -576,7 +473,6 @@ describe('Q2 Interactive Mechanics Performance Benchmarking', () => {
 
   async function simulateMultiParticipantSync(participants: number): Promise<void> {
     // Simulate multi-participant synchronization
-    const syncDelay = 150 + (participants * 10);
     await new Promise(resolve => setTimeout(resolve, syncDelay));
   }
 
@@ -587,7 +483,6 @@ describe('Q2 Interactive Mechanics Performance Benchmarking', () => {
 
   async function simulateAccessibilityGesture(gestureType: string): Promise<void> {
     // Simulate accessibility-compliant gesture
-    const gestureDelay = gestureType === 'voice_control' ? 130 : 120;
     await new Promise(resolve => setTimeout(resolve, gestureDelay));
   }
 
@@ -608,39 +503,35 @@ describe('Q2 Interactive Mechanics Performance Benchmarking', () => {
 
   async function simulateBranchingNarrativeProcessing(complexity: number): Promise<void> {
     // Simulate branching narrative processing
-    const processingDelay = 150 + (complexity * 8);
     await new Promise(resolve => setTimeout(resolve, processingDelay));
   }
 
   async function simulateNetworkSpecificOperation(baseline: PerformanceBaseline, network: string): Promise<void> {
     // Simulate network-specific operation
-    const networkMultiplier = network === '3g' ? 1.3 : network === 'municipal_restricted' ? 1.1 : 1.0;
-    const delay = baseline.target * networkMultiplier * 0.8; // 80% of target for simulation
+    const _delay = baseline.target * networkMultiplier * 0.8; // 80% of target for simulation
     await new Promise(resolve => setTimeout(resolve, delay));
   }
 
   async function simulateAnnaSwenssonInteraction(baseline: PerformanceBaseline): Promise<void> {
     // Simulate Anna Svensson specific interaction
-    const delay = baseline.target * 0.85; // Optimized for Anna Svensson
+    const _delay = baseline.target * 0.85; // Optimized for Anna Svensson
     await new Promise(resolve => setTimeout(resolve, delay));
   }
 
   async function simulatePerformanceGateValidation(baseline: PerformanceBaseline): Promise<void> {
     // Simulate CI/CD performance gate validation
-    const delay = baseline.target * 0.9; // CI environment optimized
+    const _delay = baseline.target * 0.9; // CI environment optimized
     await new Promise(resolve => setTimeout(resolve, delay));
   }
 
   async function simulateDevelopmentValidation(simulation: string, baseline: PerformanceBaseline): Promise<void> {
     // Simulate development environment validation
-    const delay = baseline.target * 0.95; // Development environment
+    const _delay = baseline.target * 0.95; // Development environment
     await new Promise(resolve => setTimeout(resolve, delay));
   }
 
   function validatePerformanceBaseline(baseline: PerformanceBaseline, actualTime: number): BenchmarkResult {
-    const passed = actualTime <= (baseline.target + baseline.tolerance);
-    const deviation = actualTime - baseline.target;
-    const annaSwenssonCompliant = baseline.device === 'anna_svensson_iphone12' ? 
+    const _annaSwenssonCompliant = baseline.device === 'anna_svensson_iphone12' ? 
       actualTime <= baseline.target : true;
 
     return {

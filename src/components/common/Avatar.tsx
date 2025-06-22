@@ -33,33 +33,9 @@ export const CharacterAvatar: React.FC<CharacterAvatarProps> = ({
   ...props
 }) => {
   // Game Designer spec: Default professional avatars for different roles
-  const getDefaultAvatar = (type?: string) => {
-    // In production, these would be actual professional avatar images
-    const defaultAvatars = {
-      municipal: '/avatars/municipal-admin.svg',
-      legal: '/avatars/legal-advisor.svg', 
-      it: '/avatars/it-specialist.svg',
-      manager: '/avatars/manager.svg',
-      hr: '/avatars/hr-representative.svg',
-      training: '/avatars/training-coordinator.svg'
-    };
-    
-    return defaultAvatars[type as keyof typeof defaultAvatars] || defaultAvatars.municipal;
-  };
 
   // Game Designer spec: Size mapping for Anna Svensson mobile optimization
-  const getSizeMapping = (avatarSize: string) => {
-    const sizeMap = {
-      sm: { size: '32px', indicator: '8px', border: '2px' },
-      md: { size: '48px', indicator: '12px', border: '2px' },
-      lg: { size: '64px', indicator: '16px', border: '3px' },
-      xl: { size: '96px', indicator: '20px', border: '4px' }
-    };
-    
-    return sizeMap[avatarSize as keyof typeof sizeMap] || sizeMap.lg;
-  };
 
-  const dimensions = getSizeMapping(size);
   
   return (
     <Box position="relative" display="inline-block">
@@ -119,8 +95,6 @@ export const CharacterAvatarGroup: React.FC<{
   max?: number;
   size?: 'sm' | 'md' | 'lg' | 'xl';
 }> = ({ characters, max = 3, size = 'md' }) => {
-  const visibleCharacters = characters.slice(0, max);
-  const remainingCount = characters.length - max;
 
   return (
     <Box display="flex" alignItems="center">
@@ -163,7 +137,6 @@ export const CharacterAvatarGroup: React.FC<{
 };
 
 // Preset avatar configurations for common municipal roles
-export const municipalAvatars = {
   annaManager: {
     name: 'Anna Svensson',
     role: 'Kommunal administratör',

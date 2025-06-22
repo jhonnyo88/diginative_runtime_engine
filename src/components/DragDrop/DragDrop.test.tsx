@@ -14,10 +14,6 @@ const TestWrapper: React.FC<{ children: React.ReactNode }> = ({ children }) => (
 
 describe('DragDropProvider', () => {
   it('provides drag drop context to children', () => {
-    const TestComponent = () => {
-      const context = useDragDrop();
-      return <div>{context ? 'Context provided' : 'No context'}</div>;
-    };
 
     render(
       <TestWrapper>
@@ -29,13 +25,8 @@ describe('DragDropProvider', () => {
   });
 
   it('throws error when used outside provider', () => {
-    const TestComponent = () => {
-      const context = useDragDrop();
-      return <div>Test</div>;
-    };
 
     // Suppress console.error for this test
-    const originalError = console.error;
     console.error = jest.fn();
 
     expect(() => render(<TestComponent />)).toThrow(
@@ -62,15 +53,6 @@ describe('Draggable', () => {
   it('starts drag on mouse down', () => {
     let draggedItem: Record<string, unknown> = null;
     
-    const TestComponent = () => {
-      const { draggedItem: item } = useDragDrop();
-      draggedItem = item;
-      return (
-        <Draggable itemId="test" itemType="document">
-          <div>Test Document</div>
-        </Draggable>
-      );
-    };
 
     const { rerender } = render(
       <TestWrapper>
@@ -78,7 +60,6 @@ describe('Draggable', () => {
       </TestWrapper>
     );
 
-    const draggable = screen.getByText('Test Document').parentElement!;
     fireEvent.mouseDown(draggable);
     
     rerender(
@@ -96,7 +77,6 @@ describe('Draggable', () => {
   });
 
   it('supports keyboard navigation', async () => {
-    const user = userEvent.setup();
     
     render(
       <TestWrapper>
@@ -106,7 +86,6 @@ describe('Draggable', () => {
       </TestWrapper>
     );
 
-    const draggable = screen.getByRole('button');
     await user.tab();
     expect(draggable).toHaveFocus();
     
@@ -123,7 +102,6 @@ describe('Draggable', () => {
       </TestWrapper>
     );
 
-    const draggable = screen.getByText('Test Document').parentElement!;
     expect(draggable).toHaveStyle({ cursor: 'not-allowed' });
     expect(draggable).toHaveAttribute('tabIndex', '-1');
   });
@@ -131,7 +109,6 @@ describe('Draggable', () => {
 
 describe('DropZone', () => {
   it('renders children correctly', () => {
-    const handleDrop = jest.fn();
     
     render(
       <TestWrapper>
@@ -147,16 +124,6 @@ describe('DropZone', () => {
   it('shows drop indicator when compatible item is dragged over', async () => {
     let startDragFn: Record<string, unknown>;
     
-    const TestComponent = () => {
-      const { startDrag } = useDragDrop();
-      startDragFn = startDrag;
-      
-      return (
-        <DropZone zoneId="test" accepts={['document']} onDrop={jest.fn()}>
-          <div>Drop here</div>
-        </DropZone>
-      );
-    };
 
     render(
       <TestWrapper>
@@ -171,7 +138,6 @@ describe('DropZone', () => {
       data: Record<string, unknown>,
     });
 
-    const dropZone = screen.getByRole('region');
     fireEvent.dragOver(dropZone);
 
     await waitFor(() => {
@@ -181,18 +147,7 @@ describe('DropZone', () => {
 
   it('does not accept incompatible items', () => {
     let startDragFn: Record<string, unknown>;
-    const handleDrop = jest.fn();
     
-    const TestComponent = () => {
-      const { startDrag } = useDragDrop();
-      startDragFn = startDrag;
-      
-      return (
-        <DropZone zoneId="test" accepts={['document']} onDrop={handleDrop}>
-          <div>Drop here</div>
-        </DropZone>
-      );
-    };
 
     render(
       <TestWrapper>
@@ -207,7 +162,6 @@ describe('DropZone', () => {
       data: Record<string, unknown>,
     });
 
-    const dropZone = screen.getByRole('region');
     fireEvent.dragOver(dropZone);
     fireEvent.drop(dropZone);
 
@@ -216,18 +170,7 @@ describe('DropZone', () => {
 
   it('calls onDrop when compatible item is dropped', () => {
     let startDragFn: Record<string, unknown>;
-    const handleDrop = jest.fn();
     
-    const TestComponent = () => {
-      const { startDrag } = useDragDrop();
-      startDragFn = startDrag;
-      
-      return (
-        <DropZone zoneId="test" accepts={['document']} onDrop={handleDrop}>
-          <div>Drop here</div>
-        </DropZone>
-      );
-    };
 
     render(
       <TestWrapper>
@@ -235,15 +178,9 @@ describe('DropZone', () => {
       </TestWrapper>
     );
 
-    const dragItem = {
-      id: 'test-item',
-      type: 'document',
-      data: { title: 'Test Doc' },
-    };
 
     startDragFn(dragItem);
 
-    const dropZone = screen.getByRole('region');
     fireEvent.dragOver(dropZone);
     fireEvent.drop(dropZone);
 

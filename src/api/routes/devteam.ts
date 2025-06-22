@@ -12,7 +12,6 @@ import {
 } from '../devteam-integration';
 import { ZodError } from 'zod';
 
-const router = Router();
 
 /**
  * POST /api/v1/process-content
@@ -21,10 +20,8 @@ const router = Router();
 router.post('/process-content', async (req: Request, res: Response) => {
   try {
     // Validate request body
-    const validatedRequest = ContentSubmissionSchema.parse(req.body);
     
     // Submit content for processing
-    const result = await submitContent(validatedRequest);
     
     // Return processing job information
     res.status(202).json({
@@ -65,7 +62,6 @@ router.get('/process-status/:jobId', async (req: Request, res: Response) => {
   try {
     const { jobId } = req.params;
     
-    const status = await getProcessingStatus(jobId);
     
     if (!status) {
       res.status(404).json({
@@ -96,7 +92,6 @@ router.get('/process-status/:jobId', async (req: Request, res: Response) => {
  */
 router.get('/process-status', async (req: Request, res: Response) => {
   try {
-    const jobs = await getAllJobs();
     
     res.json({
       success: true,
@@ -121,7 +116,6 @@ router.get('/game-delivery/:jobId', async (req: Request, res: Response) => {
   try {
     const { jobId } = req.params;
     
-    const status = await getProcessingStatus(jobId);
     
     if (!status) {
       res.status(404).json({
@@ -175,12 +169,7 @@ router.get('/health', (req: Request, res: Response) => {
  * Helper function to calculate processing time
  */
 function calculateProcessingTime(startTime: string, endTime: string): string {
-  const start = new Date(startTime).getTime();
-  const end = new Date(endTime).getTime();
-  const durationMs = end - start;
   
-  const minutes = Math.floor(durationMs / 60000);
-  const seconds = Math.floor((durationMs % 60000) / 1000);
   
   return `${minutes}m ${seconds}s`;
 }

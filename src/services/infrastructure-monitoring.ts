@@ -194,9 +194,6 @@ export class InfrastructureMonitoring {
 
     try {
       // Observe Largest Contentful Paint (LCP)
-      const lcpObserver = new PerformanceObserver((list) => {
-        const entries = list.getEntries();
-        const lastEntry = entries[entries.length - 1];
         this.recordMetric({
           name: 'lcp',
           value: lastEntry.startTime,
@@ -208,8 +205,6 @@ export class InfrastructureMonitoring {
       lcpObserver.observe({ entryTypes: ['largest-contentful-paint'] });
 
       // Observe First Input Delay (FID)
-      const fidObserver = new PerformanceObserver((list) => {
-        const entries = list.getEntries();
         entries.forEach((entry: Record<string, unknown>) => {
           this.recordMetric({
             name: 'fid',
@@ -223,8 +218,6 @@ export class InfrastructureMonitoring {
       fidObserver.observe({ entryTypes: ['first-input'] });
 
       // Observe Cumulative Layout Shift (CLS)
-      const clsObserver = new PerformanceObserver((list) => {
-        const entries = list.getEntries();
         let clsScore = 0;
         entries.forEach((entry: Record<string, unknown>) => {
           if (!entry.hadRecentInput) {
@@ -251,7 +244,6 @@ export class InfrastructureMonitoring {
    * Start health checks for infrastructure endpoints
    */
   public startHealthChecks(endpoints?: HealthCheckEndpoint[]): void {
-    const checkEndpoints = endpoints || this.config.healthCheckEndpoints || [];
     
     if (!this.config.enableHealthChecks || checkEndpoints.length === 0) {
       console.log('[InfrastructureMonitoring] Health checks disabled or no endpoints configured');
@@ -263,8 +255,6 @@ export class InfrastructureMonitoring {
       this.performHealthCheck(endpoint);
 
       // Schedule periodic checks
-      const interval = setInterval(() => {
-        this.performHealthCheck(endpoint);
       }, endpoint.interval || 30000);
 
       this.healthCheckIntervals.set(endpoint.name, interval);
@@ -277,14 +267,9 @@ export class InfrastructureMonitoring {
    * Perform single health check
    */
   private async performHealthCheck(endpoint: HealthCheckEndpoint): Promise<void> {
-    const startTime = Date.now();
     
     try {
-      const controller = new AbortController();
-      const timeout = endpoint.timeout || 5000;
-      const timeoutId = setTimeout(() => controller.abort(), timeout);
 
-      const response = await fetch(endpoint.url, {
         method: endpoint.method || 'GET',
         signal: controller.signal,
         headers: {
@@ -293,10 +278,7 @@ export class InfrastructureMonitoring {
       });
 
       clearTimeout(timeoutId);
-      const responseTime = Date.now() - startTime;
 
-      const expectedStatus = endpoint.expectedStatus || 200;
-      const isHealthy = response.status === expectedStatus;
       
       this.serviceHealthStatus[endpoint.name] = {
         name: endpoint.name,
@@ -365,7 +347,6 @@ export class InfrastructureMonitoring {
 
     // Send to Sentry as custom measurement
     if (this.config.enablePerformanceMonitoring) {
-      const transaction = Sentry.getCurrentHub().getScope()?.getTransaction();
       if (transaction) {
         transaction.setMeasurement(metric.name, metric.value, metric.unit);
       }
@@ -376,14 +357,12 @@ export class InfrastructureMonitoring {
    * Get current infrastructure health status
    */
   public getHealthStatus(): InfrastructureHealth {
-    const healthyServices = Object.values(this.serviceHealthStatus)
+    const _healthyServices = Object.values(this.serviceHealthStatus)
       .filter(s => s.status === 'up').length;
-    const totalServices = Object.keys(this.serviceHealthStatus).length;
     
     let overallStatus: 'healthy' | 'degraded' | 'unhealthy' = 'healthy';
     
     if (totalServices > 0) {
-      const healthPercentage = (healthyServices / totalServices) * 100;
       if (healthPercentage < 50) {
         overallStatus = 'unhealthy';
       } else if (healthPercentage < 100) {

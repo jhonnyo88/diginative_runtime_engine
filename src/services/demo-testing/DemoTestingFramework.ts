@@ -425,42 +425,35 @@ export class DemoTestingFramework extends EventEmitter {
   async executeComprehensiveDemoTesting(): Promise<Map<string, DemoTestResult[]>> {
     console.log('🧪 Executing comprehensive demo testing suite...');
 
-    const testResults = new Map<string, DemoTestResult[]>();
 
     // Test all demo scenarios
     for (const [scenarioName, scenarioSpec] of Object.entries(this.specs.scenarios)) {
       console.log(`   🎭 Testing scenario: ${scenarioName}`);
-      const scenarioResults = await this.testDemoScenario(scenarioName, scenarioSpec);
       testResults.set(`scenario_${scenarioName}`, scenarioResults);
     }
 
     // Test all environments
     for (const [envName, envSpec] of Object.entries(this.specs.environments)) {
       console.log(`   🏛️ Testing environment: ${envName}`);
-      const envResults = await this.testDemoEnvironment(envName, envSpec);
       testResults.set(`environment_${envName}`, envResults);
     }
 
     // Test all devices
     for (const [deviceName, deviceSpec] of Object.entries(this.specs.devices)) {
       console.log(`   💻 Testing device: ${deviceName}`);
-      const deviceResults = await this.testDemoDevice(deviceName, deviceSpec);
       testResults.set(`device_${deviceName}`, deviceResults);
     }
 
     // Execute load testing
     console.log('   ⚡ Executing government demo load testing...');
-    const loadResults = await this.executeLoadTesting();
     testResults.set('load_testing', [loadResults]);
 
     // Execute cultural validation
     console.log('   🌍 Executing cultural intelligence testing...');
-    const culturalResults = await this.executeCulturalValidation();
     testResults.set('cultural_validation', [culturalResults]);
 
     // Execute security validation
     console.log('   🔒 Executing government security validation...');
-    const securityResults = await this.executeSecurityValidation();
     testResults.set('security_validation', [securityResults]);
 
     console.log(`✅ Comprehensive demo testing complete: ${testResults.size} test categories executed`);
@@ -481,7 +474,6 @@ export class DemoTestingFramework extends EventEmitter {
 
     // Test scenario across all environments
     for (const [envName, envSpec] of Object.entries(this.specs.environments)) {
-      const result = await this.executeScenarioTest(scenarioName, scenarioSpec, envName, envSpec);
       results.push(result);
       this.testResults.push(result);
     }
@@ -498,18 +490,11 @@ export class DemoTestingFramework extends EventEmitter {
     envName: string,
     envSpec: EnvironmentSpec
   ): Promise<DemoTestResult> {
-    const startTime = Date.now();
 
     console.log(`     🎬 Testing ${scenarioName} in ${envName}...`);
 
     // Simulate comprehensive scenario testing
-    const performanceMetrics = await this.measureScenarioPerformance(scenarioSpec, envSpec);
-    const qualityMetrics = await this.assessScenarioQuality(scenarioSpec, envSpec);
-    const issues = await this.identifyScenarioIssues(scenarioSpec, envSpec, performanceMetrics, qualityMetrics);
-    const recommendations = this.generateScenarioRecommendations(issues);
-    const governmentReadiness = this.assessGovernmentReadiness(performanceMetrics, qualityMetrics, issues);
 
-    const success = issues.filter(i => i.severity === 'critical').length === 0;
 
     const result: DemoTestResult = {
       timestamp: Date.now(),
@@ -536,8 +521,6 @@ export class DemoTestingFramework extends EventEmitter {
     const results: DemoTestResult[] = [];
 
     // Test environment with key scenario
-    const keyScenario = this.specs.scenarios.technicalExcellence;
-    const result = await this.executeEnvironmentTest(envName, envSpec, keyScenario);
     results.push(result);
     this.testResults.push(result);
 
@@ -552,18 +535,11 @@ export class DemoTestingFramework extends EventEmitter {
     envSpec: EnvironmentSpec,
     scenario: DemoScenarioSpec
   ): Promise<DemoTestResult> {
-    const startTime = Date.now();
 
     console.log(`     🏛️ Testing environment ${envName}...`);
 
     // Simulate environment-specific testing
-    const performanceMetrics = await this.measureEnvironmentPerformance(envSpec, scenario);
-    const qualityMetrics = await this.assessEnvironmentQuality(envSpec, scenario);
-    const issues = await this.identifyEnvironmentIssues(envSpec, performanceMetrics, qualityMetrics);
-    const recommendations = this.generateEnvironmentRecommendations(issues);
-    const governmentReadiness = this.assessGovernmentReadiness(performanceMetrics, qualityMetrics, issues);
 
-    const success = issues.filter(i => i.severity === 'critical').length === 0;
 
     const result: DemoTestResult = {
       timestamp: Date.now(),
@@ -589,8 +565,6 @@ export class DemoTestingFramework extends EventEmitter {
     const results: DemoTestResult[] = [];
 
     // Test device with key scenario
-    const keyScenario = this.specs.scenarios.municipalValue;
-    const result = await this.executeDeviceTest(deviceName, deviceSpec, keyScenario);
     results.push(result);
     this.testResults.push(result);
 
@@ -605,18 +579,11 @@ export class DemoTestingFramework extends EventEmitter {
     deviceSpec: DeviceSpec,
     scenario: DemoScenarioSpec
   ): Promise<DemoTestResult> {
-    const startTime = Date.now();
 
     console.log(`     💻 Testing device ${deviceName}...`);
 
     // Simulate device-specific testing
-    const performanceMetrics = await this.measureDevicePerformance(deviceSpec, scenario);
-    const qualityMetrics = await this.assessDeviceQuality(deviceSpec, scenario);
-    const issues = await this.identifyDeviceIssues(deviceSpec, performanceMetrics, qualityMetrics);
-    const recommendations = this.generateDeviceRecommendations(issues);
-    const governmentReadiness = this.assessGovernmentReadiness(performanceMetrics, qualityMetrics, issues);
 
-    const success = issues.filter(i => i.severity === 'critical').length === 0;
 
     const result: DemoTestResult = {
       timestamp: Date.now(),
@@ -639,7 +606,6 @@ export class DemoTestingFramework extends EventEmitter {
    * Execute Load Testing
    */
   private async executeLoadTesting(): Promise<DemoTestResult> {
-    const startTime = Date.now();
 
     console.log(`     ⚡ Executing load testing with ${this.specs.testing.loadTestingScale} concurrent users...`);
 
@@ -663,11 +629,8 @@ export class DemoTestingFramework extends EventEmitter {
       governmentCompliant: 100 // 100%
     };
 
-    const issues = await this.identifyLoadTestingIssues(performanceMetrics, qualityMetrics);
-    const recommendations = this.generateLoadTestingRecommendations(issues);
-    const governmentReadiness = this.assessGovernmentReadiness(performanceMetrics, qualityMetrics, issues);
 
-    const success = performanceMetrics.hubLoadTime <= this.specs.testing.performanceTargets.hubLoadTime * 1.2; // 20% tolerance under load
+    const _success = performanceMetrics.hubLoadTime <= this.specs.testing.performanceTargets.hubLoadTime * 1.2; // 20% tolerance under load
 
     const result: DemoTestResult = {
       timestamp: Date.now(),
@@ -689,7 +652,6 @@ export class DemoTestingFramework extends EventEmitter {
    * Execute Cultural Validation
    */
   private async executeCulturalValidation(): Promise<DemoTestResult> {
-    const startTime = Date.now();
 
     console.log('     🌍 Executing Swedish municipal cultural validation...');
 
@@ -713,11 +675,7 @@ export class DemoTestingFramework extends EventEmitter {
       governmentCompliant: 100
     };
 
-    const issues = await this.identifyCulturalValidationIssues(qualityMetrics);
-    const recommendations = this.generateCulturalRecommendations(issues);
-    const governmentReadiness = this.assessGovernmentReadiness(performanceMetrics, qualityMetrics, issues);
 
-    const success = qualityMetrics.culturalAccuracy >= 95;
 
     const result: DemoTestResult = {
       timestamp: Date.now(),
@@ -739,7 +697,6 @@ export class DemoTestingFramework extends EventEmitter {
    * Execute Security Validation
    */
   private async executeSecurityValidation(): Promise<DemoTestResult> {
-    const startTime = Date.now();
 
     console.log('     🔒 Executing government security validation...');
 
@@ -763,11 +720,7 @@ export class DemoTestingFramework extends EventEmitter {
       governmentCompliant: 100 // Perfect government compliance required
     };
 
-    const issues = await this.identifySecurityValidationIssues(performanceMetrics, qualityMetrics);
-    const recommendations = this.generateSecurityRecommendations(issues);
-    const governmentReadiness = this.assessGovernmentReadiness(performanceMetrics, qualityMetrics, issues);
 
-    const success = qualityMetrics.governmentCompliant === 100 && issues.filter(i => i.severity === 'critical').length === 0;
 
     const result: DemoTestResult = {
       timestamp: Date.now(),
@@ -789,10 +742,6 @@ export class DemoTestingFramework extends EventEmitter {
    * Get Demo Testing Summary
    */
   getDemoTestingSummary() {
-    const totalTests = this.testResults.length;
-    const passedTests = this.testResults.filter(r => r.success).length;
-    const criticalIssues = this.testResults.flatMap(r => r.issues).filter(i => i.severity === 'critical').length;
-    const governmentReady = this.testResults.filter(r => r.governmentReadiness).length;
 
     return {
       timestamp: Date.now(),
@@ -869,7 +818,6 @@ export class DemoTestingFramework extends EventEmitter {
   }
 
   private async measureEnvironmentPerformance(env: EnvironmentSpec, scenario: DemoScenarioSpec): Promise<PerformanceMetrics> {
-    const networkDelay = env.securityLevel === 'highest' ? 50 : 20;
     return {
       hubLoadTime: scenario.performanceRequirements.hubLoadTime + networkDelay + Math.random() * 30,
       worldTransitionTime: scenario.performanceRequirements.worldTransitionTime + networkDelay + Math.random() * 50,
@@ -882,7 +830,6 @@ export class DemoTestingFramework extends EventEmitter {
   }
 
   private async measureDevicePerformance(device: DeviceSpec, scenario: DemoScenarioSpec): Promise<PerformanceMetrics> {
-    const deviceMultiplier = device.performanceLevel === 'highest' ? 0.8 : device.performanceLevel === 'high' ? 1.0 : 1.2;
     return {
       hubLoadTime: scenario.performanceRequirements.hubLoadTime * deviceMultiplier + Math.random() * 40,
       worldTransitionTime: scenario.performanceRequirements.worldTransitionTime * deviceMultiplier + Math.random() * 60,
@@ -896,7 +843,6 @@ export class DemoTestingFramework extends EventEmitter {
 
   // Quality assessment methods
   private async assessScenarioQuality(scenario: DemoScenarioSpec, env: EnvironmentSpec): Promise<QualityMetrics> {
-    const complexityPenalty = scenario.technicalComplexity === 'critical' ? 2 : scenario.technicalComplexity === 'high' ? 1 : 0;
     return {
       visualQuality: 98 - complexityPenalty + Math.random() * 3,
       audioQuality: 96 - complexityPenalty + Math.random() * 4,
@@ -908,7 +854,6 @@ export class DemoTestingFramework extends EventEmitter {
   }
 
   private async assessEnvironmentQuality(env: EnvironmentSpec, scenario: DemoScenarioSpec): Promise<QualityMetrics> {
-    const securityBonus = env.securityLevel === 'highest' ? 2 : env.securityLevel === 'high' ? 1 : 0;
     return {
       visualQuality: 97 + securityBonus + Math.random() * 2,
       audioQuality: 95 + securityBonus + Math.random() * 3,
@@ -920,7 +865,6 @@ export class DemoTestingFramework extends EventEmitter {
   }
 
   private async assessDeviceQuality(device: DeviceSpec, scenario: DemoScenarioSpec): Promise<QualityMetrics> {
-    const complianceBonus = device.governmentCompliant ? 2 : 0;
     return {
       visualQuality: 96 + complianceBonus + Math.random() * 2,
       audioQuality: 94 + complianceBonus + Math.random() * 4,
@@ -1079,20 +1023,13 @@ export class DemoTestingFramework extends EventEmitter {
 
   // Assessment methods
   private assessGovernmentReadiness(perf: PerformanceMetrics, quality: QualityMetrics, issues: DemoIssue[]): boolean {
-    const criticalIssues = issues.filter(i => i.severity === 'critical').length;
-    const governmentCompliant = quality.governmentCompliant === 100;
-    const culturallyAppropriate = quality.culturalAccuracy >= 95;
-    const professionalStandard = quality.professionalAppropriate >= 98;
     
     return criticalIssues === 0 && governmentCompliant && culturallyAppropriate && professionalStandard;
   }
 
   private determineOverallDemoStatus(): string {
-    const totalTests = this.testResults.length;
     if (totalTests === 0) return 'not_tested';
     
-    const passRate = (this.testResults.filter(r => r.success).length / totalTests) * 100;
-    const criticalIssues = this.testResults.flatMap(r => r.issues).filter(i => i.severity === 'critical').length;
     
     if (criticalIssues > 0) return 'critical_issues';
     if (passRate >= 95) return 'excellent';

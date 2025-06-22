@@ -22,48 +22,16 @@ import {
 } from './mocks/service-mocks';
 
 // Mock window and DOM objects
-const mockWindow = {
-  innerWidth: 1024,
-  addEventListener: vi.fn(),
-  setTimeout: vi.fn().mockImplementation((fn, delay) => {
-    fn();
-    return 123;
-  }),
-  setInterval: vi.fn().mockImplementation((fn, delay) => {
-    fn();
-    return 456;
-  }),
-  requestAnimationFrame: vi.fn().mockImplementation((fn) => {
-    fn(Date.now());
-    return 789;
-  }),
-  performance: {
-    now: vi.fn().mockReturnValue(1000),
-    memory: {
-      usedJSHeapSize: 50000000, // 50MB
-      totalJSHeapSize: 100000000,
-      jsHeapSizeLimit: 200000000
-    }
-  }
-};
 
-const mockDocument = {
-  addEventListener: vi.fn()
-};
 
-const mockSessionStorage = {
-  getItem: vi.fn(),
-  setItem: vi.fn()
-};
 
 // Mock PerformanceObserver
-const mockPerformanceObserver = vi.fn().mockImplementation((callback) => ({
+const _mockPerformanceObserver = vi.fn().mockImplementation((callback) => ({
   observe: vi.fn(),
   disconnect: vi.fn()
 }));
 
 // Mock performance entries
-const createMockNavigationEntry = (): PerformanceNavigationTiming => ({
   name: 'navigation',
   entryType: 'navigation',
   startTime: 0,
@@ -169,7 +137,6 @@ describe('PerformanceAnalyticsService - Emergency Service Testing', () => {
   describe('Service Initialization', () => {
     it('should initialize with session metrics', () => {
       // Act
-      const session = performanceAnalytics.getCurrentSession();
       
       // Assert
       expect(session).toBeDefined();
@@ -206,10 +173,8 @@ describe('PerformanceAnalyticsService - Emergency Service Testing', () => {
       performanceAnalytics.startGameSession('municipal-quiz');
       
       // Assert
-      const session = performanceAnalytics.getCurrentSession();
       expect(session.gamesSessions).toHaveLength(1);
       
-      const gameSession = session.gamesSessions[0];
       expect(gameSession.gameId).toBe('municipal-quiz');
       expect(gameSession.startTime).toBeGreaterThan(0);
       expect(gameSession.completed).toBe(false);
@@ -226,8 +191,6 @@ describe('PerformanceAnalyticsService - Emergency Service Testing', () => {
       performanceAnalytics.endGameSession('municipal-quiz', true, 85);
       
       // Assert
-      const session = performanceAnalytics.getCurrentSession();
-      const gameSession = session.gamesSessions[0];
       
       expect(gameSession.completed).toBe(true);
       expect(gameSession.score).toBe(85);
@@ -243,14 +206,11 @@ describe('PerformanceAnalyticsService - Emergency Service Testing', () => {
       performanceAnalytics.trackGameInteraction('municipal-quiz', 'intro-scene', 'click-answer', 250);
       
       // Assert
-      const session = performanceAnalytics.getCurrentSession();
       
       // Check game session interaction count
-      const gameSession = session.gamesSessions[0];
       expect(gameSession.interactions).toBe(1);
       
       // Check interaction tracking
-      const lastInteraction = session.userInteractions[session.userInteractions.length - 1];
       expect(lastInteraction.type).toBe('game-action');
       expect(lastInteraction.target).toBe('municipal-quiz_intro-scene_click-answer');
       expect(lastInteraction.responseTime).toBe(250);
@@ -269,8 +229,6 @@ describe('PerformanceAnalyticsService - Emergency Service Testing', () => {
       performanceAnalytics.trackGameError('municipal-quiz', 'dialogue-scene');
       
       // Assert
-      const session = performanceAnalytics.getCurrentSession();
-      const gameSession = session.gamesSessions[0];
       expect(gameSession.errors).toBe(1);
     });
     
@@ -279,7 +237,6 @@ describe('PerformanceAnalyticsService - Emergency Service Testing', () => {
       performanceAnalytics.startGameSession('municipal-quiz');
       
       // Mock a long session (8 minutes)
-      const gameSession = performanceAnalytics.getCurrentSession().gamesSessions[0];
       gameSession.startTime = Date.now() - (8 * 60 * 1000); // 8 minutes ago
       
       // Act
@@ -298,7 +255,6 @@ describe('PerformanceAnalyticsService - Emergency Service Testing', () => {
       mockWindow.innerWidth = 500; // Mobile width
       
       // Recreate service to test new device detection
-      const session = performanceAnalytics.getCurrentSession();
       
       // Assert - Check that device type is correctly identified
       // Note: Since the service is a singleton, we test the getDeviceType logic indirectly
@@ -324,7 +280,6 @@ describe('PerformanceAnalyticsService - Emergency Service Testing', () => {
       });
       
       // Act
-      const session = performanceAnalytics.getCurrentSession();
       
       // Assert
       expect(session.municipality).toBe('malmo_stad'); // Current instance retains original
@@ -337,10 +292,8 @@ describe('PerformanceAnalyticsService - Emergency Service Testing', () => {
       mockWindow.setInterval.mock.calls[0][0](); // Call the interval function
       
       // Assert
-      const session = performanceAnalytics.getCurrentSession();
       expect(session.performanceMetrics.length).toBeGreaterThan(0);
       
-      const latestMetric = session.performanceMetrics[session.performanceMetrics.length - 1];
       expect(latestMetric.metrics.memoryUsage).toBe(50000000); // 50MB from mock
     });
     
@@ -349,8 +302,6 @@ describe('PerformanceAnalyticsService - Emergency Service Testing', () => {
       mockWindow.setInterval.mock.calls[0][0](); // Call the interval function
       
       // Assert
-      const session = performanceAnalytics.getCurrentSession();
-      const latestMetric = session.performanceMetrics[session.performanceMetrics.length - 1];
       expect(latestMetric.metrics.fps).toBeDefined();
       expect(typeof latestMetric.metrics.fps).toBe('number');
     });
@@ -378,18 +329,16 @@ describe('PerformanceAnalyticsService - Emergency Service Testing', () => {
       expect(mockPerformanceObserver).toHaveBeenCalled();
       
       // Verify all the observer calls for Core Web Vitals
-      const observerCalls = mockPerformanceObserver.mock.calls;
       expect(observerCalls.length).toBeGreaterThan(0);
     });
     
     it('should handle LCP tracking failure gracefully', () => {
       // Arrange - Mock PerformanceObserver to throw
-      const failingObserver = vi.fn().mockImplementation(() => {
+      const _failingObserver = vi.fn().mockImplementation(() => {
         throw new Error('Observer not supported');
       });
       
       // Override global PerformanceObserver temporarily
-      const originalObserver = global.PerformanceObserver;
       (global as any).PerformanceObserver = failingObserver;
       
       // This would be called during initialization, so we test the warning
@@ -412,16 +361,9 @@ describe('PerformanceAnalyticsService - Emergency Service Testing', () => {
   describe('Interaction Tracking', () => {
     it('should track click interactions', () => {
       // Arrange
-      const clickHandler = mockDocument.addEventListener.mock.calls
+      const _clickHandler = mockDocument.addEventListener.mock.calls
         .find(call => call[0] === 'click')?.[1];
       
-      const mockEvent = {
-        target: {
-          id: 'quiz-button',
-          className: 'btn btn-primary',
-          tagName: 'BUTTON'
-        }
-      };
       
       // Act
       if (clickHandler) {
@@ -429,20 +371,15 @@ describe('PerformanceAnalyticsService - Emergency Service Testing', () => {
       }
       
       // Assert
-      const session = performanceAnalytics.getCurrentSession();
-      const clickInteraction = session.userInteractions.find(i => i.type === 'click');
       expect(clickInteraction).toBeDefined();
       expect(clickInteraction?.target).toBe('#quiz-button');
     });
     
     it('should track keyboard interactions', () => {
       // Arrange
-      const keyHandler = mockDocument.addEventListener.mock.calls
+      const _keyHandler = mockDocument.addEventListener.mock.calls
         .find(call => call[0] === 'keydown')?.[1];
       
-      const mockEvent = {
-        key: 'Enter'
-      };
       
       // Act
       if (keyHandler) {
@@ -450,8 +387,6 @@ describe('PerformanceAnalyticsService - Emergency Service Testing', () => {
       }
       
       // Assert
-      const session = performanceAnalytics.getCurrentSession();
-      const keyInteraction = session.userInteractions.find(i => i.type === 'keyboard');
       expect(keyInteraction).toBeDefined();
       expect(keyInteraction?.target).toBe('key_Enter');
     });
@@ -463,7 +398,6 @@ describe('PerformanceAnalyticsService - Emergency Service Testing', () => {
       }
       
       // Assert
-      const session = performanceAnalytics.getCurrentSession();
       expect(session.userInteractions.length).toBe(100); // Should be capped at 100
     });
   });
@@ -481,7 +415,6 @@ describe('PerformanceAnalyticsService - Emergency Service Testing', () => {
       performanceAnalytics.trackGameInteraction('game1', 'scene1', 'action2', 300);
       
       // Act
-      const summary = performanceAnalytics.getSessionSummary();
       
       // Assert
       expect(summary.gamesPlayed).toBe(2);
@@ -493,7 +426,6 @@ describe('PerformanceAnalyticsService - Emergency Service Testing', () => {
     
     it('should handle empty session summary', () => {
       // Act
-      const summary = performanceAnalytics.getSessionSummary();
       
       // Assert
       expect(summary.gamesPlayed).toBeGreaterThanOrEqual(0);
@@ -532,7 +464,6 @@ describe('PerformanceAnalyticsService - Emergency Service Testing', () => {
       };
       
       // Act - Simulate performance observer callback
-      const observerCallback = mockPerformanceObserver.mock.calls[0]?.[0];
       if (observerCallback) {
         observerCallback({
           getEntries: () => [slowResourceEntry]
@@ -547,10 +478,8 @@ describe('PerformanceAnalyticsService - Emergency Service Testing', () => {
     
     it('should process navigation timing entries', () => {
       // Arrange
-      const navEntry = createMockNavigationEntry();
       
       // Act - Simulate performance observer callback
-      const observerCallback = mockPerformanceObserver.mock.calls[0]?.[0];
       if (observerCallback) {
         observerCallback({
           getEntries: () => [navEntry]
@@ -558,8 +487,7 @@ describe('PerformanceAnalyticsService - Emergency Service Testing', () => {
       }
       
       // Assert
-      const session = performanceAnalytics.getCurrentSession();
-      const pageLoadMetric = session.performanceMetrics.find(
+      const _pageLoadMetric = session.performanceMetrics.find(
         metric => metric.metrics.pageLoadTime !== undefined
       );
       expect(pageLoadMetric).toBeDefined();
@@ -570,13 +498,10 @@ describe('PerformanceAnalyticsService - Emergency Service Testing', () => {
   describe('Performance Requirements', () => {
     it('should complete session tracking within performance budget', () => {
       // Arrange
-      const iterations = 50;
-      const maxDurationMs = 10;
       const durations: number[] = [];
       
       // Act
       for (let i = 0; i < iterations; i++) {
-        const start = Date.now();
         
         performanceAnalytics.startGameSession(`game-${i}`);
         performanceAnalytics.trackGameInteraction(`game-${i}`, 'scene', 'action', 100);
@@ -586,16 +511,13 @@ describe('PerformanceAnalyticsService - Emergency Service Testing', () => {
       }
       
       // Assert
-      const avgDuration = durations.reduce((a, b) => a + b, 0) / durations.length;
       expect(avgDuration).toBeLessThan(maxDurationMs);
     });
     
     it('should handle concurrent game sessions efficiently', () => {
       // Arrange
-      const gameCount = 10;
       
       // Act
-      const start = Date.now();
       
       for (let i = 0; i < gameCount; i++) {
         performanceAnalytics.startGameSession(`concurrent-game-${i}`);
@@ -613,12 +535,10 @@ describe('PerformanceAnalyticsService - Emergency Service Testing', () => {
         performanceAnalytics.endGameSession(`concurrent-game-${i}`, true, Math.random() * 100);
       }
       
-      const duration = Date.now() - start;
       
       // Assert
       expect(duration).toBeLessThan(100); // Should complete within 100ms
       
-      const session = performanceAnalytics.getCurrentSession();
       expect(session.gamesSessions.length).toBeGreaterThanOrEqual(gameCount);
     });
   });
@@ -626,7 +546,6 @@ describe('PerformanceAnalyticsService - Emergency Service Testing', () => {
   describe('Error Handling and Edge Cases', () => {
     it('should handle missing PerformanceObserver gracefully', () => {
       // Arrange - Remove PerformanceObserver
-      const originalObserver = (global as any).PerformanceObserver;
       delete (global as any).PerformanceObserver;
       
       // Act & Assert - Should not throw
@@ -643,14 +562,12 @@ describe('PerformanceAnalyticsService - Emergency Service Testing', () => {
     
     it('should handle missing memory API gracefully', () => {
       // Arrange - Remove memory from performance
-      const originalMemory = mockWindow.performance.memory;
       delete mockWindow.performance.memory;
       
       // Act
       mockWindow.setInterval.mock.calls[0][0](); // Trigger metrics collection
       
       // Assert - Should not crash
-      const session = performanceAnalytics.getCurrentSession();
       expect(session.performanceMetrics.length).toBeGreaterThan(0);
       
       // Restore
@@ -659,7 +576,6 @@ describe('PerformanceAnalyticsService - Emergency Service Testing', () => {
     
     it('should handle failed metric transmission gracefully', () => {
       // Arrange - Mock console.error to catch failed transmission
-      const originalError = console.error;
       console.error = vi.fn();
       
       // This test verifies that the service handles network failures gracefully

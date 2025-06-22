@@ -215,10 +215,7 @@ export const culturalPersonas: Record<string, CulturalPersona> = {
   }
 };
 
-const CharacterContext = createContext<CharacterContextType | undefined>(undefined);
 
-export const useCharacterContext = () => {
-  const context = useContext(CharacterContext);
   if (context === undefined) {
     throw new Error('useCharacterContext must be used within a CharacterProvider');
   }
@@ -262,45 +259,16 @@ export const CharacterProvider: React.FC<{ children: ReactNode }> = ({ children 
   const [relationshipManager] = useState(() => new CharacterRelationshipManager());
 
   // Character system actions
-  const addCharacter = (character: MunicipalCharacter) => {
-    setActiveCharacters(prev => [...prev, character]);
-    
-    // Initialize emotion state
-    const emotionState: CharacterEmotionState = {
-      characterId: character.characterId,
-      currentEmotion: character.currentEmotion,
-      emotionHistory: [{
-        emotion: character.currentEmotion,
-        timestamp: new Date(),
-        context: 'character_initialization',
-        trigger: 'system_initialization'
-      }],
-      emotionStability: 75,
-      emotionalTriggers: []
-    };
     
     setEmotionState(prev => [...prev, emotionState]);
   };
 
-  const updateCharacterEmotion = (characterId: string, emotion: MunicipalEmotionType, context: string) => {
-    setEmotionState(prev => prev.map(state => {
-      if (state.characterId === characterId) {
-        return {
-          ...state,
-          currentEmotion: emotion,
-          emotionHistory: [...state.emotionHistory, {
-            emotion,
-            timestamp: new Date(),
-            context,
-            trigger: 'interaction_based_change'
-          }]
-        };
       }
       return state;
     }));
   };
 
-  const trackCharacterInteraction = (
+  const _trackCharacterInteraction = (
     character1Id: string,
     character2Id: string,
     interactionType: InteractionType,
@@ -308,8 +276,6 @@ export const CharacterProvider: React.FC<{ children: ReactNode }> = ({ children 
     context: string
   ) => {
     // Get current emotions for both characters
-    const char1Emotion = emotionState.find(state => state.characterId === character1Id)?.currentEmotion || 'neutral';
-    const char2Emotion = emotionState.find(state => state.characterId === character2Id)?.currentEmotion || 'neutral';
     
     // Track relationship evolution
     relationshipManager.trackRelationshipEvolution(
@@ -340,27 +306,8 @@ export const CharacterProvider: React.FC<{ children: ReactNode }> = ({ children 
     setConversationHistory(prev => [...prev, conversationMemory]);
   };
 
-  const switchCulturalPersona = (personaId: 'anna_svensson' | 'klaus_mueller' | 'marie_dubois' | 'pieter_van_berg') => {
-    const newPersona = culturalPersonas[personaId];
-    const newCulture = newPersona.culture;
-    
-    // Update cultural context based on persona
-    const culturalAdaptations = getCulturalAdaptationsForCulture(newCulture);
-    
-    setCulturalContext({
-      currentCulture: newCulture,
-      activPersona: newPersona,
-      culturalAdaptations,
-      accessibilityAdaptations: {
-        languageSupport: getCulturalLanguageSupport(newCulture),
-        culturalAccessibility: getCulturalAccessibilityFeatures(newCulture),
-        municipalSpecificNeeds: getMunicipalAccessibilityNeeds(newCulture)
-      }
-    });
-  };
 
-  const getCulturalAdaptations = (culture: 'swedish' | 'german' | 'french' | 'dutch'): CulturalCharacterContext => {
-    const persona = Object.values(culturalPersonas).find(p => p.culture === culture) || culturalPersonas.anna_svensson;
+  const _getCulturalAdaptations = (culture: 'swedish' | 'german' | 'french' | 'dutch'): CulturalCharacterContext => {
     return {
       currentCulture: culture,
       activPersona: persona,
@@ -374,158 +321,31 @@ export const CharacterProvider: React.FC<{ children: ReactNode }> = ({ children 
   };
 
   // Helper functions for cultural adaptations
-  const getCulturalAdaptationsForCulture = (culture: 'swedish' | 'german' | 'french' | 'dutch') => {
-    const adaptations = {
-      swedish: {
-        language: 'svenska',
-        municipalTerminology: {
-          'municipality': 'kommun',
-          'citizen': 'medborgare',
-          'service': 'tjänst',
-          'department': 'avdelning'
-        },
-        communicationPatterns: {
-          'greeting': 'Hej',
-          'politeness': 'Tack så mycket',
-          'agreement': 'Absolut'
-        },
-        professionalNorms: ['lagom_approach', 'consensus_building', 'work_life_balance']
-      },
-      german: {
-        language: 'deutsch',
-        municipalTerminology: {
-          'municipality': 'gemeinde',
-          'citizen': 'bürger',
-          'service': 'dienstleistung',
-          'department': 'abteilung'
-        },
-        communicationPatterns: {
-          'greeting': 'Guten Tag',
-          'politeness': 'Vielen Dank',
-          'agreement': 'Genau'
-        },
-        professionalNorms: ['systematic_thoroughness', 'regulatory_compliance', 'process_excellence']
-      },
-      french: {
-        language: 'français',
-        municipalTerminology: {
-          'municipality': 'commune',
-          'citizen': 'citoyen',
-          'service': 'service',
-          'department': 'département'
-        },
-        communicationPatterns: {
-          'greeting': 'Bonjour',
-          'politeness': 'Je vous remercie',
-          'agreement': 'Tout à fait'
-        },
-        professionalNorms: ['service_public_excellence', 'intellectual_rigor', 'cultural_refinement']
-      },
-      dutch: {
-        language: 'nederlands',
-        municipalTerminology: {
-          'municipality': 'gemeente',
-          'citizen': 'burger',
-          'service': 'dienst',
-          'department': 'afdeling'
-        },
-        communicationPatterns: {
-          'greeting': 'Hallo',
-          'politeness': 'Dank je wel',
-          'agreement': 'Precies'
-        },
-        professionalNorms: ['direct_communication', 'innovation_efficiency', 'practical_solutions']
-      }
-    };
-    
-    return adaptations[culture];
-  };
 
-  const getCulturalLanguageSupport = (culture: 'swedish' | 'german' | 'french' | 'dutch'): string[] => {
-    const languageSupport = {
-      swedish: ['svenska', 'english'],
-      german: ['deutsch', 'english'],
-      french: ['français', 'english'],
-      dutch: ['nederlands', 'english']
-    };
+  const _getCulturalLanguageSupport = (culture: 'swedish' | 'german' | 'french' | 'dutch'): string[] => {
     return languageSupport[culture];
   };
 
-  const getCulturalAccessibilityFeatures = (culture: 'swedish' | 'german' | 'french' | 'dutch'): string[] => {
+  const _getCulturalAccessibilityFeatures = (culture: 'swedish' | 'german' | 'french' | 'dutch'): string[] => {
     return ['high_contrast', 'clear_language', 'inclusive_design', 'cultural_appropriate_design'];
   };
 
-  const getMunicipalAccessibilityNeeds = (culture: 'swedish' | 'german' | 'french' | 'dutch'): string[] => {
+  const _getMunicipalAccessibilityNeeds = (culture: 'swedish' | 'german' | 'french' | 'dutch'): string[] => {
     return ['citizen_service_focus', 'government_accessibility', 'municipal_compliance'];
   };
 
   // Analytics functions
-  const getCharacterRelationshipMetrics = (character1Id: string, character2Id: string) => {
-    return relationshipManager.getRelationshipMetrics(character1Id, character2Id);
+
   };
 
-  const getCharacterEmotionTrends = (characterId: string) => {
-    const characterEmotionState = emotionState.find(state => state.characterId === characterId);
-    if (!characterEmotionState) return null;
-    
-    return {
-      currentEmotion: characterEmotionState.currentEmotion,
-      emotionHistory: characterEmotionState.emotionHistory,
-      emotionStability: characterEmotionState.emotionStability,
-      trendAnalysis: analyzeEmotionTrend(characterEmotionState.emotionHistory)
-    };
-  };
-
-  const getMunicipalServiceImpact = (): number => {
+  const _getMunicipalServiceImpact = (): number => {
     // Calculate overall municipal service impact based on character relationships and emotions
-    const positiveInteractions = conversationHistory.filter(
-      conv => conv.outcomes.includes('positive')
-    ).length;
-    
-    const totalInteractions = conversationHistory.length;
-    
-    if (totalInteractions === 0) return 75; // Default baseline
-    
-    return Math.min(100, Math.round((positiveInteractions / totalInteractions) * 100));
   };
 
-  const analyzeEmotionTrend = (emotionHistory: Record<string, unknown>[]): 'improving' | 'stable' | 'declining' => {
+  const _analyzeEmotionTrend = (emotionHistory: Record<string, unknown>[]): 'improving' | 'stable' | 'declining' => {
     if (emotionHistory.length < 3) return 'stable';
     
-    const recent = emotionHistory.slice(-3);
-    const positiveEmotions = ['supportive', 'collaborative', 'satisfied', 'confident'];
     
-    const positiveCount = recent.filter(entry => 
-      positiveEmotions.includes(entry.emotion)
-    ).length;
-    
-    if (positiveCount >= 2) return 'improving';
-    if (positiveCount === 0) return 'declining';
-    return 'stable';
-  };
-
-  const contextValue: CharacterContextType = {
-    activeCharacters,
-    characterRelationships,
-    conversationHistory,
-    emotionState,
-    relationshipManager,
-    culturalContext,
-    addCharacter,
-    updateCharacterEmotion,
-    trackCharacterInteraction,
-    switchCulturalPersona,
-    getCulturalAdaptations,
-    getCharacterRelationshipMetrics,
-    getCharacterEmotionTrends,
-    getMunicipalServiceImpact
-  };
-
-  return (
-    <CharacterContext.Provider value={contextValue}>
-      {children}
-    </CharacterContext.Provider>
-  );
 };
 
 export default CharacterContext;

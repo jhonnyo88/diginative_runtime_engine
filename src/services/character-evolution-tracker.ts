@@ -164,13 +164,11 @@ export class CharacterEvolutionTracker {
     municipalContext: string,
     citizenImpact: string
   ): CharacterGrowthMetrics {
-    const evolution = this.characterEvolutions.get(characterId);
     if (!evolution) {
       throw new Error(`Character evolution not found: ${characterId}`);
     }
 
     // Update competence level based on performance
-    const competenceIncrease = this.calculateCompetenceIncrease(performanceScore, skillsApplied);
     evolution.characterGrowth.currentCompetenceLevel = Math.min(100, 
       evolution.characterGrowth.currentCompetenceLevel + competenceIncrease
     );
@@ -202,7 +200,6 @@ export class CharacterEvolutionTracker {
     relationshipMetrics: RelationshipMetrics,
     municipalServiceAlignment: number
   ): RelationshipProgressMetrics {
-    const evolution = this.characterEvolutions.get(characterId);
     if (!evolution) {
       throw new Error(`Character evolution not found: ${characterId}`);
     }
@@ -225,7 +222,6 @@ export class CharacterEvolutionTracker {
       evolution.relationshipProgress.push(relationshipProgress);
     } else {
       // Update existing relationship progress
-      const strengthChange = relationshipMetrics.strength - relationshipProgress.currentRelationshipStrength;
       relationshipProgress.currentRelationshipStrength = relationshipMetrics.strength;
       relationshipProgress.relationshipGrowthTrend = relationshipMetrics.recentInteractionTrend;
       relationshipProgress.collaborationSuccessRate = relationshipMetrics.collaborationSuccess;
@@ -253,13 +249,6 @@ export class CharacterEvolutionTracker {
 
   // Integrate with existing game state manager
   enhanceGameStateWithCharacterEvolution(gameState: GameState): CharacterEnhancedGameState {
-    const characterEvolutionData = {
-      activeCharacters: Array.from(this.characterEvolutions.keys()),
-      characterEvolutions: Array.from(this.characterEvolutions.values()),
-      relationshipEvolutions: this.getAllRelationshipEvolutions(),
-      municipalServiceImpactScore: this.calculateMunicipalServiceImpactScore(),
-      culturalAdaptationProgress: this.calculateCulturalAdaptationProgress()
-    };
 
     return {
       ...gameState,
@@ -280,7 +269,6 @@ export class CharacterEvolutionTracker {
 
   // Get character evolution summary
   getCharacterEvolutionSummary(characterId: string): CharacterEvolutionSummary {
-    const evolution = this.characterEvolutions.get(characterId);
     if (!evolution) {
       throw new Error(`Character evolution not found: ${characterId}`);
     }
@@ -301,32 +289,12 @@ export class CharacterEvolutionTracker {
   // Private helper methods
   private initializeSkillAreas(archetype: MunicipalArchetypeId): Array<Record<string, unknown>> {
     // Initialize skill areas based on archetype
-    const commonSkills = [
-      { skillArea: 'citizen_service', initialLevel: 50, currentLevel: 50, improvementRate: 0, municipalRelevance: 'direct_citizen_interaction' },
-      { skillArea: 'municipal_processes', initialLevel: 40, currentLevel: 40, improvementRate: 0, municipalRelevance: 'administrative_efficiency' },
-      { skillArea: 'collaboration', initialLevel: 45, currentLevel: 45, improvementRate: 0, municipalRelevance: 'team_coordination' }
-    ];
 
     // Add archetype-specific skills
-    const archetypeSpecificSkills = this.getArchetypeSpecificSkills(archetype);
     return [...commonSkills, ...archetypeSpecificSkills];
   }
 
   private getArchetypeSpecificSkills(archetype: MunicipalArchetypeId): Array<Record<string, unknown>> {
-    const archetypeSkills = {
-      'frontline_professional': [
-        { skillArea: 'conflict_resolution', initialLevel: 60, currentLevel: 60, improvementRate: 0, municipalRelevance: 'citizen_problem_solving' }
-      ],
-      'strategic_leader': [
-        { skillArea: 'strategic_planning', initialLevel: 70, currentLevel: 70, improvementRate: 0, municipalRelevance: 'municipal_leadership' }
-      ],
-      'compliance_guardian': [
-        { skillArea: 'regulatory_knowledge', initialLevel: 80, currentLevel: 80, improvementRate: 0, municipalRelevance: 'legal_compliance' }
-      ],
-      'change_agent': [
-        { skillArea: 'innovation_management', initialLevel: 75, currentLevel: 75, improvementRate: 0, municipalRelevance: 'digital_transformation' }
-      ]
-    };
 
     return archetypeSkills[archetype] || [];
   }
@@ -375,39 +343,26 @@ export class CharacterEvolutionTracker {
   }
 
   private getMunicipalCareerPath(archetype: MunicipalArchetypeId): string {
-    const careerPaths = {
-      'frontline_professional': 'Citizen Service Representative → Senior Service Coordinator → Department Service Manager',
-      'strategic_leader': 'Department Head → Senior Municipal Leader → Municipal Director',
-      'compliance_guardian': 'Legal Advisor → Senior Compliance Officer → Municipal Legal Director',
-      'change_agent': 'Innovation Specialist → Digital Transformation Lead → Municipal Innovation Director'
-    };
     return careerPaths[archetype] || 'Municipal Professional → Senior Municipal Professional → Municipal Leader';
   }
 
   private estimateTimeToMastery(archetype: MunicipalArchetypeId, currentLevel: number): string {
-    const remainingLevels = 100 - currentLevel;
-    const estimatedMonths = Math.round(remainingLevels / 2); // Rough estimate: 2 levels per month
     return `${estimatedMonths} months to municipal mastery`;
   }
 
   private calculateCompetenceIncrease(performanceScore: number, skillsApplied: string[]): number {
-    const baseIncrease = performanceScore / 20; // Max 5 points for perfect performance
-    const skillBonus = skillsApplied.length * 0.5; // Bonus for applying multiple skills
+    const _baseIncrease = performanceScore / 20; // Max 5 points for perfect performance
+    const _skillBonus = skillsApplied.length * 0.5; // Bonus for applying multiple skills
     return Math.min(10, baseIncrease + skillBonus); // Cap at 10 points per scenario
   }
 
   private calculateGrowthRate(evolution: CharacterEvolution): number {
-    const totalGrowth = evolution.characterGrowth.currentCompetenceLevel - evolution.characterGrowth.initialCompetenceLevel;
-    const timeElapsed = new Date().getTime() - evolution.evolutionStartDate.getTime();
-    const daysElapsed = timeElapsed / (1000 * 60 * 60 * 24);
     return daysElapsed > 0 ? totalGrowth / daysElapsed : 0;
   }
 
   private updateSkillDevelopmentAreas(evolution: CharacterEvolution, skillsApplied: string[], performanceScore: number): void {
     skillsApplied.forEach(skill => {
-      const skillArea = evolution.characterGrowth.skillDevelopmentAreas.find(area => area.skillArea === skill);
       if (skillArea) {
-        const improvement = performanceScore / 20;
         skillArea.currentLevel = Math.min(100, skillArea.currentLevel + improvement);
         skillArea.improvementRate = (skillArea.currentLevel - skillArea.initialLevel) / 
           ((new Date().getTime() - evolution.evolutionStartDate.getTime()) / (1000 * 60 * 60 * 24));
@@ -416,8 +371,6 @@ export class CharacterEvolutionTracker {
   }
 
   private checkProfessionalMilestones(evolution: CharacterEvolution, scenarioType: string, municipalContext: string): void {
-    const currentLevel = evolution.characterGrowth.currentCompetenceLevel;
-    const milestoneThresholds = [25, 50, 75, 90];
     
     milestoneThresholds.forEach(threshold => {
       if (currentLevel >= threshold && 
@@ -440,11 +393,10 @@ export class CharacterEvolutionTracker {
     citizenImpact: string
   ): void {
     evolution.municipalCompetenceGrowth.forEach(competence => {
-      const growthAmount = performanceScore / 25; // Max 4 points for perfect performance
+      const _growthAmount = performanceScore / 25; // Max 4 points for perfect performance
       competence.currentLevel = Math.min(100, competence.currentLevel + growthAmount);
       
       // Update growth trajectory
-      const growth = competence.currentLevel - competence.initialAssessment;
       if (growth > 30) competence.growthTrajectory = 'rapid';
       else if (growth > 15) competence.growthTrajectory = 'steady';
       else if (growth > 5) competence.growthTrajectory = 'gradual';
@@ -462,7 +414,6 @@ export class CharacterEvolutionTracker {
   }
 
   private checkAchievementUnlocks(evolution: CharacterEvolution): void {
-    const currentLevel = evolution.characterGrowth.currentCompetenceLevel;
     
     this.achievementUnlockThresholds.forEach((threshold, achievementType) => {
       if (currentLevel >= threshold && 
@@ -489,7 +440,7 @@ export class CharacterEvolutionTracker {
   ): void {
     // Strong relationships boost collaborative competence
     if (relationshipProgress.currentRelationshipStrength > 80) {
-      const collaborationSkill = evolution.characterGrowth.skillDevelopmentAreas.find(
+      const _collaborationSkill = evolution.characterGrowth.skillDevelopmentAreas.find(
         skill => skill.skillArea === 'collaboration'
       );
       if (collaborationSkill) {
@@ -513,7 +464,6 @@ export class CharacterEvolutionTracker {
     let characterCount = 0;
     
     this.characterEvolutions.forEach(evolution => {
-      const individualImpact = this.calculateIndividualMunicipalServiceImpact(evolution);
       totalImpact += individualImpact;
       characterCount++;
     });
@@ -522,10 +472,8 @@ export class CharacterEvolutionTracker {
   }
 
   private calculateIndividualMunicipalServiceImpact(evolution: CharacterEvolution): number {
-    const competenceScore = evolution.characterGrowth.currentCompetenceLevel;
-    const relationshipScore = evolution.relationshipProgress.reduce((avg, rel) => avg + rel.municipalServiceSynergy, 0) / 
+    const _relationshipScore = evolution.relationshipProgress.reduce((avg, rel) => avg + rel.municipalServiceSynergy, 0) / 
                              Math.max(1, evolution.relationshipProgress.length);
-    const achievementBonus = evolution.professionalAchievements.length * 5;
     
     return Math.min(100, competenceScore * 0.6 + relationshipScore * 0.3 + achievementBonus);
   }
@@ -540,7 +488,6 @@ export class CharacterEvolutionTracker {
     
     this.characterEvolutions.forEach(evolution => {
       evolution.municipalCompetenceGrowth.forEach(competence => {
-        const culture = competence.culturalAdaptation.culture;
         culturalProgress[culture] = Math.max(
           culturalProgress[culture],
           competence.culturalAdaptation.culturalCompetenceLevel
@@ -552,13 +499,10 @@ export class CharacterEvolutionTracker {
   }
 
   private estimateTimeToNextMilestone(evolution: CharacterEvolution): string {
-    const currentLevel = evolution.characterGrowth.currentCompetenceLevel;
-    const growthRate = evolution.characterGrowth.competenceGrowthRate;
     
     if (growthRate <= 0) return 'Continue practicing to establish growth rate';
     
     let nextThreshold = 100;
-    const thresholds = [25, 50, 75, 90, 100];
     
     for (const threshold of thresholds) {
       if (currentLevel < threshold) {
@@ -567,8 +511,6 @@ export class CharacterEvolutionTracker {
       }
     }
     
-    const remainingLevels = nextThreshold - currentLevel;
-    const estimatedDays = Math.round(remainingLevels / growthRate);
     
     return `${estimatedDays} days with current growth rate`;
   }

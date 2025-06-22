@@ -149,7 +149,6 @@ export const municipalWorkplaceDynamics: Record<RelationshipType, WorkplaceDynam
 };
 
 // Cultural relationship adaptation patterns
-export const culturalRelationshipPatterns = {
   swedish: {
     communicationStyle: 'consensus_building_with_inclusive_discussion',
     conflictResolution: 'calm_mediation_with_democratic_resolution',
@@ -197,17 +196,12 @@ export class CharacterRelationshipManager {
     character2Archetype: MunicipalArchetypeId,
     culturalContext: 'swedish' | 'german' | 'french' | 'dutch' = 'swedish'
   ): CharacterRelationship {
-    const relationshipId = this.generateRelationshipId(character1Id, character2Id);
     
     // Determine relationship type based on archetypes
-    const relationshipType = this.determineRelationshipType(character1Archetype, character2Archetype);
     
     // Get workplace dynamics pattern
-    const workplaceDynamics = municipalWorkplaceDynamics[relationshipType];
     
     // Calculate initial relationship parameters
-    const initialStrength = this.calculateInitialRelationshipStrength(character1Archetype, character2Archetype);
-    const initialTrust = this.calculateInitialTrustLevel(character1Archetype, character2Archetype);
     
     const relationship: CharacterRelationship = {
       relationshipId,
@@ -240,8 +234,6 @@ export class CharacterRelationshipManager {
     context: string,
     municipalScenario: string
   ): RelationshipChange {
-    const relationshipId = this.generateRelationshipId(character1Id, character2Id);
-    const relationship = this.relationships.get(relationshipId);
     
     if (!relationship) {
       throw new Error(`Relationship not found: ${relationshipId}`);
@@ -264,7 +256,6 @@ export class CharacterRelationshipManager {
     };
 
     // Update relationship based on interaction
-    const relationshipChange = this.updateRelationshipFromInteraction(relationship, interactionRecord);
     
     // Add to interaction history
     relationship.interactionHistory.push(interactionRecord);
@@ -283,14 +274,11 @@ export class CharacterRelationshipManager {
     department: string,
     hierarchy: string
   ): WorkplaceDynamics {
-    const relationshipId = this.generateRelationshipId(character1Id, character2Id);
-    const relationship = this.relationships.get(relationshipId);
     
     if (!relationship) {
       throw new Error(`Relationship not found: ${relationshipId}`);
     }
 
-    const culturalPattern = culturalRelationshipPatterns[relationship.culturalContext];
     
     return {
       relationshipType: relationship.relationshipType,
@@ -310,7 +298,6 @@ export class CharacterRelationshipManager {
     relationship: CharacterRelationship,
     decision: CharacterDecision
   ): InfluenceResult {
-    const influenceStrength = Math.min(
       relationship.strength * relationship.trustLevel / 100,
       100
     );
@@ -343,8 +330,6 @@ export class CharacterRelationshipManager {
 
   // Get relationship status and metrics
   getRelationshipMetrics(character1Id: string, character2Id: string): RelationshipMetrics {
-    const relationshipId = this.generateRelationshipId(character1Id, character2Id);
-    const relationship = this.relationships.get(relationshipId);
     
     if (!relationship) {
       throw new Error(`Relationship not found: ${relationshipId}`);
@@ -367,7 +352,6 @@ export class CharacterRelationshipManager {
 
   // Private helper methods
   private generateRelationshipId(character1Id: string, character2Id: string): string {
-    const sorted = [character1Id, character2Id].sort();
     return `rel_${sorted[0]}_${sorted[1]}`;
   }
 
@@ -418,7 +402,6 @@ export class CharacterRelationshipManager {
     archetype2: MunicipalArchetypeId,
     culture: 'swedish' | 'german' | 'french' | 'dutch'
   ): string {
-    const culturalStyle = culturalRelationshipPatterns[culture].communicationStyle;
     return `${culturalStyle}_between_${archetype1}_and_${archetype2}`;
   }
 
@@ -456,16 +439,12 @@ export class CharacterRelationshipManager {
     relationship: CharacterRelationship,
     interaction: InteractionRecord
   ): RelationshipChange {
-    const previousStatus = relationship.status;
-    const strengthChange = interaction.impactOnRelationship;
-    const trustChange = Math.round(strengthChange * 0.8); // Trust changes more slowly
     
     // Update strength and trust
     relationship.strength = Math.max(0, Math.min(100, relationship.strength + strengthChange));
     relationship.trustLevel = Math.max(0, Math.min(100, relationship.trustLevel + trustChange));
     
     // Update status based on new strength
-    const newStatus = this.calculateRelationshipStatus(relationship.strength, relationship.trustLevel);
     
     if (newStatus !== previousStatus) {
       const evolutionRecord: RelationshipEvolutionRecord = {
@@ -492,7 +471,6 @@ export class CharacterRelationshipManager {
   }
 
   private calculateRelationshipStatus(strength: number, trust: number): RelationshipStatus {
-    const average = (strength + trust) / 2;
     
     if (average >= 80) return 'strong';
     if (average >= 60) return 'established';
@@ -519,10 +497,8 @@ export class CharacterRelationshipManager {
   }
 
   private calculateInteractionTrend(relationship: CharacterRelationship): 'improving' | 'stable' | 'declining' {
-    const recentInteractions = relationship.interactionHistory.slice(-5);
     if (recentInteractions.length < 3) return 'stable';
     
-    const avgImpact = recentInteractions.reduce((sum, interaction) => sum + interaction.impactOnRelationship, 0) / recentInteractions.length;
     
     if (avgImpact > 1) return 'improving';
     if (avgImpact < -1) return 'declining';
@@ -530,17 +506,9 @@ export class CharacterRelationshipManager {
   }
 
   private calculateCollaborationSuccess(relationship: CharacterRelationship): number {
-    const collaborativeInteractions = relationship.interactionHistory.filter(
-      interaction => ['project_collaboration', 'daily_coordination', 'problem_solving'].includes(interaction.interactionType)
-    );
     
     if (collaborativeInteractions.length === 0) return 50; // No data
     
-    const successRate = collaborativeInteractions.filter(
-      interaction => interaction.outcome === 'positive'
-    ).length / collaborativeInteractions.length;
-    
-    return Math.round(successRate * 100);
   }
 
   private calculateMunicipalServiceAlignment(relationship: CharacterRelationship): number {

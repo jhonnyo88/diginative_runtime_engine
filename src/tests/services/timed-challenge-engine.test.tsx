@@ -48,7 +48,6 @@ describe('Timed Challenge Engine', () => {
   describe('TimerEngine', () => {
     describe('Timer Creation and Management', () => {
       it('should create timer with correct configuration', async () => {
-        const timer = await timerEngine.startChallenge('test_challenge', 120, {
           urgencyThresholds: {
             normal: 0.6,
             warning: 0.3,
@@ -81,7 +80,6 @@ describe('Timed Challenge Engine', () => {
       });
 
       it('should use default configuration when none provided', async () => {
-        const timer = await timerEngine.startChallenge('default_challenge', 60);
 
         expect(timer.urgencyThresholds).toEqual({
           normal: 0.5,
@@ -93,19 +91,16 @@ describe('Timed Challenge Engine', () => {
       });
 
       it('should track timer accurately with sub-second precision', async () => {
-        const timer = await timerEngine.startChallenge('precision_test', 5); // 5 seconds
         
         // Advance time by 2.5 seconds
         jest.advanceTimersByTime(2500);
         
-        const remaining = await timerEngine.getTimeRemaining(timer.id);
         expect(remaining).toBeCloseTo(2500, 100); // Within 100ms tolerance
       });
     });
 
     describe('Timer State Management', () => {
       it('should pause and resume timer correctly', async () => {
-        const timer = await timerEngine.startChallenge('pause_test', 10);
         
         // Run for 3 seconds then pause
         jest.advanceTimersByTime(3000);
@@ -121,12 +116,10 @@ describe('Timed Challenge Engine', () => {
         expect(timer.status).toBe('running');
         
         // Check that pause time was excluded
-        const remaining = await timerEngine.getTimeRemaining(timer.id);
         expect(remaining).toBeCloseTo(7000, 200); // ~7 seconds remaining
       });
 
       it('should extend timer duration for administrative reasons', async () => {
-        const timer = await timerEngine.startChallenge('extend_test', 5);
         
         // Extend by 10 seconds
         await timerEngine.extendTime(timer.id, 10);
@@ -149,7 +142,6 @@ describe('Timed Challenge Engine', () => {
     describe('Urgency Level Management', () => {
       it('should trigger urgency callbacks at correct thresholds', async () => {
         const urgencyChanges: UrgencyLevel[] = [];
-        const timer = await timerEngine.startChallenge('urgency_test', 10, {
           urgencyThresholds: {
             normal: 0.8,   // 80% = 8 seconds
             warning: 0.4,  // 40% = 4 seconds
@@ -171,7 +163,6 @@ describe('Timed Challenge Engine', () => {
       });
 
       it('should record urgency changes in monitoring', async () => {
-        const timer = await timerEngine.startChallenge('monitor_urgency', 4);
         
         // Advance to critical threshold (10% = 0.4 seconds)
         jest.advanceTimersByTime(3700);
@@ -190,7 +181,6 @@ describe('Timed Challenge Engine', () => {
 
     describe('Timer Expiration', () => {
       it('should handle timer expiration correctly', async () => {
-        const timer = await timerEngine.startChallenge('expiration_test', 2);
         
         // Advance past expiration
         jest.advanceTimersByTime(2500);
@@ -211,7 +201,6 @@ describe('Timed Challenge Engine', () => {
 
       it('should trigger expiration callbacks', async () => {
         let expirationTriggered = false;
-        const timer = await timerEngine.startChallenge('callback_test', 1);
         
         timerEngine.onUrgencyChange(timer.id, (level: UrgencyLevel | 'expired') => {
           if (level === 'expired') {
@@ -235,7 +224,6 @@ describe('Timed Challenge Engine', () => {
       });
 
       it('should handle invalid resume operations', async () => {
-        const timer = await timerEngine.startChallenge('invalid_resume', 5);
         
         // Try to resume running timer
         await expect(timerEngine.resumeChallenge(timer.id))
@@ -247,7 +235,6 @@ describe('Timed Challenge Engine', () => {
   describe('EmergencyScenarioFramework', () => {
     describe('Scenario Retrieval', () => {
       it('should retrieve flood response scenario with municipal context', async () => {
-        const scenario = await scenarioFramework.getScenario(
           EmergencyType.FLOOD_RESPONSE,
           'malmo_stad',
           'emergency_coordinator',
@@ -266,7 +253,6 @@ describe('Timed Challenge Engine', () => {
       });
 
       it('should retrieve cyber attack scenario for IT coordinator', async () => {
-        const scenario = await scenarioFramework.getScenario(
           EmergencyType.CYBER_ATTACK,
           'berlin_de',
           'it_coordinator',
@@ -280,16 +266,10 @@ describe('Timed Challenge Engine', () => {
         expect(scenario.timeLimit).toBeLessThan(180); // Cyber attacks need rapid response
         
         // Should have IT-specific resources
-        const itResources = scenario.emergencyDetails.availableResources.filter(
-          resource => resource.specialization?.includes('cyber') || 
-                     resource.type.includes('it') ||
-                     resource.type.includes('security')
-        );
         expect(itResources.length).toBeGreaterThan(0);
       });
 
       it('should retrieve winter storm scenario for Nordic context', async () => {
-        const scenario = await scenarioFramework.getScenario(
           EmergencyType.WINTER_STORM_NORDIC,
           'stockholm_stad',
           'emergency_coordinator',
@@ -301,18 +281,12 @@ describe('Timed Challenge Engine', () => {
         expect(scenario.culturalContext).toBe('nordic');
         
         // Should have winter-specific resources
-        const winterResources = scenario.emergencyDetails.availableResources.filter(
-          resource => resource.type.includes('snow') || 
-                     resource.type.includes('heating') ||
-                     resource.type.includes('generator')
-        );
         expect(winterResources.length).toBeGreaterThan(0);
       });
     });
 
     describe('Cultural Adaptation', () => {
       it('should adapt stakeholders for Swedish context', async () => {
-        const scenario = await scenarioFramework.getScenario(
           EmergencyType.FLOOD_RESPONSE,
           'malmo_stad',
           'emergency_coordinator',
@@ -320,7 +294,7 @@ describe('Timed Challenge Engine', () => {
           'nordic'
         );
 
-        const swedishStakeholders = scenario.emergencyDetails.stakeholders
+        const _swedishStakeholders = scenario.emergencyDetails.stakeholders
           .map(s => s.name)
           .join(' ');
         
@@ -329,7 +303,6 @@ describe('Timed Challenge Engine', () => {
       });
 
       it('should adapt stakeholders for German context', async () => {
-        const scenario = await scenarioFramework.getScenario(
           EmergencyType.CYBER_ATTACK,
           'berlin_de',
           'it_coordinator',
@@ -337,7 +310,7 @@ describe('Timed Challenge Engine', () => {
           'german'
         );
 
-        const germanStakeholders = scenario.emergencyDetails.stakeholders
+        const _germanStakeholders = scenario.emergencyDetails.stakeholders
           .map(s => s.name)
           .join(' ');
         
@@ -348,14 +321,12 @@ describe('Timed Challenge Engine', () => {
 
     describe('Difficulty Scaling', () => {
       it('should scale time limits based on user role', async () => {
-        const coordinatorScenario = await scenarioFramework.getScenario(
           EmergencyType.FLOOD_RESPONSE,
           'test_municipality',
           'emergency_coordinator',
           3
         );
 
-        const employeeScenario = await scenarioFramework.getScenario(
           EmergencyType.FLOOD_RESPONSE,
           'test_municipality',
           'municipal_employee',
@@ -367,14 +338,12 @@ describe('Timed Challenge Engine', () => {
       });
 
       it('should scale difficulty appropriately', async () => {
-        const easyScenario = await scenarioFramework.getScenario(
           EmergencyType.FLOOD_RESPONSE,
           'test_municipality',
           'emergency_coordinator',
           1 // Easy
         );
 
-        const hardScenario = await scenarioFramework.getScenario(
           EmergencyType.FLOOD_RESPONSE,
           'test_municipality',
           'emergency_coordinator',
@@ -390,7 +359,6 @@ describe('Timed Challenge Engine', () => {
 
     describe('Role-Based Recommendations', () => {
       it('should recommend appropriate scenarios for emergency coordinator', async () => {
-        const recommendations = await scenarioFramework.getRecommendedScenarios(
           'test_municipality',
           'emergency_coordinator',
           2
@@ -398,7 +366,6 @@ describe('Timed Challenge Engine', () => {
 
         expect(recommendations.length).toBeGreaterThan(0);
         
-        const scenarioTypes = recommendations.map(s => s.scenarioType);
         expect(scenarioTypes).toContain(EmergencyType.FLOOD_RESPONSE);
         expect(scenarioTypes).toContain(EmergencyType.WINTER_STORM_NORDIC);
         
@@ -407,19 +374,16 @@ describe('Timed Challenge Engine', () => {
       });
 
       it('should recommend IT scenarios for IT coordinator', async () => {
-        const recommendations = await scenarioFramework.getRecommendedScenarios(
           'test_municipality',
           'it_coordinator',
           3
         );
 
-        const scenarioTypes = recommendations.map(s => s.scenarioType);
         expect(scenarioTypes).toContain(EmergencyType.CYBER_ATTACK);
         expect(scenarioTypes).toContain(EmergencyType.INFRASTRUCTURE_FAILURE);
       });
 
       it('should provide limited scenarios for viewer role', async () => {
-        const recommendations = await scenarioFramework.getRecommendedScenarios(
           'test_municipality',
           'viewer',
           1
@@ -429,7 +393,6 @@ describe('Timed Challenge Engine', () => {
         expect(recommendations.length).toBeLessThanOrEqual(2);
         
         // Viewers should only get basic scenarios
-        const scenarioTypes = recommendations.map(s => s.scenarioType);
         expect(scenarioTypes).toContain(EmergencyType.FLOOD_RESPONSE);
       });
     });
@@ -445,7 +408,6 @@ describe('Timed Challenge Engine', () => {
       });
 
       it('should validate scenario structure', async () => {
-        const scenario = await scenarioFramework.getScenario(
           EmergencyType.FLOOD_RESPONSE,
           'test_municipality',
           'emergency_coordinator',
@@ -468,7 +430,6 @@ describe('Timed Challenge Engine', () => {
       it('should enforce tenant isolation for scenario access', async () => {
         // This test verifies that the framework uses TenantAwareService
         // In a real implementation, this would test that cross-tenant access is blocked
-        const scenario = await scenarioFramework.getScenario(
           EmergencyType.FLOOD_RESPONSE,
           'malmo_stad',
           'emergency_coordinator',
@@ -486,14 +447,12 @@ describe('Timed Challenge Engine', () => {
   describe('Integration Tests', () => {
     describe('Timer and Scenario Integration', () => {
       it('should create timer with scenario time limit', async () => {
-        const scenario = await scenarioFramework.getScenario(
           EmergencyType.CYBER_ATTACK,
           'test_municipality',
           'it_coordinator',
           4
         );
 
-        const timer = await timerEngine.startChallenge(
           scenario.scenarioId,
           scenario.timeLimit
         );
@@ -503,14 +462,12 @@ describe('Timed Challenge Engine', () => {
       });
 
       it('should handle emergency scenario completion workflow', async () => {
-        const scenario = await scenarioFramework.getScenario(
           EmergencyType.FLOOD_RESPONSE,
           'test_municipality',
           'emergency_coordinator',
           2
         );
 
-        const timer = await timerEngine.startChallenge(
           scenario.scenarioId,
           scenario.timeLimit,
           {
@@ -525,7 +482,6 @@ describe('Timed Challenge Engine', () => {
         // Simulate partial completion
         jest.advanceTimersByTime(scenario.timeLimit * 1000 * 0.5);
         
-        const remaining = await timerEngine.getTimeRemaining(timer.id);
         expect(remaining).toBeGreaterThan(0);
         expect(remaining).toBeLessThan(scenario.timeLimit * 1000);
       });
@@ -533,18 +489,15 @@ describe('Timed Challenge Engine', () => {
 
     describe('Performance Requirements', () => {
       it('should handle multiple concurrent challenges', async () => {
-        const challenges = [];
         
         // Create 5 concurrent challenges
         for (let i = 0; i < 5; i++) {
-          const scenario = await scenarioFramework.getScenario(
             EmergencyType.FLOOD_RESPONSE,
             `municipality_${i}`,
             'emergency_coordinator',
             2
           );
           
-          const timer = await timerEngine.startChallenge(
             scenario.scenarioId,
             scenario.timeLimit
           );
@@ -564,11 +517,9 @@ describe('Timed Challenge Engine', () => {
       });
 
       it('should maintain timer precision under load', async () => {
-        const timers = [];
         
         // Create multiple short timers
         for (let i = 0; i < 10; i++) {
-          const timer = await timerEngine.startChallenge(`load_test_${i}`, 3);
           timers.push(timer);
         }
 
@@ -576,7 +527,6 @@ describe('Timed Challenge Engine', () => {
         jest.advanceTimersByTime(1500); // 1.5 seconds
         
         for (const timer of timers) {
-          const remaining = await timerEngine.getTimeRemaining(timer.id);
           expect(remaining).toBeCloseTo(1500, 200); // Within 200ms tolerance
         }
       });

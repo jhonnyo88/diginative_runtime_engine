@@ -16,100 +16,8 @@ const TestWrapper: React.FC<{ children: React.ReactNode }> = ({ children }) => (
 );
 
 // Mock DevTeam JSON data matching System Architect specification
-const mockQuizSceneData = {
-  scene_id: 'quiz-gdpr-001',
-  scene_type: 'QuizScene' as const,
-  title: 'GDPR Knowledge Quiz',
-  description: 'Test your understanding of GDPR principles',
-  questions: [
-    {
-      question_id: 'q1',
-      question_type: 'multiple_choice' as const,
-      question_text: 'Which principle is fundamental to GDPR?',
-      options: [
-        {
-          option_id: 'opt1',
-          text: 'Data minimization',
-          is_correct: true
-        },
-        {
-          option_id: 'opt2', 
-          text: 'Data maximization',
-          is_correct: false
-        },
-        {
-          option_id: 'opt3',
-          text: 'Unlimited storage',
-          is_correct: false
-        }
-      ],
-      explanation: 'Data minimization means collecting only necessary personal data.',
-      learning_objective: 'Understand GDPR principles',
-      points: 10
-    },
-    {
-      question_id: 'q2',
-      question_type: 'true_false' as const,
-      question_text: 'Municipal employees can access all citizen data freely.',
-      options: [
-        {
-          option_id: 'true',
-          text: 'Sant',
-          is_correct: false
-        },
-        {
-          option_id: 'false',
-          text: 'Falskt', 
-          is_correct: true
-        }
-      ],
-      explanation: 'Access to citizen data must be limited to what is necessary for the specific task.',
-      learning_objective: 'Apply privacy rules in municipal work',
-      points: 10
-    },
-    {
-      question_id: 'q3',
-      question_type: 'multiple_select' as const,
-      question_text: 'Which are valid legal bases for processing personal data? (Select all)',
-      options: [
-        {
-          option_id: 'consent',
-          text: 'Consent',
-          is_correct: true
-        },
-        {
-          option_id: 'legitimate',
-          text: 'Legitimate interest',
-          is_correct: true
-        },
-        {
-          option_id: 'curiosity',
-          text: 'Curiosity',
-          is_correct: false
-        },
-        {
-          option_id: 'legal_obligation',
-          text: 'Legal obligation',
-          is_correct: true
-        }
-      ],
-      explanation: 'GDPR defines six legal bases for processing. Curiosity is not one of them.',
-      learning_objective: 'Recognize legal bases for data processing',
-      points: 15
-    }
-  ],
-  passing_score: 70, // 70% to pass
-  scene_duration: 300, // 5 minutes
-  feedback_immediate: true
-};
 
-const mockMunicipalBranding = {
-  primaryColor: '#2563eb',
-  logoUrl: 'https://example.se/goteborg-logo.svg',
-  municipality: 'Göteborg Stad'
-};
 
-const mockOnComplete = vi.fn();
 
 describe('QuizScene Component Tests', () => {
   beforeEach(() => {
@@ -166,7 +74,6 @@ describe('QuizScene Component Tests', () => {
         </TestWrapper>
       );
 
-      const progressBar = screen.getByRole('progressbar');
       expect(progressBar).toBeInTheDocument();
       expect(progressBar).toHaveAttribute('aria-valuenow', '33'); // 1 of 3 questions
 
@@ -219,7 +126,6 @@ describe('QuizScene Component Tests', () => {
         </TestWrapper>
       );
 
-      const radioButtons = screen.getAllByRole('radio');
       expect(radioButtons).toHaveLength(3);
 
       // Select an option
@@ -240,7 +146,6 @@ describe('QuizScene Component Tests', () => {
         </TestWrapper>
       );
 
-      const submitButton = screen.getByText('Svara');
       expect(submitButton).toBeDisabled();
 
       fireEvent.click(screen.getAllByRole('radio')[0]);
@@ -274,7 +179,6 @@ describe('QuizScene Component Tests', () => {
         expect(screen.getByText('Falskt')).toBeInTheDocument();
       });
 
-      const radioButtons = screen.getAllByRole('radio');
       expect(radioButtons).toHaveLength(2); // True/False
     });
   });
@@ -315,7 +219,6 @@ describe('QuizScene Component Tests', () => {
         expect(screen.getByText('Which are valid legal bases for processing personal data? (Select all)')).toBeInTheDocument();
       });
 
-      const checkboxes = screen.getAllByRole('checkbox');
       expect(checkboxes).toHaveLength(4);
 
       // Select multiple options
@@ -389,7 +292,6 @@ describe('QuizScene Component Tests', () => {
       // Press '1' to select first option
       fireEvent.keyDown(window, { key: '1' });
 
-      const radioButtons = screen.getAllByRole('radio');
       expect(radioButtons[0]).toBeChecked();
     });
 
@@ -443,7 +345,6 @@ describe('QuizScene Component Tests', () => {
       // Try to press '5' when only 3 options exist
       fireEvent.keyDown(window, { key: '5' });
 
-      const radioButtons = screen.getAllByRole('radio');
       radioButtons.forEach(radio => {
         expect(radio).not.toBeChecked();
       });
@@ -462,10 +363,8 @@ describe('QuizScene Component Tests', () => {
         </TestWrapper>
       );
 
-      const submitButton = screen.getByText('Svara');
       expect(submitButton).toHaveStyle({ minHeight: '48px', minWidth: '120px' });
 
-      const radioButtons = screen.getAllByRole('radio');
       radioButtons.forEach(radio => {
         expect(radio).toHaveStyle({ minHeight: '48px' });
       });
@@ -521,7 +420,6 @@ describe('QuizScene Component Tests', () => {
 
       // Q3: Multiple select - correct answers
       await waitFor(() => {
-        const checkboxes = screen.getAllByRole('checkbox');
         fireEvent.click(checkboxes[0]); // Consent
         fireEvent.click(checkboxes[1]); // Legitimate interest  
         fireEvent.click(checkboxes[3]); // Legal obligation
@@ -592,7 +490,6 @@ describe('QuizScene Component Tests', () => {
 
       // Q3: Wrong answers (only select wrong option)
       await waitFor(() => {
-        const checkboxes = screen.getAllByRole('checkbox');
         fireEvent.click(checkboxes[2]); // Curiosity (wrong)
         fireEvent.click(screen.getByText('Svara'));
       });
@@ -625,7 +522,6 @@ describe('QuizScene Component Tests', () => {
         </TestWrapper>
       );
 
-      const results = await axe(container);
       expect(results).toHaveNoViolations();
     });
 
@@ -641,15 +537,12 @@ describe('QuizScene Component Tests', () => {
       );
 
       // Progress bar should have proper aria-label
-      const progressBar = screen.getByRole('progressbar');
       expect(progressBar).toHaveAttribute('aria-label');
 
       // Radio buttons should be in a group
-      const radioGroup = screen.getByRole('radiogroup');
       expect(radioGroup).toBeInTheDocument();
 
       // Submit button should have aria-label
-      const submitButton = screen.getByText('Svara');
       expect(submitButton).toHaveAttribute('aria-label');
     });
 
@@ -665,7 +558,6 @@ describe('QuizScene Component Tests', () => {
       );
 
       // Check for aria-live region
-      const liveRegion = screen.getByRole('status', { hidden: true });
       expect(liveRegion).toBeInTheDocument();
     });
   });
@@ -718,8 +610,6 @@ describe('QuizScene Component Tests', () => {
       );
 
       // Fast clicking shouldn't break the component
-      const radioButton = screen.getAllByRole('radio')[0];
-      const submitButton = screen.getByText('Svara');
 
       fireEvent.click(radioButton);
       fireEvent.click(submitButton);
@@ -773,15 +663,6 @@ describe('QuizScene Component Tests', () => {
 
   describe('Error Handling', () => {
     it('handles missing question options gracefully', () => {
-      const invalidQuizData = {
-        ...mockQuizSceneData,
-        questions: [
-          {
-            ...mockQuizSceneData.questions[0],
-            options: [] // No options
-          }
-        ]
-      };
 
       render(
         <TestWrapper>
@@ -798,10 +679,6 @@ describe('QuizScene Component Tests', () => {
     });
 
     it('handles empty quiz gracefully', () => {
-      const emptyQuizData = {
-        ...mockQuizSceneData,
-        questions: [] // No questions
-      };
 
       render(
         <TestWrapper>

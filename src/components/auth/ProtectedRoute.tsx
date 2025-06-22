@@ -131,9 +131,6 @@ export const ProtectedRoute: React.FC<ProtectedRouteProps> = ({
   }
 
   // Check permission requirements
-  const missingPermissions = requiredPermissions.filter(
-    permission => !hasPermission(permission)
-  );
 
   if (missingPermissions.length > 0) {
     return (

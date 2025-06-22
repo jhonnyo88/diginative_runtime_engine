@@ -179,7 +179,6 @@ class EnterpriseSAMLProvider {
     this.tenants.set(tenant.id, tenant);
     
     // Create SAML instance for this tenant
-    const samlInstance = new SAML(tenant.samlConfig);
     this.samlInstances.set(tenant.id, samlInstance);
     
     console.info(`Registered SAML tenant: ${tenant.name} (${tenant.id})`);
@@ -194,7 +193,6 @@ class EnterpriseSAMLProvider {
   }
 
   public async initiateLogin(tenantId: string): Promise<string> {
-    const tenant = this.tenants.get(tenantId);
     if (!tenant) {
       throw new Error(`Tenant not found: ${tenantId}`);
     }
@@ -203,13 +201,11 @@ class EnterpriseSAMLProvider {
       throw new Error(`Tenant is inactive: ${tenantId}`);
     }
 
-    const samlInstance = this.samlInstances.get(tenantId);
     if (!samlInstance) {
       throw new Error(`SAML instance not configured for tenant: ${tenantId}`);
     }
 
     try {
-      const loginUrl = await samlInstance.getAuthorizeUrl('', '');
       console.info(`Initiated SAML login for tenant ${tenantId}: ${loginUrl}`);
       return loginUrl;
     } catch (error) {
@@ -223,7 +219,6 @@ class EnterpriseSAMLProvider {
     samlResponse: string, 
     relayState?: string
   ): Promise<SAMLAuthResult> {
-    const tenant = this.tenants.get(tenantId);
     if (!tenant) {
       return {
         success: false,
@@ -233,7 +228,6 @@ class EnterpriseSAMLProvider {
       };
     }
 
-    const samlInstance = this.samlInstances.get(tenantId);
     if (!samlInstance) {
       return {
         success: false,
@@ -244,7 +238,6 @@ class EnterpriseSAMLProvider {
     }
 
     try {
-      const result = await samlInstance.validatePostResponse({ SAMLResponse: samlResponse });
       
       if (!result || !result.profile) {
         return {
@@ -268,7 +261,6 @@ class EnterpriseSAMLProvider {
         roles: this.extractRoles(result.profile.attributes, tenant)
       };
 
-      const sessionId = this.generateSessionId();
       this.activeSessions.set(sessionId, user);
 
       // Update tenant last login
@@ -299,20 +291,16 @@ class EnterpriseSAMLProvider {
     sessionId: string, 
     nameID?: string
   ): Promise<string> {
-    const tenant = this.tenants.get(tenantId);
     if (!tenant) {
       throw new Error(`Tenant not found: ${tenantId}`);
     }
 
-    const samlInstance = this.samlInstances.get(tenantId);
     if (!samlInstance) {
       throw new Error(`SAML instance not configured for tenant: ${tenantId}`);
     }
 
-    const user = this.activeSessions.get(sessionId);
     if (user) {
       try {
-        const logoutUrl = await samlInstance.getLogoutUrl(user, '');
         
         // Remove session
         this.activeSessions.delete(sessionId);
@@ -339,12 +327,10 @@ class EnterpriseSAMLProvider {
   }
 
   public generateServiceProviderMetadata(tenantId: string): string {
-    const tenant = this.tenants.get(tenantId);
     if (!tenant) {
       throw new Error(`Tenant not found: ${tenantId}`);
     }
 
-    const samlInstance = this.samlInstances.get(tenantId);
     if (!samlInstance) {
       throw new Error(`SAML instance not configured for tenant: ${tenantId}`);
     }
@@ -356,7 +342,6 @@ class EnterpriseSAMLProvider {
     if (!attributes) return undefined;
     
     for (const key of keys) {
-      const value = attributes[key] || attributes[key.toLowerCase()] || attributes[key.toUpperCase()];
       if (value) {
         return Array.isArray(value) ? value[0] : value;
       }
@@ -369,13 +354,12 @@ class EnterpriseSAMLProvider {
     const roles: string[] = [];
     
     // Extract roles from SAML attributes
-    const roleAttributes = attributes?.['http://schemas.microsoft.com/ws/2008/06/identity/claims/role'] ||
+    const _roleAttributes = attributes?.['http://schemas.microsoft.com/ws/2008/06/identity/claims/role'] ||
                           attributes?.role ||
                           attributes?.roles ||
                           attributes?.groups;
     
     if (roleAttributes) {
-      const roleArray = Array.isArray(roleAttributes) ? roleAttributes : [roleAttributes];
       roles.push(...roleArray);
     }
 
@@ -391,7 +375,6 @@ class EnterpriseSAMLProvider {
 
   // Admin methods for tenant management
   public async updateTenantConfig(tenantId: string, updates: Partial<MunicipalTenant>): Promise<boolean> {
-    const tenant = this.tenants.get(tenantId);
     if (!tenant) {
       return false;
     }
@@ -401,7 +384,6 @@ class EnterpriseSAMLProvider {
     
     // Recreate SAML instance if SAML config changed
     if (updates.samlConfig) {
-      const samlInstance = new SAML(tenant.samlConfig);
       this.samlInstances.set(tenantId, samlInstance);
     }
 
@@ -410,7 +392,6 @@ class EnterpriseSAMLProvider {
   }
 
   public deactivateTenant(tenantId: string): boolean {
-    const tenant = this.tenants.get(tenantId);
     if (!tenant) {
       return false;
     }
@@ -418,7 +399,7 @@ class EnterpriseSAMLProvider {
     tenant.isActive = false;
     
     // Remove all active sessions for this tenant
-    const sessionsToRemove = Array.from(this.activeSessions.entries())
+    const _sessionsToRemove = Array.from(this.activeSessions.entries())
       .filter(([_, user]) => user.municipality === tenant.name)
       .map(([sessionId]) => sessionId);
     
@@ -435,12 +416,11 @@ class EnterpriseSAMLProvider {
     lastLogin?: string;
     totalLogins: number;
   } {
-    const tenant = this.tenants.get(tenantId);
     if (!tenant) {
       return { activeSessions: 0, totalLogins: 0 };
     }
 
-    const activeSessions = Array.from(this.activeSessions.values())
+    const _activeSessions = Array.from(this.activeSessions.values())
       .filter(user => user.municipality === tenant.name).length;
 
     return {
@@ -452,13 +432,7 @@ class EnterpriseSAMLProvider {
 }
 
 // Create singleton instance
-export const enterpriseSAMLProvider = new EnterpriseSAMLProvider();
 
 // Export convenience methods
-export const initiateSAMLLogin = (tenantId: string) => enterpriseSAMLProvider.initiateLogin(tenantId);
-export const handleSAMLCallback = (tenantId: string, samlResponse: string, relayState?: string) => 
   enterpriseSAMLProvider.handleCallback(tenantId, samlResponse, relayState);
-export const initiateSAMLLogout = (tenantId: string, sessionId: string, nameID?: string) =>
   enterpriseSAMLProvider.initiateLogout(tenantId, sessionId, nameID);
-export const getSAMLUser = (sessionId: string) => enterpriseSAMLProvider.getUser(sessionId);
-export const isValidSAMLSession = (sessionId: string) => enterpriseSAMLProvider.isValidSession(sessionId);

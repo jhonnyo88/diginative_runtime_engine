@@ -206,7 +206,6 @@ export class SwedishMunicipalNetworkTester {
     for (const [networkId, networkSpec] of this.swedishNetworkProfiles) {
       console.log(`🔍 Testing ${networkSpec.organizationName} (${networkSpec.organizationType})`);
       
-      const testResult = await this.testSwedishGovernmentNetwork(networkSpec);
       testResults.push(testResult);
       
       this.testResults.set(networkId, testResult);
@@ -217,7 +216,6 @@ export class SwedishMunicipalNetworkTester {
       await new Promise(resolve => setTimeout(resolve, 2000));
     }
     
-    const overallReadiness = this.calculateOverallGovernmentReadiness(testResults);
     console.log(`✅ Swedish Government Network Testing Complete`);
     console.log(`🎯 Overall Government Readiness: ${overallReadiness}%`);
     
@@ -228,8 +226,6 @@ export class SwedishMunicipalNetworkTester {
    * Test specific Swedish government network
    */
   async testSwedishGovernmentNetwork(networkSpec: SwedishGovernmentNetworkSpec): Promise<NetworkTestResult> {
-    const testId = this.generateTestId(networkSpec);
-    const startTime = Date.now();
     
     this.currentTest = {
       testId,
@@ -242,27 +238,19 @@ export class SwedishMunicipalNetworkTester {
       console.log(`🔧 Testing ${networkSpec.organizationName} government network`);
       
       // Phase 1: Network Infrastructure Validation
-      const infrastructureResults = await this.validateNetworkInfrastructure(networkSpec);
       
       // Phase 2: Security Profile Validation
-      const securityResults = await this.validateGovernmentSecurity(networkSpec);
       
       // Phase 3: Performance Testing
-      const performanceResults = await this.executePerformanceTesting(networkSpec);
       
       // Phase 4: Compliance Assessment
-      const complianceResults = await this.assessGovernmentCompliance(networkSpec);
       
       // Phase 5: Load Testing
-      const loadResults = await this.executeLoadTesting(networkSpec);
       
       // Phase 6: Peak Hour Testing
-      const peakHourResults = await this.executePeakHourTesting(networkSpec);
       
       // Phase 7: Mobility Testing (Anna Svensson iPhone 12)
-      const mobilityResults = await this.executeMobilityTesting(networkSpec);
       
-      const endTime = Date.now();
       
       const testResult: NetworkTestResult = {
         networkSpec,
@@ -321,11 +309,9 @@ export class SwedishMunicipalNetworkTester {
     for (const [networkId, networkSpec] of this.swedishNetworkProfiles) {
       console.log(`📱 Testing Anna Svensson iPhone 12 on ${networkSpec.organizationName}`);
       
-      const mobileTest = await this.testAnnaSvenssonOnSwedishNetwork(networkSpec);
       annaSvenssonTests.push(mobileTest);
     }
     
-    const overallCompatibility = this.calculateAnnaSvenssonCompatibility(annaSvenssonTests);
     
     console.log(`📱 Anna Svensson iPhone 12 Swedish Networks: ${overallCompatibility.score}% compatible`);
     
@@ -341,7 +327,6 @@ export class SwedishMunicipalNetworkTester {
    * Generate comprehensive Swedish government network report
    */
   generateSwedishGovernmentNetworkReport(): SwedishGovernmentNetworkReport {
-    const allResults = Array.from(this.testResults.values());
     
     return {
       executiveSummary: this.generateExecutiveSummary(allResults),
@@ -669,7 +654,6 @@ export class SwedishMunicipalNetworkTester {
     score: number;
     recommendations: string[];
   } {
-    const averageScore = tests.reduce((sum, test) => sum + test.compatibilityScore, 0) / tests.length;
     
     return {
       score: Math.round(averageScore),
@@ -743,7 +727,6 @@ export class SwedishMunicipalNetworkTester {
   }
 
   private calculateOverallGovernmentReadiness(results: NetworkTestResult[]): number {
-    const scores = results.map(r => r.governmentReadiness.score);
     return Math.round(scores.reduce((sum, score) => sum + score, 0) / scores.length);
   }
 
@@ -780,12 +763,10 @@ export class SwedishMunicipalNetworkTester {
   }
 
   private calculateOverallReadiness(): number {
-    const results = Array.from(this.testResults.values());
     return results.length > 0 ? this.calculateOverallGovernmentReadiness(results) : 0;
   }
 
   private assessOverallGovernmentCompliance(): boolean {
-    const results = Array.from(this.testResults.values());
     return results.every(r => r.complianceAssessment.overallComplianceScore >= 95);
   }
 }
@@ -913,4 +894,3 @@ interface SwedishNetworkTestingStatus {
 }
 
 // Export singleton instance
-export const swedishMunicipalNetworkTester = new SwedishMunicipalNetworkTester();

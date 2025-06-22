@@ -281,7 +281,6 @@ export class StrategicMunicipalPartnershipProgramService extends EventEmitter {
   }> {
     try {
       // Generate partnership ID
-      const partnershipId = await this.generatePartnershipId(
         partnerData.partnerDetails.name,
         partnerData.partnerType
       );
@@ -346,18 +345,15 @@ export class StrategicMunicipalPartnershipProgramService extends EventEmitter {
       };
       
       // Generate partnership agreement
-      const partnershipAgreement = await this.generatePartnershipAgreement(
         partnershipFramework,
         partnershipTerms
       );
       
       // Create implementation plan
-      const implementationPlan = await this.createPartnershipImplementationPlan(
         partnershipFramework
       );
       
       // Design enablement program
-      const enablementProgram = await this.designPartnerEnablementProgram(
         partnershipFramework
       );
       
@@ -370,12 +366,6 @@ export class StrategicMunicipalPartnershipProgramService extends EventEmitter {
       // Launch partner enablement
       await this.launchPartnerEnablement(partnershipFramework, enablementProgram);
       
-      const result = {
-        partnershipFramework,
-        partnershipAgreement,
-        implementationPlan,
-        enablementProgram
-      };
       
       this.emit('strategicPartnershipEstablished', {
         partnershipId,
@@ -419,7 +409,6 @@ export class StrategicMunicipalPartnershipProgramService extends EventEmitter {
   }> {
     try {
       // Generate entity ID
-      const entityId = await this.generateGovernmentEntityId(
         governmentEntityData.name,
         governmentEntityData.country
       );
@@ -495,18 +484,15 @@ export class StrategicMunicipalPartnershipProgramService extends EventEmitter {
       };
       
       // Develop engagement strategy
-      const engagementStrategy = await this.developGovernmentEngagementStrategy(
         governmentRelationsFramework,
         relationshipObjectives
       );
       
       // Create stakeholder plan
-      const stakeholderPlan = await this.createGovernmentStakeholderPlan(
         governmentRelationsFramework
       );
       
       // Generate influence map
-      const influenceMap = await this.generateGovernmentInfluenceMap(
         governmentRelationsFramework
       );
       
@@ -518,12 +504,6 @@ export class StrategicMunicipalPartnershipProgramService extends EventEmitter {
         governmentRelationsFramework
       );
       
-      const result = {
-        governmentRelationsFramework,
-        engagementStrategy,
-        stakeholderPlan,
-        influenceMap
-      };
       
       this.emit('governmentRelationsDeveloped', {
         entityId,
@@ -548,15 +528,12 @@ export class StrategicMunicipalPartnershipProgramService extends EventEmitter {
   async generateMarketPenetrationAnalytics(): Promise<MarketPenetrationAnalytics> {
     try {
       // Analyze partnership performance
-      const partnershipPerformance = await this.analyzePartnershipPerformance();
       
       // Generate market penetration insights
-      const marketPenetrationInsights = await this.generateMarketPenetrationInsights(
         partnershipPerformance
       );
       
       // Create strategic recommendations
-      const strategicRecommendations = await this.generateStrategicRecommendations(
         partnershipPerformance,
         marketPenetrationInsights
       );
@@ -601,24 +578,20 @@ export class StrategicMunicipalPartnershipProgramService extends EventEmitter {
   }> {
     try {
       // Create acceleration plan
-      const accelerationPlan = await this.createPartnershipAccelerationPlan(
         accelerationTargets
       );
       
       // Coordinate partnership activities
-      const coordinatedActivities = await this.coordinatePartnershipActivities(
         accelerationTargets,
         accelerationPlan
       );
       
       // Set performance targets
-      const performanceTargets = await this.setAccelerationPerformanceTargets(
         accelerationTargets,
         accelerationPlan
       );
       
       // Create execution timeline
-      const executionTimeline = await this.createAccelerationExecutionTimeline(
         accelerationPlan,
         coordinatedActivities
       );
@@ -630,12 +603,6 @@ export class StrategicMunicipalPartnershipProgramService extends EventEmitter {
         performanceTargets
       );
       
-      const result = {
-        accelerationPlan,
-        coordinatedActivities,
-        performanceTargets,
-        executionTimeline
-      };
       
       this.emit('partnershipAccelerationProgramExecuted', {
         accelerationTargets,
@@ -672,38 +639,26 @@ export class StrategicMunicipalPartnershipProgramService extends EventEmitter {
   }> {
     try {
       // Calculate overall ROI
-      const overallROI = await this.calculateOverallPartnershipROI(
         analysisScope
       );
       
       // Generate ROI breakdown by partnership
-      const partnershipROIBreakdown = await this.generatePartnershipROIBreakdown(
         analysisScope
       );
       
       // Calculate market value created
-      const marketValueCreated = await this.calculateMarketValueCreated(
         analysisScope
       );
       
       // Analyze investment optimization opportunities
-      const investmentOptimization = await this.analyzeInvestmentOptimization(
         partnershipROIBreakdown
       );
       
       // Generate future projections
-      const futureProjections = await this.generatePartnershipFutureProjections(
         partnershipROIBreakdown,
         investmentOptimization
       );
       
-      const result = {
-        overallROI,
-        partnershipROIBreakdown,
-        marketValueCreated,
-        investmentOptimization,
-        futureProjections
-      };
       
       this.emit('partnershipROIAnalysisGenerated', {
         analysisScope,
@@ -746,8 +701,6 @@ export class StrategicMunicipalPartnershipProgramService extends EventEmitter {
   }
   
   private async generatePartnershipId(name: string, type: string): Promise<string> {
-    const timestamp = Date.now();
-    const sanitizedName = name.replace(/[^a-zA-Z0-9]/g, '').toUpperCase();
     return `PARTNER-${type.toUpperCase()}-${sanitizedName}-${timestamp}`;
   }
   
@@ -849,8 +802,6 @@ export class StrategicMunicipalPartnershipProgramService extends EventEmitter {
     name: string,
     country: string
   ): Promise<string> {
-    const timestamp = Date.now();
-    const sanitizedName = name.replace(/[^a-zA-Z0-9]/g, '').toUpperCase();
     return `GOV-${country.toUpperCase()}-${sanitizedName}-${timestamp}`;
   }
   
@@ -1065,7 +1016,6 @@ export class StrategicMunicipalPartnershipProgramFactory {
    * Create Netherlands Market Partnership Program
    */
   static createNetherlandsProgram(): StrategicMunicipalPartnershipProgramService {
-    const service = new StrategicMunicipalPartnershipProgramService();
     // Configure for Dutch municipal ecosystem
     return service;
   }
@@ -1074,7 +1024,6 @@ export class StrategicMunicipalPartnershipProgramFactory {
    * Create Germany Market Partnership Program
    */
   static createGermanyProgram(): StrategicMunicipalPartnershipProgramService {
-    const service = new StrategicMunicipalPartnershipProgramService();
     // Configure for German municipal ecosystem
     return service;
   }
@@ -1083,7 +1032,6 @@ export class StrategicMunicipalPartnershipProgramFactory {
    * Create EU-Wide Partnership Program
    */
   static createEUWideProgram(): StrategicMunicipalPartnershipProgramService {
-    const service = new StrategicMunicipalPartnershipProgramService();
     // Configure for EU-wide municipal partnerships
     return service;
   }
@@ -1094,7 +1042,6 @@ export class StrategicMunicipalPartnershipProgramFactory {
   static createGovernmentRelationsProgram(
     targetGovernments: string[]
   ): StrategicMunicipalPartnershipProgramService {
-    const service = new StrategicMunicipalPartnershipProgramService();
     // Configure for government relations focus
     return service;
   }

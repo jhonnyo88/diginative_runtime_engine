@@ -16,103 +16,9 @@ const TestWrapper: React.FC<{ children: React.ReactNode }> = ({ children }) => (
 );
 
 describe('QuizScene Option Text Fix', () => {
-  const mockOnComplete = vi.fn();
 
-  const testQuizDataWithOptionText = {
-    scene_id: 'test-quiz',
-    scene_type: 'QuizScene' as const,
-    title: 'Test Quiz',
-    description: 'Testing option text rendering',
-    questions: [
-      {
-        question_id: 'q1',
-        question_type: 'multiple_choice' as const,
-        question_text: 'Test question?',
-        options: [
-          {
-            option_id: 'a',
-            option_text: 'Option A with option_text field', // Using option_text format
-            is_correct: true
-          },
-          {
-            option_id: 'b', 
-            option_text: 'Option B with option_text field',
-            is_correct: false
-          }
-        ],
-        explanation: 'Test explanation',
-        learning_objective: 'Test objective',
-        points: 10
-      }
-    ],
-    passing_score: 70,
-    scene_duration: 300,
-    feedback_immediate: true
-  };
 
-  const testQuizDataWithText = {
-    scene_id: 'test-quiz-2',
-    scene_type: 'QuizScene' as const,
-    title: 'Test Quiz 2',
-    description: 'Testing text rendering',
-    questions: [
-      {
-        question_id: 'q2',
-        question_type: 'multiple_choice' as const,
-        question_text: 'Test question 2?',
-        options: [
-          {
-            option_id: 'a',
-            text: 'Option A with text field', // Using standard text format
-            is_correct: true
-          },
-          {
-            option_id: 'b',
-            text: 'Option B with text field',
-            is_correct: false
-          }
-        ],
-        explanation: 'Test explanation',
-        learning_objective: 'Test objective',
-        points: 10
-      }
-    ],
-    passing_score: 70,
-    scene_duration: 300,
-    feedback_immediate: true
-  };
 
-  const testQuizDataWithMissingText = {
-    scene_id: 'test-quiz-empty',
-    scene_type: 'QuizScene' as const,
-    title: 'Test Quiz Empty',
-    description: 'Testing empty text handling',
-    questions: [
-      {
-        question_id: 'q3',
-        question_type: 'multiple_choice' as const,
-        question_text: 'Test question with empty options?',
-        options: [
-          {
-            option_id: 'a',
-            // No text or option_text field
-            is_correct: true
-          },
-          {
-            option_id: 'b',
-            text: '', // Empty text
-            is_correct: false
-          }
-        ],
-        explanation: 'Test explanation',
-        learning_objective: 'Test objective', 
-        points: 10
-      }
-    ],
-    passing_score: 70,
-    scene_duration: 300,
-    feedback_immediate: true
-  };
 
   test('renders option text from option_text field correctly', () => {
     render(
@@ -148,7 +54,6 @@ describe('QuizScene Option Text Fix', () => {
 
   test('handles missing option text gracefully', () => {
     // Suppress console.error for this test
-    const originalError = console.error;
     console.error = vi.fn();
 
     render(
@@ -186,7 +91,6 @@ describe('QuizScene Option Text Fix', () => {
     );
 
     // Submit button should be disabled
-    const submitButton = screen.getByText('Svara');
     expect(submitButton).toBeDisabled();
   });
 
@@ -202,11 +106,9 @@ describe('QuizScene Option Text Fix', () => {
     );
 
     // Should be able to select an option
-    const optionA = screen.getByText('Option A with option_text field');
     fireEvent.click(optionA);
 
     // Submit button should now be enabled
-    const submitButton = screen.getByText('Svara');
     expect(submitButton).not.toBeDisabled();
 
     // Should be able to submit
@@ -217,24 +119,6 @@ describe('QuizScene Option Text Fix', () => {
   });
 
   test('handles mixed text formats correctly', () => {
-    const mixedFormatData = {
-      ...testQuizDataWithOptionText,
-      questions: [{
-        ...testQuizDataWithOptionText.questions[0],
-        options: [
-          {
-            option_id: 'a',
-            text: 'Option A with text field',
-            is_correct: true
-          },
-          {
-            option_id: 'b',
-            option_text: 'Option B with option_text field',
-            is_correct: false
-          }
-        ]
-      }]
-    };
 
     render(
       <TestWrapper>
@@ -266,7 +150,6 @@ describe('QuizScene Option Text Fix', () => {
     fireEvent.keyDown(window, { key: '1' });
 
     // Submit button should be enabled
-    const submitButton = screen.getByText('Svara');
     expect(submitButton).not.toBeDisabled();
 
     // Press Enter to submit

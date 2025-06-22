@@ -118,7 +118,6 @@ const municipalBrandingStandards: MunicipalBrand[] = [
   }
 ];
 
-const MotionBox = motion(Box);
 
 interface MunicipalBrandingDisplayProps {
   showCertificationLevel?: boolean;
@@ -134,42 +133,18 @@ export const MunicipalBrandingDisplay: React.FC<MunicipalBrandingDisplayProps> =
   const { culturalContext, currentTheme } = useCulturalTheme();
 
   // Get relevant municipal brands for current cultural context
-  const relevantBrands = municipalBrandingStandards.filter(brand => 
-    brand.culturalAlignment.includes(culturalContext)
-  );
 
   // Get primary municipal brand for current context
-  const primaryBrand = relevantBrands.find(brand => 
+  const _primaryBrand = relevantBrands.find(brand => 
     brand.professionalLevel === 'national'
   ) || relevantBrands[0];
 
   // Get European-level brand
-  const europeanBrand = municipalBrandingStandards.find(brand => 
+  const _europeanBrand = municipalBrandingStandards.find(brand => 
     brand.professionalLevel === 'european'
   );
 
-  const sizeConfig = {
-    sm: { 
-      logoSize: '32px', 
-      fontSize: 'sm', 
-      badgeSize: 'sm',
-      spacing: 2 
-    },
-    md: { 
-      logoSize: '48px', 
-      fontSize: 'md', 
-      badgeSize: 'md',
-      spacing: 3 
-    },
-    lg: { 
-      logoSize: '64px', 
-      fontSize: 'lg', 
-      badgeSize: 'lg',
-      spacing: 4 
-    }
-  };
 
-  const config = sizeConfig[size];
 
   return (
     <VStack spacing={config.spacing} align="stretch">
@@ -363,18 +338,12 @@ export const ProfessionalCertificationBadge: React.FC<ProfessionalCertificationB
   const { currentTheme } = useCulturalTheme();
 
   // Get relevant municipal brand
-  const municipalBrand = municipalBrandingStandards.find(brand => 
+  const _municipalBrand = municipalBrandingStandards.find(brand => 
     brand.culturalAlignment.includes(culturalContext) && 
     brand.professionalLevel === 'national'
   );
 
-  const sizeConfig = {
-    sm: { w: '80px', h: '100px', fontSize: 'xs', badgeSize: 'sm' },
-    md: { w: '120px', h: '150px', fontSize: 'sm', badgeSize: 'md' },
-    lg: { w: '160px', h: '200px', fontSize: 'md', badgeSize: 'lg' }
-  };
 
-  const config = sizeConfig[size];
 
   return (
     <MotionBox
@@ -511,7 +480,6 @@ export const MunicipalStandardsDisplay: React.FC<MunicipalStandardsDisplayProps>
     }
   };
 
-  const localizedStandards = culturalStandardsMap[culturalContext] || culturalStandardsMap.swedish;
 
   return (
     <VStack spacing={2} align="stretch">
@@ -525,7 +493,6 @@ export const MunicipalStandardsDisplay: React.FC<MunicipalStandardsDisplayProps>
       </Text>
       
       {standards.map((standard, index) => {
-        const displayName = localizedStandards[standard] || standard;
         
         return (
           <MotionBox

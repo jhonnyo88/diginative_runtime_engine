@@ -35,10 +35,6 @@ export const AssessmentScene: React.FC<AssessmentSceneProps> = ({
 
   // Game Designer spec: Progressive reveal of results
   useEffect(() => {
-    const timer1 = setTimeout(() => setAnimationStep(1), 500);
-    const timer2 = setTimeout(() => setAnimationStep(2), 1500);
-    const timer3 = setTimeout(() => setAnimationStep(3), 2500);
-    const timer4 = setTimeout(() => setShowCertificate(true), 3500);
     
     return () => {
       clearTimeout(timer1);
@@ -49,59 +45,9 @@ export const AssessmentScene: React.FC<AssessmentSceneProps> = ({
   }, []);
 
   // Mock assessment data - in real implementation this comes from game state
-  const assessmentData = {
-    score: 85,
-    maxScore: 100,
-    percentageScore: 85,
-    passThreshold: 80,
-    achievements: [
-      { id: 'first_try', name: 'Första försöket', description: 'Klarade på första försöket', icon: 'star' },
-      { id: 'perfect_quiz', name: 'Quiz-mästare', description: 'Alla quizfrågor rätt', icon: 'check' },
-      { id: 'fast_learner', name: 'Snabb elev', description: 'Slutförde under 5 minuter', icon: 'certificate' }
-    ],
-    categoryScores: [
-      { category: 'GDPR Grundläggande', score: 90, maxScore: 100 },
-      { category: 'Datahantering', score: 85, maxScore: 100 },
-      { category: 'Användarrättigheter', score: 80, maxScore: 100 }
-    ],
-    timeSpent: '4 min 23 sek',
-    passed: true
-  };
 
-  const handleContinue = () => {
-    analytics?.trackEvent('assessment_complete', {
-      sceneId: scene.id,
-      score: assessmentData.score,
-      passed: assessmentData.passed,
-      timeSpent: assessmentData.timeSpent,
-      achievements: assessmentData.achievements.map(a => a.id)
-    });
 
-    onComplete({
-      nextScene: scene.navigation?.next,
-      score: assessmentData.score,
-      maxScore: assessmentData.maxScore,
-      passed: assessmentData.passed,
-      achievements: assessmentData.achievements,
-      assessment: assessmentData
-    });
-  };
 
-  const getScoreColor = (percentage: number) => {
-    if (percentage >= 90) return 'green';
-    if (percentage >= 80) return 'blue';
-    if (percentage >= 70) return 'yellow';
-    return 'red';
-  };
-
-  const getAchievementIcon = (iconType: string) => {
-    switch (iconType) {
-      case 'star': return <StarIcon color="yellow.500" />;
-      case 'check': return <CheckIcon color="green.500" />;
-      case 'certificate': return <CertificateIcon color="blue.500" />;
-      default: return <CheckIcon />;
-    }
-  };
 
   return (
     <Box p={4} maxW="600px" mx="auto" minH="100vh" bg="gray.50">
@@ -224,7 +170,6 @@ export const AssessmentScene: React.FC<AssessmentSceneProps> = ({
             </Text>
             <VStack gap={4}>
               {assessmentData.categoryScores.map((category, index) => {
-                const percentage = Math.round((category.score / category.maxScore) * 100);
                 return (
                   <Box key={index} w="100%">
                     <HStack justify="space-between" mb={2}>

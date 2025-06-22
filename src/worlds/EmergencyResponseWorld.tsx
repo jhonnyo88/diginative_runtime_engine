@@ -16,7 +16,6 @@ export const EmergencyResponseWorld: React.FC<WorldComponentProps> = ({
   culturalContext,
   worldDefinition
 }) => {
-  const navigate = useNavigate();
   const [loading, setLoading] = useState(true);
   const [worldState, setWorldState] = useState<Record<string, unknown>>(null);
 
@@ -24,11 +23,10 @@ export const EmergencyResponseWorld: React.FC<WorldComponentProps> = ({
     initializeWorld();
   }, []);
 
-  const initializeWorld = async () => {
+  const _initializeWorld = async () => {
     try {
       setLoading(true);
       
-      const worldSession = await multiWorldStateManager.startWorldSession(
         hubSessionId,
         3, // World 3: Emergency Response
         'emergency-response-game'
@@ -48,9 +46,6 @@ export const EmergencyResponseWorld: React.FC<WorldComponentProps> = ({
     }
   };
 
-  const handleReturnToHub = () => {
-    navigate(`/hub/${uniqueCode}`);
-  };
 
   if (loading) {
     return (

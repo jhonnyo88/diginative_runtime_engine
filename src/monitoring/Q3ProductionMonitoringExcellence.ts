@@ -168,65 +168,13 @@ export class Q3ProductionMonitoringExcellence {
     alerts: number;
     recommendations: string[];
   } {
-    const performanceHealth = this.assessPerformanceHealth();
-    const reliabilityHealth = this.assessReliabilityHealth();
-    const municipalHealth = this.assessMunicipalHealth();
-    const complianceHealth = this.assessComplianceHealth();
     
-    const overallHealth = this.calculateOverallHealth([
       performanceHealth,
       reliabilityHealth,
       municipalHealth,
       complianceHealth
     ]);
     
-    const activeAlerts = this.alertHistory.filter(
-      alert => Date.now() - alert.timestamp < 60 * 60 * 1000 // Last hour
-    ).length;
-    
-    return {
-      overall: overallHealth,
-      performance: performanceHealth,
-      reliability: reliabilityHealth,
-      municipal: municipalHealth,
-      compliance: complianceHealth,
-      alerts: activeAlerts,
-      recommendations: this.generateRecommendations()
-    };
-  }
-
-  /**
-   * Get municipal deployment readiness
-   */
-  getMunicipalDeploymentReadiness(): {
-    netherlandsPilotReady: boolean;
-    germanMarketReady: boolean;
-    readinessScore: number;
-    blockers: string[];
-    nextSteps: string[];
-  } {
-    const health = this.getHealthStatus();
-    const metrics = this.getCurrentMetrics();
-    
-    const readinessChecks = {
-      performanceExcellent: health.performance === 'excellent',
-      reliabilityHigh: health.reliability === 'excellent' || health.reliability === 'good',
-      complianceGreen: health.compliance === 'excellent',
-      municipalReadiness: metrics.municipal.activeMunicipalities >= 5,
-      errorRateLow: metrics.performance.errorRate < 0.5
-    };
-    
-    const passedChecks = Object.values(readinessChecks).filter(Boolean).length;
-    const readinessScore = (passedChecks / Object.keys(readinessChecks).length) * 100;
-    
-    const netherlandsPilotReady = readinessScore >= 90;
-    const germanMarketReady = readinessScore >= 95;
-    
-    const blockers: string[] = [];
-    const nextSteps: string[] = [];
-    
-    if (!readinessChecks.performanceExcellent) {
-      blockers.push('Performance optimization required for municipal deployment');
       nextSteps.push('Optimize hub loading and world transition performance');
     }
     
@@ -436,7 +384,6 @@ export class Q3ProductionMonitoringExcellence {
   }
 
   private collectOptimizationMetrics(): void {
-    const loadingMetrics = dynamicComponentLoader.getLoadingMetrics();
     
     this.currentMetrics.optimization = {
       dynamicLoadingEfficiency: loadingMetrics.performanceImprovement,
@@ -458,16 +405,7 @@ export class Q3ProductionMonitoringExcellence {
   }
 
   private calculatePerformanceCompliance(): number {
-    const perf = this.currentMetrics.performance;
-    const thresholds = this.ALERT_THRESHOLDS.performance;
     
-    const checks = [
-      perf.averageHubLoading <= thresholds.hubLoading,
-      perf.averageWorldTransition <= thresholds.worldTransition,
-      perf.peakMemoryUsage <= thresholds.memoryUsage,
-      perf.errorRate <= thresholds.errorRate,
-      perf.responseTimeP95 <= thresholds.responseTimeP95
-    ];
     
     return (checks.filter(Boolean).length / checks.length) * 100;
   }
@@ -494,14 +432,11 @@ export class Q3ProductionMonitoringExcellence {
     }
     
     // Keep only recent alerts
-    const oneHourAgo = Date.now() - 60 * 60 * 1000;
     this.alertHistory = this.alertHistory.filter(alert => alert.timestamp > oneHourAgo);
   }
 
   private checkPerformanceAlerts(): MonitoringAlert[] {
     const alerts: MonitoringAlert[] = [];
-    const perf = this.currentMetrics.performance;
-    const thresholds = this.ALERT_THRESHOLDS.performance;
     
     if (perf.averageHubLoading > thresholds.hubLoading) {
       alerts.push(this.createAlert('critical', 'performance', 
@@ -518,8 +453,6 @@ export class Q3ProductionMonitoringExcellence {
 
   private checkReliabilityAlerts(): MonitoringAlert[] {
     const alerts: MonitoringAlert[] = [];
-    const rel = this.currentMetrics.reliability;
-    const thresholds = this.ALERT_THRESHOLDS.reliability;
     
     if (rel.systemAvailability < thresholds.systemAvailability) {
       alerts.push(this.createAlert('critical', 'reliability', 
@@ -531,8 +464,6 @@ export class Q3ProductionMonitoringExcellence {
 
   private checkMunicipalAlerts(): MonitoringAlert[] {
     const alerts: MonitoringAlert[] = [];
-    const municipal = this.currentMetrics.municipal;
-    const thresholds = this.ALERT_THRESHOLDS.municipal;
     
     if (municipal.concurrentUsers > thresholds.maxConcurrentUsers) {
       alerts.push(this.createAlert('warning', 'municipal', 
@@ -568,8 +499,6 @@ export class Q3ProductionMonitoringExcellence {
   }
 
   private assessPerformanceHealth(): 'excellent' | 'good' | 'warning' | 'critical' {
-    const perf = this.currentMetrics.performance;
-    const compliance = this.currentMetrics.compliance.performanceTargetCompliance;
     
     if (compliance >= 95) return 'excellent';
     if (compliance >= 85) return 'good';
@@ -578,8 +507,6 @@ export class Q3ProductionMonitoringExcellence {
   }
 
   private assessReliabilityHealth(): 'excellent' | 'good' | 'warning' | 'critical' {
-    const rel = this.currentMetrics.reliability;
-    const averageScore = (rel.systemAvailability + rel.errorRecoveryRate + rel.dataIntegrityScore) / 3;
     
     if (averageScore >= 99) return 'excellent';
     if (averageScore >= 95) return 'good';
@@ -588,8 +515,6 @@ export class Q3ProductionMonitoringExcellence {
   }
 
   private assessMunicipalHealth(): 'excellent' | 'good' | 'warning' | 'critical' {
-    const municipal = this.currentMetrics.municipal;
-    const avgCompletion = municipal.worldCompletionRates.reduce((a, b) => a + b, 0) / 5;
     
     if (avgCompletion >= 80) return 'excellent';
     if (avgCompletion >= 70) return 'good';
@@ -598,9 +523,6 @@ export class Q3ProductionMonitoringExcellence {
   }
 
   private assessComplianceHealth(): 'excellent' | 'good' | 'warning' | 'critical' {
-    const compliance = this.currentMetrics.compliance;
-    const scores = Object.values(compliance);
-    const averageScore = scores.reduce((a, b) => a + b, 0) / scores.length;
     
     if (averageScore >= 99) return 'excellent';
     if (averageScore >= 95) return 'good';
@@ -617,7 +539,6 @@ export class Q3ProductionMonitoringExcellence {
 
   private generateRecommendations(): string[] {
     const recommendations: string[] = [];
-    const health = this.getHealthStatus();
     
     if (health.performance !== 'excellent') {
       recommendations.push('Optimize dynamic component loading for better performance');
@@ -635,7 +556,6 @@ export class Q3ProductionMonitoringExcellence {
   }
 
   private getRecentAlerts(): MonitoringAlert[] {
-    const oneHourAgo = Date.now() - 60 * 60 * 1000;
     return this.alertHistory.filter(alert => alert.timestamp > oneHourAgo);
   }
 
@@ -654,5 +574,4 @@ export class Q3ProductionMonitoringExcellence {
 }
 
 // Export factory function for creating monitoring instances
-export const createProductionMonitoring = (config: ProductionMonitoringConfig) => 
   new Q3ProductionMonitoringExcellence(config);

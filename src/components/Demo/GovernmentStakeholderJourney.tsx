@@ -66,8 +66,6 @@ import {
 
 import { useCulturalTheme } from '../WorldHub/CulturalThemeProvider';
 
-const MotionBox = motion(Box);
-const MotionCard = motion(Card);
 
 // Swedish Government Stakeholder Types
 interface SwedishGovernmentStakeholder {
@@ -432,8 +430,6 @@ const StakeholderJourneyStepCard: React.FC<StakeholderJourneyStepProps> = ({
   isCompleted,
   stakeholderType
 }) => {
-  const swedishBlue = '#003366';
-  const swedishYellow = '#FFCC00';
 
   return (
     <MotionCard
@@ -540,8 +536,6 @@ interface StakeholderProfileProps {
 }
 
 const StakeholderProfileDisplay: React.FC<StakeholderProfileProps> = ({ stakeholder }) => {
-  const swedishBlue = '#003366';
-  const swedishYellow = '#FFCC00';
 
   return (
     <Card bg="blue.50" borderColor="blue.200" borderWidth="2px">
@@ -704,14 +698,12 @@ export const GovernmentStakeholderJourney: React.FC<GovernmentStakeholderJourney
   onStakeholderChange = () => console.log('Stakeholder changed'),
   onJourneyProgress = () => console.log('Journey progress updated')
 }) => {
-  const swedishBlue = '#003366';
-  const swedishYellow = '#FFCC00';
   
   const [activeStageIndex, setActiveStageIndex] = useState(0);
   const [completedStages, setCompletedStages] = useState<Set<number>>(new Set());
   const { isOpen, onOpen, onClose } = useDisclosure();
 
-  const selectedStakeholder = swedishGovernmentStakeholders.find(
+  const _selectedStakeholder = swedishGovernmentStakeholders.find(
     s => s.id === selectedStakeholderId
   ) || swedishGovernmentStakeholders[0];
 
@@ -720,20 +712,11 @@ export const GovernmentStakeholderJourney: React.FC<GovernmentStakeholderJourney
     count: selectedStakeholder.journeyStages.length,
   });
 
-  const handleStageComplete = (stageIndex: number) => {
-    setCompletedStages(prev => new Set([...prev, stageIndex]));
-    if (stageIndex < selectedStakeholder.journeyStages.length - 1) {
-      setActiveStageIndex(stageIndex + 1);
-      setActiveStep(stageIndex + 1);
-    }
-    onJourneyProgress(selectedStakeholder.journeyStages[stageIndex].id, 100);
-  };
 
-  const totalJourneyTime = selectedStakeholder.journeyStages.reduce(
+  const _totalJourneyTime = selectedStakeholder.journeyStages.reduce(
     (sum, stage) => sum + stage.duration, 0
   );
 
-  const completionPercentage = (completedStages.size / selectedStakeholder.journeyStages.length) * 100;
 
   return (
     <VStack spacing={8} align="stretch">
@@ -831,7 +814,6 @@ export const GovernmentStakeholderJourney: React.FC<GovernmentStakeholderJourney
 
       {/* Stakeholder Selection & Profile */}
       <Tabs variant="enclosed" colorScheme="blue" onChange={(index) => {
-        const stakeholder = swedishGovernmentStakeholders[index];
         onStakeholderChange(stakeholder.id);
         setActiveStageIndex(0);
         setCompletedStages(new Set());

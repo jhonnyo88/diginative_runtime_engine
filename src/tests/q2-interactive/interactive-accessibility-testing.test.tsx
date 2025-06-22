@@ -15,60 +15,10 @@ import { InvoiceApprovalWorkflow } from '../../components/q2-interactive/Invoice
 expect.extend(toHaveNoViolations);
 
 // Mock accessibility testing utilities
-const mockA11yUtils = {
-  runAxeTest: vi.fn(),
-  validateScreenReader: vi.fn(),
-  testKeyboardNavigation: vi.fn(),
-  checkColorContrast: vi.fn(),
-  validateFocusManagement: vi.fn(),
-  testCognitiveAccessibility: vi.fn()
-};
 
 // WCAG 2.1 AA compliance criteria for interactive elements
-const WCAG_CRITERIA = {
-  colorContrast: {
-    normalText: 4.5,
-    largeText: 3.0,
-    graphicalObjects: 3.0,
-    uiComponents: 3.0
-  },
-  interactiveTargets: {
-    minSize: 44, // 44x44 pixels minimum
-    spacing: 8,  // 8px minimum spacing
-    touchTarget: 44
-  },
-  timing: {
-    sessionTimeout: 1200000, // 20 minutes minimum
-    extendedTime: 'available',
-    pauseResume: 'supported'
-  },
-  motion: {
-    reducedMotion: 'respected',
-    vestibularSafety: 'compliant',
-    animationControl: 'available'
-  }
-};
 
 // Municipal accessibility requirements
-const MUNICIPAL_A11Y_REQUIREMENTS = {
-  swedishAccessibility: {
-    screenReader: ['NVDA', 'JAWS', 'VoiceOver'],
-    languages: ['sv-SE', 'en-US'],
-    compliance: 'government-grade'
-  },
-  disabilitySupport: {
-    visual: ['blindness', 'low-vision', 'color-blindness'],
-    auditory: ['deafness', 'hard-of-hearing'],
-    motor: ['mobility', 'dexterity', 'tremor'],
-    cognitive: ['memory', 'attention', 'processing']
-  },
-  assistiveTechnology: {
-    screenReaders: 'full-support',
-    voiceControl: 'dragon-compatible',
-    switchNavigation: 'supported',
-    eyeTracking: 'compatible'
-  }
-};
 
 describe('Interactive Accessibility Testing Framework', () => {
   let accessibilityHarness: Record<string, unknown>;
@@ -82,19 +32,7 @@ describe('Interactive Accessibility Testing Framework', () => {
 
   describe('Drag-Drop Accessibility Compliance', () => {
     it('should provide keyboard alternatives for drag-drop operations', async () => {
-      const user = userEvent.setup();
       
-      const mockInvoices = [
-        {
-          id: 'invoice-001',
-          vendor: 'Test Vendor',
-          amount: 1000,
-          municipality: 'malmö',
-          urgency: 'medium' as const,
-          submittedDate: '2025-06-22',
-          department: 'IT'
-        }
-      ];
       
       const { container } = render(
         <InvoiceApprovalWorkflow 
@@ -105,8 +43,6 @@ describe('Interactive Accessibility Testing Framework', () => {
         />
       );
 
-      const draggableItem = screen.getByTestId('draggable-document');
-      const dropZone = screen.getByTestId('drop-zone-approved');
 
       // Test keyboard drag-drop activation
       await user.tab();
@@ -128,17 +64,15 @@ describe('Interactive Accessibility Testing Framework', () => {
       });
 
       // Test screen reader announcements
-      const announcements = screenReaderSimulator.getAnnouncements();
       expect(announcements).toContain('Document moved to approved documents zone');
       expect(announcements).toContain('Malmö municipality workflow updated');
 
       // Run axe accessibility test
-      const results = await axe(container);
       expect(results).toHaveNoViolations();
     });
 
     it('should support voice control for drag-drop operations', async () => {
-      const voiceControlHarness = createVoiceControlHarness({
+      const _voiceControlHarness = createVoiceControlHarness({
         municipality: 'malmö',
         language: 'sv-SE',
         commands: ['dra', 'släpp', 'flytta', 'godkänn']
@@ -152,7 +86,6 @@ describe('Interactive Accessibility Testing Framework', () => {
         />
       );
 
-      const voiceResult = await voiceControlHarness.executeVoiceCommand({
         command: 'dra dokument till godkänd',
         confidence: 0.95,
         language: 'sv-SE'
@@ -170,7 +103,7 @@ describe('Interactive Accessibility Testing Framework', () => {
     });
 
     it('should validate switch navigation for drag-drop', async () => {
-      const switchHarness = createSwitchNavigationHarness({
+      const _switchHarness = createSwitchNavigationHarness({
         switches: ['single', 'dual'],
         scanMode: 'automatic',
         municipality: 'malmö'
@@ -184,7 +117,6 @@ describe('Interactive Accessibility Testing Framework', () => {
         />
       );
 
-      const switchResult = await switchHarness.performSwitchDragDrop({
         scanSpeed: 'medium',
         confirmationRequired: true,
         audibleFeedback: true
@@ -202,7 +134,7 @@ describe('Interactive Accessibility Testing Framework', () => {
 
   describe('Timer Challenge Accessibility', () => {
     it('should support extended time accommodations for disabilities', async () => {
-      const timeExtensionHarness = createTimeExtensionHarness({
+      const _timeExtensionHarness = createTimeExtensionHarness({
         disability: 'cognitive',
         extensionMultiplier: 1.5,
         municipality: 'malmö'
@@ -217,7 +149,6 @@ describe('Interactive Accessibility Testing Framework', () => {
         />
       );
 
-      const timerConfig = await timeExtensionHarness.requestTimeExtension({
         originalTime: 300000, // 5 minutes
         extensionReason: 'cognitive-processing',
         documentation: 'required'
@@ -228,7 +159,6 @@ describe('Interactive Accessibility Testing Framework', () => {
       expect(timerConfig.municipalCompliance).toBe(true);
 
       // Test pause/resume functionality
-      const pauseResult = await timeExtensionHarness.testPauseResume({
         pauseDuration: 60000, // 1 minute
         reasonRequired: false
       });
@@ -239,7 +169,7 @@ describe('Interactive Accessibility Testing Framework', () => {
     });
 
     it('should provide clear progress indicators for cognitive accessibility', async () => {
-      const cognitiveHarness = createCognitiveAccessibilityHarness({
+      const _cognitiveHarness = createCognitiveAccessibilityHarness({
         features: ['progress-indicators', 'simplified-language', 'step-by-step'],
         municipality: 'malmö'
       });
@@ -252,7 +182,6 @@ describe('Interactive Accessibility Testing Framework', () => {
         />
       );
 
-      const cognitiveResult = await cognitiveHarness.validateCognitiveSupport({
         progressClarity: 'high',
         languageSimplicity: 'government-appropriate',
         visualComplexity: 'reduced'
@@ -280,7 +209,6 @@ describe('Interactive Accessibility Testing Framework', () => {
         />
       );
 
-      const timerEvents = await screenReaderSimulator.trackTimerAnnouncements({
         duration: 300000, // 5 minutes
         announcementFrequency: 'checkpoint-based',
         language: 'sv-SE'
@@ -299,7 +227,7 @@ describe('Interactive Accessibility Testing Framework', () => {
 
   describe('Touch Gesture Accessibility', () => {
     it('should provide gesture alternatives for motor disabilities', async () => {
-      const motorAccessibilityHarness = createMotorAccessibilityHarness({
+      const _motorAccessibilityHarness = createMotorAccessibilityHarness({
         disabilities: ['tremor', 'limited-dexterity', 'one-hand'],
         municipality: 'malmö'
       });
@@ -312,7 +240,6 @@ describe('Interactive Accessibility Testing Framework', () => {
         />
       );
 
-      const gestureResults = await motorAccessibilityHarness.testGestureAdaptations({
         originalGesture: 'pinch-zoom',
         adaptedGesture: 'button-zoom',
         targetSize: 60, // Larger than 44px minimum
@@ -324,7 +251,6 @@ describe('Interactive Accessibility Testing Framework', () => {
       expect(gestureResults.motorAccessible).toBe(true);
 
       // Test tremor compensation
-      const tremorResult = await motorAccessibilityHarness.testTremorCompensation({
         gestureType: 'tap',
         stabilizationEnabled: true,
         dwellTime: 500 // 500ms dwell time
@@ -336,7 +262,7 @@ describe('Interactive Accessibility Testing Framework', () => {
     });
 
     it('should validate gesture timing accommodations', async () => {
-      const timingHarness = createGestureTimingHarness({
+      const _timingHarness = createGestureTimingHarness({
         accommodations: ['extended-timeouts', 'dwell-activation', 'hold-duration'],
         municipality: 'malmö'
       });
@@ -349,7 +275,6 @@ describe('Interactive Accessibility Testing Framework', () => {
         />
       );
 
-      const timingResults = await timingHarness.testTimingAccommodations({
         standardTimeout: 500,
         extendedTimeout: 2000,
         dwellTime: 800,
@@ -368,7 +293,7 @@ describe('Interactive Accessibility Testing Framework', () => {
 
   describe('Visual Accessibility Compliance', () => {
     it('should meet color contrast requirements for interactive elements', async () => {
-      const contrastHarness = createColorContrastHarness({
+      const _contrastHarness = createColorContrastHarness({
         testElements: ['buttons', 'links', 'form-controls', 'drag-targets'],
         municipality: 'malmö'
       });
@@ -381,7 +306,6 @@ describe('Interactive Accessibility Testing Framework', () => {
         />
       );
 
-      const contrastResults = await contrastHarness.measureContrast({
         background: '#ffffff',
         foreground: '#003366', // Malmö municipal blue
         elementTypes: ['normal-text', 'large-text', 'ui-components']
@@ -392,7 +316,6 @@ describe('Interactive Accessibility Testing Framework', () => {
       expect(contrastResults.uiComponentContrast).toBeGreaterThan(3.0);
 
       // Test color blindness support
-      const colorBlindResults = await contrastHarness.testColorBlindSupport({
         types: ['protanopia', 'deuteranopia', 'tritanopia'],
         informationConveyed: 'not-color-only'
       });
@@ -401,12 +324,11 @@ describe('Interactive Accessibility Testing Framework', () => {
       expect(colorBlindResults.informationAccessible).toBe(true);
 
       // Run axe color contrast test
-      const axeResults = await axe(container);
       expect(axeResults).toHaveNoViolations();
     });
 
     it('should support screen magnification up to 500%', async () => {
-      const magnificationHarness = createMagnificationHarness({
+      const _magnificationHarness = createMagnificationHarness({
         maxZoom: 500,
         maintainUsability: true,
         municipality: 'malmö'
@@ -420,7 +342,6 @@ describe('Interactive Accessibility Testing Framework', () => {
         />
       );
 
-      const magnificationResults = await magnificationHarness.testMagnification({
         zoomLevels: [200, 300, 400, 500],
         maintainFunctionality: true,
         horizontalScrolling: 'minimal'
@@ -441,7 +362,7 @@ describe('Interactive Accessibility Testing Framework', () => {
 
   describe('Auditory Accessibility Support', () => {
     it('should provide visual alternatives for audio feedback', async () => {
-      const auditoryHarness = createAuditoryAccessibilityHarness({
+      const _auditoryHarness = createAuditoryAccessibilityHarness({
         hearingLoss: ['mild', 'moderate', 'severe', 'profound'],
         municipality: 'malmö'
       });
@@ -454,7 +375,6 @@ describe('Interactive Accessibility Testing Framework', () => {
         />
       );
 
-      const auditoryResults = await auditoryHarness.testAudioAlternatives({
         audioEvents: ['success', 'error', 'warning', 'notification'],
         visualEquivalents: 'required',
         captionAccuracy: 'high'
@@ -472,7 +392,7 @@ describe('Interactive Accessibility Testing Framework', () => {
 
   describe('Municipal Accessibility Compliance', () => {
     it('should meet Swedish government accessibility requirements', async () => {
-      const governmentHarness = createGovernmentComplianceHarness({
+      const _governmentHarness = createGovernmentComplianceHarness({
         standard: 'EN-301-549',
         level: 'AA',
         municipality: 'malmö'
@@ -486,7 +406,6 @@ describe('Interactive Accessibility Testing Framework', () => {
         />
       );
 
-      const complianceResults = await governmentHarness.validateGovernmentCompliance({
         standard: 'EN-301-549',
         wcagLevel: 'AA',
         municipalRequirements: 'full'
@@ -497,7 +416,6 @@ describe('Interactive Accessibility Testing Framework', () => {
       expect(complianceResults.municipalRequirementsMet).toBe(true);
 
       // Test comprehensive accessibility audit
-      const auditResults = await axe(container, {
         rules: {
           'color-contrast': { enabled: true },
           'keyboard': { enabled: true },

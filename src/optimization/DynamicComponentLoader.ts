@@ -80,11 +80,9 @@ export class DynamicComponentLoader {
     userId: string,
     priority: 'high' | 'medium' | 'low' = 'medium'
   ): Promise<Record<string, unknown>> {
-    const startTime = Date.now();
     
     try {
       // Check cache first
-      const cachedComponent = this.checkCache(componentName);
       if (cachedComponent) {
         console.log(`📦 Cache hit for ${componentName}`);
         this.recordLoadingMetric(componentName, Date.now() - startTime, true, false, userId);
@@ -97,7 +95,6 @@ export class DynamicComponentLoader {
       }
 
       // Load component dynamically
-      const component = await this.dynamicImport(componentName);
       
       // Cache the component
       this.cacheComponent(componentName, component);
@@ -105,7 +102,6 @@ export class DynamicComponentLoader {
       // Learn from user pattern
       this.learnUserPattern(userId, componentName);
       
-      const loadTime = Date.now() - startTime;
       this.recordLoadingMetric(componentName, loadTime, false, false, userId);
       
       console.log(`⚡ Loaded ${componentName} in ${loadTime}ms`);
@@ -129,7 +125,6 @@ export class DynamicComponentLoader {
     try {
       console.log(`🔮 Preloading ${componentName} based on prediction`);
       
-      const component = await this.dynamicImport(componentName);
       this.cacheComponent(componentName, component, true); // Mark as preloaded
       
     } catch (error) {
@@ -157,19 +152,10 @@ export class DynamicComponentLoader {
       };
     }
 
-    const recentMetrics = this.loadingMetrics.slice(-100); // Last 100 loads
     
-    const averageLoadTime = recentMetrics.reduce((sum, m) => sum + m.loadTime, 0) / recentMetrics.length;
-    const cacheHits = recentMetrics.filter(m => m.cacheHit).length;
-    const cacheHitRate = (cacheHits / recentMetrics.length) * 100;
-    const predictions = recentMetrics.filter(m => m.predictedCorrectly);
-    const predictionAccuracy = predictions.length > 0 ? (predictions.length / recentMetrics.length) * 100 : 0;
     
     // Calculate performance improvement (assuming baseline of 2000ms without optimization)
-    const baselineLoadTime = 2000; // ms
-    const performanceImprovement = Math.max(0, ((baselineLoadTime - averageLoadTime) / baselineLoadTime) * 100);
     
-    const userSatisfactionScore = recentMetrics.reduce((sum, m) => sum + m.userSatisfactionScore, 0) / recentMetrics.length;
 
     return {
       averageLoadTime: Math.round(averageLoadTime),
@@ -184,7 +170,6 @@ export class DynamicComponentLoader {
    * Optimize loading strategy based on performance data
    */
   optimizeLoadingStrategy(): void {
-    const metrics = this.getLoadingMetrics();
     
     // Adjust strategy based on performance
     if (metrics.cacheHitRate < 60) {
@@ -215,11 +200,6 @@ export class DynamicComponentLoader {
 
   private initializePredictiveAlgorithms(): void {
     // Municipal user progression patterns
-    const municipalProgressionPatterns = {
-      'sequential_learner': ['MunicipalFoundationsWorld', 'CitizenServiceWorld', 'EmergencyResponseWorld'],
-      'compliance_focused': ['MunicipalFoundationsWorld', 'EmergencyResponseWorld', 'LeadershipDevelopmentWorld'],
-      'innovation_focused': ['MunicipalFoundationsWorld', 'InnovationImplementationWorld', 'LeadershipDevelopmentWorld']
-    };
 
     // Initialize prediction models
     console.log('🔮 Initializing predictive algorithms for municipal patterns');
@@ -250,7 +230,6 @@ export class DynamicComponentLoader {
   }
 
   private checkCache(componentName: string): ComponentCacheEntry | null {
-    const cached = this.componentCache.get(componentName);
     if (cached && !this.isCacheEntryExpired(cached)) {
       cached.lastAccessed = Date.now();
       cached.accessCount++;
@@ -294,8 +273,6 @@ export class DynamicComponentLoader {
   }
 
   private predictAndPreloadNextComponents(currentComponent: string, userId: string): void {
-    const userPattern = this.getUserPattern(userId);
-    const prediction = this.generateLoadingPrediction(currentComponent, userPattern);
     
     if (prediction.confidence >= this.PREDICTION_CONFIDENCE_THRESHOLD) {
       this.preloadComponent(prediction.nextLikelyComponent, userId);
@@ -308,20 +285,6 @@ export class DynamicComponentLoader {
 
   private generateLoadingPrediction(currentComponent: string, userPattern: UserPattern): LoadingPrediction {
     // Generate prediction based on current component and user pattern
-    const predictions = {
-      'MunicipalFoundationsWorld': {
-        nextLikelyComponent: 'CitizenServiceWorld',
-        confidence: 85,
-        timeToLoad: 1500,
-        userPattern: 'sequential' as const
-      },
-      'CitizenServiceWorld': {
-        nextLikelyComponent: 'EmergencyResponseWorld',
-        confidence: 75,
-        timeToLoad: 1600,
-        userPattern: 'sequential' as const
-      }
-    };
 
     return predictions[currentComponent as keyof typeof predictions] || {
       nextLikelyComponent: 'CitizenServiceWorld',
@@ -354,7 +317,6 @@ export class DynamicComponentLoader {
     predictedCorrectly: boolean,
     userId: string
   ): void {
-    const userSatisfactionScore = this.calculateUserSatisfactionScore(loadTime, cacheHit);
     
     const metric: ComponentLoadingMetrics = {
       componentName,
@@ -388,8 +350,6 @@ export class DynamicComponentLoader {
   }
 
   private cleanupCache(): void {
-    const now = Date.now();
-    const maxAge = 30 * 60 * 1000; // 30 minutes
     
     for (const [componentName, entry] of this.componentCache.entries()) {
       if (now - entry.lastAccessed > maxAge) {
@@ -407,7 +367,7 @@ export class DynamicComponentLoader {
 
     if (totalSize > this.CACHE_SIZE_LIMIT) {
       // Remove least recently used items
-      const sortedEntries = Array.from(this.componentCache.entries())
+      const _sortedEntries = Array.from(this.componentCache.entries())
         .sort(([,a], [,b]) => a.lastAccessed - b.lastAccessed);
 
       while (totalSize > this.CACHE_SIZE_LIMIT && sortedEntries.length > 0) {
@@ -430,7 +390,6 @@ export class DynamicComponentLoader {
   }
 
   private isCacheEntryExpired(entry: ComponentCacheEntry): boolean {
-    const maxAge = 60 * 60 * 1000; // 1 hour
     return Date.now() - entry.cachedAt > maxAge;
   }
 
@@ -462,4 +421,3 @@ interface UserPattern {
 }
 
 // Export singleton instance
-export const dynamicComponentLoader = new DynamicComponentLoader();

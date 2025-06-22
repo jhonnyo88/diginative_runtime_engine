@@ -23,13 +23,6 @@ vi.mock('framer-motion', () => ({
   AnimatePresence: vi.fn(({ children }) => children),
 }));
 
-const renderWithChakra = (component: React.ReactElement) => {
-  return render(
-    <ChakraProvider>
-      {component}
-    </ChakraProvider>
-  );
-};
 
 describe('AssessmentScene', () => {
   beforeEach(() => {
@@ -40,14 +33,10 @@ describe('AssessmentScene', () => {
     it('renders without crashing', () => {
       renderWithChakra(<AssessmentScene />);
       
-      const component = screen.getByTestId('-assessment-scene');
       expect(component).toBeInTheDocument();
     });
 
     it('handles props correctly', () => {
-      const testProps = {
-        // Add relevant props based on component analysis
-      };
       
       renderWithChakra(<AssessmentScene {...testProps} />);
       
@@ -67,7 +56,6 @@ describe('AssessmentScene', () => {
     it('provides proper ARIA attributes', () => {
       renderWithChakra(<AssessmentScene />);
       
-      const element = screen.getByTestId('-assessment-scene');
       
       // Check for appropriate ARIA attributes
       expect(element).toHaveAttribute('role');
@@ -76,7 +64,6 @@ describe('AssessmentScene', () => {
     it('supports keyboard navigation', () => {
       renderWithChakra(<AssessmentScene />);
       
-      const element = screen.getByTestId('-assessment-scene');
       
       // Test tab navigation
       element.focus();
@@ -87,7 +74,6 @@ describe('AssessmentScene', () => {
       renderWithChakra(<AssessmentScene />);
       
       // Basic contrast check
-      const element = screen.getByTestId('-assessment-scene');
       expect(element).toBeInTheDocument();
     });
   });
@@ -95,12 +81,9 @@ describe('AssessmentScene', () => {
 
   describe('Performance and Municipal Network Optimization', () => {
     it('renders efficiently', () => {
-      const startTime = performance.now();
       
       renderWithChakra(<AssessmentScene />);
       
-      const endTime = performance.now();
-      const renderTime = endTime - startTime;
       
       // Should render within performance budget
       expect(renderTime).toBeLessThan(100); // 100ms budget
@@ -109,7 +92,6 @@ describe('AssessmentScene', () => {
     it('handles frequent updates efficiently', () => {
       const { rerender } = renderWithChakra(<AssessmentScene />);
       
-      const startTime = performance.now();
       
       // Simulate multiple re-renders
       for (let i = 0; i < 10; i++) {
@@ -120,8 +102,6 @@ describe('AssessmentScene', () => {
         );
       }
       
-      const endTime = performance.now();
-      const updateTime = endTime - startTime;
       
       // Should handle updates efficiently
       expect(updateTime).toBeLessThan(200); // 200ms for 10 updates

@@ -53,7 +53,6 @@ class GameStateManager {
     tenantId: string,
     culturalContext: GameState['culturalContext']
   ): Promise<GameState> {
-    const sessionId = crypto.randomUUID();
     
     const initialState: GameState = {
       sessionId,
@@ -115,8 +114,6 @@ class GameStateManager {
       }
 
       // Check if session is too old (24 hours för municipal work patterns)
-      const sessionAge = Date.now() - new Date(data.started_at).getTime();
-      const MAX_RESUME_AGE = 24 * 60 * 60 * 1000; // 24 hours
       
       if (sessionAge > MAX_RESUME_AGE) {
         console.warn('Session too old to resume, starting new session');
@@ -180,8 +177,6 @@ class GameStateManager {
       return;
     }
 
-    const now = new Date().toISOString();
-    const timeSpent = updates.timeSpent || 0;
 
     // Update current state
     if (updates.currentSceneId) {
@@ -229,10 +224,6 @@ class GameStateManager {
       return null;
     }
 
-    const completedAt = new Date().toISOString();
-    const totalScore = this.calculateTotalScore(this.currentState.progress.sceneResults);
-    const achievements = this.calculateAchievements(this.currentState);
-    const completionRate = this.calculateCompletionRate(this.currentState);
 
     const results: GameResults = {
       sessionId,
@@ -320,7 +311,6 @@ class GameStateManager {
    * Clean up old incomplete sessions (municipal data hygiene)
    */
   async cleanupOldSessions(): Promise<void> {
-    const cutoffDate = new Date();
     cutoffDate.setDate(cutoffDate.getDate() - 7); // 7 days old
 
     try {
@@ -414,7 +404,6 @@ class GameStateManager {
     }
 
     // Perfect score achievement
-    const totalScore = this.calculateTotalScore(progress.sceneResults);
     if (totalScore >= 95) {
       achievements.push('excellence_award');
     }
@@ -430,7 +419,6 @@ class GameStateManager {
   private calculateCompletionRate(state: GameState): number {
     // This would need to be calculated based on total scenes in game manifest
     // For now, simplified calculation
-    const expectedScenes = 5; // Default assumption
     return Math.min(100, (state.progress.completedScenes.length / expectedScenes) * 100);
   }
 
@@ -454,14 +442,13 @@ class GameStateManager {
 }
 
 // Export singleton instance
-export const gameStateManager = new GameStateManager();
 
 // React hook för easy integration
 export function useGameState(sessionId?: string) {
   const [gameState, setGameState] = React.useState<GameState | null>(null);
   const [isLoading, setIsLoading] = React.useState(false);
 
-  const startNewGame = async (
+  const _startNewGame = async (
     userId: string,
     gameId: string,
     tenantId: string,
@@ -469,7 +456,6 @@ export function useGameState(sessionId?: string) {
   ) => {
     setIsLoading(true);
     try {
-      const state = await gameStateManager.startGameSession(userId, gameId, tenantId, culturalContext);
       setGameState(state);
       return state;
     } finally {
@@ -477,10 +463,9 @@ export function useGameState(sessionId?: string) {
     }
   };
 
-  const resumeGame = async (sessionId: string) => {
+  const _resumeGame = async (sessionId: string) => {
     setIsLoading(true);
     try {
-      const state = await gameStateManager.resumeGameSession(sessionId);
       setGameState(state);
       return state;
     } finally {
@@ -488,15 +473,14 @@ export function useGameState(sessionId?: string) {
     }
   };
 
-  const updateState = async (updates: Record<string, unknown>) => {
+  const _updateState = async (updates: Record<string, unknown>) => {
     if (gameState) {
       await gameStateManager.updateGameState(gameState.sessionId, updates);
     }
   };
 
-  const completeGame = async () => {
+  const _completeGame = async () => {
     if (gameState) {
-      const results = await gameStateManager.completeGameSession(gameState.sessionId);
       setGameState(null);
       return results;
     }

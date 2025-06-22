@@ -20,13 +20,6 @@ vi.mock('framer-motion', () => ({
   AnimatePresence: vi.fn(({ children }) => children),
 }));
 
-const renderWithChakra = (component: React.ReactElement) => {
-  return render(
-    <ChakraProvider>
-      {component}
-    </ChakraProvider>
-  );
-};
 
 describe('MunicipalToastNotification', () => {
   beforeEach(() => {
@@ -49,7 +42,6 @@ describe('MunicipalToastNotification', () => {
         />
       );
 
-      const toast = screen.getByTestId('municipal-toast-notification');
       expect(toast).toBeInTheDocument();
       expect(toast).toHaveAttribute('data-municipality', 'malmö');
       expect(toast).toHaveAttribute('data-type', 'success');
@@ -119,13 +111,11 @@ describe('MunicipalToastNotification', () => {
       );
 
       // Should show municipal logo
-      const logo = screen.getByTestId('municipal-logo');
       expect(logo).toBeInTheDocument();
       expect(logo).toHaveAttribute('alt', 'Malmö Stad logotyp');
     });
 
     it('supports multiple municipality contexts', () => {
-      const municipalities = ['malmö', 'stockholm', 'göteborg'];
       
       municipalities.forEach(municipality => {
         const { rerender } = renderWithChakra(
@@ -138,7 +128,6 @@ describe('MunicipalToastNotification', () => {
           />
         );
 
-        const toast = screen.getByTestId('municipal-toast-notification');
         expect(toast).toHaveAttribute('data-municipality', municipality);
       });
     });
@@ -156,7 +145,6 @@ describe('MunicipalToastNotification', () => {
         />
       );
 
-      const toast = screen.getByTestId('municipal-toast-notification');
       
       // Should have alert role for immediate announcement
       expect(toast).toHaveAttribute('role', 'alert');
@@ -169,7 +157,6 @@ describe('MunicipalToastNotification', () => {
     });
 
     it('supports keyboard navigation and dismissal', () => {
-      const onDismissMock = vi.fn();
       
       renderWithChakra(
         <MunicipalToastNotification 
@@ -183,7 +170,6 @@ describe('MunicipalToastNotification', () => {
         />
       );
 
-      const toast = screen.getByTestId('municipal-toast-notification');
       
       // Should be focusable
       expect(toast).toHaveAttribute('tabIndex', '0');
@@ -210,12 +196,10 @@ describe('MunicipalToastNotification', () => {
       );
 
       // Should have screen reader specific text
-      const srText = screen.getByText('Fel: Inloggningen misslyckades. Kontrollera dina uppgifter och försök igen.');
       expect(srText).toHaveClass('sr-only');
     });
 
     it('maintains focus management for modal notifications', () => {
-      const onDismissMock = vi.fn();
       
       renderWithChakra(
         <MunicipalToastNotification 
@@ -229,13 +213,11 @@ describe('MunicipalToastNotification', () => {
         />
       );
 
-      const toast = screen.getByTestId('municipal-toast-notification');
       
       // Should trap focus when modal
       expect(toast).toHaveAttribute('data-modal', 'true');
       
       // Should focus dismiss button
-      const dismissButton = screen.getByRole('button', { name: /stäng/i });
       expect(dismissButton).toBeInTheDocument();
       
       fireEvent.click(dismissButton);
@@ -269,14 +251,12 @@ describe('MunicipalToastNotification', () => {
         />
       );
 
-      const toast = screen.getByTestId('municipal-toast-notification');
       expect(toast).toHaveAttribute('data-reduced-motion', 'true');
     });
   });
 
   describe('Auto-dismiss and Timing', () => {
     it('auto-dismisses after specified duration', async () => {
-      const onDismissMock = vi.fn();
       
       renderWithChakra(
         <MunicipalToastNotification 
@@ -301,7 +281,6 @@ describe('MunicipalToastNotification', () => {
     });
 
     it('pauses auto-dismiss on hover', async () => {
-      const onDismissMock = vi.fn();
       
       renderWithChakra(
         <MunicipalToastNotification 
@@ -316,7 +295,6 @@ describe('MunicipalToastNotification', () => {
         />
       );
 
-      const toast = screen.getByTestId('municipal-toast-notification');
       
       // Hover after 1 second
       vi.advanceTimersByTime(1000);
@@ -336,7 +314,6 @@ describe('MunicipalToastNotification', () => {
     });
 
     it('prevents auto-dismiss when focused', async () => {
-      const onDismissMock = vi.fn();
       
       renderWithChakra(
         <MunicipalToastNotification 
@@ -351,7 +328,6 @@ describe('MunicipalToastNotification', () => {
         />
       );
 
-      const toast = screen.getByTestId('municipal-toast-notification');
       
       // Focus the toast
       toast.focus();
@@ -372,8 +348,6 @@ describe('MunicipalToastNotification', () => {
 
   describe('Action Buttons and Interactions', () => {
     it('renders action buttons with proper Swedish labels', () => {
-      const onActionMock = vi.fn();
-      const onCancelMock = vi.fn();
       
       renderWithChakra(
         <MunicipalToastNotification 
@@ -389,8 +363,6 @@ describe('MunicipalToastNotification', () => {
         />
       );
 
-      const continueButton = screen.getByRole('button', { name: 'Fortsätt' });
-      const cancelButton = screen.getByRole('button', { name: 'Avbryt' });
       
       expect(continueButton).toBeInTheDocument();
       expect(cancelButton).toBeInTheDocument();
@@ -403,7 +375,6 @@ describe('MunicipalToastNotification', () => {
     });
 
     it('handles loading states for action buttons', () => {
-      const onActionMock = vi.fn().mockImplementation(() => new Promise(resolve => setTimeout(resolve, 1000)));
       
       renderWithChakra(
         <MunicipalToastNotification 
@@ -418,7 +389,6 @@ describe('MunicipalToastNotification', () => {
         />
       );
 
-      const saveButton = screen.getByRole('button', { name: 'Spara' });
       fireEvent.click(saveButton);
       
       // Should show loading state
@@ -450,7 +420,6 @@ describe('MunicipalToastNotification', () => {
         </div>
       );
 
-      const notifications = screen.getAllByTestId('municipal-toast-notification');
       expect(notifications).toHaveLength(2);
       
       // Check stacking positions
@@ -459,8 +428,6 @@ describe('MunicipalToastNotification', () => {
     });
 
     it('handles notification removal from stack', () => {
-      const onFirstDismissMock = vi.fn();
-      const onSecondDismissMock = vi.fn();
       
       const { rerender } = renderWithChakra(
         <div>
@@ -486,7 +453,6 @@ describe('MunicipalToastNotification', () => {
       );
 
       // Dismiss first notification
-      const dismissButtons = screen.getAllByRole('button', { name: /stäng/i });
       fireEvent.click(dismissButtons[0]);
       
       expect(onFirstDismissMock).toHaveBeenCalled();
@@ -498,9 +464,7 @@ describe('MunicipalToastNotification', () => {
 
   describe('Municipal Network Performance', () => {
     it('renders efficiently with complex content', () => {
-      const startTime = performance.now();
       
-      const complexContent = Array.from({ length: 100 }, (_, i) => `Rad ${i + 1}`).join('\n');
       
       renderWithChakra(
         <MunicipalToastNotification 
@@ -517,13 +481,10 @@ describe('MunicipalToastNotification', () => {
         />
       );
 
-      const endTime = performance.now();
-      const renderTime = endTime - startTime;
       
       // Should render within performance budget
       expect(renderTime).toBeLessThan(100); // 100ms budget
       
-      const toast = screen.getByTestId('municipal-toast-notification');
       expect(toast).toBeInTheDocument();
     });
 
@@ -538,7 +499,6 @@ describe('MunicipalToastNotification', () => {
         />
       );
 
-      const startTime = performance.now();
       
       // Rapidly toggle visibility
       for (let i = 0; i < 20; i++) {
@@ -555,8 +515,6 @@ describe('MunicipalToastNotification', () => {
         );
       }
 
-      const endTime = performance.now();
-      const toggleTime = endTime - startTime;
       
       // Should handle rapid toggles efficiently
       expect(toggleTime).toBeLessThan(300); // 300ms for 20 toggles
@@ -574,12 +532,10 @@ describe('MunicipalToastNotification', () => {
         );
       }).not.toThrow();
       
-      const toast = screen.getByTestId('municipal-toast-notification');
       expect(toast).toBeInTheDocument();
     });
 
     it('handles very long messages appropriately', () => {
-      const longMessage = 'Detta är ett mycket långt meddelande som sträcker sig över flera rader och testar hur komponenten hanterar längre textinnehåll utan att förstöra layouten eller användarupplevelsen.'.repeat(5);
       
       renderWithChakra(
         <MunicipalToastNotification 
@@ -591,11 +547,9 @@ describe('MunicipalToastNotification', () => {
         />
       );
 
-      const toast = screen.getByTestId('municipal-toast-notification');
       expect(toast).toBeInTheDocument();
       
       // Should handle text overflow gracefully
-      const messageElement = screen.getByText(longMessage);
       expect(messageElement).toBeInTheDocument();
     });
 
@@ -610,7 +564,6 @@ describe('MunicipalToastNotification', () => {
         />
       );
 
-      const toast = screen.getByTestId('municipal-toast-notification');
       
       // Should use default styling
       expect(toast).toHaveAttribute('data-municipality', 'default');

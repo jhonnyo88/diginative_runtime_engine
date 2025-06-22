@@ -89,15 +89,12 @@ export class Q3ProductionDeploymentOrchestrator {
   async deployToEuropeanMunicipalInfrastructure(
     config: ProductionDeploymentConfig
   ): Promise<DeploymentResult> {
-    const deploymentId = this.generateDeploymentId(config.region);
-    const startTime = Date.now();
 
     try {
       console.log(`🚀 Starting Q3 Production Deployment to ${config.region}`);
       console.log(`📊 Target: ${config.municipalityCapacity} municipalities, ${config.performanceTargets.concurrentUsers} concurrent users`);
 
       // Create deployment session
-      const session = this.createDeploymentSession(deploymentId, config);
       this.activeDeployments.set(deploymentId, session);
 
       // Phase 1: Infrastructure Preparation
@@ -116,13 +113,10 @@ export class Q3ProductionDeploymentOrchestrator {
       await this.deployScalingCapability(deploymentId, config);
 
       // Phase 6: Production Validation
-      const validationResult = await this.validateProductionDeployment(deploymentId, config);
 
       // Phase 7: Performance Excellence Verification
-      const performanceMetrics = await this.verifyPerformanceExcellence(deploymentId, config);
 
       // Phase 8: Municipal Readiness Certification
-      const municipalReadiness = await this.certifyMunicipalReadiness(deploymentId, config);
 
       const deploymentResult: DeploymentResult = {
         success: true,
@@ -136,7 +130,6 @@ export class Q3ProductionDeploymentOrchestrator {
 
       this.deploymentHistory.set(deploymentId, deploymentResult);
 
-      const deploymentTime = Date.now() - startTime;
       console.log(`✅ Q3 Production Deployment completed in ${Math.round(deploymentTime / 1000)}s`);
       console.log(`📊 Performance: Hub ${performanceMetrics.actualHubLoading}ms, Transitions ${performanceMetrics.actualWorldTransition}ms`);
       console.log(`🎯 Excellence: ${performanceMetrics.actualUptime}% uptime, ${performanceMetrics.peakConcurrentUsers} concurrent users`);
@@ -254,9 +247,7 @@ export class Q3ProductionDeploymentOrchestrator {
    * Get deployment status and metrics
    */
   getDeploymentStatus(deploymentId: string): DeploymentStatus | null {
-    const deployment = this.activeDeployments.get(deploymentId);
     if (!deployment) {
-      const historical = this.deploymentHistory.get(deploymentId);
       return historical ? { status: 'completed', result: historical } : null;
     }
 
@@ -484,4 +475,3 @@ interface ProductionImprovement {
 }
 
 // Export singleton instance
-export const q3ProductionDeploymentOrchestrator = new Q3ProductionDeploymentOrchestrator();

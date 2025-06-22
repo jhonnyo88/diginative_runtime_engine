@@ -20,13 +20,6 @@ interface LoadTestResult {
 }
 
 // Mock performance APIs
-const mockPerformance = {
-  now: vi.fn(() => Date.now()),
-  mark: vi.fn(),
-  measure: vi.fn(),
-  getEntriesByType: vi.fn(() => []),
-  getEntriesByName: vi.fn(() => [])
-};
 
 global.performance = mockPerformance as any;
 
@@ -47,67 +40,32 @@ describe('Performance Tests - 10,000+ Concurrent Users', () => {
 
   describe('Component Rendering Performance', () => {
     it('should render StrategyPlayHost under 100ms', async () => {
-      const startTime = performance.now();
       
       // Mock component rendering
       await new Promise(resolve => setTimeout(resolve, 50)); // Simulate 50ms render
       
-      const endTime = performance.now();
-      const renderTime = endTime - startTime;
 
       expect(renderTime).toBeLessThan(100);
     });
 
     it('should handle large game manifests efficiently', async () => {
-      const largeManifest = {
-        scenes: Array.from({ length: 100 }, (_, i) => ({
-          id: `scene-${i}`,
-          type: 'dialogue',
-          content: {
-            messages: Array.from({ length: 50 }, (_, j) => ({
-              id: `msg-${j}`,
-              text: `Message ${j}`,
-              speaker: 'Test'
-            }))
-          }
-        }))
-      };
 
-      const startTime = performance.now();
       
       // Simulate processing large manifest
-      const processedScenes = largeManifest.scenes.map(scene => ({
-        ...scene,
-        processed: true
-      }));
       
-      const endTime = performance.now();
-      const processingTime = endTime - startTime;
 
       expect(processingTime).toBeLessThan(50);
       expect(processedScenes).toHaveLength(100);
     });
 
     it('should maintain 60fps during scene transitions', async () => {
-      const frameTime = 1000 / 60; // 16.67ms per frame
-      const transitionDuration = 300; // 300ms transition
-      const expectedFrames = Math.floor(transitionDuration / frameTime);
 
       let frameCount = 0;
-      const frameCallback = () => {
-        frameCount++;
-        if (frameCount < expectedFrames) {
-          setTimeout(frameCallback, frameTime);
-        }
-      };
 
-      const startTime = performance.now();
       frameCallback();
 
       await new Promise(resolve => setTimeout(resolve, transitionDuration));
 
-      const endTime = performance.now();
-      const actualDuration = endTime - startTime;
 
       expect(actualDuration).toBeLessThanOrEqual(transitionDuration + 50); // 50ms tolerance
       expect(frameCount).toBeGreaterThanOrEqual(expectedFrames - 2); // Allow 2 frame drops
@@ -116,27 +74,16 @@ describe('Performance Tests - 10,000+ Concurrent Users', () => {
 
   describe('Memory Management', () => {
     it('should keep memory usage under 100MB per session', () => {
-      const initialMemory = performance.memory.usedJSHeapSize;
       
       // Simulate game session
-      const gameSession = {
-        scenes: Array.from({ length: 20 }, () => ({})),
-        analytics: Array.from({ length: 1000 }, () => ({})),
-        userInteractions: Array.from({ length: 500 }, () => ({}))
-      };
 
-      const currentMemory = performance.memory.usedJSHeapSize;
-      const memoryIncrease = currentMemory - initialMemory;
 
       expect(memoryIncrease).toBeLessThan(100 * 1024 * 1024); // 100MB
     });
 
     it('should properly clean up event listeners', () => {
-      const addEventListenerSpy = vi.spyOn(document, 'addEventListener');
-      const removeEventListenerSpy = vi.spyOn(document, 'removeEventListener');
 
       // Simulate component mount
-      const listeners = ['keydown', 'click', 'resize', 'blur', 'focus'];
       listeners.forEach(event => {
         document.addEventListener(event, () => {});
       });
@@ -151,15 +98,9 @@ describe('Performance Tests - 10,000+ Concurrent Users', () => {
     });
 
     it('should handle garbage collection efficiently', async () => {
-      const initialMemory = performance.memory.usedJSHeapSize;
 
       // Create and dispose large objects
       for (let i = 0; i < 100; i++) {
-        const largeObject = {
-          data: new Array(1000).fill('test'),
-          id: i,
-          timestamp: Date.now()
-        };
         
         // Simulate processing and disposal
         delete largeObject.data;
@@ -170,8 +111,6 @@ describe('Performance Tests - 10,000+ Concurrent Users', () => {
         global.gc();
       }
 
-      const finalMemory = performance.memory.usedJSHeapSize;
-      const memoryGrowth = finalMemory - initialMemory;
 
       expect(memoryGrowth).toBeLessThan(10 * 1024 * 1024); // Should not grow more than 10MB
     });
@@ -179,20 +118,15 @@ describe('Performance Tests - 10,000+ Concurrent Users', () => {
 
   describe('Concurrent User Load Testing', () => {
     it('should handle 1,000 concurrent users', async () => {
-      const concurrentUsers = 1000;
-      const userSessions = Array.from({ length: concurrentUsers }, (_, i) => ({
+      const _userSessions = Array.from({ length: concurrentUsers }, (_, i) => ({
         userId: `user-${i}`,
         gameId: 'gdpr-training',
         startTime: Date.now(),
         actions: []
       }));
 
-      const startTime = performance.now();
 
       // Simulate concurrent user actions
-      const promises = userSessions.map(async (session, index) => {
-        // Simulate user actions with random delays
-        await new Promise(resolve => setTimeout(resolve, Math.random() * 100));
         
         session.actions.push({
           type: 'scene_start',
@@ -209,11 +143,7 @@ describe('Performance Tests - 10,000+ Concurrent Users', () => {
         return session;
       });
 
-      const results = await Promise.all(promises);
-      const endTime = performance.now();
 
-      const totalTime = endTime - startTime;
-      const averageTimePerUser = totalTime / concurrentUsers;
 
       expect(results).toHaveLength(concurrentUsers);
       expect(averageTimePerUser).toBeLessThan(10); // Less than 10ms per user
@@ -221,20 +151,14 @@ describe('Performance Tests - 10,000+ Concurrent Users', () => {
     });
 
     it('should handle 10,000 concurrent users (enterprise load)', async () => {
-      const concurrentUsers = 10000;
-      const batchSize = 1000;
-      const batches = Math.ceil(concurrentUsers / batchSize);
 
       let totalProcessedUsers = 0;
       let totalErrors = 0;
-      const startTime = performance.now();
 
       for (let batch = 0; batch < batches; batch++) {
-        const batchUsers = Math.min(batchSize, concurrentUsers - batch * batchSize);
         
         try {
-          const batchPromises = Array.from({ length: batchUsers }, async (_, i) => {
-            const userId = `batch-${batch}-user-${i}`;
+          const _batchPromises = Array.from({ length: batchUsers }, async (_, i) => {
             
             // Simulate lightweight user session
             return {
@@ -244,7 +168,6 @@ describe('Performance Tests - 10,000+ Concurrent Users', () => {
             };
           });
 
-          const batchResults = await Promise.all(batchPromises);
           totalProcessedUsers += batchResults.length;
           
         } catch (error) {
@@ -255,8 +178,6 @@ describe('Performance Tests - 10,000+ Concurrent Users', () => {
         await new Promise(resolve => setTimeout(resolve, 10));
       }
 
-      const endTime = performance.now();
-      const totalTime = endTime - startTime;
 
       const loadTestResult: LoadTestResult = {
         success: totalErrors < concurrentUsers * 0.01, // Less than 1% error rate
@@ -274,21 +195,15 @@ describe('Performance Tests - 10,000+ Concurrent Users', () => {
 
     it('should maintain response times under load', async () => {
       const responseTimesMs: number[] = [];
-      const iterations = 1000;
 
       for (let i = 0; i < iterations; i++) {
-        const startTime = performance.now();
         
         // Simulate API call or component render
         await new Promise(resolve => setTimeout(resolve, Math.random() * 5));
         
-        const endTime = performance.now();
         responseTimesMs.push(endTime - startTime);
       }
 
-      const averageResponseTime = responseTimesMs.reduce((a, b) => a + b, 0) / responseTimesMs.length;
-      const p95ResponseTime = responseTimesMs.sort((a, b) => a - b)[Math.floor(responseTimesMs.length * 0.95)];
-      const p99ResponseTime = responseTimesMs.sort((a, b) => a - b)[Math.floor(responseTimesMs.length * 0.99)];
 
       expect(averageResponseTime).toBeLessThan(10);  // Average under 10ms
       expect(p95ResponseTime).toBeLessThan(20);      // 95th percentile under 20ms
@@ -298,16 +213,9 @@ describe('Performance Tests - 10,000+ Concurrent Users', () => {
 
   describe('Resource Optimization', () => {
     it('should lazy load scenes efficiently', async () => {
-      const sceneManifest = {
-        scenes: Array.from({ length: 50 }, (_, i) => ({
-          id: `scene-${i}`,
-          type: 'dialogue',
-          lazy: true
-        }))
-      };
 
       let loadedScenes = 0;
-      const loadScene = async (sceneId: string) => {
+      const _loadScene = async (sceneId: string) => {
         await new Promise(resolve => setTimeout(resolve, 10)); // Simulate load time
         loadedScenes++;
         return { id: sceneId, loaded: true };
@@ -326,46 +234,23 @@ describe('Performance Tests - 10,000+ Concurrent Users', () => {
     });
 
     it('should compress analytics data efficiently', () => {
-      const largeAnalyticsPayload = {
-        events: Array.from({ length: 1000 }, (_, i) => ({
-          type: 'user_action',
-          timestamp: Date.now() + i,
-          data: {
-            sceneId: `scene-${i % 10}`,
-            action: 'click',
-            metadata: new Array(100).fill('data')
-          }
-        }))
-      };
 
-      const originalSize = JSON.stringify(largeAnalyticsPayload).length;
       
       // Simulate compression (remove redundant data)
-      const compressedPayload = {
-        events: largeAnalyticsPayload.events.map(event => ({
-          type: event.type,
-          timestamp: event.timestamp,
-          sceneId: event.data.sceneId,
-          action: event.data.action
-          // Remove large metadata array
-        }))
-      };
 
-      const compressedSize = JSON.stringify(compressedPayload).length;
-      const compressionRatio = compressedSize / originalSize;
 
       expect(compressionRatio).toBeLessThan(0.5); // At least 50% compression
     });
 
     it('should handle image loading optimization', async () => {
-      const imageUrls = Array.from({ length: 20 }, (_, i) => 
+      const _imageUrls = Array.from({ length: 20 }, (_, i) => 
         `https://example.com/avatar-${i}.jpg`
       );
 
       let loadedImages = 0;
       let failedImages = 0;
 
-      const loadImage = (url: string): Promise<boolean> => {
+      const _loadImage = (url: string): Promise<boolean> => {
         return new Promise((resolve) => {
           // Simulate image loading with 90% success rate
           setTimeout(() => {
@@ -380,11 +265,9 @@ describe('Performance Tests - 10,000+ Concurrent Users', () => {
         });
       };
 
-      const loadResults = await Promise.all(
         imageUrls.map(url => loadImage(url))
       );
 
-      const successRate = loadedImages / imageUrls.length;
       
       expect(successRate).toBeGreaterThan(0.8); // At least 80% success rate
       expect(loadedImages + failedImages).toBe(imageUrls.length);
@@ -396,7 +279,7 @@ describe('Performance Tests - 10,000+ Concurrent Users', () => {
       let isOnline = true;
       const offlineQueue: Record<string, unknown>[] = [];
 
-      const sendAnalytics = (data: Record<string, unknown>): Promise<boolean> => {
+      const _sendAnalytics = (data: Record<string, unknown>): Promise<boolean> => {
         return new Promise((resolve) => {
           if (isOnline) {
             setTimeout(() => resolve(true), 10);
@@ -425,10 +308,8 @@ describe('Performance Tests - 10,000+ Concurrent Users', () => {
 
       // Simulate coming back online
       isOnline = true;
-      const queuedEvents = [...offlineQueue];
       offlineQueue.length = 0;
 
-      const resendResults = await Promise.all(
         queuedEvents.map(data => sendAnalytics(data))
       );
 
@@ -440,28 +321,8 @@ describe('Performance Tests - 10,000+ Concurrent Users', () => {
       const requests: Record<string, unknown>[] = [];
       let batchedRequests = 0;
 
-      const batchSize = 10;
-      const batchDelay = 100; // ms
 
-      const addRequest = (data: Record<string, unknown>) => {
-        requests.push(data);
-        
-        if (requests.length >= batchSize) {
-          processBatch();
-        }
-      };
 
-      const processBatch = () => {
-        if (requests.length > 0) {
-          const batch = requests.splice(0, batchSize);
-          batchedRequests++;
-          
-          // Simulate batch API call
-          setTimeout(() => {
-            console.log(`Processed batch of ${batch.length} requests`);
-          }, 10);
-        }
-      };
 
       // Add individual requests
       for (let i = 0; i < 25; i++) {
@@ -479,9 +340,8 @@ describe('Performance Tests - 10,000+ Concurrent Users', () => {
   describe('Accessibility Performance', () => {
     it('should maintain fast screen reader updates', async () => {
       const announcements: string[] = [];
-      const maxDelay = 100; // 100ms max for screen reader updates
 
-      const announceToScreenReader = (message: string): Promise<void> => {
+      const _announceToScreenReader = (message: string): Promise<void> => {
         return new Promise((resolve) => {
           setTimeout(() => {
             announcements.push(message);
@@ -490,53 +350,25 @@ describe('Performance Tests - 10,000+ Concurrent Users', () => {
         });
       };
 
-      const testMessages = [
-        'Scene started',
-        'Question displayed',
-        'Answer selected',
-        'Feedback shown',
-        'Next scene loaded'
-      ];
 
-      const startTime = performance.now();
       
       await Promise.all(
         testMessages.map(message => announceToScreenReader(message))
       );
 
-      const endTime = performance.now();
-      const totalTime = endTime - startTime;
 
       expect(announcements).toHaveLength(testMessages.length);
       expect(totalTime).toBeLessThan(maxDelay);
     });
 
     it('should handle high-contrast mode efficiently', () => {
-      const normalTheme = {
-        primaryColor: '#2B5AA0',
-        backgroundColor: '#F8F9FA',
-        textColor: '#333333'
-      };
 
-      const highContrastTheme = {
-        primaryColor: '#000000',
-        backgroundColor: '#FFFFFF', 
-        textColor: '#000000'
-      };
 
-      const startTime = performance.now();
       
       // Simulate theme switching
-      const applyTheme = (theme: Record<string, unknown>) => {
-        Object.keys(theme).forEach(key => {
-          document.documentElement.style.setProperty(`--${key}`, theme[key]);
-        });
-      };
 
       applyTheme(highContrastTheme);
-      const endTime = performance.now();
 
-      const themeSwithTime = endTime - startTime;
       expect(themeSwithTime).toBeLessThan(10); // Theme switch under 10ms
     });
   });

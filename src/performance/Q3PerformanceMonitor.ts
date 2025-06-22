@@ -95,7 +95,6 @@ export class Q3PerformanceMonitor {
    * Measure hub loading performance
    */
   measureHubLoading(startTime: number): void {
-    const hubLoadTime = Date.now() - startTime;
     
     // Mark measurement for Performance API
     performance.mark('hub-load-end');
@@ -116,7 +115,6 @@ export class Q3PerformanceMonitor {
    * Measure world transition performance
    */
   measureWorldTransition(startTime: number, worldIndex: number): void {
-    const transitionTime = Date.now() - startTime;
     
     performance.mark(`world-${worldIndex}-transition-end`);
     performance.measure(`world-${worldIndex}-transition`, 
@@ -163,8 +161,6 @@ export class Q3PerformanceMonitor {
    * Get active alerts
    */
   getActiveAlerts(): PerformanceAlert[] {
-    const now = Date.now();
-    const alertTimeout = 5 * 60 * 1000; // 5 minutes
     
     return this.alerts.filter(alert => now - alert.timestamp < alertTimeout);
   }
@@ -189,20 +185,11 @@ export class Q3PerformanceMonitor {
       };
     }
 
-    const recentMetrics = this.metrics.slice(-10); // Last 10 measurements
     
-    const averageHubLoadTime = recentMetrics.reduce((sum, m) => sum + m.hubLoadTime, 0) / recentMetrics.length;
-    const averageWorldTransitionTime = recentMetrics.reduce((sum, m) => sum + m.worldTransitionTime, 0) / recentMetrics.length;
-    const averageMemoryUsage = recentMetrics.reduce((sum, m) => sum + m.memoryUsage, 0) / recentMetrics.length;
     
-    const activeAlerts = this.getActiveAlerts();
     
     // Calculate compliance score based on threshold adherence
-    const hubCompliance = averageHubLoadTime <= this.thresholds.hubLoading ? 100 : Math.max(0, 100 - ((averageHubLoadTime - this.thresholds.hubLoading) / this.thresholds.hubLoading * 100));
-    const transitionCompliance = averageWorldTransitionTime <= this.thresholds.worldTransition ? 100 : Math.max(0, 100 - ((averageWorldTransitionTime - this.thresholds.worldTransition) / this.thresholds.worldTransition * 100));
-    const memoryCompliance = averageMemoryUsage <= this.thresholds.memoryUsage ? 100 : Math.max(0, 100 - ((averageMemoryUsage - this.thresholds.memoryUsage) / this.thresholds.memoryUsage * 100));
     
-    const complianceScore = Math.round((hubCompliance + transitionCompliance + memoryCompliance) / 3);
 
     return {
       averageHubLoadTime: Math.round(averageHubLoadTime),
@@ -217,11 +204,8 @@ export class Q3PerformanceMonitor {
    * Setup navigation timing observer
    */
   private setupNavigationObserver(): void {
-    const observer = new PerformanceObserver((list) => {
       for (const entry of list.getEntries()) {
         if (entry.entryType === 'navigation') {
-          const navEntry = entry as PerformanceNavigationTiming;
-          const loadTime = navEntry.loadEventEnd - navEntry.navigationStart;
           
           this.recordMetric('hubLoadTime', loadTime);
           
@@ -241,10 +225,8 @@ export class Q3PerformanceMonitor {
    * Setup resource timing observer
    */
   private setupResourceObserver(): void {
-    const observer = new PerformanceObserver((list) => {
       for (const entry of list.getEntries()) {
         if (entry.entryType === 'resource') {
-          const resourceEntry = entry as PerformanceResourceTiming;
           
           // Monitor large resources that could impact loading
           if (resourceEntry.transferSize > 1024 * 1024) { // 1MB
@@ -264,8 +246,6 @@ export class Q3PerformanceMonitor {
   private setupMemoryMonitoring(): void {
     setInterval(() => {
       if ((performance as any).memory) {
-        const memoryInfo = (performance as any).memory;
-        const usedMemory = memoryInfo.usedJSHeapSize;
         
         this.recordMetric('memoryUsage', usedMemory);
         
@@ -282,9 +262,7 @@ export class Q3PerformanceMonitor {
    */
   private setupWebVitalsMonitoring(): void {
     // Largest Contentful Paint
-    const lcpObserver = new PerformanceObserver((list) => {
       for (const entry of list.getEntries()) {
-        const lcp = entry.startTime;
         if (lcp > 2500) { // 2.5s threshold
           this.createAlert('warning', 'renderTime', 2500, lcp,
             `Largest Contentful Paint ${Math.round(lcp)}ms exceeds 2.5s threshold`);
@@ -295,9 +273,7 @@ export class Q3PerformanceMonitor {
     this.observers.push(lcpObserver);
 
     // First Input Delay
-    const fidObserver = new PerformanceObserver((list) => {
       for (const entry of list.getEntries()) {
-        const fid = (entry as any).processingStart - entry.startTime;
         this.recordMetric('interactionDelay', fid);
         
         if (fid > 100) { // 100ms threshold
@@ -314,7 +290,6 @@ export class Q3PerformanceMonitor {
    * Setup custom measurement observer
    */
   private setupCustomMeasurementObserver(): void {
-    const observer = new PerformanceObserver((list) => {
       for (const entry of list.getEntries()) {
         if (entry.entryType === 'measure') {
           // Handle custom measurements
@@ -335,10 +310,8 @@ export class Q3PerformanceMonitor {
    * Record performance metric
    */
   private recordMetric(metricName: keyof PerformanceMetrics, value: number): void {
-    const now = Date.now();
     
     // Get or create current metrics object
-    const currentMetrics = this.metrics.length > 0 && (now - this.metrics[this.metrics.length - 1].timestamp < 1000)
       ? this.metrics[this.metrics.length - 1]
       : {
           hubLoadTime: 0,
@@ -403,4 +376,3 @@ export class Q3PerformanceMonitor {
 }
 
 // Export singleton instance
-export const q3PerformanceMonitor = new Q3PerformanceMonitor();

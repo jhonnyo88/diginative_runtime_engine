@@ -16,13 +16,6 @@ import EnterpriseAdminCore from '../../../components/admin/EnterpriseAdminCore.t
 // Mock dependencies if needed
 
 
-const renderWithChakra = (component: React.ReactElement) => {
-  return render(
-    <ChakraProvider>
-      {component}
-    </ChakraProvider>
-  );
-};
 
 describe('EnterpriseAdminCore', () => {
   beforeEach(() => {
@@ -33,14 +26,10 @@ describe('EnterpriseAdminCore', () => {
     it('renders without crashing', () => {
       renderWithChakra(<EnterpriseAdminCore />);
       
-      const component = screen.getByTestId('-enterprise-admin-core');
       expect(component).toBeInTheDocument();
     });
 
     it('handles props correctly', () => {
-      const testProps = {
-        // Add relevant props based on component analysis
-      };
       
       renderWithChakra(<EnterpriseAdminCore {...testProps} />);
       
@@ -60,7 +49,6 @@ describe('EnterpriseAdminCore', () => {
     it('provides proper ARIA attributes', () => {
       renderWithChakra(<EnterpriseAdminCore />);
       
-      const element = screen.getByTestId('-enterprise-admin-core');
       
       // Check for appropriate ARIA attributes
       expect(element).toHaveAttribute('role');
@@ -69,7 +57,6 @@ describe('EnterpriseAdminCore', () => {
     it('supports keyboard navigation', () => {
       renderWithChakra(<EnterpriseAdminCore />);
       
-      const element = screen.getByTestId('-enterprise-admin-core');
       
       // Test tab navigation
       element.focus();
@@ -80,7 +67,6 @@ describe('EnterpriseAdminCore', () => {
       renderWithChakra(<EnterpriseAdminCore />);
       
       // Basic contrast check
-      const element = screen.getByTestId('-enterprise-admin-core');
       expect(element).toBeInTheDocument();
     });
   });
@@ -88,12 +74,9 @@ describe('EnterpriseAdminCore', () => {
 
   describe('Performance and Municipal Network Optimization', () => {
     it('renders efficiently', () => {
-      const startTime = performance.now();
       
       renderWithChakra(<EnterpriseAdminCore />);
       
-      const endTime = performance.now();
-      const renderTime = endTime - startTime;
       
       // Should render within performance budget
       expect(renderTime).toBeLessThan(100); // 100ms budget
@@ -102,7 +85,6 @@ describe('EnterpriseAdminCore', () => {
     it('handles frequent updates efficiently', () => {
       const { rerender } = renderWithChakra(<EnterpriseAdminCore />);
       
-      const startTime = performance.now();
       
       // Simulate multiple re-renders
       for (let i = 0; i < 10; i++) {
@@ -113,8 +95,6 @@ describe('EnterpriseAdminCore', () => {
         );
       }
       
-      const endTime = performance.now();
-      const updateTime = endTime - startTime;
       
       // Should handle updates efficiently
       expect(updateTime).toBeLessThan(200); // 200ms for 10 updates

@@ -44,7 +44,6 @@ export class WorldFactory {
     uniqueCode: string,
     culturalContext: 'swedish_municipal' | 'german_municipal' | 'french_municipal' | 'dutch_municipal'
   ): React.ReactElement | null {
-    const worldDefinition = getWorldDefinition(worldIndex);
     if (!worldDefinition) {
       console.error(`No world definition found for index ${worldIndex}`);
       return null;
@@ -62,14 +61,12 @@ export class WorldFactory {
     uniqueCode: string,
     culturalContext: 'swedish_municipal' | 'german_municipal' | 'french_municipal' | 'dutch_municipal'
   ): React.ReactElement | null {
-    const WorldComponent = this.worldComponents.get(theme);
     
     if (!WorldComponent) {
       console.error(`No world component found for theme: ${theme}`);
       return null;
     }
 
-    const worldDefinition = this.getWorldDefinitionByTheme(theme);
     if (!worldDefinition) {
       console.error(`No world definition found for theme: ${theme}`);
       return null;
@@ -117,7 +114,6 @@ export class WorldFactory {
   private static getWorldDefinitionByTheme(theme: WorldTheme): WorldDefinition | null {
     // Find world definition by theme
     for (let i = 1; i <= 5; i++) {
-      const definition = getWorldDefinition(i);
       if (definition && definition.theme === theme) {
         return definition;
       }
@@ -129,10 +125,8 @@ export class WorldFactory {
    * Get world display information
    */
   static getWorldDisplayInfo(theme: WorldTheme, culturalContext: string) {
-    const definition = this.getWorldDefinitionByTheme(theme);
     if (!definition) return null;
 
-    const culturalKey = culturalContext as keyof typeof definition.title;
     
     return {
       title: definition.title[culturalKey] || definition.title.swedish,
@@ -200,14 +194,10 @@ export class WorldFactory {
     worldIndex: number,
     completedWorlds: number[]
   ): { canAccess: boolean; missingPrerequisites: number[] } {
-    const definition = getWorldDefinition(worldIndex);
     if (!definition) {
       return { canAccess: false, missingPrerequisites: [] };
     }
 
-    const missingPrerequisites = definition.prerequisiteWorlds.filter(
-      prereq => !completedWorlds.includes(prereq)
-    );
 
     return {
       canAccess: missingPrerequisites.length === 0,
@@ -228,7 +218,6 @@ export class WorldFactory {
 
       const { canAccess } = this.validateWorldPrerequisites(i, completedWorlds);
       if (canAccess) {
-        const definition = getWorldDefinition(i);
         if (definition) {
           // Prioritize by difficulty and natural progression
           let priority: 'high' | 'medium' | 'low' = 'medium';
@@ -249,8 +238,6 @@ export class WorldFactory {
 
     // Sort by priority and world index
     return recommendations.sort((a, b) => {
-      const priorityOrder = { high: 0, medium: 1, low: 2 };
-      const priorityDiff = priorityOrder[a.priority] - priorityOrder[b.priority];
       return priorityDiff !== 0 ? priorityDiff : a.worldIndex - b.worldIndex;
     });
   }

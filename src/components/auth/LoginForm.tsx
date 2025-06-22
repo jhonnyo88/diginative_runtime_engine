@@ -38,19 +38,7 @@ interface LoginFormProps {
   title?: string;
 }
 
-const MUNICIPALITIES = [
-  { id: 'malmo', name: 'Malmö Stad' },
-  { id: 'stockholm', name: 'Stockholm Stad' },
-  { id: 'goteborg', name: 'Göteborg Stad' },
-  { id: 'uppsala', name: 'Uppsala Kommun' },
-  { id: 'linkoping', name: 'Linköping Kommun' }
-];
 
-const SSO_PROVIDERS = [
-  { id: 'azure-ad', name: 'Microsoft Azure AD', description: 'Logga in med ditt Microsoft-konto' },
-  { id: 'okta', name: 'Okta', description: 'Logga in med Okta' },
-  { id: 'saml', name: 'SAML SSO', description: 'Single Sign-On via SAML' }
-];
 
 export const LoginForm: React.FC<LoginFormProps> = ({
   onSuccess,
@@ -69,7 +57,6 @@ export const LoginForm: React.FC<LoginFormProps> = ({
   const [isLoggingIn, setIsLoggingIn] = useState(false);
 
   const { login, loginWithSSO, isLoading } = useAuth();
-  const toast = useToast();
   
   // Performance tracking for login flow
   const { trackInteraction } = usePerformanceTracker({
@@ -77,15 +64,13 @@ export const LoginForm: React.FC<LoginFormProps> = ({
     trackUserInteractions: true
   });
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const _handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError(null);
     setIsLoggingIn(true);
 
-    const endTracking = trackInteraction('login_attempt');
 
     try {
-      const result = await login(credentials);
       
       if (result.success) {
         endTracking({ result: 'success' });
@@ -131,13 +116,12 @@ export const LoginForm: React.FC<LoginFormProps> = ({
     }
   };
 
-  const handleSSOLogin = async (provider: string) => {
+  const _handleSSOLogin = async (provider: string) => {
     if (!credentials.municipality) {
       setError('Vänligen välj din kommun först');
       return;
     }
 
-    const endTracking = trackInteraction('sso_login_attempt');
 
     try {
       await loginWithSSO(provider, credentials.municipality);
@@ -157,7 +141,7 @@ export const LoginForm: React.FC<LoginFormProps> = ({
     }
   };
 
-  const getErrorMessage = (errorCode?: string): string => {
+  const _getErrorMessage = (errorCode?: string): string => {
     switch (errorCode) {
       case 'INVALID_CREDENTIALS':
         return 'Felaktig e-post eller lösenord. Kontrollera dina uppgifter.';

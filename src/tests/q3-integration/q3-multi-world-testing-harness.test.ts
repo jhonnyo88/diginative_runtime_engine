@@ -39,36 +39,6 @@ import { validateMemoryUsage, measurePerformanceMetrics } from '../../../src/tes
  * - Memory constraint maintenance (256MB total allocation)
  * - Municipal network compatibility across European markets
  */
-const Q3_MULTI_WORLD_TESTING_SPECS = {
-  performance: {
-    hubLoadingTarget: 800, // ms - aggressive target exceeding Anna Svensson
-    worldTransitionTarget: 1500, // ms - enhanced performance standard
-    crossDeviceSyncTarget: 300, // ms - maintaining Q2 excellence
-    memoryConstraint: 256, // MB - municipal deployment constraint
-    municipalNetworkTarget: 2000 // ms - Anna Svensson fallback för constrained networks
-  },
-  worlds: {
-    totalWorlds: 5,
-    worldDefinitions: [
-      { id: 'municipal-foundations', mechanics: ['drag-drop-workflows'], prerequisites: [] },
-      { id: 'citizen-service', mechanics: ['character-relationships', 'branching-narratives'], prerequisites: ['municipal-foundations'] },
-      { id: 'emergency-response', mechanics: ['timed-challenges'], prerequisites: ['citizen-service'] },
-      { id: 'leadership-development', mechanics: ['character-relationships', 'narratives'], prerequisites: ['emergency-response'] },
-      { id: 'innovation-implementation', mechanics: ['achievement-system', 'narratives'], prerequisites: ['leadership-development'] }
-    ]
-  },
-  authentication: {
-    codeFormat: /^[A-Z2-9]{8}$/, // 8-character alphanumeric
-    sessionDuration: 7 * 24 * 60 * 60 * 1000, // 7 days in milliseconds
-    crossDeviceSync: true,
-    gdprCompliant: true
-  },
-  compliance: {
-    europeanMarkets: ['swedish', 'german', 'french', 'dutch'],
-    gdprRequirements: ['data-minimization', 'consent-management', 'data-retention', 'cross-border-compliance'],
-    municipalStandards: ['government-appropriate', 'professional-development', 'workplace-training', 'supervisor-visible']
-  }
-};
 
 describe('Q3 Multi-World Testing Harness - Phase 1 Core Implementation', () => {
   let testHarness: Q3MultiWorldTestHarness;
@@ -113,14 +83,11 @@ describe('Q3 Multi-World Testing Harness - Phase 1 Core Implementation', () => {
       
       // Run multiple hub load tests för consistency validation
       for (let i = 0; i < 10; i++) {
-        const loadStart = performance.now();
-        const hubState = await hubTestManager.loadQ3WorldHub(testUserCode, {
           includeWorldNavigation: true,
           includeHeroScoreDisplay: true,
           includeAchievementBadges: true,
           includeCulturalAdaptation: true
         });
-        const loadTime = performance.now() - loadStart;
 
         performanceResults.push(loadTime);
 
@@ -141,8 +108,6 @@ describe('Q3 Multi-World Testing Harness - Phase 1 Core Implementation', () => {
       }
 
       // Validate performance consistency
-      const averageLoadTime = performanceResults.reduce((a, b) => a + b) / performanceResults.length;
-      const maxLoadTime = Math.max(...performanceResults);
       
       expect(averageLoadTime).toBeLessThan(600); // Average <600ms för excellence
       expect(maxLoadTime).toBeLessThan(Q3_MULTI_WORLD_TESTING_SPECS.performance.hubLoadingTarget);
@@ -152,14 +117,12 @@ describe('Q3 Multi-World Testing Harness - Phase 1 Core Implementation', () => {
 
     test('5-World Navigation Grid Functionality Validation', async () => {
       // Test 2x3 professional card layout with completion status and prerequisites
-      const worldGrid = await hubTestManager.loadWorldNavigationGrid(testUserCode);
       
       expect(worldGrid.layout).toBe('2x3-professional-cards');
       expect(worldGrid.worlds).toHaveLength(Q3_MULTI_WORLD_TESTING_SPECS.worlds.totalWorlds);
       
       // Validate each world specification against Q3 requirements
       Q3_MULTI_WORLD_TESTING_SPECS.worlds.worldDefinitions.forEach((expectedWorld, index) => {
-        const actualWorld = worldGrid.worlds.find(w => w.id === expectedWorld.id);
         
         expect(actualWorld).toBeDefined();
         expect(actualWorld.id).toBe(expectedWorld.id);
@@ -181,16 +144,12 @@ describe('Q3 Multi-World Testing Harness - Phase 1 Core Implementation', () => {
 
     test('Hub-to-World Transition <1.5s Performance Excellence', async () => {
       // Test world transitions maintaining enhanced performance standard
-      const worldTransitions = Q3_MULTI_WORLD_TESTING_SPECS.worlds.worldDefinitions;
       
       for (const world of worldTransitions) {
-        const transitionStart = performance.now();
-        const worldLoad = await navigationTester.navigateFromHubToWorld(world.id, testUserCode, {
           preloadAssets: true,
           validateStateIntegrity: true,
           maintainMunicipalContext: true
         });
-        const transitionTime = performance.now() - transitionStart;
         
         // Validate transition performance
         expect(transitionTime).toBeLessThan(Q3_MULTI_WORLD_TESTING_SPECS.performance.worldTransitionTarget);
@@ -213,7 +172,6 @@ describe('Q3 Multi-World Testing Harness - Phase 1 Core Implementation', () => {
 
     test('World Completion Return-to-Hub Flow Performance', async () => {
       // Test seamless return från world completion to updated hub
-      const worldCompletion = await navigationTester.completeWorld('municipal-foundations', testUserCode, {
         achieveTargetScore: 85,
         completeMandatoryTasks: true,
         validateProfessionalDevelopment: true
@@ -223,9 +181,6 @@ describe('Q3 Multi-World Testing Harness - Phase 1 Core Implementation', () => {
       expect(worldCompletion.score).toBeGreaterThanOrEqual(85);
       expect(worldCompletion.professionalCompetency.improved).toBe(true);
       
-      const returnStart = performance.now();
-      const hubReturn = await navigationTester.returnToHubAfterCompletion(worldCompletion.sessionId);
-      const returnTime = performance.now() - returnStart;
       
       // Validate return performance
       expect(returnTime).toBeLessThan(1000); // <1s return performance
@@ -250,7 +205,6 @@ describe('Q3 Multi-World Testing Harness - Phase 1 Core Implementation', () => {
   describe('Multi-World State Management Testing Excellence', () => {
     test('Extended GameStateManager Cross-World Functionality', async () => {
       // Test 7-day session duration vs Q2's 24 hours
-      const userSession = await stateValidator.createExtendedMultiWorldSession(testUserCode, {
         sessionDuration: Q3_MULTI_WORLD_TESTING_SPECS.authentication.sessionDuration,
         enableCrossWorldPersistence: true,
         enableCharacterEvolution: true,
@@ -274,7 +228,6 @@ describe('Q3 Multi-World Testing Harness - Phase 1 Core Implementation', () => {
         developCharacterCompetency: 'relationship-management'
       });
       
-      const persistedState = await stateValidator.loadMultiWorldState(testUserCode);
       
       // Validate cross-world state persistence
       expect(persistedState.worldProgress['municipal-foundations'].completed).toBe(true);
@@ -290,7 +243,6 @@ describe('Q3 Multi-World Testing Harness - Phase 1 Core Implementation', () => {
 
     test('Character Evolution Across Multiple Worlds', async () => {
       // Test character development persistence between world transitions
-      const character = await stateValidator.createMultiWorldCharacter(testUserCode, {
         professionalArchetype: 'municipal-generalist',
         culturalAdaptation: 'swedish',
         competencyTracking: true,
@@ -313,7 +265,6 @@ describe('Q3 Multi-World Testing Harness - Phase 1 Core Implementation', () => {
         targetCompetency: 'emergency-leadership'
       });
       
-      const evolvedCharacter = await stateValidator.getCharacterState(character.id);
       
       // Validate character evolution across worlds
       expect(evolvedCharacter.competencies.municipalFoundations).toBeGreaterThan(80);
@@ -330,23 +281,18 @@ describe('Q3 Multi-World Testing Harness - Phase 1 Core Implementation', () => {
 
     test('Memory Management Under 256MB Constraint', async () => {
       // Test memory allocation strategy across hub + 5 worlds
-      const memoryBaseline = await validateMemoryUsage.getBaselineMemory();
       
       // Load complete Q3 system components sequentially
       await hubTestManager.loadWorldHub(testUserCode); // 32MB allocation
-      const hubMemory = await validateMemoryUsage.getCurrentMemory();
       expect(hubMemory - memoryBaseline).toBeLessThanOrEqual(35); // Hub: 32MB + overhead
       
       await navigationTester.loadWorld('emergency-response', testUserCode); // 128MB active world
-      const worldMemory = await validateMemoryUsage.getCurrentMemory();
       expect(worldMemory - memoryBaseline).toBeLessThanOrEqual(165); // Hub + World: 160MB
       
       await navigationTester.preloadAdjacentWorlds(['leadership-development'], testUserCode); // 64MB cache
-      const cacheMemory = await validateMemoryUsage.getCurrentMemory();
       expect(cacheMemory - memoryBaseline).toBeLessThanOrEqual(240); // Total under 256MB
       
       // Validate detailed memory allocation
-      const totalMemory = await validateMemoryUsage.getDetailedMemoryAllocation();
       expect(totalMemory.hubInterface).toBeLessThanOrEqual(32);
       expect(totalMemory.activeWorld).toBeLessThanOrEqual(128);
       expect(totalMemory.worldCache).toBeLessThanOrEqual(64);
@@ -356,13 +302,11 @@ describe('Q3 Multi-World Testing Harness - Phase 1 Core Implementation', () => {
       
       // Test memory deallocation when switching worlds
       await navigationTester.switchActiveWorld('emergency-response', 'leadership-development');
-      const postSwitchMemory = await validateMemoryUsage.getCurrentMemory();
       expect(postSwitchMemory - memoryBaseline).toBeLessThanOrEqual(Q3_MULTI_WORLD_TESTING_SPECS.performance.memoryConstraint);
     });
 
     test('Cross-World Achievement Badge Accumulation', async () => {
       // Test cross-world professional competency tracking
-      const multiWorldProgress = await stateValidator.simulateMultiWorldProgression([
         'municipal-foundations', 'citizen-service', 'emergency-response'
       ], testUserCode, {
         achieveExcellenceLevel: true,
@@ -396,7 +340,6 @@ describe('Q3 Multi-World Testing Harness - Phase 1 Core Implementation', () => {
   describe('Authentication System Integration Testing', () => {
     test('Unique Code Generation Collision Avoidance at Scale', async () => {
       // Test large-scale code generation för European municipal deployment
-      const generatedCodes = new Set<string>();
       const generationPromises: Promise<string>[] = [];
       
       // Generate 10,000 codes concurrently to test collision avoidance
@@ -404,7 +347,6 @@ describe('Q3 Multi-World Testing Harness - Phase 1 Core Implementation', () => {
         generationPromises.push(testHarness.generateUniqueCode());
       }
       
-      const codes = await Promise.all(generationPromises);
       codes.forEach(code => {
         expect(code).toMatch(Q3_MULTI_WORLD_TESTING_SPECS.authentication.codeFormat);
         expect(generatedCodes.has(code)).toBe(false); // No collisions
@@ -413,15 +355,11 @@ describe('Q3 Multi-World Testing Harness - Phase 1 Core Implementation', () => {
       
       expect(generatedCodes.size).toBe(10000); // All unique
       
-      const codeCapacity = await testHarness.validateCodeSpaceCapacity();
       expect(codeCapacity).toBeGreaterThan(1000000000); // 32^8 combinations available
     });
 
     test('Cross-Device Synchronization <300ms Performance', async () => {
       // Test multi-device municipal access scenarios
-      const device1 = await simulateAnnaSvenssonDevice('municipal-desktop');
-      const device2 = await simulateAnnaSvenssonDevice('municipal-tablet');
-      const device3 = await simulateAnnaSvenssonDevice('personal-mobile');
       
       // Make progress on device1
       await stateValidator.makeMultiWorldProgress(device1, testUserCode, {
@@ -432,12 +370,10 @@ describe('Q3 Multi-World Testing Harness - Phase 1 Core Implementation', () => {
       });
       
       // Synchronize to device2 and device3
-      const syncStart = performance.now();
       const [device2Sync, device3Sync] = await Promise.all([
         testHarness.synchronizeToDevice(device2, testUserCode),
         testHarness.synchronizeToDevice(device3, testUserCode)
       ]);
-      const syncTime = performance.now() - syncStart;
       
       // Validate synchronization performance
       expect(syncTime).toBeLessThan(Q3_MULTI_WORLD_TESTING_SPECS.performance.crossDeviceSyncTarget);
@@ -456,14 +392,12 @@ describe('Q3 Multi-World Testing Harness - Phase 1 Core Implementation', () => {
 
     test('Municipal SSO Integration Compatibility', async () => {
       // Test anonymous to municipal authentication upgrade
-      const anonymousUser = await createAnonymousUser();
       await stateValidator.makeSignificantProgress(anonymousUser, ['municipal-foundations', 'citizen-service'], {
         achieveExcellence: true,
         trackCharacterEvolution: true,
         maintainProfessionalContext: true
       });
       
-      const upgradeResult = await testHarness.upgradeTomMunicipalSSO(anonymousUser, {
         municipality: 'göteborg-kommun',
         ssoProvider: 'swedish-eid',
         userRole: 'municipal-department-head',
@@ -485,7 +419,6 @@ describe('Q3 Multi-World Testing Harness - Phase 1 Core Implementation', () => {
 
     test('GDPR Compliance Multi-World Validation', async () => {
       // Test data collection across complete 5-world experience
-      const gdprCompliance = await testHarness.validateMultiWorldGDPRCompliance({
         userJourney: 'complete-5-world-experience',
         markets: Q3_MULTI_WORLD_TESTING_SPECS.compliance.europeanMarkets,
         authenticationMethod: 'anonymous-unique-code',
@@ -522,7 +455,6 @@ describe('Q3 Multi-World Testing Harness - Phase 1 Core Implementation', () => {
   describe('Municipal Network Performance Testing', () => {
     test('Anna Svensson iPhone 12 Optimization Under Q3 Complexity', async () => {
       // Test iPhone 12 performance maintenance with Q3 multi-world architecture
-      const annaSvenssonDevice = await simulateAnnaSvenssonDevice({
         device: 'iPhone-12',
         network: 'municipal-3g',
         batteryLevel: 85,
@@ -530,7 +462,6 @@ describe('Q3 Multi-World Testing Harness - Phase 1 Core Implementation', () => {
         municipalSecurityProfiles: true
       });
 
-      const performanceTest = await measurePerformanceMetrics.runQ3PerformanceTest(annaSvenssonDevice, testUserCode);
       
       // Validate enhanced performance targets
       expect(performanceTest.hubLoadTime).toBeLessThan(Q3_MULTI_WORLD_TESTING_SPECS.performance.hubLoadingTarget);
@@ -547,16 +478,8 @@ describe('Q3 Multi-World Testing Harness - Phase 1 Core Implementation', () => {
 
     test('European Municipal Network Constraint Validation', async () => {
       // Test performance across diverse European municipal networks
-      const municipalNetworks = [
-        { country: 'sweden', bandwidth: '10mbps', latency: 60, infrastructure: 'fiber-municipal' },
-        { country: 'germany', bandwidth: '5mbps', latency: 100, infrastructure: 'dsl-government' },
-        { country: 'france', bandwidth: '8mbps', latency: 80, infrastructure: 'cable-municipal' },
-        { country: 'netherlands', bandwidth: '15mbps', latency: 40, infrastructure: 'fiber-government' }
-      ];
 
       for (const network of municipalNetworks) {
-        const networkSimulation = await simulateMunicipalNetwork(network);
-        const performanceTest = await measurePerformanceMetrics.runQ3PerformanceTest(networkSimulation, testUserCode);
         
         // Validate performance across European networks
         expect(performanceTest.hubLoadTime).toBeLessThan(1200); // <1.2s on constrained networks
@@ -571,9 +494,7 @@ describe('Q3 Multi-World Testing Harness - Phase 1 Core Implementation', () => {
 
     test('Progressive Loading Strategy Validation', async () => {
       // Test anticipated world selections för optimal performance
-      const userBehaviorPattern = await stateValidator.analyzeUserWorldSelectionPattern(testUserCode);
       
-      const progressiveLoadTest = await testHarness.testProgressiveLoading({
         currentWorld: 'citizen-service',
         anticipatedNext: userBehaviorPattern.likelyNextWorlds,
         preloadStrategy: 'intelligent-caching',
@@ -598,13 +519,6 @@ describe('Q3 Multi-World Testing Harness - Phase 1 Core Implementation', () => {
 export class Q3TestingUtilities {
   static async validateQ3SystemReadiness(): Promise<boolean> {
     // Comprehensive Q3 system readiness validation
-    const readinessChecks = {
-      multiWorldArchitecture: await this.validateMultiWorldArchitecture(),
-      authenticationSystem: await this.validateAuthenticationSystem(),
-      performanceOptimization: await this.validatePerformanceOptimization(),
-      municipalCompliance: await this.validateMunicipalCompliance(),
-      europeanCompliance: await this.validateEuropeanCompliance()
-    };
 
     return Object.values(readinessChecks).every(check => check === true);
   }

@@ -24,12 +24,9 @@ interface AuditLogEntry {
   severity: 'low' | 'medium' | 'high' | 'critical';
 }
 
-const router = Router();
-const monitoring = InfrastructureMonitoring.getInstance();
-const samlManager = getSAMLProductionManager();
 
 // Security audit logging
-const logAuditEvent = async (entry: AuditLogEntry): Promise<void> => {
+const _logAuditEvent = async (entry: AuditLogEntry): Promise<void> => {
   try {
     await monitoring.recordMetric({
       name: 'saml_audit_event',
@@ -54,11 +51,9 @@ const logAuditEvent = async (entry: AuditLogEntry): Promise<void> => {
 };
 
 // Admin authentication middleware
-const requireAdmin = async (req: Request, res: Response, next: (...args: unknown[]) => unknown) => {
+const _requireAdmin = async (req: Request, res: Response, next: (...args: unknown[]) => unknown) => {
   try {
     // In production, implement proper admin role checking
-    const userRoles = req.samlUser?.roles || [];
-    const isAdmin = userRoles.includes('admin') || userRoles.includes('saml_admin') || userRoles.includes('municipal_admin');
     
     if (!isAdmin) {
       await logAuditEvent({
@@ -110,8 +105,6 @@ router.post('/register', requireSAMLAuth, requireAdmin, async (req: Request, res
     const registrationRequest: TenantRegistrationRequest = req.body;
     
     // Validate required fields
-    const requiredFields = ['municipalityName', 'country', 'contactEmail', 'administratorName', 'idpType'];
-    const missing = requiredFields.filter(field => !registrationRequest[field]);
     
     if (missing.length > 0) {
       return res.status(400).json({
@@ -136,7 +129,6 @@ router.post('/register', requireSAMLAuth, requireAdmin, async (req: Request, res
       });
     }
 
-    const result = await samlManager.registerMunicipalTenant(registrationRequest);
     
     // Record admin action
     monitoring.recordMetric({
@@ -204,7 +196,6 @@ router.post('/activate/:tenantId', requireSAMLAuth, requireAdmin, async (req: Re
       });
     }
 
-    const result = await samlManager.activateTenant(tenantId, activationCode, samlConfig);
     
     // Record admin action
     monitoring.recordMetric({
@@ -258,10 +249,9 @@ router.get('/tenants', requireSAMLAuth, requireAdmin, async (req: Request, res: 
     const { status, country, idpType } = req.query;
     
     // Get all tenants from enterprise provider
-    const allTenants = samlManager.getProductionStatus();
     
     // In production, filter based on query parameters
-    const tenants = []; // Would fetch from database/cache
+    const _tenants = []; // Would fetch from database/cache
     
     res.json({
       success: true,
@@ -295,10 +285,8 @@ router.get('/audit/:tenantId', requireSAMLAuth, requireAdmin, async (req: Reques
     const { tenantId } = req.params;
     const { startDate, endDate, action, severity } = req.query;
     
-    const start = startDate ? new Date(startDate as string) : new Date(Date.now() - 30 * 24 * 60 * 60 * 1000); // 30 days ago
-    const end = endDate ? new Date(endDate as string) : new Date();
+    const _start = startDate ? new Date(startDate as string) : new Date(Date.now() - 30 * 24 * 60 * 60 * 1000); // 30 days ago
     
-    const auditReport = await samlManager.generateSecurityAuditReport(tenantId, start, end);
     
     // Record admin access to audit logs
     monitoring.recordMetric({
@@ -356,25 +344,9 @@ router.post('/security-scan', requireSAMLAuth, requireAdmin, async (req: Request
     }
 
     // Generate security audit for the last 7 days
-    const endDate = new Date();
-    const startDate = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000);
     
-    const auditReport = await samlManager.generateSecurityAuditReport(tenantId, startDate, endDate);
     
     // Perform additional security checks based on scan type
-    const securityScan = {
-      scanId: `scan_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`,
-      tenantId,
-      scanType,
-      timestamp: new Date().toISOString(),
-      auditSummary: auditReport.summary,
-      riskAssessment: auditReport.risks,
-      complianceStatus: auditReport.complianceStatus,
-      recommendations: auditReport.recommendations,
-      nextScanRecommended: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString(), // 30 days
-      severity: auditReport.risks.length > 0 ? 
-        Math.max(...auditReport.risks.map(r => ({ low: 1, medium: 2, high: 3, critical: 4 })[r.level])) : 0
-    };
 
     // Record security scan
     monitoring.recordMetric({
@@ -414,16 +386,8 @@ router.post('/security-scan', requireSAMLAuth, requireAdmin, async (req: Request
  */
 router.get('/status', requireSAMLAuth, requireAdmin, async (req: Request, res: Response) => {
   try {
-    const productionStatus = samlManager.getProductionStatus();
     
     // Calculate additional metrics
-    const healthMetrics = {
-      systemHealth: 'healthy', // In production, perform actual health checks
-      databaseConnectivity: 'connected',
-      redisConnectivity: 'connected',
-      certificateStatus: 'valid',
-      lastSecurityScan: new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString() // 24 hours ago
-    };
 
     res.json({
       success: true,
@@ -523,49 +487,9 @@ router.get('/metrics', requireSAMLAuth, requireAdmin, async (req: Request, res: 
     const { period = '24h' } = req.query;
     
     // Calculate timeframe
-    const periodHours = period === '7d' ? 168 : period === '30d' ? 720 : 24;
-    const startTime = new Date(Date.now() - periodHours * 60 * 60 * 1000);
     
-    const productionStatus = samlManager.getProductionStatus();
     
     // Mock metrics (in production, calculate from audit logs)
-    const metrics = {
-      authentication: {
-        totalLogins: 1250,
-        successfulLogins: 1198,
-        failedLogins: 52,
-        successRate: 95.8,
-        averageResponseTime: 340, // ms
-        peakLogins: 89 // per hour
-      },
-      tenants: {
-        total: productionStatus.activeTenants,
-        active: productionStatus.activeTenants,
-        byCountry: {
-          SE: Math.floor(productionStatus.activeTenants * 0.4),
-          DE: Math.floor(productionStatus.activeTenants * 0.3),
-          FR: Math.floor(productionStatus.activeTenants * 0.2),
-          NL: Math.floor(productionStatus.activeTenants * 0.1)
-        },
-        byIdpType: {
-          'azure-ad': Math.floor(productionStatus.activeTenants * 0.6),
-          'okta': Math.floor(productionStatus.activeTenants * 0.3),
-          'adfs': Math.floor(productionStatus.activeTenants * 0.1)
-        }
-      },
-      security: {
-        auditEvents: productionStatus.totalAuditLogs,
-        securityViolations: 3,
-        certificateExpirations: 0,
-        suspiciousActivity: 1
-      },
-      performance: {
-        uptime: productionStatus.uptime,
-        responseTime95th: 450, // ms
-        errorRate: 0.02, // 2%
-        throughput: 156 // requests per minute
-      }
-    };
 
     res.json({
       success: true,

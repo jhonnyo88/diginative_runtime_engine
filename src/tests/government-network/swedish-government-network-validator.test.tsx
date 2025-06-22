@@ -117,7 +117,6 @@ class SwedishGovernmentNetworkValidator {
     this.validationActive = true;
     
     // Initialize validation for all networks
-    const networks = Object.keys(this.networkSpecs.networks);
     for (const network of networks) {
       this.validationResults.set(network, []);
     }
@@ -136,7 +135,6 @@ class SwedishGovernmentNetworkValidator {
 
     // Validate each government network
     for (const [networkName, networkSpec] of Object.entries(this.networkSpecs.networks)) {
-      const results = await this.validateGovernmentNetwork(networkName, networkSpec as any);
       this.validationResults.set(networkName, results);
     }
 
@@ -147,54 +145,12 @@ class SwedishGovernmentNetworkValidator {
   }
 
   private async validateGovernmentNetwork(networkName: string, spec: Record<string, unknown>): Promise<Record<string, unknown>[]> {
-    const results = [];
 
     // Performance validation
-    const performanceResult = {
-      testType: 'network_performance',
-      network: networkName,
-      timestamp: new Date().toISOString(),
-      success: true,
-      performanceMetrics: {
-        actualLatency: spec.performanceTargets.maxLatency * 0.8, // Simulate good performance
-        actualBandwidth: spec.performanceTargets.minBandwidth * 1.2,
-        actualPacketLoss: spec.performanceTargets.maxPacketLoss * 0.5,
-        actualUptime: spec.performanceTargets.minUptime + 0.05
-      },
-      securityMetrics: {
-        encryptionActive: true,
-        accessControlValidated: true,
-        auditLoggingActive: true,
-        intrusionDetectionActive: true
-      },
-      governmentReadiness: true,
-      issues: []
-    };
 
     results.push(performanceResult);
 
     // Security validation
-    const securityResult = {
-      testType: 'network_security',
-      network: networkName,
-      timestamp: new Date().toISOString(),
-      success: true,
-      securityValidation: {
-        encryptionLevel: 'AES-256-Government',
-        accessControl: 'government-grade',
-        auditCompliance: 100,
-        intrusionPrevention: true
-      },
-      complianceMetrics: {
-        personuppgiftslag: 100,
-        offentlighetslagen: 100,
-        arkivlagen: 100,
-        sakerhetslagen: 100,
-        gdprCompliance: 100
-      },
-      governmentReadiness: true,
-      issues: []
-    };
 
     results.push(securityResult);
 
@@ -202,90 +158,24 @@ class SwedishGovernmentNetworkValidator {
   }
 
   private async generateValidationSummary(): Promise<void> {
-    const networks = Object.keys(this.networkSpecs.networks);
     
-    const summary = {
-      testType: 'validation_summary',
-      timestamp: new Date().toISOString(),
-      totalNetworks: networks.length,
-      validatedNetworks: networks.length,
-      successRate: 100,
-      averagePerformance: {
-        latency: 65, // ms average
-        bandwidth: 112, // Mbps average
-        uptime: 99.65 // % average
-      },
-      securityCompliance: {
-        overall: 100,
-        encryption: 100,
-        accessControl: 100,
-        auditLogging: 100
-      },
-      governmentReadiness: true,
-      recommendedForDemo: true,
-      issues: []
-    };
 
     this.validationResults.set('validation_summary', [summary]);
 
     // Generate compliance validation
-    const complianceResult = {
-      testType: 'compliance_validation',
-      timestamp: new Date().toISOString(),
-      success: true,
-      complianceScores: {
-        personuppgiftslag: 100,
-        offentlighetslagen: 100,
-        arkivlagen: 100,
-        sakerhetslagen: 100,
-        gdprCompliance: 100,
-        overall: 100
-      },
-      governmentReadiness: true,
-      issues: []
-    };
 
     this.validationResults.set('compliance_validation', [complianceResult]);
 
     // Generate security validation
-    const securitySummary = {
-      testType: 'security_validation',
-      timestamp: new Date().toISOString(),
-      success: true,
-      securityMetrics: {
-        encryptionStandards: 100,
-        accessControl: 100,
-        auditRequirements: 100,
-        networkSegmentation: 100,
-        overall: 100
-      },
-      governmentReadiness: true,
-      issues: []
-    };
 
     this.validationResults.set('security_validation', [securitySummary]);
 
     // Generate performance validation
-    const performanceSummary = {
-      testType: 'performance_validation',
-      timestamp: new Date().toISOString(),
-      success: true,
-      performanceMetrics: {
-        latencyCompliance: 95,
-        bandwidthCompliance: 98,
-        uptimeCompliance: 99,
-        overall: 97
-      },
-      governmentReadiness: true,
-      issues: []
-    };
 
     this.validationResults.set('performance_validation', [performanceSummary]);
   }
 
   getNetworkValidationSummary(): Record<string, unknown> {
-    const summary = this.validationResults.get('validation_summary')?.[0];
-    const networks = Object.keys(this.networkSpecs.networks);
     
     return {
       validation_active: this.validationActive,
@@ -307,65 +197,6 @@ class SwedishGovernmentNetworkValidator {
   }
 }
 
-const SWEDISH_GOVERNMENT_NETWORK_SPECS = {
-  networks: {
-    riksdag: {
-      name: 'Riksdag Parliament Network',
-      networkType: 'parliamentary-secure',
-      securityLevel: 'confidential',
-      performanceTargets: {
-        maxLatency: 50,
-        minBandwidth: 100,
-        maxPacketLoss: 0.01,
-        minUptime: 99.9
-      }
-    },
-    regeringskansliet: {
-      name: 'Government Offices Network',
-      networkType: 'government-secure',
-      securityLevel: 'restricted',
-      performanceTargets: {
-        maxLatency: 75,
-        minBandwidth: 80,
-        maxPacketLoss: 0.02,
-        minUptime: 99.8
-      }
-    },
-    myndighetsnat: {
-      name: 'Government Agency Network',
-      networkType: 'agency-network',
-      securityLevel: 'restricted',
-      performanceTargets: {
-        maxLatency: 100,
-        minBandwidth: 60,
-        maxPacketLoss: 0.03,
-        minUptime: 99.5
-      }
-    },
-    kommunalnat: {
-      name: 'Municipal Network',
-      networkType: 'municipal-network',
-      securityLevel: 'restricted',
-      performanceTargets: {
-        maxLatency: 120,
-        minBandwidth: 40,
-        maxPacketLoss: 0.05,
-        minUptime: 99.0
-      }
-    },
-    sakranat: {
-      name: 'Secure Government Network',
-      networkType: 'secure-government',
-      securityLevel: 'secret',
-      performanceTargets: {
-        maxLatency: 30,
-        minBandwidth: 200,
-        maxPacketLoss: 0.005,
-        minUptime: 99.95
-      }
-    }
-  }
-};
 
 describe('Swedish Government Network Validator - Infrastructure Validation', () => {
   let networkValidator: SwedishGovernmentNetworkValidator;
@@ -385,7 +216,6 @@ describe('Swedish Government Network Validator - Infrastructure Validation', () 
     test('Swedish Government Network Validator Initialization', async () => {
       expect(networkValidator).toBeDefined();
       
-      const summary = networkValidator.getNetworkValidationSummary();
       expect(summary.validation_active).toBe(false);
       expect(summary.total_networks).toBe(0);
       expect(summary.success_rate).toBe(0);
@@ -394,7 +224,6 @@ describe('Swedish Government Network Validator - Infrastructure Validation', () 
     test('Government Network Validation Activation', async () => {
       await networkValidator.initializeGovernmentNetworkValidation();
       
-      const summary = networkValidator.getNetworkValidationSummary();
       expect(summary.validation_active).toBe(true);
       expect(summary.total_networks).toBe(5); // 5 Swedish government networks
     });
@@ -405,14 +234,12 @@ describe('Swedish Government Network Validator - Infrastructure Validation', () 
       expect(Object.keys(SWEDISH_GOVERNMENT_NETWORK_SPECS.networks)).toHaveLength(5);
 
       // Validate Riksdag network
-      const riksdag = SWEDISH_GOVERNMENT_NETWORK_SPECS.networks.riksdag;
       expect(riksdag.name).toBe('Riksdag Parliament Network');
       expect(riksdag.securityLevel).toBe('confidential');
       expect(riksdag.performanceTargets.maxLatency).toBe(50);
       expect(riksdag.performanceTargets.minBandwidth).toBe(100);
 
       // Validate Secure Government Network
-      const sakranat = SWEDISH_GOVERNMENT_NETWORK_SPECS.networks.sakranat;
       expect(sakranat.name).toBe('Secure Government Network');
       expect(sakranat.securityLevel).toBe('secret');
       expect(sakranat.performanceTargets.maxLatency).toBe(30);
@@ -429,10 +256,8 @@ describe('Swedish Government Network Validator - Infrastructure Validation', () 
     test('Riksdag Parliament Network Validation', async () => {
       await networkValidator.initializeGovernmentNetworkValidation();
       
-      const results = await networkValidator.executeComprehensiveNetworkValidation();
       
       // Validate Riksdag network results
-      const riksdagResults = results.get('riksdag');
       expect(riksdagResults).toBeDefined();
       expect(riksdagResults!.length).toBeGreaterThan(0);
 
@@ -453,10 +278,8 @@ describe('Swedish Government Network Validator - Infrastructure Validation', () 
     test('Government Offices Network Validation', async () => {
       await networkValidator.initializeGovernmentNetworkValidation();
       
-      const results = await networkValidator.executeComprehensiveNetworkValidation();
       
       // Validate Government Offices network results
-      const regeringResults = results.get('regeringskansliet');
       expect(regeringResults).toBeDefined();
       expect(regeringResults!.length).toBeGreaterThan(0);
 
@@ -477,10 +300,8 @@ describe('Swedish Government Network Validator - Infrastructure Validation', () 
     test('Municipal Network Validation', async () => {
       await networkValidator.initializeGovernmentNetworkValidation();
       
-      const results = await networkValidator.executeComprehensiveNetworkValidation();
       
       // Validate Municipal network results
-      const municipalResults = results.get('kommunalnat');
       expect(municipalResults).toBeDefined();
       expect(municipalResults!.length).toBeGreaterThan(0);
 
@@ -501,10 +322,8 @@ describe('Swedish Government Network Validator - Infrastructure Validation', () 
     test('Secure Government Network Validation', async () => {
       await networkValidator.initializeGovernmentNetworkValidation();
       
-      const results = await networkValidator.executeComprehensiveNetworkValidation();
       
       // Validate Secure Government network results
-      const secureResults = results.get('sakranat');
       expect(secureResults).toBeDefined();
       expect(secureResults!.length).toBeGreaterThan(0);
 
@@ -525,10 +344,8 @@ describe('Swedish Government Network Validator - Infrastructure Validation', () 
     test('Agency Network Validation', async () => {
       await networkValidator.initializeGovernmentNetworkValidation();
       
-      const results = await networkValidator.executeComprehensiveNetworkValidation();
       
       // Validate Agency network results
-      const agencyResults = results.get('myndighetsnat');
       expect(agencyResults).toBeDefined();
       expect(agencyResults!.length).toBeGreaterThan(0);
 
@@ -554,14 +371,11 @@ describe('Swedish Government Network Validator - Infrastructure Validation', () 
     test('Swedish Legal Compliance Validation', async () => {
       await networkValidator.initializeGovernmentNetworkValidation();
       
-      const results = await networkValidator.executeComprehensiveNetworkValidation();
       
       // Validate compliance validation results
-      const complianceResults = results.get('compliance_validation');
       expect(complianceResults).toBeDefined();
       expect(complianceResults!.length).toBe(1);
 
-      const complianceResult = complianceResults![0];
       expect(complianceResult.testType).toBe('compliance_validation');
       expect(complianceResult.success).toBe(true);
       expect(complianceResult.complianceScores.personuppgiftslag).toBe(100); // Personal Data Act
@@ -577,14 +391,11 @@ describe('Swedish Government Network Validator - Infrastructure Validation', () 
     test('Government Security Standards Validation', async () => {
       await networkValidator.initializeGovernmentNetworkValidation();
       
-      const results = await networkValidator.executeComprehensiveNetworkValidation();
       
       // Validate security validation results
-      const securityResults = results.get('security_validation');
       expect(securityResults).toBeDefined();
       expect(securityResults!.length).toBe(1);
 
-      const securityResult = securityResults![0];
       expect(securityResult.testType).toBe('security_validation');
       expect(securityResult.success).toBe(true);
       expect(securityResult.securityMetrics.encryptionStandards).toBe(100); // AES-256-Government
@@ -604,14 +415,11 @@ describe('Swedish Government Network Validator - Infrastructure Validation', () 
     test('Network Performance Standards Validation', async () => {
       await networkValidator.initializeGovernmentNetworkValidation();
       
-      const results = await networkValidator.executeComprehensiveNetworkValidation();
       
       // Validate performance validation results
-      const performanceResults = results.get('performance_validation');
       expect(performanceResults).toBeDefined();
       expect(performanceResults!.length).toBe(1);
 
-      const performanceResult = performanceResults![0];
       expect(performanceResult.testType).toBe('performance_validation');
       expect(performanceResult.success).toBe(true);
       expect(performanceResult.performanceMetrics.latencyCompliance).toBeGreaterThan(90); // Network latency
@@ -626,8 +434,6 @@ describe('Swedish Government Network Validator - Infrastructure Validation', () 
     test('Demo Performance Readiness Validation', async () => {
       await networkValidator.initializeGovernmentNetworkValidation();
       
-      const results = await networkValidator.executeComprehensiveNetworkValidation();
-      const summary = networkValidator.getNetworkValidationSummary();
 
       // Validate demo readiness metrics
       expect(summary.demo_recommended).toBe(true); // Demo approved
@@ -651,8 +457,6 @@ describe('Swedish Government Network Validator - Infrastructure Validation', () 
     test('Complete Government Network Infrastructure Validation', async () => {
       await networkValidator.initializeGovernmentNetworkValidation();
       
-      const results = await networkValidator.executeComprehensiveNetworkValidation();
-      const summary = networkValidator.getNetworkValidationSummary();
 
       // Validate comprehensive testing completion
       expect(summary.validation_active).toBe(true);
@@ -674,8 +478,6 @@ describe('Swedish Government Network Validator - Infrastructure Validation', () 
     test('Sveriges Digitaliseringsstrategi Demo Network Readiness', async () => {
       await networkValidator.initializeGovernmentNetworkValidation();
       
-      const results = await networkValidator.executeComprehensiveNetworkValidation();
-      const summary = networkValidator.getNetworkValidationSummary();
 
       // Demo readiness requirements
       expect(summary.demo_recommended).toBe(true); // Demo approved for all networks
@@ -701,7 +503,6 @@ describe('Swedish Government Network Validator - Infrastructure Validation', () 
  */
 describe('Swedish Government Network Integration', () => {
   test('Complete Government Network Validation Lifecycle', async () => {
-    const networkValidator = new SwedishGovernmentNetworkValidator();
     
     // Complete lifecycle test
     expect(networkValidator.getNetworkValidationSummary().validation_active).toBe(false);
@@ -711,11 +512,9 @@ describe('Swedish Government Network Integration', () => {
     expect(networkValidator.getNetworkValidationSummary().validation_active).toBe(true);
     
     // Execute comprehensive validation
-    const results = await networkValidator.executeComprehensiveNetworkValidation();
     expect(results.size).toBeGreaterThan(8); // Multiple validation categories
     
     // Validate final status
-    const summary = networkValidator.getNetworkValidationSummary();
     expect(summary.total_networks).toBe(5);
     expect(summary.success_rate).toBe(100);
     expect(summary.government_ready).toBe(true);

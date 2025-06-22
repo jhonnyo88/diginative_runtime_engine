@@ -43,7 +43,6 @@ export const DocumentWorkflow: React.FC<DocumentWorkflowProps> = ({
   municipalTheme = 'sweden',
   onWorkflowComplete,
 }) => {
-  const toast = useToast();
   
   const [stages, setStages] = useState<WorkflowStage[]>([
     {
@@ -92,25 +91,20 @@ export const DocumentWorkflow: React.FC<DocumentWorkflowProps> = ({
     },
   ]);
 
-  const handleDrop = (targetStageId: string) => (item: DragItem) => {
-    const document = item.data as Document;
+  const _handleDrop = (targetStageId: string) => (item: DragItem) => {
     
     setStages(prevStages => {
-      const newStages = [...prevStages];
       
       // Remove from source stage
       if (item.sourceZone) {
-        const sourceStage = newStages.find(s => s.id === item.sourceZone);
         if (sourceStage) {
           sourceStage.documents = sourceStage.documents.filter(d => d.id !== document.id);
         }
       }
       
       // Add to target stage
-      const targetStage = newStages.find(s => s.id === targetStageId);
       if (targetStage) {
         // Update document status based on stage
-        const updatedDoc = { ...document };
         if (targetStageId === 'review') {
           updatedDoc.status = 'review';
         } else if (targetStageId === 'approved') {
@@ -129,7 +123,6 @@ export const DocumentWorkflow: React.FC<DocumentWorkflowProps> = ({
         });
         
         // Check if workflow is complete
-        const approvedStage = newStages.find(s => s.id === 'approved');
         if (approvedStage && approvedStage.documents.length === 3) {
           onWorkflowComplete?.(approvedStage.documents);
           toast({
@@ -146,26 +139,8 @@ export const DocumentWorkflow: React.FC<DocumentWorkflowProps> = ({
     });
   };
 
-  const getDocumentIcon = (type: string) => {
-    switch (type) {
-      case 'permit': return FiFile;
-      case 'report': return FiCheckCircle;
-      case 'invoice': return FiClock;
-      case 'application': return FiAlertCircle;
-      default: return FiFile;
-    }
-  };
 
-  const getPriorityColor = (priority: string) => {
-    switch (priority) {
-      case 'high': return 'red';
-      case 'medium': return 'yellow';
-      case 'low': return 'green';
-      default: return 'gray';
-    }
-  };
 
-  const completionProgress = (stages.find(s => s.id === 'approved')?.documents.length || 0) / 3 * 100;
 
   return (
     <DragDropProvider municipalTheme={municipalTheme}>
@@ -254,7 +229,6 @@ export const DocumentWorkflow: React.FC<DocumentWorkflowProps> = ({
           size="lg"
           isDisabled={completionProgress < 100}
           onClick={() => {
-            const approvedDocs = stages.find(s => s.id === 'approved')?.documents || [];
             onWorkflowComplete?.(approvedDocs);
           }}
         >

@@ -11,7 +11,6 @@ import { InfrastructureMonitoring } from './services/infrastructure-monitoring'
 console.info('DigiNativa Runtime Engine - Initializing monitoring services');
 
 // Initialize infrastructure monitoring
-const infrastructureMonitoring = InfrastructureMonitoring.getInstance();
 infrastructureMonitoring.initialize({
   sentryDsn: import.meta.env.VITE_SENTRY_DSN,
   environment: import.meta.env.MODE as 'development' | 'staging' | 'production',

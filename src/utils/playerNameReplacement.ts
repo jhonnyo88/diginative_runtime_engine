@@ -10,7 +10,6 @@ export interface GameContentWithPlayerName {
 /**
  * Replace {{PLAYER_NAME}} placeholders in any string
  */
-export const replacePlayerName = (text: string, playerName: string): string => {
   if (!text || !playerName) return text;
   return text.replace(/\{\{PLAYER_NAME\}\}/g, playerName);
 };
@@ -19,7 +18,6 @@ export const replacePlayerName = (text: string, playerName: string): string => {
  * Recursively replace {{PLAYER_NAME}} placeholders in any object
  * This handles nested objects, arrays, and strings throughout the game manifest
  */
-export const replacePlayerNameInObject = <T extends GameContentWithPlayerName>(
   obj: T, 
   playerName: string
 ): T => {
@@ -49,7 +47,6 @@ export const replacePlayerNameInObject = <T extends GameContentWithPlayerName>(
 /**
  * Process dialogue scene data to replace player name placeholders
  */
-export const processDialogueSceneWithPlayerName = (
   sceneData: Record<string, unknown>,
   playerName: string
 ) => {
@@ -61,7 +58,6 @@ export const processDialogueSceneWithPlayerName = (
 /**
  * Process quiz scene data to replace player name placeholders
  */
-export const processQuizSceneWithPlayerName = (
   sceneData: Record<string, unknown>,
   playerName: string
 ) => {
@@ -73,7 +69,6 @@ export const processQuizSceneWithPlayerName = (
 /**
  * Process entire game manifest to replace player name placeholders
  */
-export const processGameManifestWithPlayerName = (
   gameManifest: Record<string, unknown>,
   playerName: string
 ) => {

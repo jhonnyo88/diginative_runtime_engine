@@ -21,13 +21,6 @@ vi.mock('../../services/municipal-integration-apis', () => ({
   validateMunicipalAccess: vi.fn()
 }));
 
-const renderWithChakra = (component: React.ReactElement) => {
-  return render(
-    <ChakraProvider>
-      {component}
-    </ChakraProvider>
-  );
-};
 
 describe('MunicipalitySelector', () => {
   beforeEach(() => {
@@ -38,14 +31,10 @@ describe('MunicipalitySelector', () => {
     it('renders without crashing', () => {
       renderWithChakra(<MunicipalitySelector />);
       
-      const component = screen.getByTestId('-municipality-selector');
       expect(component).toBeInTheDocument();
     });
 
     it('handles props correctly', () => {
-      const testProps = {
-        // Add relevant props based on component analysis
-      };
       
       renderWithChakra(<MunicipalitySelector {...testProps} />);
       
@@ -69,7 +58,6 @@ describe('MunicipalitySelector', () => {
         />
       );
 
-      const element = screen.getByTestId('-municipality-selector');
       expect(element).toHaveAttribute('data-municipality', 'malmö');
     });
 
@@ -85,14 +73,12 @@ describe('MunicipalitySelector', () => {
     });
 
     it('handles multiple municipality contexts', () => {
-      const municipalities = ['malmö', 'stockholm', 'göteborg'];
       
       municipalities.forEach(municipality => {
         const { rerender } = renderWithChakra(
           <MunicipalitySelector municipality={municipality} />
         );
 
-        const element = screen.getByTestId('-municipality-selector');
         expect(element).toHaveAttribute('data-municipality', municipality);
       });
     });
@@ -103,7 +89,6 @@ describe('MunicipalitySelector', () => {
     it('provides proper ARIA attributes', () => {
       renderWithChakra(<MunicipalitySelector />);
       
-      const element = screen.getByTestId('-municipality-selector');
       
       // Check for appropriate ARIA attributes
       expect(element).toHaveAttribute('role');
@@ -112,7 +97,6 @@ describe('MunicipalitySelector', () => {
     it('supports keyboard navigation', () => {
       renderWithChakra(<MunicipalitySelector />);
       
-      const element = screen.getByTestId('-municipality-selector');
       
       // Test tab navigation
       element.focus();
@@ -123,7 +107,6 @@ describe('MunicipalitySelector', () => {
       renderWithChakra(<MunicipalitySelector />);
       
       // Basic contrast check
-      const element = screen.getByTestId('-municipality-selector');
       expect(element).toBeInTheDocument();
     });
   });

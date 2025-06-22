@@ -24,13 +24,7 @@ describe('Q2 Municipal Security and Compliance Framework', () => {
 
   describe('Q2 Mechanic Security Establishment', () => {
     it('should establish government-grade security for drag-drop mechanic', async () => {
-      const securityConfig = {
-        country: 'sweden',
-        dataTypes: ['municipal_workflows', 'citizen_requests'],
-        userRoles: ['municipal_employee', 'administrator']
-      };
 
-      const securityContext = await securityEngine.establishQ2MechanicSecurity(
         'malmo_stad',
         'drag_drop',
         securityConfig
@@ -46,13 +40,7 @@ describe('Q2 Municipal Security and Compliance Framework', () => {
     });
 
     it('should establish enhanced security for character system with citizen data', async () => {
-      const securityConfig = {
-        country: 'germany',
-        dataTypes: ['citizen_personal_data', 'character_interactions'],
-        userRoles: ['citizen', 'municipal_employee']
-      };
 
-      const securityContext = await securityEngine.establishQ2MechanicSecurity(
         'berlin_de',
         'character_system',
         securityConfig
@@ -68,13 +56,7 @@ describe('Q2 Municipal Security and Compliance Framework', () => {
     });
 
     it('should establish restricted security for timed challenge emergency scenarios', async () => {
-      const securityConfig = {
-        country: 'france',
-        dataTypes: ['emergency_response', 'resource_allocation'],
-        userRoles: ['emergency_coordinator', 'municipal_admin']
-      };
 
-      const securityContext = await securityEngine.establishQ2MechanicSecurity(
         'paris_fr',
         'timed_challenge',
         securityConfig
@@ -90,13 +72,7 @@ describe('Q2 Municipal Security and Compliance Framework', () => {
     });
 
     it('should establish security for branching narrative with municipal data', async () => {
-      const securityConfig = {
-        country: 'netherlands',
-        dataTypes: ['decision_scenarios', 'municipal_policies'],
-        userRoles: ['policy_maker', 'department_head']
-      };
 
-      const securityContext = await securityEngine.establishQ2MechanicSecurity(
         'amsterdam_nl',
         'branching_narrative',
         securityConfig
@@ -112,13 +88,7 @@ describe('Q2 Municipal Security and Compliance Framework', () => {
     });
 
     it('should establish security for achievement system with confidential data', async () => {
-      const securityConfig = {
-        country: 'sweden',
-        dataTypes: ['professional_assessments', 'competency_data'],
-        userRoles: ['municipal_employee', 'hr_manager']
-      };
 
-      const securityContext = await securityEngine.establishQ2MechanicSecurity(
         'goteborg_se',
         'achievement_system',
         securityConfig
@@ -139,11 +109,6 @@ describe('Q2 Municipal Security and Compliance Framework', () => {
         securityEvent = event;
       });
 
-      const securityConfig = {
-        country: 'germany',
-        dataTypes: ['test_data'],
-        userRoles: ['test_user']
-      };
 
       await securityEngine.establishQ2MechanicSecurity(
         'test_municipality',
@@ -193,7 +158,6 @@ describe('Q2 Municipal Security and Compliance Framework', () => {
         }
       };
 
-      const tenantIsolation = await securityEngine.establishMunicipalTenantIsolation(
         'stockholm_se',
         sovereigntyConfig
       );
@@ -239,7 +203,6 @@ describe('Q2 Municipal Security and Compliance Framework', () => {
         }
       };
 
-      const tenantIsolation = await securityEngine.establishMunicipalTenantIsolation(
         'munich_de',
         sovereigntyConfig
       );
@@ -280,7 +243,6 @@ describe('Q2 Municipal Security and Compliance Framework', () => {
         }
       };
 
-      const tenantIsolation = await securityEngine.establishMunicipalTenantIsolation(
         'lyon_fr',
         sovereigntyConfig
       );
@@ -321,7 +283,6 @@ describe('Q2 Municipal Security and Compliance Framework', () => {
         }
       };
 
-      const tenantIsolation = await securityEngine.establishMunicipalTenantIsolation(
         'rotterdam_nl',
         sovereigntyConfig
       );
@@ -383,11 +344,6 @@ describe('Q2 Municipal Security and Compliance Framework', () => {
   describe('Q2 Interaction Audit Logging', () => {
     beforeEach(async () => {
       // Setup security context for testing
-      const securityConfig = {
-        country: 'sweden',
-        dataTypes: ['test_data'],
-        userRoles: ['test_user']
-      };
 
       await securityEngine.establishQ2MechanicSecurity(
         'test_municipality',
@@ -397,13 +353,7 @@ describe('Q2 Municipal Security and Compliance Framework', () => {
     });
 
     it('should log drag-drop interaction with comprehensive audit trail', async () => {
-      const interactionData = {
-        type: 'document_workflow',
-        dataFields: ['document_id', 'workflow_status', 'user_action'],
-        userRole: 'municipal_employee'
-      };
 
-      const auditLog = await securityEngine.logQ2Interaction(
         'test_municipality',
         'user123',
         'drag_drop',
@@ -423,11 +373,6 @@ describe('Q2 Municipal Security and Compliance Framework', () => {
 
     it('should log character system interaction with confidential data', async () => {
       // Setup character system security
-      const securityConfig = {
-        country: 'germany',
-        dataTypes: ['character_data'],
-        userRoles: ['citizen']
-      };
 
       await securityEngine.establishQ2MechanicSecurity(
         'character_test_municipality',
@@ -435,13 +380,7 @@ describe('Q2 Municipal Security and Compliance Framework', () => {
         securityConfig
       );
 
-      const interactionData = {
-        type: 'character_dialogue',
-        dataFields: ['character_state', 'dialogue_history', 'emotional_response'],
-        userRole: 'citizen'
-      };
 
-      const auditLog = await securityEngine.logQ2Interaction(
         'character_test_municipality',
         'citizen456',
         'character_system',
@@ -458,11 +397,6 @@ describe('Q2 Municipal Security and Compliance Framework', () => {
 
     it('should log timed challenge emergency interaction', async () => {
       // Setup timed challenge security
-      const securityConfig = {
-        country: 'france',
-        dataTypes: ['emergency_data'],
-        userRoles: ['emergency_coordinator']
-      };
 
       await securityEngine.establishQ2MechanicSecurity(
         'emergency_test_municipality',
@@ -470,13 +404,7 @@ describe('Q2 Municipal Security and Compliance Framework', () => {
         securityConfig
       );
 
-      const interactionData = {
-        type: 'emergency_response',
-        dataFields: ['resource_allocation', 'response_time', 'coordination_data'],
-        userRole: 'emergency_coordinator'
-      };
 
-      const auditLog = await securityEngine.logQ2Interaction(
         'emergency_test_municipality',
         'coordinator789',
         'timed_challenge',
@@ -495,11 +423,6 @@ describe('Q2 Municipal Security and Compliance Framework', () => {
         loggingEvent = event;
       });
 
-      const interactionData = {
-        type: 'test_interaction',
-        dataFields: ['test_field'],
-        userRole: 'test_role'
-      };
 
       await securityEngine.logQ2Interaction(
         'test_municipality',
@@ -517,11 +440,6 @@ describe('Q2 Municipal Security and Compliance Framework', () => {
     });
 
     it('should throw error for missing security context', async () => {
-      const interactionData = {
-        type: 'test_interaction',
-        dataFields: ['test_field'],
-        userRole: 'test_role'
-      };
 
       await expect(
         securityEngine.logQ2Interaction(
@@ -536,15 +454,7 @@ describe('Q2 Municipal Security and Compliance Framework', () => {
 
   describe('Cross-Border Encryption Setup', () => {
     it('should setup encryption for Nordic regional cooperation', async () => {
-      const cooperationAgreement = {
-        agreementId: 'nordic_cooperation_001',
-        sourceCountry: 'sweden',
-        targetCountry: 'norway',
-        dataClassification: 'internal',
-        requiredCompliance: ['gdpr', 'nordic_council']
-      };
 
-      const encryptionConfig = await securityEngine.setupCrossBorderEncryption(
         'stockholm_se',
         'oslo_no',
         cooperationAgreement
@@ -560,15 +470,7 @@ describe('Q2 Municipal Security and Compliance Framework', () => {
     });
 
     it('should setup encryption for Franco-German bilateral cooperation', async () => {
-      const cooperationAgreement = {
-        agreementId: 'franco_german_001',
-        sourceCountry: 'france',
-        targetCountry: 'germany',
-        dataClassification: 'confidential',
-        requiredCompliance: ['gdpr', 'franco_german_treaty']
-      };
 
-      const encryptionConfig = await securityEngine.setupCrossBorderEncryption(
         'strasbourg_fr',
         'kehl_de',
         cooperationAgreement
@@ -581,15 +483,7 @@ describe('Q2 Municipal Security and Compliance Framework', () => {
     });
 
     it('should setup encryption for Benelux cooperation', async () => {
-      const cooperationAgreement = {
-        agreementId: 'benelux_cooperation_001',
-        sourceCountry: 'netherlands',
-        targetCountry: 'belgium',
-        dataClassification: 'internal',
-        requiredCompliance: ['gdpr', 'benelux_treaty']
-      };
 
-      const encryptionConfig = await securityEngine.setupCrossBorderEncryption(
         'maastricht_nl',
         'liege_be',
         cooperationAgreement
@@ -607,13 +501,6 @@ describe('Q2 Municipal Security and Compliance Framework', () => {
         encryptionEvent = event;
       });
 
-      const cooperationAgreement = {
-        agreementId: 'test_cooperation',
-        sourceCountry: 'sweden',
-        targetCountry: 'denmark',
-        dataClassification: 'internal',
-        requiredCompliance: ['gdpr']
-      };
 
       await securityEngine.setupCrossBorderEncryption(
         'test_source',
@@ -631,13 +518,7 @@ describe('Q2 Municipal Security and Compliance Framework', () => {
 
   describe('Penetration Testing Framework', () => {
     it('should execute comprehensive penetration testing for Q2 production deployment', async () => {
-      const testingScope = {
-        targetSystems: ['q2_drag_drop', 'q2_timed_challenge', 'q2_character_system'],
-        testTypes: ['authentication_bypass', 'sql_injection', 'xss_vulnerabilities', 'privilege_escalation'],
-        complianceFrameworks: ['gdpr', 'kommunallagen']
-      };
 
-      const testResult = await securityEngine.executePenetrationTesting(testingScope);
 
       expect(testResult.testId).toBeDefined();
       expect(testResult.timestamp).toBeInstanceOf(Date);
@@ -650,13 +531,7 @@ describe('Q2 Municipal Security and Compliance Framework', () => {
     });
 
     it('should execute security testing for cross-border connections', async () => {
-      const testingScope = {
-        targetSystems: ['cross_border_encryption', 'data_flow_validation', 'audit_trail_sharing'],
-        testTypes: ['encryption_strength', 'man_in_middle', 'data_sovereignty_breach'],
-        complianceFrameworks: ['gdpr', 'bilateral_agreements']
-      };
 
-      const testResult = await securityEngine.executePenetrationTesting(testingScope);
 
       expect(testResult.scope.targetSystems).toContain('cross_border_encryption');
       expect(testResult.scope.testTypes).toContain('encryption_strength');
@@ -664,13 +539,7 @@ describe('Q2 Municipal Security and Compliance Framework', () => {
     });
 
     it('should execute security testing for municipal tenant isolation', async () => {
-      const testingScope = {
-        targetSystems: ['tenant_network_segmentation', 'data_encryption', 'access_controls'],
-        testTypes: ['tenant_isolation_bypass', 'data_leakage', 'unauthorized_access'],
-        complianceFrameworks: ['gdpr', 'gemeindeordnung']
-      };
 
-      const testResult = await securityEngine.executePenetrationTesting(testingScope);
 
       expect(testResult.scope.targetSystems).toContain('tenant_network_segmentation');
       expect(testResult.scope.testTypes).toContain('tenant_isolation_bypass');
@@ -683,11 +552,6 @@ describe('Q2 Municipal Security and Compliance Framework', () => {
         testingEvent = event;
       });
 
-      const testingScope = {
-        targetSystems: ['test_system'],
-        testTypes: ['test_type'],
-        complianceFrameworks: ['gdpr']
-      };
 
       await securityEngine.executePenetrationTesting(testingScope);
 
@@ -701,13 +565,7 @@ describe('Q2 Municipal Security and Compliance Framework', () => {
 
   describe('European Compliance Frameworks', () => {
     it('should validate GDPR compliance requirements', async () => {
-      const securityConfig = {
-        country: 'sweden',
-        dataTypes: ['citizen_personal_data'],
-        userRoles: ['municipal_employee']
-      };
 
-      const securityContext = await securityEngine.establishQ2MechanicSecurity(
         'gdpr_test_municipality',
         'character_system',
         securityConfig
@@ -719,13 +577,7 @@ describe('Q2 Municipal Security and Compliance Framework', () => {
     });
 
     it('should validate Swedish Kommunallagen compliance', async () => {
-      const securityConfig = {
-        country: 'sweden',
-        dataTypes: ['municipal_decisions', 'transparency_data'],
-        userRoles: ['decision_maker']
-      };
 
-      const securityContext = await securityEngine.establishQ2MechanicSecurity(
         'kommunal_test_municipality',
         'branching_narrative',
         securityConfig
@@ -736,13 +588,7 @@ describe('Q2 Municipal Security and Compliance Framework', () => {
     });
 
     it('should validate German Gemeindeordnung compliance', async () => {
-      const securityConfig = {
-        country: 'germany',
-        dataTypes: ['municipal_administration', 'citizen_services'],
-        userRoles: ['beamter']
-      };
 
-      const securityContext = await securityEngine.establishQ2MechanicSecurity(
         'gemeindeordnung_test_municipality',
         'drag_drop',
         securityConfig
@@ -753,13 +599,7 @@ describe('Q2 Municipal Security and Compliance Framework', () => {
     });
 
     it('should validate French CGCT compliance', async () => {
-      const securityConfig = {
-        country: 'france',
-        dataTypes: ['service_public_data', 'collectivite_operations'],
-        userRoles: ['fonctionnaire']
-      };
 
-      const securityContext = await securityEngine.establishQ2MechanicSecurity(
         'cgct_test_municipality',
         'achievement_system',
         securityConfig
@@ -770,13 +610,7 @@ describe('Q2 Municipal Security and Compliance Framework', () => {
     });
 
     it('should validate Dutch Gemeentewet compliance', async () => {
-      const securityConfig = {
-        country: 'netherlands',
-        dataTypes: ['gemeente_services', 'citizen_efficiency'],
-        userRoles: ['ambtenaar']
-      };
 
-      const securityContext = await securityEngine.establishQ2MechanicSecurity(
         'gemeentewet_test_municipality',
         'timed_challenge',
         securityConfig
@@ -790,13 +624,6 @@ describe('Q2 Municipal Security and Compliance Framework', () => {
   describe('Security Event Monitoring', () => {
     it('should monitor and emit all required security events', async () => {
       const events: Record<string, unknown>[] = [];
-      const eventTypes = [
-        'q2_mechanic_security_established',
-        'municipal_tenant_isolation_established',
-        'q2_interaction_logged',
-        'cross_border_encryption_established',
-        'penetration_testing_completed'
-      ];
 
       eventTypes.forEach(eventType => {
         securityEngine.on(eventType, (event) => {
@@ -805,11 +632,6 @@ describe('Q2 Municipal Security and Compliance Framework', () => {
       });
 
       // Trigger various security operations
-      const securityConfig = {
-        country: 'sweden',
-        dataTypes: ['test_data'],
-        userRoles: ['test_user']
-      };
 
       await securityEngine.establishQ2MechanicSecurity(
         'event_test_municipality',
@@ -853,11 +675,6 @@ describe('Q2 Municipal Security and Compliance Framework', () => {
         sovereigntyConfig
       );
 
-      const interactionData = {
-        type: 'test_interaction',
-        dataFields: ['test_field'],
-        userRole: 'test_role'
-      };
 
       await securityEngine.logQ2Interaction(
         'event_test_municipality',

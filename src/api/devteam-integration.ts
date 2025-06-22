@@ -53,7 +53,6 @@ export interface ProcessingResult {
 }
 
 // Content submission request schema
-export const ContentSubmissionSchema = z.object({
   gameManifest: z.object({
     gameId: z.string(),
     metadata: z.object({
@@ -87,15 +86,12 @@ export const ContentSubmissionSchema = z.object({
 export type ContentSubmissionRequest = z.infer<typeof ContentSubmissionSchema>;
 
 // Processing job tracking
-const processingJobs = new Map<string, ProcessingResult>();
 
 /**
  * Submit content for processing
  * POST /api/v1/process-content
  */
 export async function submitContent(request: ContentSubmissionRequest): Promise<ProcessingResult> {
-  const jobId = generateJobId();
-  const startTime = new Date().toISOString();
   
   // Initialize job tracking
   const job: ProcessingResult = {
@@ -139,7 +135,6 @@ async function processContentAsync(jobId: string, request: ContentSubmissionRequ
   try {
     // Step 1: Validation (<5s)
     updateJobStatus(jobId, ProcessingStatus.VALIDATING, 10, 'Validating content structure');
-    const validationResult = await validateContent(request.gameManifest);
     
     if (!validationResult.isValid) {
       throw new Error(`Validation failed: ${validationResult.errors.join(', ')}`);
@@ -147,11 +142,9 @@ async function processContentAsync(jobId: string, request: ContentSubmissionRequ
     
     // Step 2: Content processing
     updateJobStatus(jobId, ProcessingStatus.PROCESSING, 30, 'Processing game content');
-    const processedManifest = await processGameContent(request.gameManifest);
     
     // Step 3: Municipal branding injection
     updateJobStatus(jobId, ProcessingStatus.BRANDING, 50, 'Applying municipal branding');
-    const brandedManifest = await applyMunicipalBranding(
       processedManifest,
       request.deploymentOptions.municipalityId,
       request.deploymentOptions.brandingLevel
@@ -159,14 +152,12 @@ async function processContentAsync(jobId: string, request: ContentSubmissionRequ
     
     // Step 4: Multi-format packaging
     updateJobStatus(jobId, ProcessingStatus.PACKAGING, 70, 'Creating deployment packages');
-    const packages = await createDeploymentPackages(
       brandedManifest,
       request.deploymentOptions.formats
     );
     
     // Step 5: Deployment
     updateJobStatus(jobId, ProcessingStatus.DEPLOYING, 90, 'Deploying to municipal infrastructure');
-    const deploymentUrls = await deployPackages(
       packages,
       request.deploymentOptions
     );
@@ -196,13 +187,10 @@ async function processContentAsync(jobId: string, request: ContentSubmissionRequ
  * Validate game content with <5s feedback
  */
 async function validateContent(gameManifest: Record<string, unknown>): Promise<{isValid: boolean; errors: string[]}> {
-  const startTime = Date.now();
   
   try {
-    const validation = validateGameManifest(gameManifest);
     
     // Ensure <5s feedback
-    const elapsed = Date.now() - startTime;
     if (elapsed > 5000) {
       console.warn(`Validation took ${elapsed}ms, exceeding 5s target`);
     }
@@ -218,7 +206,6 @@ async function validateContent(gameManifest: Record<string, unknown>): Promise<{
  */
 async function processGameContent(gameManifest: Record<string, unknown>): Promise<Record<string, unknown>> {
   // Add player name placeholders
-  const processedManifest = { ...gameManifest };
   
   // Process each scene
   processedManifest.scenes = processedManifest.scenes.map((scene: Record<string, unknown>) => {
@@ -242,16 +229,14 @@ async function applyMunicipalBranding(
   brandingLevel: string
 ): Promise<Record<string, unknown>> {
   // Get municipal branding configuration
-  const municipalBranding = getMunicipalBranding(municipalityId);
   
   // Validate branding configuration
-  const brandingValidation = validateMunicipalBranding(municipalBranding);
   if (!brandingValidation.isValid) {
     throw new Error(`Invalid municipal branding: ${brandingValidation.errors.join(', ')}`);
   }
   
   // Apply branding to manifest
-  const brandedManifest = applyMunicipalBrandingToManifest(
+  const _brandedManifest = applyMunicipalBrandingToManifest(
     gameManifest,
     {
       ...brandingValidation.sanitizedBranding,
@@ -269,7 +254,6 @@ async function createDeploymentPackages(
   gameManifest: Record<string, unknown>,
   formats: DeploymentFormat[]
 ): Promise<Map<DeploymentFormat, Record<string, unknown>>> {
-  const packages = new Map<DeploymentFormat, Record<string, unknown>>();
   
   for (const format of formats) {
     switch (format) {
@@ -298,7 +282,6 @@ async function deployPackages(
   const deploymentUrls: ProcessingResult['deploymentUrls'] = {};
   
   for (const [format, packageData] of packages) {
-    const url = await deployToInfrastructure(format, packageData, options);
     deploymentUrls[format] = url;
   }
   
@@ -320,7 +303,6 @@ function updateJobStatus(
   errors?: string[],
   deploymentUrls?: ProcessingResult['deploymentUrls']
 ): void {
-  const job = processingJobs.get(jobId);
   if (!job) return;
   
   job.status = status;
@@ -423,16 +405,13 @@ function getMunicipalBranding(municipalityId: string): Record<string, unknown> {
   };
   
   // Normalize municipality ID
-  const normalizedId = municipalityId.toLowerCase().replace(/[\s-_]/g, '');
   
   // Get branding or determine from context
-  const branding = municipalityBrandings[normalizedId];
   if (branding) {
     return branding;
   }
   
   // Fallback: determine cultural context from ID
-  const culturalContext = getMunicipalContext(municipalityId);
   
   return {
     municipality: municipalityId,
@@ -452,125 +431,18 @@ function getMunicipalBranding(municipalityId: string): Record<string, unknown> {
  */
 async function createWebPackage(gameManifest: Record<string, unknown>): Promise<Record<string, unknown>> {
   // Web deployment package
-  const webPackage = {
-    type: 'web',
-    manifest: gameManifest,
-    deployment: {
-      format: 'static-site',
-      entry: 'index.html',
-      assets: [
-        'runtime-engine.js',
-        'game-manifest.json',
-        'assets/**/*'
-      ],
-      buildConfig: {
-        minify: true,
-        optimize: true,
-        lighthouse: {
-          performance: 95,
-          accessibility: 100,
-          bestPractices: 95,
-          seo: 90
-        }
-      }
-    },
-    municipalConfig: {
-      branding: gameManifest.theme?.municipalMetadata,
-      analytics: {
-        provider: 'matomo',
-        siteId: gameManifest.theme?.municipalMetadata?.municipality
-      }
-    }
-  };
   
   return webPackage;
 }
 
 async function createSCORMPackage(gameManifest: Record<string, unknown>): Promise<Record<string, unknown>> {
   // SCORM 2004 package for LMS integration
-  const scormPackage = {
-    type: 'scorm',
-    manifest: gameManifest,
-    scormVersion: '2004 4th Edition',
-    deployment: {
-      format: 'scorm-package',
-      entry: 'index.html',
-      manifestFile: 'imsmanifest.xml',
-      metadata: {
-        identifier: `com.diginativa.${gameManifest.gameId}`,
-        title: gameManifest.metadata.title,
-        description: gameManifest.metadata.description,
-        masteryScore: 80,
-        maxTimeAllowed: 'PT0H30M0S', // 30 minutes
-        completionThreshold: 0.8
-      },
-      tracking: {
-        scoreTracking: true,
-        progressTracking: true,
-        interactionTracking: true,
-        objectiveTracking: true
-      }
-    },
-    lmsCompatibility: {
-      moodle: true,
-      cornerstone: true,
-      successFactors: true,
-      workday: true
-    }
-  };
   
   return scormPackage;
 }
 
 async function createPWAPackage(gameManifest: Record<string, unknown>): Promise<Record<string, unknown>> {
   // Progressive Web App package
-  const pwaPackage = {
-    type: 'pwa',
-    manifest: gameManifest,
-    deployment: {
-      format: 'progressive-web-app',
-      entry: 'index.html',
-      serviceWorker: 'sw.js',
-      webManifest: {
-        name: gameManifest.metadata.title,
-        short_name: gameManifest.metadata.title.substring(0, 12),
-        description: gameManifest.metadata.description,
-        start_url: '/',
-        display: 'standalone',
-        background_color: '#ffffff',
-        theme_color: gameManifest.theme?.colors?.primary || '#005AA0',
-        icons: [
-          {
-            src: '/icons/icon-192x192.png',
-            sizes: '192x192',
-            type: 'image/png'
-          },
-          {
-            src: '/icons/icon-512x512.png',
-            sizes: '512x512',
-            type: 'image/png'
-          }
-        ]
-      },
-      offlineSupport: {
-        strategy: 'cache-first',
-        cacheAssets: true,
-        cacheApi: false,
-        offlinePage: '/offline.html'
-      },
-      installPrompt: {
-        enabled: true,
-        timing: 'after-engagement',
-        customMessage: `Installera ${gameManifest.metadata.title} för att spela offline`
-      }
-    },
-    features: {
-      pushNotifications: false,
-      backgroundSync: false,
-      webShare: true,
-      installable: true
-    }
-  };
   
   return pwaPackage;
 }
@@ -581,21 +453,10 @@ async function deployToInfrastructure(
   options: Record<string, unknown>
 ): Promise<string> {
   // Multi-region deployment strategy
-  const deploymentRegions = {
-    sweden: 'eu-north-1',
-    germany: 'eu-central-1',
-    france: 'eu-west-3',
-    netherlands: 'eu-west-1'
-  };
   
   // Determine deployment region based on markets
-  const primaryMarket = options.markets[0] || 'sweden';
-  const region = deploymentRegions[primaryMarket as keyof typeof deploymentRegions];
   
   // Generate deployment URL based on format
-  const baseUrl = 'https://games.diginativa.se';
-  const municipalityPath = options.municipalityId.toLowerCase();
-  const gamePath = packageData.manifest.gameId;
   
   let deploymentUrl: string;
   

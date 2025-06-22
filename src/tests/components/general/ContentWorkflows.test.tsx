@@ -16,13 +16,6 @@ import ContentWorkflows from '../../../components/admin/ContentWorkflows.tsx';
 // Mock dependencies if needed
 
 
-const renderWithChakra = (component: React.ReactElement) => {
-  return render(
-    <ChakraProvider>
-      {component}
-    </ChakraProvider>
-  );
-};
 
 describe('ContentWorkflows', () => {
   beforeEach(() => {
@@ -33,14 +26,10 @@ describe('ContentWorkflows', () => {
     it('renders without crashing', () => {
       renderWithChakra(<ContentWorkflows />);
       
-      const component = screen.getByTestId('-content-workflows');
       expect(component).toBeInTheDocument();
     });
 
     it('handles props correctly', () => {
-      const testProps = {
-        // Add relevant props based on component analysis
-      };
       
       renderWithChakra(<ContentWorkflows {...testProps} />);
       
@@ -60,7 +49,6 @@ describe('ContentWorkflows', () => {
     it('provides proper ARIA attributes', () => {
       renderWithChakra(<ContentWorkflows />);
       
-      const element = screen.getByTestId('-content-workflows');
       
       // Check for appropriate ARIA attributes
       expect(element).toHaveAttribute('role');
@@ -69,7 +57,6 @@ describe('ContentWorkflows', () => {
     it('supports keyboard navigation', () => {
       renderWithChakra(<ContentWorkflows />);
       
-      const element = screen.getByTestId('-content-workflows');
       
       // Test tab navigation
       element.focus();
@@ -80,7 +67,6 @@ describe('ContentWorkflows', () => {
       renderWithChakra(<ContentWorkflows />);
       
       // Basic contrast check
-      const element = screen.getByTestId('-content-workflows');
       expect(element).toBeInTheDocument();
     });
   });

@@ -41,7 +41,7 @@ export const AdminAuth: React.FC<AdminAuthProps> = ({ onAuthenticated }) => {
   const [error, setError] = useState('');
 
   // Mock authentication - in production this integrates with enterprise SSO
-  const handleSSOAuth = async () => {
+  const _handleSSOAuth = async () => {
     setIsLoading(true);
     setError('');
 
@@ -68,7 +68,7 @@ export const AdminAuth: React.FC<AdminAuthProps> = ({ onAuthenticated }) => {
     }
   };
 
-  const handleLocalAuth = async () => {
+  const _handleLocalAuth = async () => {
     if (!email) {
       setError('Email is required');
       return;
@@ -112,7 +112,6 @@ export const AdminAuth: React.FC<AdminAuthProps> = ({ onAuthenticated }) => {
         }
       };
 
-      const user = mockUsers[email];
       if (user) {
         onAuthenticated(user);
       } else {

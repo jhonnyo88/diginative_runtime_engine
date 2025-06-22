@@ -217,7 +217,6 @@ class Q2EuropeanLocalizationManager {
   }
 
   public getLocalizedTerm(termKey: string, locale: string): string {
-    const term = this.municipalTerminology[termKey];
     if (!term) {
       console.warn(`Missing municipal terminology: ${termKey}`);
       return termKey.replace(/_/g, ' ');
@@ -235,11 +234,8 @@ class Q2EuropeanLocalizationManager {
   }
 
   public adaptAchievementNaming(achievementId: string, baseTitle: string, locale: string): string {
-    const rules = this.getCulturalAdaptationRules(locale);
     if (!rules) return baseTitle;
 
-    const cacheKey = `achievement_${achievementId}_${locale}`;
-    const cached = this.localizationCache.get(cacheKey);
     if (cached) return cached;
 
     let adaptedTitle = baseTitle;
@@ -272,11 +268,8 @@ class Q2EuropeanLocalizationManager {
   }
 
   public adaptFeedbackMessage(message: string, locale: string, context: 'success' | 'improvement' | 'failure'): string {
-    const rules = this.getCulturalAdaptationRules(locale);
     if (!rules) return message;
 
-    const cacheKey = `feedback_${message.substring(0, 20)}_${locale}_${context}`;
-    const cached = this.localizationCache.get(cacheKey);
     if (cached) return cached;
 
     let adaptedMessage = message;
@@ -313,12 +306,9 @@ class Q2EuropeanLocalizationManager {
   }
 
   public adaptDecisionScenario(scenario: Record<string, unknown>, locale: string): Record<string, unknown> {
-    const context = this.getCulturalContext(locale);
-    const rules = this.getCulturalAdaptationRules(locale);
     
     if (!context || !rules) return scenario;
 
-    const adaptedScenario = { ...scenario };
 
     // Adapt decision-making approach based on cultural context
     if (context.decisionMakingStyle === 'consensus' && (locale === 'sv' || locale === 'nl')) {
@@ -366,104 +356,6 @@ class Q2EuropeanLocalizationManager {
     complianceRequirements: string[];
     culturalConsiderations: string[];
   } {
-    const frameworks = {
-      sv: {
-        primaryLaws: [
-          'Kommunallagen (KL)',
-          'Förvaltningslagen (FL)',
-          'Lagen om offentlighet och sekretess (OSL)',
-          'Plan- och bygglagen (PBL)',
-          'Lagen om offentlig upphandling (LOU)'
-        ],
-        governanceStructure: 'Kommunfullmäktige → Kommunstyrelse → Nämnder → Förvaltningar',
-        complianceRequirements: [
-          'Transparens och offentlighet',
-          'Medborgardeltagande',
-          'Miljöhänsyn',
-          'Ekonomisk hållbarhet',
-          'Tillgänglighet och inkludering'
-        ],
-        culturalConsiderations: [
-          'Jantelagen - ödmjukhet och jämställdhet',
-          'Konsensussökande beslutsfattande',
-          'Långsiktig hållbarhetstänk',
-          'Digital-first mentalitet',
-          'Trygghet och säkerhet prioriteras'
-        ]
-      },
-      de: {
-        primaryLaws: [
-          'Gemeindeordnung (GO)',
-          'Verwaltungsverfahrensgesetz (VwVfG)',
-          'Vergaberecht (VgV)',
-          'Baugesetzbuch (BauGB)',
-          'Informationsfreiheitsgesetz (IFG)'
-        ],
-        governanceStructure: 'Gemeinderat → Bürgermeister → Fachbereiche → Ämter',
-        complianceRequirements: [
-          'Rechtssicherheit und Verfahrenstreue',
-          'Bürgerbeteiligung nach VwVfG',
-          'Umweltverträglichkeit',
-          'Haushaltskonsolidierung',
-          'Barrierefreiheit nach BGG'
-        ],
-        culturalConsiderations: [
-          'Ordnung und systematische Prozesse',
-          'Autorität und Hierarchie respekteras',
-          'Gründlichkeit vor Geschwindigkeit',
-          'Expertenwissen högt värderat',
-          'Regelkonformität essentiell'
-        ]
-      },
-      fr: {
-        primaryLaws: [
-          'Code général des collectivités territoriales (CGCT)',
-          'Code des relations entre le public et l\'administration',
-          'Code des marchés publics',
-          'Code de l\'urbanisme',
-          'Loi CADA (accès aux documents)'
-        ],
-        governanceStructure: 'Conseil municipal → Maire → Directions → Services',
-        complianceRequirements: [
-          'Service public à la française',
-          'Égalité et laïcité',
-          'Développement durable',
-          'Maîtrise des finances publiques',
-          'Accessibilité universelle'
-        ],
-        culturalConsiderations: [
-          'Centralisation et hiérarchie claire',
-          'Service public som ideal',
-          'Intellektuell rigor i analys',
-          'Formell kommunikation prefereras',
-          'Republikanska värden centrala'
-        ]
-      },
-      nl: {
-        primaryLaws: [
-          'Gemeentewet',
-          'Algemene wet bestuursrecht (Awb)',
-          'Aanbestedingswet',
-          'Omgevingswet',
-          'Wet openbaarheid van bestuur (Wob)'
-        ],
-        governanceStructure: 'Gemeenteraad → College B&W → Directies → Afdelingen',
-        complianceRequirements: [
-          'Participatie en inspraak',
-          'Innovatie en efficiency',
-          'Duurzaamheid en klimaat',
-          'Financiële gezondheid',
-          'Toegankelijkheid en inclusie'
-        ],
-        culturalConsiderations: [
-          'Poldermodel - consensus och kompromiss',
-          'Pragmatisk problemlösning',
-          'Innovation och nytänkande uppskattas',
-          'Direkthet i kommunikation',
-          'Hållbarhet som ledstjärna'
-        ]
-      }
-    };
 
     return frameworks[locale as keyof typeof frameworks] || frameworks.sv;
   }
@@ -473,8 +365,6 @@ class Q2EuropeanLocalizationManager {
     recommendations: string[];
     culturalRisks: string[];
   } {
-    const context = this.getCulturalContext(locale);
-    const rules = this.getCulturalAdaptationRules(locale);
     
     if (!context || !rules) {
       return {

@@ -9,128 +9,12 @@
 import { describe, it, expect, beforeEach, vi } from 'vitest';
 
 // Mock municipal isolation utilities
-const mockIsolationUtils = {
-  validateTenantIsolation: vi.fn(),
-  checkCrossTenantAccess: vi.fn(),
-  verifyDataSegregation: vi.fn(),
-  auditMunicipalBoundaries: vi.fn(),
-  enforceDataSovereignty: vi.fn()
-};
 
 // Municipal test contexts for isolation validation
-const MUNICIPAL_TEST_CONTEXTS = {
-  primaryMunicipalities: [
-    {
-      id: 'malmö',
-      country: 'sweden',
-      region: 'skåne',
-      dataResidency: 'eu-north-1',
-      governmentLevel: 'municipal'
-    },
-    {
-      id: 'göteborg',
-      country: 'sweden', 
-      region: 'västra-götaland',
-      dataResidency: 'eu-north-1',
-      governmentLevel: 'municipal'
-    },
-    {
-      id: 'stockholm',
-      country: 'sweden',
-      region: 'stockholm',
-      dataResidency: 'eu-north-1',
-      governmentLevel: 'municipal'
-    }
-  ],
-  europeanMunicipalities: [
-    {
-      id: 'berlin',
-      country: 'germany',
-      region: 'berlin',
-      dataResidency: 'eu-central-1',
-      governmentLevel: 'municipal'
-    },
-    {
-      id: 'paris',
-      country: 'france',
-      region: 'île-de-france',
-      dataResidency: 'eu-west-3',
-      governmentLevel: 'municipal'
-    },
-    {
-      id: 'amsterdam',
-      country: 'netherlands',
-      region: 'noord-holland',
-      dataResidency: 'eu-west-1',
-      governmentLevel: 'municipal'
-    }
-  ]
-};
 
 // Sensitive municipal data categories requiring isolation
-const SENSITIVE_MUNICIPAL_DATA = {
-  citizenData: [
-    'personal-identification-numbers',
-    'residential-addresses',
-    'tax-information',
-    'social-services-records',
-    'healthcare-municipal-data',
-    'education-municipal-records'
-  ],
-  employeeData: [
-    'employee-personal-records',
-    'salary-information',
-    'performance-evaluations',
-    'security-clearance-levels',
-    'internal-communications',
-    'administrative-access-logs'
-  ],
-  municipalOperations: [
-    'budget-planning-documents',
-    'strategic-municipal-plans',
-    'emergency-response-protocols',
-    'infrastructure-security-data',
-    'vendor-contract-information',
-    'municipal-decision-records'
-  ],
-  systemCredentials: [
-    'authentication-tokens',
-    'api-keys',
-    'database-credentials',
-    'encryption-keys',
-    'ssl-certificates',
-    'session-management-data'
-  ]
-};
 
 // Cross-tenant access test scenarios
-const CROSS_TENANT_ACCESS_SCENARIOS = [
-  {
-    scenario: 'direct-database-access',
-    description: 'Attempt direct access to another municipality\'s database',
-    expectedResult: 'blocked'
-  },
-  {
-    scenario: 'api-endpoint-traversal',
-    description: 'Try accessing another municipality\'s API endpoints',
-    expectedResult: 'blocked'
-  },
-  {
-    scenario: 'session-hijacking',
-    description: 'Attempt to hijack another municipality\'s user sessions',
-    expectedResult: 'blocked'
-  },
-  {
-    scenario: 'cache-pollution',
-    description: 'Try to pollute another municipality\'s cache data',
-    expectedResult: 'blocked'
-  },
-  {
-    scenario: 'configuration-access',
-    description: 'Attempt to access another municipality\'s configuration',
-    expectedResult: 'blocked'
-  }
-];
 
 describe('Municipal Data Isolation Verification Testing', () => {
   let isolationHarness: Record<string, unknown>;
@@ -147,7 +31,6 @@ describe('Municipal Data Isolation Verification Testing', () => {
       for (const primaryMunicipality of MUNICIPAL_TEST_CONTEXTS.primaryMunicipalities) {
         for (const testMunicipality of MUNICIPAL_TEST_CONTEXTS.primaryMunicipalities) {
           if (primaryMunicipality.id !== testMunicipality.id) {
-            const isolationTest = await isolationHarness.testMunicipalDataIsolation({
               sourceMunicipality: primaryMunicipality.id,
               targetMunicipality: testMunicipality.id,
               isolationLevel: 'complete',
@@ -184,7 +67,6 @@ describe('Municipal Data Isolation Verification Testing', () => {
     it('should validate European municipal data isolation across borders', async () => {
       for (const swedishMunicipality of MUNICIPAL_TEST_CONTEXTS.primaryMunicipalities) {
         for (const europeanMunicipality of MUNICIPAL_TEST_CONTEXTS.europeanMunicipalities) {
-          const crossBorderIsolationTest = await isolationHarness.testCrossBorderDataIsolation({
             sourceMunicipality: swedishMunicipality.id,
             sourceCountry: swedishMunicipality.country,
             targetMunicipality: europeanMunicipality.id,
@@ -221,7 +103,6 @@ describe('Municipal Data Isolation Verification Testing', () => {
     it('should prevent all forms of cross-tenant access attempts', async () => {
       for (const accessScenario of CROSS_TENANT_ACCESS_SCENARIOS) {
         for (const municipality of MUNICIPAL_TEST_CONTEXTS.primaryMunicipalities) {
-          const crossTenantTest = await isolationHarness.testCrossTenantAccessPrevention({
             attackingMunicipality: 'malmö',
             targetMunicipality: municipality.id,
             accessScenario: accessScenario.scenario,
@@ -262,7 +143,6 @@ describe('Municipal Data Isolation Verification Testing', () => {
     });
 
     it('should validate database-level isolation between municipalities', async () => {
-      const databaseIsolationTest = await isolationHarness.testDatabaseLevelIsolation({
         testMunicipalities: ['malmö', 'göteborg', 'stockholm'],
         isolationMechanisms: ['schema-separation', 'connection-pooling', 'query-filtering'],
         testDepth: 'comprehensive'
@@ -300,7 +180,6 @@ describe('Municipal Data Isolation Verification Testing', () => {
 
   describe('Session and Cache Isolation', () => {
     it('should ensure complete session isolation between municipalities', async () => {
-      const sessionIsolationTest = await isolationHarness.testSessionIsolation({
         testMunicipalities: MUNICIPAL_TEST_CONTEXTS.primaryMunicipalities.map(m => m.id),
         sessionTypes: ['user-sessions', 'admin-sessions', 'api-sessions'],
         isolationLevel: 'complete'
@@ -337,7 +216,6 @@ describe('Municipal Data Isolation Verification Testing', () => {
     });
 
     it('should validate cache isolation and prevent cache pollution attacks', async () => {
-      const cacheIsolationTest = await isolationHarness.testCacheIsolation({
         testMunicipalities: ['malmö', 'göteborg', 'stockholm'],
         cacheTypes: ['redis-cache', 'application-cache', 'cdn-cache'],
         pollutionAttackSimulation: true
@@ -376,7 +254,6 @@ describe('Municipal Data Isolation Verification Testing', () => {
 
   describe('Configuration and Resource Isolation', () => {
     it('should ensure complete configuration isolation between municipalities', async () => {
-      const configurationIsolationTest = await isolationHarness.testConfigurationIsolation({
         testMunicipalities: MUNICIPAL_TEST_CONTEXTS.primaryMunicipalities.map(m => m.id),
         configurationTypes: ['application-config', 'security-config', 'ui-branding', 'feature-flags'],
         isolationValidation: 'comprehensive'
@@ -413,7 +290,6 @@ describe('Municipal Data Isolation Verification Testing', () => {
     });
 
     it('should validate resource allocation and prevent resource exhaustion attacks', async () => {
-      const resourceIsolationTest = await isolationHarness.testResourceIsolation({
         testMunicipalities: ['malmö', 'göteborg', 'stockholm'],
         resourceTypes: ['cpu', 'memory', 'storage', 'network', 'database-connections'],
         exhaustionAttackSimulation: true
@@ -452,7 +328,6 @@ describe('Municipal Data Isolation Verification Testing', () => {
 
   describe('Compliance and Audit Verification', () => {
     it('should validate GDPR compliance across municipal data isolation', async () => {
-      const gdprComplianceTest = await isolationHarness.testGDPRComplianceIsolation({
         testMunicipalities: MUNICIPAL_TEST_CONTEXTS.primaryMunicipalities.map(m => m.id),
         gdprRequirements: ['data-minimization', 'purpose-limitation', 'storage-limitation', 'lawful-basis'],
         complianceValidation: 'comprehensive'
@@ -489,7 +364,6 @@ describe('Municipal Data Isolation Verification Testing', () => {
     });
 
     it('should validate comprehensive audit trails for municipal data isolation', async () => {
-      const auditTrailTest = await isolationHarness.testMunicipalAuditTrails({
         testMunicipalities: MUNICIPAL_TEST_CONTEXTS.primaryMunicipalities.map(m => m.id),
         auditCategories: ['data-access', 'configuration-changes', 'security-events', 'isolation-violations'],
         auditRetention: '7-years'
@@ -528,7 +402,6 @@ describe('Municipal Data Isolation Verification Testing', () => {
 
   describe('Performance and Monitoring', () => {
     it('should maintain isolation performance under municipal load', async () => {
-      const isolationPerformanceTest = await isolationHarness.testIsolationPerformance({
         concurrentMunicipalities: 10,
         simulatedLoad: 'peak-municipal-traffic',
         isolationComplexity: 'maximum',

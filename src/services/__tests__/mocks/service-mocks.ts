@@ -196,20 +196,11 @@ export class MockPerformanceAnalytics extends BaseMockService {
   });
   
   startTransaction = vi.fn((name: string) => {
-    const transaction = {
-      name,
-      finish: vi.fn(),
-      setData: vi.fn(),
-      setStatus: vi.fn()
-    };
     this.recordCall('startTransaction', [name]);
     return transaction;
   });
   
   measurePerformance = vi.fn(async (fn: (...args: unknown[]) => unknown) => {
-    const start = Date.now();
-    const result = await fn();
-    const duration = Date.now() - start;
     this.recordCall('measurePerformance', [duration]);
     return result;
   });
@@ -252,8 +243,6 @@ export class ServiceMockFactory {
     ServiceClass: new (config?: MockServiceConfig) => T,
     config?: MockServiceConfig
   ): T {
-    const mockInstance = new ServiceClass(config);
-    const className = ServiceClass.name;
     this.mocks.set(className, mockInstance);
     return mockInstance;
   }
@@ -267,7 +256,6 @@ export class ServiceMockFactory {
   }
   
   static resetMock(serviceName: string): void {
-    const mock = this.mocks.get(serviceName);
     if (mock) {
       mock.reset();
     }
@@ -350,7 +338,6 @@ export class MockProvider {
 }
 
 // Export mock implementations for direct module mocking
-export const mockImplementations = {
   '@node-saml/node-saml': {
     SAML: vi.fn().mockImplementation((config) => ({
       validatePostResponse: vi.fn(),

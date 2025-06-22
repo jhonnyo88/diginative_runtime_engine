@@ -11,72 +11,12 @@ import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 
 // Mock Q2 drag-drop components
-const mockQ2Components = {
-  InvoiceApprovalWorkflow: vi.fn(),
-  PermitProcessingWorkflow: vi.fn(),
-  useDragDrop: vi.fn(),
-  DragDropProvider: vi.fn(),
-  measurePerformance: vi.fn()
-};
 
 // Anna Svensson iPhone 12 performance specifications
-const ANNA_SVENSSON_PERFORMANCE_TARGETS = {
-  device: 'iPhone 12',
-  viewport: { width: 390, height: 844 },
-  sessionDuration: 420, // 7 minutes in seconds
-  touchResponseTime: 50, // ms
-  dragOperationFPS: 60,
-  batteryUsagePerSession: 5, // percentage
-  memoryUsageLimit: 100, // MB
-  networkConditions: '3G-municipal'
-};
 
 // Q2 Municipal workflow performance scenarios
-const Q2_MUNICIPAL_WORKFLOW_SCENARIOS = {
-  invoiceApproval: {
-    workflowType: 'invoice-approval',
-    stages: ['department', 'finance', 'supervisor', 'mayor'],
-    targetInteractions: 15,
-    averageDocumentSize: 2.5, // MB
-    expectedDuration: 180 // seconds
-  },
-  permitProcessing: {
-    workflowType: 'permit-processing',
-    permitTypes: ['building', 'business', 'event', 'parking'],
-    targetInteractions: 12,
-    averageFormSize: 1.8, // MB
-    expectedDuration: 150 // seconds
-  },
-  emergencyResponse: {
-    workflowType: 'emergency-response',
-    urgencyLevels: ['low', 'medium', 'high', 'critical'],
-    targetInteractions: 20,
-    timeConstraints: 90, // seconds
-    realTimeRequirements: true
-  }
-};
 
 // 60fps RAF optimization test patterns
-const RAF_OPTIMIZATION_PATTERNS = {
-  dragStart: {
-    targetFPS: 60,
-    frameTime: 16.67, // ms (1000/60)
-    optimizationLevel: 'maximum',
-    gpuAcceleration: true
-  },
-  dragMove: {
-    targetFPS: 60,
-    frameTime: 16.67,
-    batchUpdates: true,
-    throttling: 'requestAnimationFrame'
-  },
-  dragEnd: {
-    targetFPS: 60,
-    frameTime: 16.67,
-    cleanup: 'immediate',
-    memoryRelease: true
-  }
-};
 
 describe('Q2 Drag-Drop Performance Validation Testing', () => {
   let performanceHarness: Record<string, unknown>;
@@ -90,7 +30,6 @@ describe('Q2 Drag-Drop Performance Validation Testing', () => {
 
   describe('Anna Svensson iPhone 12 Performance Validation', () => {
     it('should achieve 60fps during drag operations on Anna Svensson iPhone 12', async () => {
-      const iphone12Performance = await performanceHarness.testDragDropPerformance({
         device: 'iPhone 12',
         viewport: ANNA_SVENSSON_PERFORMANCE_TARGETS.viewport,
         municipality: 'malmö',
@@ -125,7 +64,6 @@ describe('Q2 Drag-Drop Performance Validation Testing', () => {
 
     it('should maintain performance during complex municipal workflows', async () => {
       for (const [workflowName, workflow] of Object.entries(Q2_MUNICIPAL_WORKFLOW_SCENARIOS)) {
-        const workflowPerformance = await performanceHarness.testMunicipalWorkflowPerformance({
           workflowType: workflow.workflowType,
           targetInteractions: workflow.targetInteractions,
           expectedDuration: workflow.expectedDuration,
@@ -166,7 +104,6 @@ describe('Q2 Drag-Drop Performance Validation Testing', () => {
   describe('60fps RAF Optimization Validation', () => {
     it('should achieve 60fps with requestAnimationFrame optimization', async () => {
       for (const [operation, rafPattern] of Object.entries(RAF_OPTIMIZATION_PATTERNS)) {
-        const rafOptimization = await performanceHarness.testRAFOptimization({
           operation,
           targetFPS: rafPattern.targetFPS,
           frameTime: rafPattern.frameTime,
@@ -215,14 +152,8 @@ describe('Q2 Drag-Drop Performance Validation Testing', () => {
     });
 
     it('should maintain 60fps under municipal load conditions', async () => {
-      const loadConditions = [
-        { concurrentUsers: 50, municipality: 'malmö', workflowComplexity: 'standard' },
-        { concurrentUsers: 100, municipality: 'göteborg', workflowComplexity: 'complex' },
-        { concurrentUsers: 200, municipality: 'stockholm', workflowComplexity: 'emergency' }
-      ];
 
       for (const loadCondition of loadConditions) {
-        const loadPerformance = await performanceHarness.testPerformanceUnderLoad({
           concurrentUsers: loadCondition.concurrentUsers,
           municipality: loadCondition.municipality,
           workflowComplexity: loadCondition.workflowComplexity,
@@ -256,7 +187,6 @@ describe('Q2 Drag-Drop Performance Validation Testing', () => {
 
   describe('Touch Gesture Accuracy for Municipal Workflows', () => {
     it('should achieve high touch gesture accuracy for permit workflows', async () => {
-      const permitWorkflowTouchTest = await performanceHarness.testTouchGestureAccuracy({
         workflowType: 'permit-processing',
         permitTypes: Q2_MUNICIPAL_WORKFLOW_SCENARIOS.permitProcessing.permitTypes,
         device: 'iPhone 12',
@@ -292,7 +222,6 @@ describe('Q2 Drag-Drop Performance Validation Testing', () => {
     });
 
     it('should achieve high touch gesture accuracy for invoice workflows', async () => {
-      const invoiceWorkflowTouchTest = await performanceHarness.testTouchGestureAccuracy({
         workflowType: 'invoice-approval',
         approvalStages: Q2_MUNICIPAL_WORKFLOW_SCENARIOS.invoiceApproval.stages,
         device: 'iPhone 12',
@@ -330,7 +259,6 @@ describe('Q2 Drag-Drop Performance Validation Testing', () => {
 
   describe('Municipal Compliance Performance Testing', () => {
     it('should maintain GDPR compliance during high-performance operations', async () => {
-      const gdprPerformanceTest = await performanceHarness.testGDPRCompliancePerformance({
         dataProcessingVolume: 'high',
         personalDataTypes: ['citizen-info', 'municipal-records', 'financial-data'],
         municipality: 'malmö',
@@ -365,7 +293,6 @@ describe('Q2 Drag-Drop Performance Validation Testing', () => {
     });
 
     it('should maintain accessibility compliance during drag-drop operations', async () => {
-      const accessibilityPerformanceTest = await performanceHarness.testAccessibilityCompliancePerformance({
         accessibilityStandards: ['WCAG 2.1 AA', 'Swedish Accessibility Standard'],
         assistiveTechnologies: ['screen-reader', 'keyboard-navigation', 'voice-control'],
         municipality: 'malmö',
@@ -399,7 +326,6 @@ describe('Q2 Drag-Drop Performance Validation Testing', () => {
     });
 
     it('should maintain cultural appropriateness performance', async () => {
-      const culturalAppropriatenessTest = await performanceHarness.testCulturalAppropriatenessPerformance({
         culturalContexts: ['swedish', 'german', 'french', 'dutch'],
         appropriatenessLevel: 'government-grade',
         municipality: 'malmö',
@@ -436,10 +362,8 @@ describe('Q2 Drag-Drop Performance Validation Testing', () => {
 
   describe('Cross-Browser and Load Testing', () => {
     it('should maintain drag-drop performance across browsers', async () => {
-      const browsers = ['chrome', 'firefox', 'safari', 'edge'];
 
       for (const browser of browsers) {
-        const crossBrowserTest = await performanceHarness.testCrossBrowserDragDropPerformance({
           browser,
           device: 'iPhone 12',
           municipality: 'malmö',
@@ -478,15 +402,8 @@ describe('Q2 Drag-Drop Performance Validation Testing', () => {
     });
 
     it('should handle municipal load scenarios effectively', async () => {
-      const municipalLoadScenarios = [
-        { scenario: 'peak-business-hours', expectedLoad: 300, duration: 14400000 }, // 4 hours
-        { scenario: 'emergency-response', expectedLoad: 150, duration: 1800000 }, // 30 minutes
-        { scenario: 'month-end-processing', expectedLoad: 500, duration: 7200000 }, // 2 hours
-        { scenario: 'citizen-service-peak', expectedLoad: 200, duration: 3600000 } // 1 hour
-      ];
 
       for (const loadScenario of municipalLoadScenarios) {
-        const loadTest = await performanceHarness.testMunicipalLoadScenario({
           scenario: loadScenario.scenario,
           expectedConcurrentUsers: loadScenario.expectedLoad,
           testDuration: loadScenario.duration,
@@ -526,7 +443,6 @@ describe('Q2 Drag-Drop Performance Validation Testing', () => {
 
   describe('Integration Testing with Game Components', () => {
     it('should integrate seamlessly with existing Q2 game components', async () => {
-      const gameIntegrationTest = await performanceHarness.testGameComponentIntegration({
         gameComponents: ['character-interactions', 'narrative-engine', 'achievement-system'],
         dragDropWorkflows: ['invoice-approval', 'permit-processing'],
         municipality: 'malmö',

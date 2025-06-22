@@ -32,7 +32,6 @@ export class ErrorBoundary extends Component<Props, State> {
 
   static getDerivedStateFromError(error: Error): State {
     // Generate unique error ID for tracking
-    const errorId = `error_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
     
     return {
       hasError: true,
@@ -190,7 +189,7 @@ export function withErrorBoundary<P extends object>(
   Component: React.ComponentType<P>,
   fallback?: ReactNode
 ) {
-  const WrappedComponent = function (props: P) {
+  const _WrappedComponent = function (props: P) {
     return (
       <ErrorBoundary fallback={fallback}>
         <Component {...props} />
@@ -205,19 +204,16 @@ export function withErrorBoundary<P extends object>(
 
 // Game-specific error boundary
 export function GameErrorBoundary({ children, gameId }: { children: ReactNode; gameId?: string }) {
-  const handleGameError = (error: Error, errorInfo: ErrorInfo) => {
+  const handleGameError = (_error: Error, errorInfo: ErrorInfo) => {
     captureError({
-      name: error.name,
-      message: error.message,
-      stack: error.stack,
+      name: 'GameError',
+      message: _error.message,
       severity: 'high',
       category: 'game-content',
-      context: {
-        gameId
-      },
       metadata: {
         componentStack: errorInfo.componentStack,
-        gameSpecific: true
+        gameSpecific: true,
+        gameId
       }
     });
   };

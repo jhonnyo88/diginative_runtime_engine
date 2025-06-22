@@ -97,7 +97,6 @@ export const DEFAULT_SAML_SESSION_CONFIG: SAMLSessionConfig = {
 };
 
 export function generateSAMLConfiguration(municipalityId: string): SwedishMunicipalityConfig {
-  const config = SWEDISH_MUNICIPALITIES[municipalityId];
   if (!config) {
     throw new Error(`Municipality configuration not found for: ${municipalityId}`);
   }
@@ -336,18 +335,7 @@ export function validateSAMLConfig(config: SAMLConfiguration, tenantId: string):
  * Generates environment variable template for a tenant
  */
 export function generateEnvTemplate(tenantId: string, template?: SAMLConfigTemplate): string {
-  const upperTenant = tenantId.toUpperCase();
   
-  const envVars = [
-    `# SAML Configuration for ${tenantId}`,
-    `SAML_${upperTenant}_ENTRY_POINT=https://your-idp.com/saml/sso`,
-    `SAML_${upperTenant}_CERT="-----BEGIN CERTIFICATE-----\\nYour IdP Certificate Here\\n-----END CERTIFICATE-----"`,
-    '',
-    '# Shared SAML Configuration (if not already set)',
-    'SAML_PRIVATE_KEY="-----BEGIN PRIVATE KEY-----\\nYour Service Provider Private Key\\n-----END PRIVATE KEY-----"',
-    'BASE_URL=https://your-domain.com',
-    ''
-  ];
 
   if (template) {
     envVars.push(`# Template: ${template.name}`);
@@ -366,8 +354,6 @@ export function generateSPMetadataTemplate(
   entityId: string = 'diginativa-runtime-engine',
   baseUrl: string = process.env.BASE_URL || 'https://your-domain.com'
 ): string {
-  const callbackUrl = `${baseUrl}/auth/saml/callback/${tenantId}`;
-  const metadataUrl = `${baseUrl}/auth/saml/metadata/${tenantId}`;
   
   return `<?xml version="1.0" encoding="UTF-8"?>
 <md:EntityDescriptor xmlns:md="urn:oasis:names:tc:SAML:2.0:metadata" 
@@ -401,8 +387,6 @@ export function createTenantConfig(
   idpType: 'azure-ad' | 'okta' | 'adfs' | 'custom',
   samlConfig: Partial<SAMLConfiguration>
 ): { tenant: MunicipalTenant; validation: SAMLValidationResult } {
-  const template = SAML_CONFIG_TEMPLATES.find(t => t.idpType === idpType);
-  const baseUrl = process.env.BASE_URL || 'https://your-domain.com';
   
   const fullSamlConfig: SAMLConfiguration = {
     entityID: 'diginativa-runtime-engine',
@@ -429,7 +413,6 @@ export function createTenantConfig(
     createdAt: new Date().toISOString()
   };
 
-  const validation = validateSAMLConfig(fullSamlConfig, tenantId);
 
   return { tenant, validation };
 }
@@ -439,7 +422,6 @@ export function createTenantConfig(
  */
 function isValidURL(url: string): boolean {
   try {
-    const parsed = new URL(url);
     return parsed.protocol === 'https:';
   } catch {
     return false;
@@ -457,31 +439,14 @@ function isValidPrivateKey(key: string): boolean {
 }
 
 function isSupportedSignatureAlgorithm(algorithm: string): boolean {
-  const supportedAlgorithms = [
-    'http://www.w3.org/2001/04/xmldsig-more#rsa-sha256',
-    'http://www.w3.org/2001/04/xmldsig-more#rsa-sha384',
-    'http://www.w3.org/2001/04/xmldsig-more#rsa-sha512'
-  ];
   return supportedAlgorithms.includes(algorithm);
 }
 
 function getDefaultPrimaryColor(country: string): string {
-  const colors = {
-    SE: '#005580', // Swedish blue
-    DE: '#000000', // German black
-    FR: '#002654', // French blue
-    NL: '#FF0000'  // Dutch red
-  };
   return colors[country] || '#3B82F6';
 }
 
 function getDefaultSecondaryColor(country: string): string {
-  const colors = {
-    SE: '#0080C7', // Swedish light blue
-    DE: '#E30613', // German red
-    FR: '#C5002E', // French red
-    NL: '#000000'  // Dutch black
-  };
   return colors[country] || '#1E40AF';
 }
 
@@ -496,9 +461,7 @@ export async function testSAMLConnection(config: SAMLConfiguration): Promise<{
   try {
     // Test IdP metadata endpoint
     if (config.entryPoint) {
-      const metadataUrl = config.entryPoint.replace('/sso/saml', '/metadata') || config.entryPoint;
       
-      const response = await fetch(metadataUrl, {
         method: 'GET',
         headers: {
           'Accept': 'application/xml, text/xml'
@@ -509,7 +472,6 @@ export async function testSAMLConnection(config: SAMLConfiguration): Promise<{
         throw new Error(`IdP metadata not accessible: ${response.status}`);
       }
 
-      const metadata = await response.text();
       
       return {
         success: true,

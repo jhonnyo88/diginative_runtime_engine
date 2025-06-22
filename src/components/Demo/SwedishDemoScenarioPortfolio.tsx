@@ -58,8 +58,6 @@ import {
 
 import { useCulturalTheme } from '../WorldHub/CulturalThemeProvider';
 
-const MotionBox = motion(Box);
-const MotionCard = motion(Card);
 
 // Swedish Municipal Demo Scenarios
 interface SwedishDemoScenario {
@@ -533,8 +531,6 @@ const SwedishDemoScenarioCard: React.FC<SwedishScenarioCardProps> = ({
   onSelect = () => {},
   isSelected = false
 }) => {
-  const swedishBlue = '#003366';
-  const swedishYellow = '#FFCC00';
 
   return (
     <MotionCard
@@ -675,20 +671,15 @@ const SwedishDemoScenarioCard: React.FC<SwedishScenarioCardProps> = ({
 
 // Swedish Demo Portfolio Overview
 const SwedishDemoPortfolioOverview: React.FC = () => {
-  const swedishBlue = '#003366';
-  const swedishYellow = '#FFCC00';
 
-  const avgCulturalAuthenticity = Math.round(
     swedishDemoScenarios.reduce((sum, scenario) => sum + scenario.culturalAuthenticity, 0) / 
     swedishDemoScenarios.length
   );
 
-  const avgGovernmentImpact = Math.round(
     swedishDemoScenarios.reduce((sum, scenario) => sum + scenario.governmentImpact, 0) / 
     swedishDemoScenarios.length
   );
 
-  const avgLagomBalance = Math.round(
     swedishDemoScenarios.reduce((sum, scenario) => sum + scenario.lagomBalance, 0) / 
     swedishDemoScenarios.length
   );
@@ -837,107 +828,5 @@ export const SwedishDemoScenarioPortfolio: React.FC<SwedishDemoScenarioPortfolio
   const [selectedScenario, setSelectedScenario] = useState<SwedishDemoScenario | null>(null);
   const { isOpen, onOpen, onClose } = useDisclosure();
 
-  const handleScenarioSelect = (scenario: SwedishDemoScenario) => {
-    setSelectedScenario(scenario);
-    onScenarioSelect(scenario);
-    onOpen();
-  };
 
   // Group scenarios by region
-  const scenariosByRegion = useMemo(() => {
-    return swedishDemoScenarios.reduce((acc, scenario) => {
-      if (!acc[scenario.region]) {
-        acc[scenario.region] = [];
-      }
-      acc[scenario.region].push(scenario);
-      return acc;
-    }, {} as Record<string, SwedishDemoScenario[]>);
-  }, []);
-
-  return (
-    <VStack spacing={8} align="stretch">
-      
-      {/* Swedish Demo Portfolio Overview */}
-      <MotionBox
-        initial={{ opacity: 0, y: -20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.6 }}
-      >
-        <SwedishDemoPortfolioOverview />
-      </MotionBox>
-
-      {/* Regional Demo Scenarios */}
-      <Tabs variant="enclosed" colorScheme="blue">
-        <TabList>
-          <Tab>Stockholm</Tab>
-          <Tab>Göteborg</Tab>
-          <Tab>Malmö</Tab>
-          <Tab>Regional</Tab>
-          <Tab>All Scenarios</Tab>
-        </TabList>
-
-        <TabPanels>
-          {Object.entries(scenariosByRegion).map(([region, scenarios]) => (
-            <TabPanel key={region} p={0} pt={6}>
-              <VStack spacing={6} align="stretch">
-                <Text fontSize="lg" fontWeight="600" color="gray.700">
-                  {region} Demo Scenarios:
-                </Text>
-                <Grid templateColumns={{ base: "1fr", lg: "repeat(2, 1fr)" }} gap={6}>
-                  {scenarios.map((scenario) => (
-                    <SwedishDemoScenarioCard
-                      key={scenario.id}
-                      scenario={scenario}
-                      onSelect={handleScenarioSelect}
-                      isSelected={scenario.id === selectedScenarioId}
-                    />
-                  ))}
-                </Grid>
-              </VStack>
-            </TabPanel>
-          ))}
-          
-          {/* All Scenarios Tab */}
-          <TabPanel p={0} pt={6}>
-            <VStack spacing={6} align="stretch">
-              <Text fontSize="lg" fontWeight="600" color="gray.700">
-                Complete Swedish Demo Scenario Portfolio:
-              </Text>
-              <Grid templateColumns={{ base: "1fr", lg: "repeat(2, 1fr)" }} gap={6}>
-                {swedishDemoScenarios.map((scenario) => (
-                  <SwedishDemoScenarioCard
-                    key={scenario.id}
-                    scenario={scenario}
-                    onSelect={handleScenarioSelect}
-                    isSelected={scenario.id === selectedScenarioId}
-                  />
-                ))}
-              </Grid>
-            </VStack>
-          </TabPanel>
-        </TabPanels>
-      </Tabs>
-
-      {/* Scenario Detail Modal would be implemented here */}
-      {selectedScenario && (
-        <Modal isOpen={isOpen} onClose={onClose} size="6xl">
-          <ModalOverlay backdropFilter="blur(10px)" />
-          <ModalContent bg="white" borderRadius="xl" maxH="90vh" overflowY="auto">
-            <ModalHeader bg="blue.50">
-              <Text fontSize="xl" fontWeight="700" color="#003366">
-                {selectedScenario.title}
-              </Text>
-            </ModalHeader>
-            <ModalCloseButton />
-            <ModalBody p={6}>
-              <Text fontSize="md" color="gray.600">
-                Detailed scenario information would be displayed here...
-              </Text>
-            </ModalBody>
-          </ModalContent>
-        </Modal>
-      )}
-
-    </VStack>
-  );
-};

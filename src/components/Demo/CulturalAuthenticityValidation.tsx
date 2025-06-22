@@ -67,8 +67,6 @@ import {
 
 import { useCulturalTheme } from '../WorldHub/CulturalThemeProvider';
 
-const MotionBox = motion(Box);
-const MotionCard = motion(Card);
 
 // Cultural Authenticity Validation Framework
 interface SwedishCulturalElement {
@@ -328,14 +326,6 @@ const swedishCulturalElements: SwedishCulturalElement[] = [
 ];
 
 // Cultural validation assessment categories
-const validationCategories = [
-  { id: 'terminology', name: 'Swedish Terminology', weight: 20 },
-  { id: 'governance', name: 'Governance Compliance', weight: 25 },
-  { id: 'values', name: 'Cultural Values', weight: 20 },
-  { id: 'communication', name: 'Communication Style', weight: 15 },
-  { id: 'procedures', name: 'Democratic Procedures', weight: 15 },
-  { id: 'regional', name: 'Regional Sensitivity', weight: 5 }
-];
 
 // Cultural Element Validation Card
 interface CulturalElementCardProps {
@@ -349,18 +339,7 @@ const CulturalElementValidationCard: React.FC<CulturalElementCardProps> = ({
   validationResult,
   onValidate = () => {}
 }) => {
-  const swedishBlue = '#003366';
-  const swedishYellow = '#FFCC00';
 
-  const getStatusColor = (status?: string) => {
-    switch (status) {
-      case 'authentic': return 'green';
-      case 'acceptable': return 'blue';
-      case 'problematic': return 'orange';
-      case 'invalid': return 'red';
-      default: return 'gray';
-    }
-  };
 
   return (
     <MotionCard
@@ -528,17 +507,8 @@ interface ValidationDashboardProps {
 }
 
 const CulturalValidationDashboard: React.FC<ValidationDashboardProps> = ({ validationSuite }) => {
-  const swedishBlue = '#003366';
-  const swedishYellow = '#FFCC00';
 
-  const getOverallStatus = (score: number) => {
-    if (score >= 90) return { status: 'Excellent', color: 'green', icon: FiAward };
-    if (score >= 80) return { status: 'Good', color: 'blue', icon: FiStar };
-    if (score >= 70) return { status: 'Acceptable', color: 'orange', icon: FiFlag };
-    return { status: 'Needs Improvement', color: 'red', icon: FiAlertTriangle };
-  };
 
-  const overall = getOverallStatus(validationSuite.overallScore);
 
   return (
     <Card bg="blue.50" borderColor="blue.200" borderWidth="2px">
@@ -617,8 +587,6 @@ const CulturalValidationDashboard: React.FC<ValidationDashboardProps> = ({ valid
             
             <Grid templateColumns="repeat(2, 1fr)" gap={4}>
               {validationCategories.map((category) => {
-                const score = validationSuite.categoryScores[category.id] || 0;
-                const status = getOverallStatus(score);
                 
                 return (
                   <VStack key={category.id} spacing={2} align="stretch">
@@ -704,8 +672,6 @@ export const CulturalAuthenticityValidation: React.FC<CulturalAuthenticityValida
   onValidationComplete = () => console.log('Cultural validation completed'),
   autoValidate = false
 }) => {
-  const swedishBlue = '#003366';
-  const swedishYellow = '#FFCC00';
   
   const [validationResults, setValidationResults] = useState<Map<string, CulturalValidationResult>>(new Map());
   const [isValidating, setIsValidating] = useState(false);
@@ -713,21 +679,17 @@ export const CulturalAuthenticityValidation: React.FC<CulturalAuthenticityValida
   const { isOpen, onOpen, onClose } = useDisclosure();
 
   // Calculate validation suite from results
-  const validationSuite = useMemo<ValidationSuite>(() => {
-    const results = Array.from(validationResults.values());
+  const _validationSuite = useMemo<ValidationSuite>(() => {
     
     // Calculate category scores
     const categoryScores: { [key: string]: number } = {};
     validationCategories.forEach(category => {
-      const categoryElements = swedishCulturalElements.filter(e => e.category === category.id);
-      const categoryResults = categoryElements.map(e => validationResults.get(e.id)?.score || 0);
       categoryScores[category.id] = categoryResults.length > 0 
         ? Math.round(categoryResults.reduce((sum, score) => sum + score, 0) / categoryResults.length)
         : 0;
     });
 
     // Calculate weighted overall score
-    const overallScore = Math.round(
       validationCategories.reduce((sum, category) => {
         return sum + (categoryScores[category.id] * category.weight / 100);
       }, 0)
@@ -759,336 +721,3 @@ export const CulturalAuthenticityValidation: React.FC<CulturalAuthenticityValida
     };
   }, [validationResults]);
 
-  const handleElementValidation = useCallback(async (elementId: string) => {
-    setIsValidating(true);
-    
-    // Simulate validation process
-    await new Promise(resolve => setTimeout(resolve, 1000));
-    
-    const element = swedishCulturalElements.find(e => e.id === elementId);
-    if (!element) return;
-
-    // Generate realistic validation result
-    const baseScore = element.authenticityLevel;
-    const variance = Math.random() * 20 - 10; // ±10 variance
-    const score = Math.max(0, Math.min(100, Math.round(baseScore + variance)));
-    
-    let status: 'authentic' | 'acceptable' | 'problematic' | 'invalid';
-    if (score >= 90) status = 'authentic';
-    else if (score >= 75) status = 'acceptable';
-    else if (score >= 60) status = 'problematic';
-    else status = 'invalid';
-
-    const result: CulturalValidationResult = {
-      elementId,
-      score,
-      status,
-      feedback: [
-        score >= 85 ? 'Excellent cultural authenticity demonstrated' : 
-        score >= 70 ? 'Good cultural understanding med minor adjustments needed' :
-        'Cultural authenticity needs significant improvement',
-        
-        element.category === 'governance' ? 'Legal compliance verification completed' :
-        element.category === 'values' ? 'Cultural values alignment assessed' :
-        'Terminology accuracy evaluated'
-      ],
-      recommendations: score < 85 ? [
-        'Review Swedish cultural context guidelines',
-        'Consult med Swedish municipal experts',
-        'Implement cultural authenticity improvements'
-      ] : [
-        'Maintain current cultural intelligence level',
-        'Continue monitoring cultural authenticity'
-      ]
-    };
-
-    setValidationResults(prev => new Map(prev.set(elementId, result)));
-    setIsValidating(false);
-  }, []);
-
-  const handleBulkValidation = useCallback(async () => {
-    setIsValidating(true);
-    
-    for (const element of swedishCulturalElements) {
-      await handleElementValidation(element.id);
-      await new Promise(resolve => setTimeout(resolve, 200)); // Stagger validations
-    }
-    
-    setIsValidating(false);
-  }, [handleElementValidation]);
-
-  useEffect(() => {
-    if (autoValidate) {
-      handleBulkValidation();
-    }
-  }, [autoValidate, handleBulkValidation]);
-
-  useEffect(() => {
-    if (validationResults.size > 0) {
-      onValidationComplete(validationSuite);
-    }
-  }, [validationSuite, onValidationComplete, validationResults]);
-
-  const filteredElements = selectedCategory === 'all' 
-    ? swedishCulturalElements 
-    : swedishCulturalElements.filter(e => e.category === selectedCategory);
-
-  return (
-    <VStack spacing={8} align="stretch">
-      
-      {/* Cultural Authenticity Validation Header */}
-      <MotionBox
-        initial={{ opacity: 0, y: -20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.6 }}
-      >
-        <Card 
-          bg={`linear-gradient(135deg, ${swedishBlue} 0%, ${swedishBlue} 100%)`}
-          color="white"
-          position="relative"
-          overflow="hidden"
-        >
-          {/* Swedish Flag Pattern Background */}
-          <Box
-            position="absolute"
-            top={0}
-            left={0}
-            right={0}
-            bottom={0}
-            backgroundImage={`linear-gradient(90deg, transparent 35%, ${swedishYellow} 35%, ${swedishYellow} 45%, transparent 45%),
-                             linear-gradient(0deg, transparent 35%, ${swedishYellow} 35%, ${swedishYellow} 45%, transparent 45%)`}
-            opacity={0.2}
-          />
-          
-          <CardBody p={6} position="relative" zIndex={1}>
-            <VStack spacing={6} align="stretch">
-              
-              <HStack justify="space-between">
-                <HStack spacing={3}>
-                  <Icon as={FiShield} w={8} h={8} color={swedishYellow} />
-                  <VStack align="start" spacing={0}>
-                    <Text fontSize="2xl" fontWeight="800">
-                      Cultural Authenticity Validation System
-                    </Text>
-                    <Text fontSize="md" opacity={0.9}>
-                      Comprehensive Swedish municipal cultural intelligence verification
-                    </Text>
-                  </VStack>
-                </HStack>
-                
-                <VStack align="end" spacing={1}>
-                  <Badge bg={swedishYellow} color={swedishBlue} p={2} borderRadius="lg" fontSize="sm">
-                    🇸🇪 Swedish Authenticity Certified
-                  </Badge>
-                  <Text fontSize="xs" opacity={0.8}>
-                    Government Cultural Standards
-                  </Text>
-                </VStack>
-              </HStack>
-
-              {/* Validation Progress Metrics */}
-              <Grid templateColumns="repeat(4, 1fr)" gap={6}>
-                <VStack spacing={2}>
-                  <Text fontSize="2xl" fontWeight="800" color={swedishYellow}>
-                    {validationResults.size}
-                  </Text>
-                  <Text fontSize="sm" textAlign="center">
-                    Elements Validated
-                  </Text>
-                </VStack>
-                <VStack spacing={2}>
-                  <Text fontSize="2xl" fontWeight="800" color="green.300">
-                    {validationSuite.overallScore}%
-                  </Text>
-                  <Text fontSize="sm" textAlign="center">
-                    Overall Authenticity
-                  </Text>
-                </VStack>
-                <VStack spacing={2}>
-                  <Text fontSize="2xl" fontWeight="800" color="blue.300">
-                    {validationSuite.certificationsAchieved.length}
-                  </Text>
-                  <Text fontSize="sm" textAlign="center">
-                    Certifications
-                  </Text>
-                </VStack>
-                <VStack spacing={2}>
-                  <Text fontSize="2xl" fontWeight="800" color="orange.300">
-                    {swedishCulturalElements.length}
-                  </Text>
-                  <Text fontSize="sm" textAlign="center">
-                    Cultural Elements
-                  </Text>
-                </VStack>
-              </Grid>
-
-              {/* Validation Controls */}
-              <HStack justify="center" spacing={4}>
-                <Button
-                  size="lg"
-                  colorScheme="green"
-                  onClick={handleBulkValidation}
-                  isLoading={isValidating}
-                  loadingText="Validating..."
-                  leftIcon={<Icon as={FiShield} />}
-                  bg="green.500"
-                  color="white"
-                  _hover={{ bg: "green.600" }}
-                >
-                  Validate All Elements
-                </Button>
-                
-                <Button
-                  size="lg"
-                  variant="outline"
-                  borderColor={swedishYellow}
-                  color={swedishYellow}
-                  _hover={{ bg: swedishYellow, color: swedishBlue }}
-                  leftIcon={<Icon as={FiEye} />}
-                  onClick={onOpen}
-                >
-                  View Dashboard
-                </Button>
-              </HStack>
-
-            </VStack>
-          </CardBody>
-        </Card>
-      </MotionBox>
-
-      {/* Validation Dashboard */}
-      {validationResults.size > 0 && (
-        <CulturalValidationDashboard validationSuite={validationSuite} />
-      )}
-
-      {/* Category Filter */}
-      <Box>
-        <Text fontSize="lg" fontWeight="600" color="gray.700" mb={4}>
-          Cultural Elements by Category:
-        </Text>
-        
-        <Tabs 
-          variant="enclosed" 
-          colorScheme="blue"
-          onChange={(index) => {
-            const categories = ['all', ...validationCategories.map(c => c.id)];
-            setSelectedCategory(categories[index]);
-          }}
-        >
-          <TabList>
-            <Tab>All Elements</Tab>
-            {validationCategories.map((category) => (
-              <Tab key={category.id}>{category.name}</Tab>
-            ))}
-          </TabList>
-
-          <TabPanels>
-            <TabPanel p={0} pt={6}>
-              <Grid templateColumns={{ base: "1fr", lg: "repeat(2, 1fr)" }} gap={6}>
-                {filteredElements.map((element) => (
-                  <CulturalElementValidationCard
-                    key={element.id}
-                    element={element}
-                    validationResult={validationResults.get(element.id)}
-                    onValidate={handleElementValidation}
-                  />
-                ))}
-              </Grid>
-            </TabPanel>
-            
-            {validationCategories.map((category) => (
-              <TabPanel key={category.id} p={0} pt={6}>
-                <Grid templateColumns={{ base: "1fr", lg: "repeat(2, 1fr)" }} gap={6}>
-                  {swedishCulturalElements
-                    .filter(e => e.category === category.id)
-                    .map((element) => (
-                      <CulturalElementValidationCard
-                        key={element.id}
-                        element={element}
-                        validationResult={validationResults.get(element.id)}
-                        onValidate={handleElementValidation}
-                      />
-                    ))}
-                </Grid>
-              </TabPanel>
-            ))}
-          </TabPanels>
-        </Tabs>
-      </Box>
-
-      {/* Validation Dashboard Modal */}
-      <Modal isOpen={isOpen} onClose={onClose} size="6xl">
-        <ModalOverlay backdropFilter="blur(10px)" />
-        <ModalContent bg="white" borderRadius="xl" maxH="90vh" overflowY="auto">
-          <ModalHeader bg="blue.50">
-            <Text fontSize="xl" fontWeight="700" color={swedishBlue}>
-              Cultural Authenticity Validation Dashboard
-            </Text>
-          </ModalHeader>
-          <ModalCloseButton />
-          <ModalBody p={6}>
-            <CulturalValidationDashboard validationSuite={validationSuite} />
-          </ModalBody>
-        </ModalContent>
-      </Modal>
-
-      {/* Swedish Cultural Excellence Summary */}
-      <MotionBox
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.6, delay: 0.8 }}
-      >
-        <Card bg="green.50" borderColor="green.200" borderWidth="2px">
-          <CardBody p={6}>
-            <VStack spacing={4} align="stretch">
-              
-              <HStack spacing={3}>
-                <Icon as={FiAward} w={6} h={6} color="green.500" />
-                <Text fontSize="lg" fontWeight="700" color="green.700">
-                  Swedish Cultural Authenticity Excellence Verification
-                </Text>
-              </HStack>
-
-              <Text fontSize="sm" color="green.700" lineHeight="tall">
-                Comprehensive cultural authenticity validation system ensures authentic Swedish 
-                municipal cultural intelligence through systematic verification av terminology, 
-                governance compliance, cultural values, communication style, democratic procedures, 
-                och regional sensitivity. Government stakeholder confidence achieved through 
-                verified cultural authenticity certification.
-              </Text>
-
-              <Grid templateColumns="repeat(3, 1fr)" gap={4}>
-                <VStack spacing={2}>
-                  <Text fontSize="xl" fontWeight="800" color="green.500">
-                    Verified
-                  </Text>
-                  <Text fontSize="sm" color="green.600" textAlign="center">
-                    Cultural Authenticity
-                  </Text>
-                </VStack>
-                <VStack spacing={2}>
-                  <Text fontSize="xl" fontWeight="800" color="blue.500">
-                    Compliant
-                  </Text>
-                  <Text fontSize="sm" color="green.600" textAlign="center">
-                    Governance Standards
-                  </Text>
-                </VStack>
-                <VStack spacing={2}>
-                  <Text fontSize="xl" fontWeight="800" color="orange.500">
-                    Certified
-                  </Text>
-                  <Text fontSize="sm" color="green.600" textAlign="center">
-                    Government Ready
-                  </Text>
-                </VStack>
-              </Grid>
-
-            </VStack>
-          </CardBody>
-        </Card>
-      </MotionBox>
-
-    </VStack>
-  );
-};

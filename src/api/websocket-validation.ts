@@ -90,9 +90,7 @@ export class WebSocketValidationService {
 
       // Handle disconnection
       socket.on('disconnect', () => {
-        const session = this.sessions.get(socket.id);
         if (session) {
-          const sessionDuration = Date.now() - session.connectedAt;
           this.monitoring.recordMetric({
             name: 'devteam_session_duration',
             value: sessionDuration,
@@ -112,8 +110,6 @@ export class WebSocketValidationService {
   }
 
   private async handleValidation(socket: Record<string, unknown>, request: RealtimeValidationRequest): Promise<void> {
-    const startTime = Date.now();
-    const session = this.sessions.get(socket.id);
 
     if (!session) {
       socket.emit('error', { message: 'Not authenticated' });
@@ -147,14 +143,12 @@ export class WebSocketValidationService {
           result = this.validator.validateGameManifest(request.content);
       }
 
-      const processingTime = Date.now() - startTime;
 
       // Update session
       session.lastValidation = Date.now();
       session.validationCount++;
 
       // Generate suggestions based on errors
-      const suggestions = this.generateSmartSuggestions(result.errors, request.contentType);
 
       // Emit validation result
       const response: RealtimeValidationResponse = {
@@ -208,11 +202,9 @@ export class WebSocketValidationService {
 
   private async handleIncrementalValidation(socket: Record<string, unknown>, request: RealtimeValidationRequest): Promise<void> {
     // Debounce incremental validation
-    const session = this.sessions.get(socket.id);
     if (!session || !request.partial) return;
 
     // Simple validation for partial content
-    const errors = [];
     
     try {
       // Quick JSON parse check
@@ -272,8 +264,6 @@ export class WebSocketValidationService {
     // Simple line estimation based on path
     // In production, would use proper source mapping
     try {
-      const jsonString = JSON.stringify(content, null, 2);
-      const lines = jsonString.split('\n');
       
       for (let i = 0; i < lines.length; i++) {
         if (lines[i].includes(path.split('.').pop() || '')) {
@@ -297,7 +287,6 @@ export class WebSocketValidationService {
       'dialogue': 'array of dialogue entries'
     };
 
-    const key = path.split('.').pop() || '';
     return typeMap[key] || 'check documentation';
   }
 
@@ -305,12 +294,6 @@ export class WebSocketValidationService {
    * Broadcast validation statistics to admin dashboard
    */
   public broadcastStats(): void {
-    const stats = {
-      activeSessions: this.sessions.size,
-      totalValidations: Array.from(this.sessions.values())
-        .reduce((sum, session) => sum + session.validationCount, 0),
-      timestamp: Date.now()
-    };
 
     this.io.emit('validation-stats', stats);
   }

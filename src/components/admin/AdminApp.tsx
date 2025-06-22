@@ -15,13 +15,7 @@ interface AdminUser {
 export const AdminApp: React.FC = () => {
   const [user, setUser] = useState<AdminUser | null>(null);
 
-  const handleAuthenticated = (authenticatedUser: AdminUser) => {
-    setUser(authenticatedUser);
-  };
 
-  const handleLogout = () => {
-    setUser(null);
-  };
 
   if (!user) {
     return <AdminAuth onAuthenticated={handleAuthenticated} />;

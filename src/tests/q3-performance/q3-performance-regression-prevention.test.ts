@@ -39,33 +39,6 @@ import { createTestUser, generateTestUniqueCode } from '../../../src/tests/utils
  * - Cross-device sync: <300ms (maintaining Q2 excellence)
  * - Municipal networks: <2s fallback (Anna Svensson compatibility)
  */
-const Q3_PERFORMANCE_TARGETS = {
-  enhanced: {
-    hubLoading: 800, // ms - aggressive target
-    worldTransition: 1500, // ms - enhanced standard
-    crossDeviceSync: 300, // ms - Q2 excellence maintained
-    memoryTotal: 256, // MB - municipal constraint
-    culturalSwitching: 300 // ms - European market switching
-  },
-  fallback: {
-    municipalNetworks: 2000, // ms - Anna Svensson compatibility
-    constrainedDevices: 2500, // ms - minimal hardware support
-    highLatencyNetworks: 3000 // ms - remote municipal areas
-  },
-  regression: {
-    maxDegradation: 0.05, // 5% maximum performance degradation
-    alertThreshold: 0.03, // 3% degradation triggers alert
-    criticalThreshold: 0.10, // 10% degradation triggers intervention
-    measurementWindow: 100 // samples för regression analysis
-  },
-  memory: {
-    hubInterface: 32, // MB allocation
-    activeWorld: 128, // MB allocation
-    worldCache: 64, // MB allocation
-    crossWorldData: 16, // MB allocation
-    systemOverhead: 16 // MB allocation
-  }
-};
 
 describe('Q3 Performance Regression Prevention - Phase 2 Implementation', () => {
   let performanceMonitor: Q3PerformanceMonitor;
@@ -108,29 +81,16 @@ describe('Q3 Performance Regression Prevention - Phase 2 Implementation', () => 
   describe('Enhanced Performance Target Validation', () => {
     test('Hub Loading <800ms Aggressive Target Maintenance', async () => {
       // Test hub loading performance under various conditions
-      const testConditions = [
-        { name: 'optimal', device: 'high-end', network: 'fiber' },
-        { name: 'anna-svensson', device: 'iPhone-12', network: 'municipal-3g' },
-        { name: 'constrained', device: 'budget-android', network: 'limited-bandwidth' },
-        { name: 'municipal-standard', device: 'municipal-laptop', network: 'government-network' }
-      ];
 
       for (const condition of testConditions) {
-        const testDevice = await simulateAnnaSvenssonDevice(condition.device);
-        const testNetwork = await simulateMunicipalNetwork(condition.network);
         
         // Run multiple hub loading tests för statistical significance
         const loadingTimes: number[] = [];
         for (let i = 0; i < 20; i++) {
-          const loadStart = performance.now();
           await performanceMonitor.loadQ3WorldHub(testUserCode, testDevice, testNetwork);
-          const loadTime = performance.now() - loadStart;
           loadingTimes.push(loadTime);
         }
         
-        const averageLoadTime = loadingTimes.reduce((a, b) => a + b) / loadingTimes.length;
-        const maxLoadTime = Math.max(...loadingTimes);
-        const p95LoadTime = loadingTimes.sort((a, b) => a - b)[Math.floor(loadingTimes.length * 0.95)];
         
         // Validate enhanced performance targets
         if (condition.name === 'optimal' || condition.name === 'anna-svensson') {
@@ -155,34 +115,21 @@ describe('Q3 Performance Regression Prevention - Phase 2 Implementation', () => 
 
     test('World Transition <1.5s Enhanced Standard Validation', async () => {
       // Test world transitions maintaining enhanced performance
-      const worldTransitions = [
-        { from: 'hub', to: 'municipal-foundations' },
-        { from: 'municipal-foundations', to: 'citizen-service' },
-        { from: 'citizen-service', to: 'emergency-response' },
-        { from: 'emergency-response', to: 'leadership-development' },
-        { from: 'leadership-development', to: 'innovation-implementation' },
-        { from: 'innovation-implementation', to: 'hub' }
-      ];
 
       for (const transition of worldTransitions) {
         const transitionTimes: number[] = [];
         
         // Test transition performance under various load conditions
-        const loadConditions = ['light', 'moderate', 'heavy'];
         
         for (const load of loadConditions) {
           await simulateLoadConditions(load);
           
           for (let i = 0; i < 10; i++) {
-            const transitionStart = performance.now();
             await performanceMonitor.performWorldTransition(transition.from, transition.to, testUserCode);
-            const transitionTime = performance.now() - transitionStart;
             transitionTimes.push(transitionTime);
           }
         }
         
-        const averageTransitionTime = transitionTimes.reduce((a, b) => a + b) / transitionTimes.length;
-        const maxTransitionTime = Math.max(...transitionTimes);
         
         // Validate enhanced transition performance
         expect(averageTransitionTime).toBeLessThan(Q3_PERFORMANCE_TARGETS.enhanced.worldTransition);
@@ -205,17 +152,8 @@ describe('Q3 Performance Regression Prevention - Phase 2 Implementation', () => 
       // Test memory allocation strategy with multiple worlds loaded
       await memoryOptimizer.resetMemoryTracking();
       
-      const memoryBaseline = await validateMemoryUsage.getBaselineMemory();
       
       // Progressive memory loading test
-      const memoryStages = [
-        { stage: 'baseline', action: 'baseline measurement' },
-        { stage: 'hub-loaded', action: 'load hub interface' },
-        { stage: 'world-active', action: 'load active world' },
-        { stage: 'cache-populated', action: 'populate world cache' },
-        { stage: 'cross-world-data', action: 'load cross-world data' },
-        { stage: 'full-system', action: 'complete Q3 system loaded' }
-      ];
       
       const memoryProgression: Record<string, unknown>[] = [];
       
@@ -263,7 +201,6 @@ describe('Q3 Performance Regression Prevention - Phase 2 Implementation', () => 
       
       // Validate memory deallocation
       await memoryOptimizer.optimizeMemoryUsage();
-      const optimizedMemory = await validateMemoryUsage.getCurrentMemory();
       expect(optimizedMemory - memoryBaseline).toBeLessThanOrEqual(Q3_PERFORMANCE_TARGETS.enhanced.memoryTotal * 0.9); // 10% optimization target
       
       // Record memory usage pattern
@@ -272,11 +209,6 @@ describe('Q3 Performance Regression Prevention - Phase 2 Implementation', () => 
 
     test('Cross-Device Synchronization <300ms Maintenance', async () => {
       // Test cross-device sync performance under Q3 complexity
-      const devices = [
-        await simulateAnnaSvenssonDevice('primary-device'),
-        await simulateAnnaSvenssonDevice('secondary-device'),
-        await simulateAnnaSvenssonDevice('mobile-device')
-      ];
       
       // Create substantial multi-world progress on primary device
       await performanceMonitor.simulateExtensiveProgress(devices[0], testUserCode, {
@@ -292,13 +224,10 @@ describe('Q3 Performance Regression Prevention - Phase 2 Implementation', () => 
       const syncResults: Record<string, unknown>[] = [];
       
       for (let i = 1; i < devices.length; i++) {
-        const syncStart = performance.now();
-        const syncResult = await performanceMonitor.synchronizeToDevice(devices[i], testUserCode, {
           includeFullState: true,
           validateIntegrity: true,
           compressData: true
         });
-        const syncTime = performance.now() - syncStart;
         
         // Validate sync performance
         expect(syncTime).toBeLessThan(Q3_PERFORMANCE_TARGETS.enhanced.crossDeviceSync);
@@ -329,7 +258,6 @@ describe('Q3 Performance Regression Prevention - Phase 2 Implementation', () => 
   describe('Performance Regression Detection', () => {
     test('Automated Performance Baseline Monitoring', async () => {
       // Establish performance baseline över extended period
-      const baselineData = await regressionDetector.collectBaselineData({
         duration: '24-hours',
         samplingInterval: '1-minute',
         includeVariousConditions: true,
@@ -352,19 +280,12 @@ describe('Q3 Performance Regression Prevention - Phase 2 Implementation', () => 
 
     test('Real-time Regression Detection with Alert System', async () => {
       // Simulate performance degradation scenarios
-      const degradationScenarios = [
-        { type: 'memory-leak', severity: 'mild', expectedDegradation: 0.03 },
-        { type: 'cache-inefficiency', severity: 'moderate', expectedDegradation: 0.05 },
-        { type: 'network-congestion', severity: 'significant', expectedDegradation: 0.08 },
-        { type: 'resource-contention', severity: 'severe', expectedDegradation: 0.12 }
-      ];
       
       for (const scenario of degradationScenarios) {
         // Simulate performance degradation
         await performanceMonitor.simulatePerformanceDegradation(scenario);
         
         // Collect performance data under degraded conditions
-        const degradedPerformance = await regressionDetector.measureCurrentPerformance({
           samples: 50,
           includeHubLoading: true,
           includeWorldTransitions: true,
@@ -372,7 +293,6 @@ describe('Q3 Performance Regression Prevention - Phase 2 Implementation', () => 
         });
         
         // Detect regression
-        const regressionAnalysis = await regressionDetector.detectRegression(degradedPerformance);
         
         if (scenario.expectedDegradation > Q3_PERFORMANCE_TARGETS.regression.alertThreshold) {
           expect(regressionAnalysis.regressionDetected).toBe(true);
@@ -400,13 +320,11 @@ describe('Q3 Performance Regression Prevention - Phase 2 Implementation', () => 
         memoryUsageIncrease: 0.10 // 10% increase
       });
       
-      const optimizationResult = await regressionDetector.triggerAutomaticOptimization();
       
       expect(optimizationResult.optimizationTriggered).toBe(true);
       expect(optimizationResult.optimizationStrategies.length).toBeGreaterThan(0);
       
       // Validate optimization effectiveness
-      const postOptimizationPerformance = await regressionDetector.measureCurrentPerformance({
         samples: 20,
         includeAllMetrics: true
       });
@@ -421,7 +339,6 @@ describe('Q3 Performance Regression Prevention - Phase 2 Implementation', () => 
 
     test('Performance Trend Analysis and Prediction', async () => {
       // Collect long-term performance data
-      const trendData = await regressionDetector.collectPerformanceTrends({
         timeWindow: '30-days',
         granularity: 'hourly',
         includeSeasonalPatterns: true,
@@ -429,14 +346,12 @@ describe('Q3 Performance Regression Prevention - Phase 2 Implementation', () => 
       });
       
       // Analyze performance trends
-      const trendAnalysis = await regressionDetector.analyzePerformanceTrends(trendData);
       
       expect(trendAnalysis.overallTrend.direction).toMatch(/^(stable|improving|degrading)$/);
       expect(trendAnalysis.seasonalPatterns.detected).toBeDefined();
       expect(trendAnalysis.usageCorrelations.identified).toBeDefined();
       
       // Generate performance predictions
-      const performancePrediction = await regressionDetector.predictPerformanceTrends({
         predictionWindow: '7-days',
         confidence: 0.95,
         includeOptimizationRecommendations: true
@@ -462,18 +377,10 @@ describe('Q3 Performance Regression Prevention - Phase 2 Implementation', () => 
   describe('Municipal Network Performance Optimization', () => {
     test('European Municipal Network Adaptation', async () => {
       // Test performance optimization across European municipal networks
-      const europeanNetworks = [
-        { country: 'sweden', infrastructure: 'modern-fiber', latency: 20, bandwidth: '100mbps' },
-        { country: 'germany', infrastructure: 'mixed-legacy', latency: 80, bandwidth: '50mbps' },
-        { country: 'france', infrastructure: 'centralized-system', latency: 60, bandwidth: '75mbps' },
-        { country: 'netherlands', infrastructure: 'distributed-fiber', latency: 15, bandwidth: '200mbps' }
-      ];
       
       for (const network of europeanNetworks) {
-        const networkSimulation = await simulateMunicipalNetwork(network);
         
         // Test adaptive performance optimization
-        const adaptiveOptimization = await loadBalancer.optimizeForNetwork(networkSimulation, {
           adaptCaching: true,
           adjustCompressionLevel: true,
           optimizeAssetDelivery: true,
@@ -481,7 +388,6 @@ describe('Q3 Performance Regression Prevention - Phase 2 Implementation', () => 
         });
         
         // Measure optimized performance
-        const optimizedPerformance = await performanceMonitor.measureNetworkOptimizedPerformance(
           networkSimulation, 
           testUserCode
         );
@@ -508,19 +414,12 @@ describe('Q3 Performance Regression Prevention - Phase 2 Implementation', () => 
 
     test('Load Balancing and Resource Allocation', async () => {
       // Test dynamic load balancing under varying municipal usage patterns
-      const usagePatterns = [
-        { pattern: 'morning-peak', concurrentUsers: 500, intensity: 'high' },
-        { pattern: 'lunch-moderate', concurrentUsers: 200, intensity: 'moderate' },
-        { pattern: 'afternoon-steady', concurrentUsers: 300, intensity: 'steady' },
-        { pattern: 'evening-training', concurrentUsers: 800, intensity: 'very-high' }
-      ];
       
       for (const pattern of usagePatterns) {
         // Simulate municipal usage pattern
         await loadBalancer.simulateUsagePattern(pattern);
         
         // Apply dynamic load balancing
-        const loadBalancingResult = await loadBalancer.optimizeResourceAllocation({
           prioritizeActiveUsers: true,
           scaleCacheCapacity: true,
           adjustProcessingPriority: true,
@@ -531,7 +430,6 @@ describe('Q3 Performance Regression Prevention - Phase 2 Implementation', () => 
         expect(loadBalancingResult.performanceTargets.maintained).toBe(true);
         
         // Measure performance under load
-        const loadPerformance = await performanceMonitor.measurePerformanceUnderLoad(pattern);
         
         expect(loadPerformance.averageHubLoadTime).toBeLessThan(Q3_PERFORMANCE_TARGETS.enhanced.hubLoading * 1.3); // 30% tolerance under load
         expect(loadPerformance.averageWorldTransitionTime).toBeLessThan(Q3_PERFORMANCE_TARGETS.enhanced.worldTransition * 1.3);
@@ -543,7 +441,6 @@ describe('Q3 Performance Regression Prevention - Phase 2 Implementation', () => 
 
     test('Anna Svensson Device Compatibility Under Q3 Complexity', async () => {
       // Test iPhone 12 performance maintenance with full Q3 system
-      const annaSvenssonDevice = await simulateAnnaSvenssonDevice({
         model: 'iPhone-12',
         iOSVersion: '15.0',
         batteryLevel: 85,
@@ -561,7 +458,6 @@ describe('Q3 Performance Regression Prevention - Phase 2 Implementation', () => 
       });
       
       // Extended performance testing
-      const extendedTest = await performanceMonitor.runExtendedPerformanceTest({
         duration: '30-minutes',
         includeAllWorldTransitions: true,
         simulateTypicalUsage: true,
@@ -593,7 +489,6 @@ describe('Q3 Performance Regression Prevention - Phase 2 Implementation', () => 
   describe('Memory Optimization and Management', () => {
     test('Intelligent Memory Allocation Strategy', async () => {
       // Test dynamic memory allocation based on usage patterns
-      const memoryAllocationTest = await memoryOptimizer.testIntelligentAllocation({
         totalBudget: Q3_PERFORMANCE_TARGETS.enhanced.memoryTotal,
         allocationStrategy: 'adaptive',
         includeGarbageCollection: true,
@@ -607,12 +502,11 @@ describe('Q3 Performance Regression Prevention - Phase 2 Implementation', () => 
       expect(memoryAllocationTest.systemOverhead.allocated).toBeLessThanOrEqual(Q3_PERFORMANCE_TARGETS.memory.systemOverhead);
       
       // Validate total allocation
-      const totalAllocated = Object.values(memoryAllocationTest).reduce((sum: number, allocation: Record<string, unknown>) => 
+      const _totalAllocated = Object.values(memoryAllocationTest).reduce((sum: number, allocation: Record<string, unknown>) => 
         sum + allocation.allocated, 0);
       expect(totalAllocated).toBeLessThanOrEqual(Q3_PERFORMANCE_TARGETS.enhanced.memoryTotal);
       
       // Test adaptive reallocation
-      const adaptiveReallocation = await memoryOptimizer.testAdaptiveReallocation({
         usagePattern: 'heavy-world-switching',
         optimizeForPattern: true
       });
@@ -624,7 +518,6 @@ describe('Q3 Performance Regression Prevention - Phase 2 Implementation', () => 
 
     test('Memory Leak Detection and Prevention', async () => {
       // Run extended memory usage monitoring
-      const memoryMonitoring = await memoryOptimizer.runExtendedMemoryMonitoring({
         duration: '2-hours',
         includeWorldTransitions: 100,
         includeCharacterEvolution: true,
@@ -639,14 +532,12 @@ describe('Q3 Performance Regression Prevention - Phase 2 Implementation', () => 
       expect(memoryMonitoring.peakMemoryUsage).toBeLessThanOrEqual(Q3_PERFORMANCE_TARGETS.enhanced.memoryTotal * 1.05); // 5% tolerance
       
       // Validate cleanup effectiveness
-      const cleanupTest = await memoryOptimizer.testMemoryCleanup();
       expect(cleanupTest.memoryReclaimed.percentage).toBeGreaterThan(0.90); // 90% cleanup efficiency
       expect(cleanupTest.performanceImpact.minimal).toBe(true);
     });
 
     test('Cache Optimization and Efficiency', async () => {
       // Test cache performance across world transitions
-      const cacheOptimization = await memoryOptimizer.optimizeCacheStrategy({
         cacheSize: Q3_PERFORMANCE_TARGETS.memory.worldCache,
         evictionPolicy: 'lru-with-frequency',
         preloadStrategy: 'predictive',
@@ -654,7 +545,6 @@ describe('Q3 Performance Regression Prevention - Phase 2 Implementation', () => 
       });
       
       // Test cache effectiveness
-      const cacheEffectiveness = await memoryOptimizer.measureCacheEffectiveness({
         testDuration: '1-hour',
         worldTransitions: 50,
         measureHitRate: true,
@@ -666,7 +556,6 @@ describe('Q3 Performance Regression Prevention - Phase 2 Implementation', () => 
       expect(cacheEffectiveness.memoryEfficiency).toBeGreaterThan(0.85); // 85% memory efficiency
       
       // Validate predictive caching
-      const predictiveCaching = await memoryOptimizer.testPredictiveCaching({
         userBehaviorPattern: 'typical-municipal-training',
         predictionAccuracy: true
       });

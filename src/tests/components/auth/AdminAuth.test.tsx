@@ -24,13 +24,6 @@ vi.mock('../../services/enterprise-saml-provider', () => ({
   }
 }));
 
-const renderWithChakra = (component: React.ReactElement) => {
-  return render(
-    <ChakraProvider>
-      {component}
-    </ChakraProvider>
-  );
-};
 
 describe('AdminAuth', () => {
   beforeEach(() => {
@@ -41,14 +34,10 @@ describe('AdminAuth', () => {
     it('renders without crashing', () => {
       renderWithChakra(<AdminAuth />);
       
-      const component = screen.getByTestId('-admin-auth');
       expect(component).toBeInTheDocument();
     });
 
     it('handles props correctly', () => {
-      const testProps = {
-        // Add relevant props based on component analysis
-      };
       
       renderWithChakra(<AdminAuth {...testProps} />);
       
@@ -68,7 +57,6 @@ describe('AdminAuth', () => {
     it('provides proper ARIA attributes', () => {
       renderWithChakra(<AdminAuth />);
       
-      const element = screen.getByTestId('-admin-auth');
       
       // Check for appropriate ARIA attributes
       expect(element).toHaveAttribute('role');
@@ -77,7 +65,6 @@ describe('AdminAuth', () => {
     it('supports keyboard navigation', () => {
       renderWithChakra(<AdminAuth />);
       
-      const element = screen.getByTestId('-admin-auth');
       
       // Test tab navigation
       element.focus();
@@ -88,7 +75,6 @@ describe('AdminAuth', () => {
       renderWithChakra(<AdminAuth />);
       
       // Basic contrast check
-      const element = screen.getByTestId('-admin-auth');
       expect(element).toBeInTheDocument();
     });
   });

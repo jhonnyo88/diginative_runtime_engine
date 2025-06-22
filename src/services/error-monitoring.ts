@@ -115,7 +115,6 @@ class ErrorMonitoringService {
 
     // Track navigation performance
     if ('navigation' in performance && 'getEntriesByType' in performance) {
-      const observer = new PerformanceObserver((list) => {
         for (const entry of list.getEntries()) {
           this.trackNavigationMetric(entry);
         }
@@ -224,7 +223,6 @@ class ErrorMonitoringService {
   }
 
   private getCurrentContext(): ErrorContext {
-    const gameState = this.getGameState();
     
     return {
       userId: this.getCurrentUserId(),
@@ -242,8 +240,6 @@ class ErrorMonitoringService {
   private trackPageLoadMetrics(): void {
     if (!('performance' in window) || !performance.timing) return;
 
-    const timing = performance.timing;
-    const navigation = performance.getEntriesByType('navigation')[0] as PerformanceNavigationTiming;
 
     // Core Web Vitals for Anna Svensson's mobile experience
     this.captureMetric({
@@ -282,7 +278,6 @@ class ErrorMonitoringService {
 
   private trackNavigationMetric(entry: PerformanceEntry): void {
     if (entry.entryType === 'resource') {
-      const resourceEntry = entry as PerformanceResourceTiming;
       
       // Track slow resources
       if (resourceEntry.duration > 1000) {
@@ -304,7 +299,6 @@ class ErrorMonitoringService {
   private async flushErrors(): Promise<void> {
     if (this.errorQueue.length === 0) return;
 
-    const errors = [...this.errorQueue];
     this.errorQueue = [];
 
     try {
@@ -319,7 +313,6 @@ class ErrorMonitoringService {
   private async flushMetrics(): Promise<void> {
     if (this.metricsQueue.length === 0) return;
 
-    const metrics = [...this.metricsQueue];
     this.metricsQueue = [];
 
     try {
@@ -365,7 +358,6 @@ class ErrorMonitoringService {
   }
 
   private getCurrentDeviceType(): 'mobile' | 'tablet' | 'desktop' {
-    const width = window.innerWidth;
     if (width < 768) return 'mobile';
     if (width < 1024) return 'tablet';
     return 'desktop';
@@ -373,7 +365,6 @@ class ErrorMonitoringService {
 
   private getGameState(): { gameId?: string; sceneId?: string } | null {
     // TODO: Integrate with game state management
-    const gameState = sessionStorage.getItem('currentGameState');
     return gameState ? JSON.parse(gameState) : null;
   }
 
@@ -384,11 +375,5 @@ class ErrorMonitoringService {
 }
 
 // Create singleton instance
-export const errorMonitoring = new ErrorMonitoringService();
 
 // Export convenience functions
-export const captureError = errorMonitoring.captureError.bind(errorMonitoring);
-export const captureMetric = errorMonitoring.captureMetric.bind(errorMonitoring);
-export const captureGameError = errorMonitoring.captureGameError.bind(errorMonitoring);
-export const captureAccessibilityError = errorMonitoring.captureAccessibilityError.bind(errorMonitoring);
-export const capturePerformanceIssue = errorMonitoring.capturePerformanceIssue.bind(errorMonitoring);

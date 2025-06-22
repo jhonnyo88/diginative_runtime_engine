@@ -17,7 +17,6 @@ test.describe('Validation API Integration', () => {
 
   test('should validate AI content before rendering in quiz scenes', async ({ page }) => {
     // Monitor validation API calls
-    const validationRequests = [];
     page.on('request', request => {
       if (request.url().includes('/api/validation')) {
         validationRequests.push({
@@ -41,11 +40,9 @@ test.describe('Validation API Integration', () => {
     expect(validationRequests.length).toBeGreaterThan(0);
     
     // Check validation request structure
-    const firstValidation = validationRequests[0];
     expect(firstValidation.method).toBe('POST');
     
     if (firstValidation.postData) {
-      const data = JSON.parse(firstValidation.postData);
       expect(data).toHaveProperty('content');
       expect(data).toHaveProperty('type');
     }
@@ -68,7 +65,6 @@ test.describe('Validation API Integration', () => {
     await page.click('text=Se Digitaliseringsstrategi Demo');
     
     // Should show content warning
-    const warningElement = page.locator('[data-testid="content-warning"]');
     if (await warningElement.count() > 0) {
       await expect(warningElement).toContainText('innehåll');
     }
@@ -100,7 +96,6 @@ test.describe('Validation API Integration', () => {
     await page.click('button:has-text("Starta")');
 
     // Verify no script injection
-    const pageContent = await page.content();
     expect(pageContent).not.toContain('<script>alert("XSS")</script>');
     
     // Verify sanitized content is displayed
@@ -108,10 +103,8 @@ test.describe('Validation API Integration', () => {
   });
 
   test('should validate content in batches for performance', async ({ page }) => {
-    const validationBatches = [];
     
     await page.route('/api/validation/batch', route => {
-      const request = route.request();
       validationBatches.push(request.postDataJSON());
       
       route.fulfill({
@@ -131,7 +124,6 @@ test.describe('Validation API Integration', () => {
     
     // Verify batch processing occurred
     if (validationBatches.length > 0) {
-      const firstBatch = validationBatches[0];
       expect(firstBatch).toHaveProperty('items');
       expect(Array.isArray(firstBatch.items)).toBe(true);
     }
@@ -139,7 +131,6 @@ test.describe('Validation API Integration', () => {
 
   test('should cache validation results for repeated content', async ({ page }) => {
     let validationCallCount = 0;
-    const contentHash = 'hash-12345';
     
     await page.route('/api/validation/content', route => {
       validationCallCount++;
@@ -192,7 +183,6 @@ test.describe('Validation API Integration', () => {
     await expect(page.locator('text=Säker kommunal plattform')).toBeVisible();
     
     // Verify Swedish language compliance
-    const textContent = await page.locator('body').textContent();
     expect(textContent).toMatch(/Börja|Nästa|Fortsätt/);
   });
 
@@ -210,7 +200,6 @@ test.describe('Validation API Integration', () => {
     await page.click('text=Se Digitaliseringsstrategi Demo');
     
     // Should show loading state
-    const loadingElement = page.locator('[data-testid="validation-loading"]');
     if (await loadingElement.count() > 0) {
       await expect(loadingElement).toBeVisible();
     }
@@ -231,7 +220,6 @@ test.describe('Validation API Integration', () => {
 
     // Mock role-based validation
     await page.route('/api/validation/role-based', route => {
-      const headers = route.request().headers();
       route.fulfill({
         status: 200,
         contentType: 'application/json',
@@ -254,11 +242,9 @@ test.describe('Validation API Integration', () => {
   });
 
   test('should integrate with content filtering pipeline', async ({ page }) => {
-    const filterStages = [];
     
     // Mock multi-stage filtering
     await page.route('/api/validation/filter/*', route => {
-      const stage = route.request().url().split('/').pop();
       filterStages.push(stage);
       
       route.fulfill({
@@ -319,7 +305,6 @@ test.describe('Validation API Integration', () => {
     await page.goto('/');
     
     // Check for validation feedback UI
-    const feedbackElement = page.locator('[data-testid="validation-feedback"]');
     if (await feedbackElement.count() > 0) {
       await expect(feedbackElement).toContainText('kontrast');
     }

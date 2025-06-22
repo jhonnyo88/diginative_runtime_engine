@@ -73,120 +73,12 @@ export interface ErrorFallbackProps {
 }
 
 // Municipal contact information
-const MUNICIPAL_CONTACTS = {
-  sweden: {
-    supportEmail: 'support@diginativa.se',
-    supportPhone: '+46 40 34 10 00',
-    municipality: 'Malmö Stad',
-    contactHours: 'Vardagar 08:00-17:00'
-  },
-  germany: {
-    supportEmail: 'support@diginativa.de',
-    supportPhone: '+49 30 12345678',
-    municipality: 'Berlin',
-    contactHours: 'Werktags 09:00-17:00'
-  },
-  france: {
-    supportEmail: 'support@diginativa.fr',
-    supportPhone: '+33 1 23 45 67 89',
-    municipality: 'Paris',
-    contactHours: 'Jours ouvrables 09:00-17:00'
-  },
-  netherlands: {
-    supportEmail: 'support@diginativa.nl',
-    supportPhone: '+31 20 123 4567',
-    municipality: 'Amsterdam',
-    contactHours: 'Werkdagen 09:00-17:00'
-  }
-};
 
 // Municipal color schemes
-const MUNICIPAL_COLORS = {
-  sweden: {
-    primary: '#005293',
-    secondary: '#E6F3FF',
-    error: '#DC2626',
-    warning: '#D97706',
-    success: '#059669'
-  },
-  germany: {
-    primary: '#1F2937',
-    secondary: '#F3F4F6',
-    error: '#DC2626',
-    warning: '#D97706',
-    success: '#059669'
-  },
-  france: {
-    primary: '#7C3AED',
-    secondary: '#F3E8FF',
-    error: '#DC2626',
-    warning: '#D97706',
-    success: '#059669'
-  },
-  netherlands: {
-    primary: '#EA580C',
-    secondary: '#FFF7ED',
-    error: '#DC2626',
-    warning: '#D97706',
-    success: '#059669'
-  }
-};
 
 // Error messages in different languages
-const ERROR_MESSAGES = {
-  sweden: {
-    title: 'Ett fel har uppstått',
-    subtitle: 'Vi arbetar på att lösa problemet',
-    description: 'Detta är ett tekniskt fel som vi behöver åtgärda. Du kan prova att ladda om sidan eller kontakta support om problemet kvarstår.',
-    retryButton: 'Försök igen',
-    homeButton: 'Tillbaka till start',
-    detailsButton: 'Visa tekniska detaljer',
-    contactTitle: 'Behöver du hjälp?',
-    contactDescription: 'Kontakta vårt supportteam för teknisk hjälp.',
-    errorIdLabel: 'Fel-ID',
-    reportedLabel: 'Felet har rapporterats automatiskt'
-  },
-  germany: {
-    title: 'Ein Fehler ist aufgetreten',
-    subtitle: 'Wir arbeiten an der Lösung',
-    description: 'Dies ist ein technischer Fehler, den wir beheben müssen. Sie können versuchen, die Seite neu zu laden oder den Support kontaktieren.',
-    retryButton: 'Erneut versuchen',
-    homeButton: 'Zurück zum Start',
-    detailsButton: 'Technische Details anzeigen',
-    contactTitle: 'Brauchen Sie Hilfe?',
-    contactDescription: 'Kontaktieren Sie unser Support-Team für technische Hilfe.',
-    errorIdLabel: 'Fehler-ID',
-    reportedLabel: 'Der Fehler wurde automatisch gemeldet'
-  },
-  france: {
-    title: 'Une erreur s\'est produite',
-    subtitle: 'Nous travaillons à la résolution',
-    description: 'Il s\'agit d\'une erreur technique que nous devons corriger. Vous pouvez essayer de recharger la page ou contacter le support.',
-    retryButton: 'Réessayer',
-    homeButton: 'Retour à l\'accueil',
-    detailsButton: 'Afficher les détails techniques',
-    contactTitle: 'Besoin d\'aide?',
-    contactDescription: 'Contactez notre équipe de support pour une aide technique.',
-    errorIdLabel: 'ID d\'erreur',
-    reportedLabel: 'L\'erreur a été signalée automatiquement'
-  },
-  netherlands: {
-    title: 'Er is een fout opgetreden',
-    subtitle: 'We werken aan een oplossing',
-    description: 'Dit is een technische fout die we moeten oplossen. U kunt proberen de pagina te herladen of contact opnemen met de support.',
-    retryButton: 'Opnieuw proberen',
-    homeButton: 'Terug naar start',
-    detailsButton: 'Technische details tonen',
-    contactTitle: 'Hulp nodig?',
-    contactDescription: 'Neem contact op met ons supportteam voor technische hulp.',
-    errorIdLabel: 'Fout-ID',
-    reportedLabel: 'De fout is automatisch gerapporteerd'
-  }
-};
 
 // Motion components
-const MotionBox = motion(Box);
-const MotionVStack = motion(VStack);
 
 /**
  * Default Error Fallback Component
@@ -203,13 +95,8 @@ const DefaultErrorFallback: React.FC<ErrorFallbackProps> = ({
   onToggleDetails,
   showDetails
 }) => {
-  const municipalColors = MUNICIPAL_COLORS[municipalTheme];
-  const messages = ERROR_MESSAGES[municipalTheme];
-  const contact = MUNICIPAL_CONTACTS[municipalTheme];
   
   // Color mode values
-  const bgColor = useColorModeValue('white', 'gray.800');
-  const borderColor = useColorModeValue('gray.200', 'gray.600');
   
   return (
     <Container maxW="lg" py={16}>
@@ -458,7 +345,6 @@ export class EnhancedErrorBoundary extends Component<
   
   static getDerivedStateFromError(error: Error): Partial<ErrorBoundaryState> {
     // Generate unique error ID
-    const errorId = `ERR_${Date.now()}_${Math.random().toString(36).substring(7)}`;
     
     return {
       hasError: true,
@@ -482,21 +368,10 @@ export class EnhancedErrorBoundary extends Component<
   
   reportError = async (error: Error, errorInfo: ErrorInfo) => {
     try {
-      const errorReport = {
-        errorId: this.state.errorId,
-        message: error.message,
-        stack: error.stack,
-        componentStack: errorInfo.componentStack,
-        timestamp: new Date().toISOString(),
-        municipalTheme: this.props.municipalTheme,
-        userAgent: navigator.userAgent,
-        url: window.location.href
-      };
       
       console.log('Error Report:', errorReport);
       
       // Report to Infrastructure Monitoring Service
-      const monitoring = InfrastructureMonitoring.getInstance();
       if (monitoring) {
         monitoring.reportError(error, {
           errorId: this.state.errorId,
@@ -547,7 +422,6 @@ export class EnhancedErrorBoundary extends Component<
   
   render() {
     if (this.state.hasError) {
-      const FallbackComponent = this.props.fallbackComponent || DefaultErrorFallback;
       
       return (
         <FallbackComponent

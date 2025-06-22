@@ -14,7 +14,7 @@ import { MunicipalAchievementEngine, createMunicipalAchievementEngine } from '..
 import { useMunicipalAchievements } from '../../../hooks/useMunicipalAchievements';
 
 // Mock window.matchMedia for accessibility tests
-const mockMatchMedia = vi.fn().mockImplementation(query => ({
+const _mockMatchMedia = vi.fn().mockImplementation(query => ({
   matches: false,
   media: query,
   onchange: null,
@@ -44,29 +44,7 @@ describe('Municipal Achievement System - TASK-HD-014', () => {
   });
 
   describe('MunicipalToastNotification Component', () => {
-    const mockAchievement = MunicipalAchievementCategories.GDPR_SPECIALIST;
-    const mockOnDismiss = vi.fn();
-    const mockAnalytics = vi.fn();
 
-    const defaultProps = {
-      achievement: mockAchievement,
-      design: {
-        variant: 'municipal-achievement' as const,
-        culturalContext: 'swedish' as const,
-        municipalEntity: 'malmö' as const,
-        professionalLevel: 'intermediate' as const,
-      },
-      accessibility: {
-        dismissible: true,
-        autoTimeout: 4000,
-        reducedMotion: false,
-        screenReaderFriendly: true,
-      },
-      integration: {
-        onDismiss: mockOnDismiss,
-        analytics: mockAnalytics,
-      },
-    };
 
     it('should render toast notification with municipal branding', () => {
       render(<MunicipalToastNotification {...defaultProps} />, { wrapper: TestWrapper });
@@ -80,7 +58,6 @@ describe('Municipal Achievement System - TASK-HD-014', () => {
     it('should be dismissible with ESC key for accessibility', async () => {
       render(<MunicipalToastNotification {...defaultProps} />, { wrapper: TestWrapper });
 
-      const toastElement = screen.getByRole('alert');
       fireEvent.keyDown(toastElement, { key: 'Escape' });
 
       await waitFor(() => {
@@ -118,30 +95,14 @@ describe('Municipal Achievement System - TASK-HD-014', () => {
         dispatchEvent: vi.fn(),
       }));
 
-      const reducedMotionProps = {
-        ...defaultProps,
-        accessibility: {
-          ...defaultProps.accessibility,
-          reducedMotion: true,
-        },
-      };
 
       render(<MunicipalToastNotification {...reducedMotionProps} />, { wrapper: TestWrapper });
 
-      const toastElement = screen.getByRole('alert');
       expect(toastElement).toBeInTheDocument();
       // Note: Animation testing would require more complex setup
     });
 
     it('should support different cultural contexts', () => {
-      const germanProps = {
-        ...defaultProps,
-        design: {
-          ...defaultProps.design,
-          culturalContext: 'german' as const,
-          municipalEntity: 'berlin' as const,
-        },
-      };
 
       render(<MunicipalToastNotification {...germanProps} />, { wrapper: TestWrapper });
       
@@ -164,45 +125,12 @@ describe('Municipal Achievement System - TASK-HD-014', () => {
   });
 
   describe('MunicipalProgressIndicator Component', () => {
-    const mockProgress = {
-      currentStep: 3,
-      totalSteps: 5,
-      completedSections: ['intro', 'gdpr-basics', 'data-handling'],
-      achievementMilestones: DefaultGDPRMilestones.map(milestone => ({
-        ...milestone,
-        achieved: milestone.percentage <= 60 // First 3 milestones achieved
-      })),
-      competenciesEarned: ['Grundläggande dataskydd', 'Säker databehandling']
-    };
 
-    const defaultProps = {
-      progress: mockProgress,
-      visualDesign: {
-        baseColor: '#E2E8F0',
-        progressColor: '#0066CC',
-        milestoneColor: '#004C99',
-        textColor: '#333333'
-      },
-      achievementIntegration: {
-        milestoneMarkers: true,
-        hoverDetails: true,
-        clickableMarkers: true,
-        professionalLabels: true
-      },
-      accessibility: {
-        ariaLabel: 'GDPR-utbildning framsteg med kompetensmål',
-        ariaValueText: '3 av 5 sektioner slutförda, 2 kompetenser utvecklade',
-        keyboardNavigation: true
-      },
-      culturalContext: 'swedish' as const,
-      municipalEntity: 'Malmö Stad'
-    };
 
     it('should render progress bar with milestone markers', () => {
       render(<MunicipalProgressIndicator {...defaultProps} />, { wrapper: TestWrapper });
 
       // Check progress bar
-      const progressBar = screen.getByRole('progressbar');
       expect(progressBar).toBeInTheDocument();
       expect(progressBar).toHaveAttribute('aria-valuenow', '60'); // 3/5 = 60%
 
@@ -222,20 +150,13 @@ describe('Municipal Achievement System - TASK-HD-014', () => {
     it('should support keyboard navigation for accessibility', () => {
       render(<MunicipalProgressIndicator {...defaultProps} />, { wrapper: TestWrapper });
 
-      const progressGroup = screen.getByLabelText('GDPR-utbildning framsteg med kompetensmål');
       expect(progressGroup).toBeInTheDocument();
       
       // Check aria attributes
-      const progressBar = screen.getByRole('progressbar');
       expect(progressBar).toHaveAttribute('aria-valuetext', '3 av 5 sektioner slutförda, 2 kompetenser utvecklade');
     });
 
     it('should adapt to different cultural contexts', () => {
-      const germanProps = {
-        ...defaultProps,
-        culturalContext: 'german' as const,
-        municipalEntity: 'Berlin Stadt'
-      };
 
       render(<MunicipalProgressIndicator {...germanProps} />, { wrapper: TestWrapper });
       
@@ -265,17 +186,7 @@ describe('Municipal Achievement System - TASK-HD-014', () => {
     });
 
     it('should evaluate GDPR Specialist achievement correctly', () => {
-      const sessionData = {
-        totalScore: 140,
-        maxScore: 160,
-        timeSpent: 360000, // 6 minutes
-        correctAnswers: 18,
-        totalQuestions: 20,
-        sectionsCompleted: 5,
-        totalSections: 5
-      };
 
-      const achievements = engine.evaluateAchievements(sessionData);
       
       // Should earn GDPR Specialist (85% score, 90% correct)
       expect(achievements).toHaveLength(3); // GDPR Specialist, Efficiency Expert, Municipal Certified
@@ -285,51 +196,21 @@ describe('Municipal Achievement System - TASK-HD-014', () => {
     });
 
     it('should evaluate Compliance Champion for perfect performance', () => {
-      const sessionData = {
-        totalScore: 160,
-        maxScore: 160,
-        timeSpent: 400000, // 6.67 minutes
-        correctAnswers: 20,
-        totalQuestions: 20,
-        sectionsCompleted: 5,
-        totalSections: 5
-      };
 
-      const achievements = engine.evaluateAchievements(sessionData);
       
       // Should earn all achievements including Compliance Champion
       expect(achievements.some(a => a.id === 'compliance_champion')).toBe(true);
     });
 
     it('should respect Anna Svensson time constraints for Efficiency Expert', () => {
-      const sessionData = {
-        totalScore: 140,
-        maxScore: 160,
-        timeSpent: 420000, // Exactly 7 minutes
-        correctAnswers: 16,
-        totalQuestions: 20,
-        sectionsCompleted: 5,
-        totalSections: 5
-      };
 
-      const achievements = engine.evaluateAchievements(sessionData);
       
       // Should earn Efficiency Expert for completing within 7 minutes
       expect(achievements.some(a => a.id === 'efficiency_expert')).toBe(true);
     });
 
     it('should not award achievements if criteria not met', () => {
-      const sessionData = {
-        totalScore: 100,
-        maxScore: 160,
-        timeSpent: 600000, // 10 minutes
-        correctAnswers: 12,
-        totalQuestions: 20,
-        sectionsCompleted: 4,
-        totalSections: 5
-      };
 
-      const achievements = engine.evaluateAchievements(sessionData);
       
       // Only Municipal Certified should be awarded (80% score, 100% completion)
       expect(achievements).toHaveLength(1);
@@ -348,7 +229,6 @@ describe('Municipal Achievement System - TASK-HD-014', () => {
         totalSections: 5
       });
 
-      const report = engine.generateMunicipalReport();
       
       expect(report.participantInfo.name).toBe('Anna Svensson');
       expect(report.participantInfo.municipality).toBe('malmö');
@@ -359,7 +239,6 @@ describe('Municipal Achievement System - TASK-HD-014', () => {
     });
 
     it('should emit events for achievement tracking', () => {
-      const mockListener = vi.fn();
       engine.addEventListener('achievementEarned', mockListener);
 
       engine.evaluateAchievements({
@@ -388,29 +267,9 @@ describe('Municipal Achievement System - TASK-HD-014', () => {
 
   describe('WCAG 2.1 AA Accessibility Compliance', () => {
     it('should support screen readers with proper ARIA labels', () => {
-      const achievement = MunicipalAchievementCategories.GDPR_SPECIALIST;
-      const props = {
-        achievement,
-        design: {
-          variant: 'municipal-achievement' as const,
-          culturalContext: 'swedish' as const,
-          municipalEntity: 'malmö' as const,
-          professionalLevel: 'intermediate' as const,
-        },
-        accessibility: {
-          dismissible: true,
-          autoTimeout: 4000,
-          reducedMotion: false,
-          screenReaderFriendly: true,
-        },
-        integration: {
-          onDismiss: vi.fn(),
-        },
-      };
 
       render(<MunicipalToastNotification {...props} />, { wrapper: TestWrapper });
 
-      const alert = screen.getByRole('alert');
       expect(alert).toHaveAttribute('aria-live', 'polite');
       expect(alert).toHaveAttribute('aria-labelledby');
       expect(alert).toHaveAttribute('aria-describedby');
@@ -418,36 +277,7 @@ describe('Municipal Achievement System - TASK-HD-014', () => {
 
     it('should meet color contrast requirements', () => {
       // Municipal blue (#0066CC) on white should meet 4.5:1 contrast ratio
-      const progress = {
-        currentStep: 2,
-        totalSteps: 5,
-        completedSections: ['intro', 'basics'],
-        achievementMilestones: DefaultGDPRMilestones,
-        competenciesEarned: ['Basic competence']
-      };
 
-      const props = {
-        progress,
-        visualDesign: {
-          baseColor: '#E2E8F0',
-          progressColor: '#0066CC', // Municipal blue
-          milestoneColor: '#004C99', // Darker blue
-          textColor: '#333333' // High contrast text
-        },
-        achievementIntegration: {
-          milestoneMarkers: true,
-          hoverDetails: true,
-          clickableMarkers: true,
-          professionalLabels: true
-        },
-        accessibility: {
-          ariaLabel: 'Progress indicator',
-          ariaValueText: 'Progress information',
-          keyboardNavigation: true
-        },
-        culturalContext: 'swedish' as const,
-        municipalEntity: 'Test Municipality'
-      };
 
       render(<MunicipalProgressIndicator {...props} />, { wrapper: TestWrapper });
       
@@ -456,31 +286,10 @@ describe('Municipal Achievement System - TASK-HD-014', () => {
     });
 
     it('should support keyboard navigation', () => {
-      const achievement = MunicipalAchievementCategories.GDPR_SPECIALIST;
-      const mockOnDismiss = vi.fn();
       
-      const props = {
-        achievement,
-        design: {
-          variant: 'municipal-achievement' as const,
-          culturalContext: 'swedish' as const,
-          municipalEntity: 'malmö' as const,
-          professionalLevel: 'intermediate' as const,
-        },
-        accessibility: {
-          dismissible: true,
-          autoTimeout: 0, // Disable auto-dismiss for testing
-          reducedMotion: false,
-          screenReaderFriendly: true,
-        },
-        integration: {
-          onDismiss: mockOnDismiss,
-        },
-      };
 
       render(<MunicipalToastNotification {...props} />, { wrapper: TestWrapper });
 
-      const alert = screen.getByRole('alert');
       
       // Should be focusable
       expect(alert).toHaveAttribute('tabIndex', '0');
@@ -493,7 +302,7 @@ describe('Municipal Achievement System - TASK-HD-014', () => {
 
   describe('Anna Svensson Municipal Context Integration', () => {
     it('should optimize for 7-minute learning sessions', () => {
-      const engine = createMunicipalAchievementEngine({
+      const _engine = createMunicipalAchievementEngine({
         municipalEntity: 'malmö',
         culturalContext: 'swedish',
         userProfile: {
@@ -511,24 +320,13 @@ describe('Municipal Achievement System - TASK-HD-014', () => {
       });
 
       // Test that Efficiency Expert is awarded for 7-minute completion
-      const sessionData = {
-        totalScore: 130,
-        maxScore: 160,
-        timeSpent: 420000, // Exactly 7 minutes = Anna's lunch break constraint
-        correctAnswers: 16,
-        totalQuestions: 20,
-        sectionsCompleted: 5,
-        totalSections: 5
-      };
 
-      const achievements = engine.evaluateAchievements(sessionData);
       expect(achievements.some(a => a.id === 'efficiency_expert')).toBe(true);
       
       engine.cleanup();
     });
 
     it('should provide Swedish municipal language and context', () => {
-      const achievement = MunicipalAchievementCategories.GDPR_SPECIALIST;
       
       expect(achievement.title).toBe('GDPR Specialist');
       expect(achievement.description).toContain('kommunal datahantering');
@@ -549,29 +347,9 @@ describe('Municipal Achievement System - TASK-HD-014', () => {
         dispatchEvent: vi.fn(),
       }));
 
-      const achievement = MunicipalAchievementCategories.GDPR_SPECIALIST;
-      const props = {
-        achievement,
-        design: {
-          variant: 'municipal-achievement' as const,
-          culturalContext: 'swedish' as const,
-          municipalEntity: 'malmö' as const,
-          professionalLevel: 'intermediate' as const,
-        },
-        accessibility: {
-          dismissible: true,
-          autoTimeout: 4000,
-          reducedMotion: false,
-          screenReaderFriendly: true,
-        },
-        integration: {
-          onDismiss: vi.fn(),
-        },
-      };
 
       render(<MunicipalToastNotification {...props} />, { wrapper: TestWrapper });
       
-      const toastElement = screen.getByRole('alert');
       expect(toastElement).toBeInTheDocument();
       // Mobile-specific styling would be tested with more complex setup
     });
@@ -588,13 +366,10 @@ describe('Achievement System Integration Test - No Intrusive Popups', () => {
     );
 
     // Should not find any elements with high z-index overlays
-    const mainContent = screen.getByTestId('main-content');
     expect(mainContent).toBeInTheDocument();
     
     // No elements should have z-index: 9999 or similar intrusive overlay styling
-    const allElements = document.querySelectorAll('*');
-    const intrusiveElements = Array.from(allElements).filter(el => {
-      const style = window.getComputedStyle(el);
+    const _intrusiveElements = Array.from(allElements).filter(el => {
       return style.position === 'fixed' && 
              style.top === '50%' && 
              style.left === '50%' &&

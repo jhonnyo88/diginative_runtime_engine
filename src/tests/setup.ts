@@ -38,12 +38,6 @@ Object.defineProperty(document.documentElement.style, 'setProperty', {
 });
 
 // Mock local storage
-const localStorageMock = {
-  getItem: vi.fn(),
-  setItem: vi.fn(),
-  removeItem: vi.fn(),
-  clear: vi.fn(),
-};
 global.localStorage = localStorageMock;
 
 // Mock WebSocket to prevent analytics connection errors
@@ -66,7 +60,6 @@ global.WebSocket = class MockWebSocket {
 };
 
 // Mock fetch for analytics to prevent network errors
-const originalFetch = global.fetch;
 global.fetch = vi.fn().mockImplementation((url, options) => {
   // Mock analytics endpoints
   if (typeof url === 'string' && url.includes('/api/analytics')) {

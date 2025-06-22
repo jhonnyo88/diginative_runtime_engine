@@ -45,8 +45,6 @@ import {
 
 import { useCulturalTheme } from './CulturalThemeProvider';
 
-const MotionBox = motion(Box);
-const MotionCard = motion(Card);
 
 // Netherlands Market Analysis and Optimization
 interface NetherlandsMarketData {
@@ -400,7 +398,7 @@ const PilotOptimizationMetricsDisplay: React.FC = () => {
 
 // Netherlands Market Analysis
 const NetherlandsMarketAnalysis: React.FC = () => {
-  const totalMarketValue = netherlandsMarketData.municipalityCount * 
+  const _totalMarketValue = netherlandsMarketData.municipalityCount * 
                           netherlandsMarketData.averageEmployees * 
                           netherlandsMarketData.trainingBudgetPerEmployee;
 
@@ -503,12 +501,10 @@ export const NetherlandsPilotOptimization: React.FC<NetherlandsPilotOptimization
   const { currentTheme } = useCulturalTheme();
 
   // Calculate overall pilot readiness
-  const avgPilotSuitability = Math.round(
     dutchMunicipalScenarios.reduce((sum, scenario) => sum + scenario.pilotSuitability, 0) / 
     dutchMunicipalScenarios.length
   );
 
-  const totalCostSavings = dutchMunicipalScenarios.reduce((sum, scenario) => sum + scenario.costSaving, 0);
 
   return (
     <VStack spacing={8} align="stretch">

@@ -25,34 +25,9 @@ import {
 } from './mocks/service-mocks';
 
 // Mock window and global objects
-const mockWindow = {
-  addEventListener: vi.fn(),
-  innerWidth: 1024,
-  navigator: { userAgent: 'Test Browser' },
-  performance: {
-    timing: {
-      navigationStart: 1000,
-      loadEventEnd: 2000,
-      domContentLoadedEventEnd: 1500
-    },
-    getEntriesByType: vi.fn().mockReturnValue([{
-      domContentLoadedEventEnd: 1500,
-      fetchStart: 1100
-    }])
-  },
-  sessionStorage: {
-    getItem: vi.fn(),
-    setItem: vi.fn()
-  },
-  __DIGINATIVA_CONFIG__: {
-    NODE_ENV: 'test',
-    MONITORING_ENABLED: 'true',
-    DEFAULT_MUNICIPALITY: 'malmo_stad'
-  }
-};
 
 // Mock PerformanceObserver
-const mockPerformanceObserver = vi.fn().mockImplementation((callback) => ({
+const _mockPerformanceObserver = vi.fn().mockImplementation((callback) => ({
   observe: vi.fn(),
   disconnect: vi.fn()
 }));
@@ -170,7 +145,6 @@ describe('ErrorMonitoringService - Emergency Service Testing', () => {
   describe('Game Error Handling', () => {
     it('should capture game errors with proper context', () => {
       // Arrange
-      const gameError = new Error('Game script execution failed');
       
       // Act
       captureGameError('municipal-training', 'dialogue-scene', gameError, 'critical');
@@ -517,13 +491,10 @@ describe('ErrorMonitoringService - Emergency Service Testing', () => {
   describe('Performance Requirements', () => {
     it('should complete error capture within performance budget', () => {
       // Arrange
-      const iterations = 100;
-      const maxDurationMs = 5;
       const durations: number[] = [];
       
       // Act
       for (let i = 0; i < iterations; i++) {
-        const start = Date.now();
         
         captureError({
           name: `PerfTest${i}`,
@@ -536,13 +507,11 @@ describe('ErrorMonitoringService - Emergency Service Testing', () => {
       }
       
       // Assert
-      const avgDuration = durations.reduce((a, b) => a + b, 0) / durations.length;
       expect(avgDuration).toBeLessThan(maxDurationMs);
     });
     
     it('should handle concurrent operations efficiently', async () => {
       // Arrange
-      const promises = [];
       
       // Act
       for (let i = 0; i < 50; i++) {
@@ -558,9 +527,7 @@ describe('ErrorMonitoringService - Emergency Service Testing', () => {
         );
       }
       
-      const start = Date.now();
       await Promise.all(promises);
-      const duration = Date.now() - start;
       
       // Assert
       expect(duration).toBeLessThan(100);

@@ -32,7 +32,6 @@ describe('Demo Testing Framework - Zero-Defect Demo Execution Validation', () =>
       // Test framework initialization
       expect(demoTesting).toBeDefined();
       
-      const summary = demoTesting.getDemoTestingSummary();
       expect(summary.testing_active).toBe(false);
       expect(summary.total_tests).toBe(0);
       expect(summary.pass_rate).toBe(0);
@@ -42,7 +41,6 @@ describe('Demo Testing Framework - Zero-Defect Demo Execution Validation', () =>
       // Test framework activation
       await demoTesting.initializeDemoTesting();
       
-      const summary = demoTesting.getDemoTestingSummary();
       expect(summary.testing_active).toBe(true);
       expect(summary.overall_status).toBe('not_tested');
     });
@@ -82,10 +80,8 @@ describe('Demo Testing Framework - Zero-Defect Demo Execution Validation', () =>
       // Initialize and test technical excellence scenario
       await demoTesting.initializeDemoTesting();
       
-      const results = await demoTesting.executeComprehensiveDemoTesting();
       
       // Validate technical excellence scenario results
-      const technicalResults = results.get('scenario_technicalExcellence');
       expect(technicalResults).toBeDefined();
       expect(Array.isArray(technicalResults)).toBe(true);
       expect(technicalResults!.length).toBeGreaterThan(0);
@@ -108,10 +104,8 @@ describe('Demo Testing Framework - Zero-Defect Demo Execution Validation', () =>
       // Test municipal value demonstration scenario
       await demoTesting.initializeDemoTesting();
       
-      const results = await demoTesting.executeComprehensiveDemoTesting();
       
       // Validate municipal value scenario results
-      const municipalResults = results.get('scenario_municipalValue');
       expect(municipalResults).toBeDefined();
       expect(municipalResults!.length).toBeGreaterThan(0);
 
@@ -131,10 +125,8 @@ describe('Demo Testing Framework - Zero-Defect Demo Execution Validation', () =>
       // Test European expansion demonstration scenario
       await demoTesting.initializeDemoTesting();
       
-      const results = await demoTesting.executeComprehensiveDemoTesting();
       
       // Validate European expansion scenario results
-      const europeanResults = results.get('scenario_europeanExpansion');
       expect(europeanResults).toBeDefined();
       expect(europeanResults!.length).toBeGreaterThan(0);
 
@@ -153,10 +145,8 @@ describe('Demo Testing Framework - Zero-Defect Demo Execution Validation', () =>
       // Test innovation leadership demonstration scenario
       await demoTesting.initializeDemoTesting();
       
-      const results = await demoTesting.executeComprehensiveDemoTesting();
       
       // Validate innovation leadership scenario results
-      const innovationResults = results.get('scenario_innovationLeadership');
       expect(innovationResults).toBeDefined();
       expect(innovationResults!.length).toBeGreaterThan(0);
 
@@ -176,10 +166,8 @@ describe('Demo Testing Framework - Zero-Defect Demo Execution Validation', () =>
       // Test competitive advantage demonstration scenario
       await demoTesting.initializeDemoTesting();
       
-      const results = await demoTesting.executeComprehensiveDemoTesting();
       
       // Validate competitive advantage scenario results
-      const competitiveResults = results.get('scenario_competitiveAdvantage');
       expect(competitiveResults).toBeDefined();
       expect(competitiveResults!.length).toBeGreaterThan(0);
 
@@ -204,10 +192,8 @@ describe('Demo Testing Framework - Zero-Defect Demo Execution Validation', () =>
       // Test government network environment
       await demoTesting.initializeDemoTesting();
       
-      const results = await demoTesting.executeComprehensiveDemoTesting();
       
       // Validate government network environment results
-      const govNetworkResults = results.get('environment_governmentNetwork');
       expect(govNetworkResults).toBeDefined();
       expect(govNetworkResults!.length).toBeGreaterThan(0);
 
@@ -227,10 +213,8 @@ describe('Demo Testing Framework - Zero-Defect Demo Execution Validation', () =>
       // Test ministerial presentation environment
       await demoTesting.initializeDemoTesting();
       
-      const results = await demoTesting.executeComprehensiveDemoTesting();
       
       // Validate ministerial presentation environment
-      const ministerialResults = results.get('environment_ministerialPresentation');
       expect(ministerialResults).toBeDefined();
       expect(ministerialResults!.length).toBeGreaterThan(0);
 
@@ -250,10 +234,8 @@ describe('Demo Testing Framework - Zero-Defect Demo Execution Validation', () =>
       // Test parliament demo environment
       await demoTesting.initializeDemoTesting();
       
-      const results = await demoTesting.executeComprehensiveDemoTesting();
       
       // Validate parliament demo environment
-      const parliamentResults = results.get('environment_parliamentDemo');
       expect(parliamentResults).toBeDefined();
       expect(parliamentResults!.length).toBeGreaterThan(0);
 
@@ -272,10 +254,8 @@ describe('Demo Testing Framework - Zero-Defect Demo Execution Validation', () =>
       // Test EU showcase environment
       await demoTesting.initializeDemoTesting();
       
-      const results = await demoTesting.executeComprehensiveDemoTesting();
       
       // Validate EU showcase environment
-      const euResults = results.get('environment_euShowcase');
       expect(euResults).toBeDefined();
       expect(euResults!.length).toBeGreaterThan(0);
 
@@ -294,10 +274,8 @@ describe('Demo Testing Framework - Zero-Defect Demo Execution Validation', () =>
       // Test municipal roadshow environment
       await demoTesting.initializeDemoTesting();
       
-      const results = await demoTesting.executeComprehensiveDemoTesting();
       
       // Validate municipal roadshow environment
-      const roadshowResults = results.get('environment_municipalRoadshow');
       expect(roadshowResults).toBeDefined();
       expect(roadshowResults!.length).toBeGreaterThan(0);
 
@@ -321,10 +299,8 @@ describe('Demo Testing Framework - Zero-Defect Demo Execution Validation', () =>
       // Test government laptop compatibility
       await demoTesting.initializeDemoTesting();
       
-      const results = await demoTesting.executeComprehensiveDemoTesting();
       
       // Validate government laptop device results
-      const laptopResults = results.get('device_governmentLaptop');
       expect(laptopResults).toBeDefined();
       expect(laptopResults!.length).toBeGreaterThan(0);
 
@@ -344,10 +320,8 @@ describe('Demo Testing Framework - Zero-Defect Demo Execution Validation', () =>
       // Test ministerial tablet compatibility
       await demoTesting.initializeDemoTesting();
       
-      const results = await demoTesting.executeComprehensiveDemoTesting();
       
       // Validate ministerial tablet device results
-      const tabletResults = results.get('device_ministerialTablet');
       expect(tabletResults).toBeDefined();
       expect(tabletResults!.length).toBeGreaterThan(0);
 
@@ -367,10 +341,8 @@ describe('Demo Testing Framework - Zero-Defect Demo Execution Validation', () =>
       // Test presentation system compatibility
       await demoTesting.initializeDemoTesting();
       
-      const results = await demoTesting.executeComprehensiveDemoTesting();
       
       // Validate presentation system device results
-      const presentationResults = results.get('device_presentationSystem');
       expect(presentationResults).toBeDefined();
       expect(presentationResults!.length).toBeGreaterThan(0);
 
@@ -390,10 +362,8 @@ describe('Demo Testing Framework - Zero-Defect Demo Execution Validation', () =>
       // Test backup device compatibility
       await demoTesting.initializeDemoTesting();
       
-      const results = await demoTesting.executeComprehensiveDemoTesting();
       
       // Validate backup device results
-      const backupResults = results.get('device_backupDevice');
       expect(backupResults).toBeDefined();
       expect(backupResults!.length).toBeGreaterThan(0);
 
@@ -413,10 +383,8 @@ describe('Demo Testing Framework - Zero-Defect Demo Execution Validation', () =>
       // Test mobile device compatibility
       await demoTesting.initializeDemoTesting();
       
-      const results = await demoTesting.executeComprehensiveDemoTesting();
       
       // Validate mobile device results
-      const mobileResults = results.get('device_mobileDevice');
       expect(mobileResults).toBeDefined();
       expect(mobileResults!.length).toBeGreaterThan(0);
 
@@ -441,14 +409,11 @@ describe('Demo Testing Framework - Zero-Defect Demo Execution Validation', () =>
       // Test government-scale load testing
       await demoTesting.initializeDemoTesting();
       
-      const results = await demoTesting.executeComprehensiveDemoTesting();
       
       // Validate load testing results
-      const loadResults = results.get('load_testing');
       expect(loadResults).toBeDefined();
       expect(loadResults!.length).toBe(1);
 
-      const loadResult = loadResults![0];
       expect(loadResult.testType).toBe('load_testing');
       expect(loadResult.success).toBe(true); // Load testing should pass
       expect(loadResult.performanceMetrics.hubLoadTime).toBeLessThan(650); // Performance under load
@@ -463,20 +428,13 @@ describe('Demo Testing Framework - Zero-Defect Demo Execution Validation', () =>
       // Analyze performance degradation under load
       await demoTesting.initializeDemoTesting();
       
-      const results = await demoTesting.executeComprehensiveDemoTesting();
-      const loadResults = results.get('load_testing');
-      const loadResult = loadResults![0];
 
       // Performance should degrade gracefully under load
-      const performanceTargets = DEMO_TESTING_SPECS.testing.performanceTargets;
-      const actualPerformance = loadResult.performanceMetrics;
 
       // Hub loading should be within 30% of target under load
-      const hubDegradation = (actualPerformance.hubLoadTime / performanceTargets.hubLoadTime) - 1;
       expect(hubDegradation).toBeLessThan(0.3); // <30% degradation
 
       // World transitions should be within 40% of target under load
-      const transitionDegradation = (actualPerformance.worldTransitionTime / performanceTargets.worldTransitionTime) - 1;
       expect(transitionDegradation).toBeLessThan(0.4); // <40% degradation
 
       // Memory usage should remain within constraint
@@ -494,14 +452,11 @@ describe('Demo Testing Framework - Zero-Defect Demo Execution Validation', () =>
       // Test Swedish municipal cultural accuracy
       await demoTesting.initializeDemoTesting();
       
-      const results = await demoTesting.executeComprehensiveDemoTesting();
       
       // Validate cultural validation results
-      const culturalResults = results.get('cultural_validation');
       expect(culturalResults).toBeDefined();
       expect(culturalResults!.length).toBe(1);
 
-      const culturalResult = culturalResults![0];
       expect(culturalResult.testType).toBe('cultural_validation');
       expect(culturalResult.success).toBe(true); // Cultural validation should pass
       expect(culturalResult.qualityMetrics.culturalAccuracy).toBeGreaterThan(95); // High cultural accuracy
@@ -516,12 +471,8 @@ describe('Demo Testing Framework - Zero-Defect Demo Execution Validation', () =>
       // Verify cultural content authenticity
       await demoTesting.initializeDemoTesting();
       
-      const results = await demoTesting.executeComprehensiveDemoTesting();
-      const culturalResults = results.get('cultural_validation');
-      const culturalResult = culturalResults![0];
 
       // Cultural accuracy metrics validation
-      const culturalSpecs = DEMO_TESTING_SPECS.testing.culturalValidation;
       
       // Swedish municipal authenticity
       expect(culturalSpecs.swedishMunicipalAuthenticity).toBe(true);
@@ -551,14 +502,11 @@ describe('Demo Testing Framework - Zero-Defect Demo Execution Validation', () =>
       // Test government security compliance
       await demoTesting.initializeDemoTesting();
       
-      const results = await demoTesting.executeComprehensiveDemoTesting();
       
       // Validate security validation results
-      const securityResults = results.get('security_validation');
       expect(securityResults).toBeDefined();
       expect(securityResults!.length).toBe(1);
 
-      const securityResult = securityResults![0];
       expect(securityResult.testType).toBe('security_validation');
       expect(securityResult.success).toBe(true); // Security validation should pass
       expect(securityResult.qualityMetrics.governmentCompliant).toBe(100); // Perfect government compliance
@@ -572,7 +520,6 @@ describe('Demo Testing Framework - Zero-Defect Demo Execution Validation', () =>
       // Verify security standards compliance
       await demoTesting.initializeDemoTesting();
       
-      const securitySpecs = DEMO_TESTING_SPECS.testing.securityStandards;
       
       // Encryption standards
       expect(securitySpecs.encryptionLevel).toBe('AES-256-Government');
@@ -581,9 +528,6 @@ describe('Demo Testing Framework - Zero-Defect Demo Execution Validation', () =>
       expect(securitySpecs.accessControl).toBe('government-grade');
       expect(securitySpecs.dataProtection).toBe(true);
 
-      const results = await demoTesting.executeComprehensiveDemoTesting();
-      const securityResults = results.get('security_validation');
-      const securityResult = securityResults![0];
 
       // Validate security implementation
       expect(securityResult.qualityMetrics.governmentCompliant).toBe(100);
@@ -601,8 +545,6 @@ describe('Demo Testing Framework - Zero-Defect Demo Execution Validation', () =>
       // Execute comprehensive testing and validate summary
       await demoTesting.initializeDemoTesting();
       
-      const results = await demoTesting.executeComprehensiveDemoTesting();
-      const summary = demoTesting.getDemoTestingSummary();
 
       // Validate testing completion
       expect(summary.testing_active).toBe(true);
@@ -627,8 +569,6 @@ describe('Demo Testing Framework - Zero-Defect Demo Execution Validation', () =>
       // Validate zero-defect execution capability
       await demoTesting.initializeDemoTesting();
       
-      const results = await demoTesting.executeComprehensiveDemoTesting();
-      const summary = demoTesting.getDemoTestingSummary();
 
       // Zero-defect requirements
       expect(summary.critical_issues).toBe(0); // No critical issues
@@ -636,7 +576,6 @@ describe('Demo Testing Framework - Zero-Defect Demo Execution Validation', () =>
       expect(summary.pass_rate).toBeGreaterThan(85); // High pass rate
 
       // Quality gates validation
-      const qualityGates = summary.quality_gates;
       expect(Array.isArray(qualityGates)).toBe(true);
       expect(qualityGates.length).toBeGreaterThan(5); // Multiple quality gates
 
@@ -653,7 +592,6 @@ describe('Demo Testing Framework - Zero-Defect Demo Execution Validation', () =>
  */
 describe('Demo Testing Framework Integration', () => {
   test('Complete Demo Testing Lifecycle', async () => {
-    const demoFramework = new DemoTestingFramework(DEMO_TESTING_SPECS);
     
     // Complete lifecycle test
     expect(demoFramework.getDemoTestingSummary().testing_active).toBe(false);
@@ -663,11 +601,9 @@ describe('Demo Testing Framework Integration', () => {
     expect(demoFramework.getDemoTestingSummary().testing_active).toBe(true);
     
     // Execute comprehensive testing
-    const results = await demoFramework.executeComprehensiveDemoTesting();
     expect(results.size).toBeGreaterThan(10); // Multiple test categories
     
     // Validate final status
-    const summary = demoFramework.getDemoTestingSummary();
     expect(summary.total_tests).toBeGreaterThan(0);
     expect(summary.pass_rate).toBeGreaterThan(0);
     

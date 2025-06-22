@@ -40,7 +40,6 @@ class AnalyticsService {
     return new Promise((resolve, reject) => {
       try {
         // In production, this would be your WebSocket server
-        const wsUrl = `ws://localhost:8080/analytics/${tenantId}`;
         this.ws = new WebSocket(wsUrl);
 
         this.ws.onopen = () => {
@@ -51,7 +50,6 @@ class AnalyticsService {
 
         this.ws.onmessage = (event) => {
           try {
-            const data = JSON.parse(event.data);
             this.handleMessage(data);
           } catch (error) {
             console.error('Failed to parse analytics message:', error);
@@ -63,7 +61,7 @@ class AnalyticsService {
           this.attemptReconnect(tenantId);
         };
 
-        this.ws.onerror = (error) => {
+        this.ws.onerror = () => {
           console.error('Analytics WebSocket error:', error);
           reject(error);
         };
@@ -94,7 +92,6 @@ class AnalyticsService {
 
   private handleMessage(data: Record<string, unknown>) {
     const { type, payload } = data;
-    const listeners = this.listeners.get(type) || [];
     
     listeners.forEach(listener => {
       try {
@@ -114,8 +111,6 @@ class AnalyticsService {
 
     // Return unsubscribe function
     return () => {
-      const listeners = this.listeners.get(eventType) || [];
-      const index = listeners.indexOf(callback);
       if (index > -1) {
         listeners.splice(index, 1);
       }
@@ -152,7 +147,6 @@ class AnalyticsService {
   // Get current metrics for tenant
   async getTenantMetrics(tenantId: string): Promise<TenantMetrics> {
     try {
-      const response = await fetch(`/api/analytics/tenant/${tenantId}/metrics`);
       if (!response.ok) {
         throw new Error(`HTTP ${response.status}: ${response.statusText}`);
       }
@@ -167,7 +161,6 @@ class AnalyticsService {
   // Get system-wide metrics (super admin only)
   async getSystemMetrics(): Promise<AnalyticsMetrics> {
     try {
-      const response = await fetch('/api/analytics/system/metrics');
       if (!response.ok) {
         throw new Error(`HTTP ${response.status}: ${response.statusText}`);
       }
@@ -182,7 +175,6 @@ class AnalyticsService {
   // Export analytics data (for reporting)
   async exportTenantData(tenantId: string, timeframe: string, format: 'csv' | 'json' | 'xlsx') {
     try {
-      const response = await fetch(`/api/analytics/tenant/${tenantId}/export`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -195,9 +187,6 @@ class AnalyticsService {
       }
 
       // Return blob for download
-      const blob = await response.blob();
-      const url = window.URL.createObjectURL(blob);
-      const a = document.createElement('a');
       a.href = url;
       a.download = `analytics-${tenantId}-${timeframe}.${format}`;
       document.body.appendChild(a);
@@ -272,10 +261,8 @@ class AnalyticsService {
 }
 
 // Global analytics service instance
-export const analyticsService = new AnalyticsService();
 
 // React hook for analytics in components
-export const useAnalytics = (tenantId?: string) => {
   const [metrics, setMetrics] = React.useState<TenantMetrics | null>(null);
   const [isConnected, setIsConnected] = React.useState(false);
 
@@ -284,7 +271,7 @@ export const useAnalytics = (tenantId?: string) => {
 
     let unsubscribe: (...args: unknown[]) => unknown | null = null;
 
-    const initializeAnalytics = async () => {
+    const _initializeAnalytics = async () => {
       try {
         // Try to connect to WebSocket
         await analyticsService.connect(tenantId);
@@ -296,20 +283,14 @@ export const useAnalytics = (tenantId?: string) => {
         });
 
         // Get initial metrics
-        const initialMetrics = await analyticsService.getTenantMetrics(tenantId);
         setMetrics(initialMetrics);
 
       } catch (error) {
         console.warn('WebSocket connection failed, using HTTP fallback');
         // Fallback to HTTP polling
-        const fallbackMetrics = await analyticsService.getTenantMetrics(tenantId);
         setMetrics(fallbackMetrics);
         
         // Poll every 30 seconds
-        const interval = setInterval(async () => {
-          try {
-            const updatedMetrics = await analyticsService.getTenantMetrics(tenantId);
-            setMetrics(updatedMetrics);
           } catch (error) {
             console.error('Failed to update metrics:', error);
           }
@@ -327,7 +308,7 @@ export const useAnalytics = (tenantId?: string) => {
     };
   }, [tenantId]);
 
-  const trackActivity = React.useCallback((activity: Partial<UserActivity>) => {
+  const _trackActivity = React.useCallback((activity: Partial<UserActivity>) => {
     if (!tenantId) return;
     
     const fullActivity: UserActivity = {

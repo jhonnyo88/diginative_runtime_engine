@@ -221,19 +221,13 @@ export class TimerEngine extends TenantAwareService {
    * High-frequency timer loop for sub-second updates
    */
   private startTimerLoop(timer: ChallengeTimer): void {
-    const updateInterval = 100; // 100ms updates for smooth UI
     
-    const timerLoop = setInterval(async () => {
-      if (timer.status !== 'running') {
-        clearInterval(timerLoop);
         return;
       }
       
-      const elapsed = Date.now() - timer.startTime;
       timer.remainingTime = Math.max(0, timer.duration - elapsed);
       
       // Calculate urgency level
-      const timePercent = timer.remainingTime / timer.duration;
       let urgencyLevel: UrgencyLevel = 'normal';
       
       if (timePercent <= timer.urgencyThresholds.critical) {
@@ -261,7 +255,6 @@ export class TimerEngine extends TenantAwareService {
    * Pause timer for emergencies or technical issues
    */
   async pauseChallenge(timerId: string): Promise<void> {
-    const timer = this.activeTimers.get(timerId);
     if (!timer) {
       throw new Error(`Timer ${timerId} not found`);
     }
@@ -287,13 +280,11 @@ export class TimerEngine extends TenantAwareService {
    * Resume paused timer
    */
   async resumeChallenge(timerId: string): Promise<void> {
-    const timer = this.activeTimers.get(timerId);
     if (!timer || timer.status !== 'paused') {
       throw new Error(`Timer ${timerId} cannot be resumed`);
     }
     
     // Adjust start time to account for pause
-    const pauseDuration = Date.now() - (timer.pausedAt || 0);
     timer.startTime += pauseDuration;
     timer.status = 'running';
     delete timer.pausedAt;
@@ -305,7 +296,6 @@ export class TimerEngine extends TenantAwareService {
    * Emergency time extension (administrator only)
    */
   async extendTime(timerId: string, additionalSeconds: number): Promise<void> {
-    const timer = this.activeTimers.get(timerId);
     if (!timer) {
       throw new Error(`Timer ${timerId} not found`);
     }
@@ -329,13 +319,11 @@ export class TimerEngine extends TenantAwareService {
    * Get current time remaining
    */
   async getTimeRemaining(timerId: string): Promise<number> {
-    const timer = this.activeTimers.get(timerId);
     if (!timer) {
       throw new Error(`Timer ${timerId} not found`);
     }
     
     if (timer.status === 'running') {
-      const elapsed = Date.now() - timer.startTime;
       return Math.max(0, timer.duration - elapsed);
     }
     
@@ -353,7 +341,6 @@ export class TimerEngine extends TenantAwareService {
   }
   
   private async triggerUrgencyCallbacks(timerId: string, urgencyLevel: UrgencyLevel): Promise<void> {
-    const callbacks = this.timerCallbacks.get(timerId) || [];
     
     for (const callback of callbacks) {
       try {
@@ -378,7 +365,6 @@ export class TimerEngine extends TenantAwareService {
   
   private async handleTimerExpiration(timer: ChallengeTimer): Promise<void> {
     // Trigger expiration callbacks
-    const callbacks = this.timerCallbacks.get(timer.id) || [];
     for (const callback of callbacks) {
       try {
         callback('expired');
@@ -407,10 +393,8 @@ export class TimerEngine extends TenantAwareService {
     // Clean up expired timers every 5 minutes
     setInterval(() => {
       const expiredTimers: string[] = [];
-      const now = Date.now();
       
       this.activeTimers.forEach((timer, timerId) => {
-        const totalElapsed = now - timer.startTime;
         if (totalElapsed > timer.duration + 300000) { // 5 minutes grace period
           expiredTimers.push(timerId);
         }
@@ -449,16 +433,13 @@ export class EmergencyScenarioFramework extends TenantAwareService {
     // Validate tenant access
     await this.validateTenantAccess(municipalityId, municipalityId, 'system', 'get_scenario');
     
-    const baseScenario = this.scenarios.get(scenarioType);
     if (!baseScenario) {
       throw new Error(`Scenario type ${scenarioType} not found`);
     }
     
     // Apply cultural adaptation
-    const adaptedScenario = this.applyCulturalAdaptation(baseScenario, culturalContext);
     
     // Scale difficulty for user role
-    const scaledScenario = this.scaleDifficultyForRole(adaptedScenario, userRole, difficultyLevel);
     
     return {
       ...scaledScenario,
@@ -477,11 +458,9 @@ export class EmergencyScenarioFramework extends TenantAwareService {
   ): Promise<EmergencyScenario[]> {
     await this.validateTenantAccess(municipalityId, municipalityId, 'system', 'get_recommended_scenarios');
     
-    const roleScenarios = this.getScenariosForRole(userRole);
     const recommendations: EmergencyScenario[] = [];
     
     for (const scenarioType of roleScenarios) {
-      const scenario = await this.getScenario(
         scenarioType,
         municipalityId,
         userRole,
@@ -695,7 +674,6 @@ export class EmergencyScenarioFramework extends TenantAwareService {
     culturalContext: CulturalContext
   ): EmergencyScenario {
     // Apply basic cultural adaptation
-    const adaptedScenario = { ...scenario };
     
     if (culturalContext === 'nordic') {
       // Swedish municipal terminology
@@ -751,7 +729,6 @@ export class EmergencyScenarioFramework extends TenantAwareService {
     userRole: MunicipalRole,
     difficultyLevel: number
   ): EmergencyScenario {
-    const scaledScenario = { ...scenario };
     
     // Adjust time limits based on role and difficulty
     const roleMultipliers: Record<MunicipalRole, number> = {
@@ -763,10 +740,8 @@ export class EmergencyScenarioFramework extends TenantAwareService {
       'viewer': 2.0
     };
     
-    const difficultyMultipliers = [1.5, 1.3, 1.0, 0.8, 0.6]; // Level 1-5
+    const _difficultyMultipliers = [1.5, 1.3, 1.0, 0.8, 0.6]; // Level 1-5
     
-    const roleMultiplier = roleMultipliers[userRole] || 1.0;
-    const difficultyMultiplier = difficultyMultipliers[difficultyLevel - 1] || 1.0;
     
     scaledScenario.timeLimit = Math.round(
       scenario.timeLimit * roleMultiplier * difficultyMultiplier
@@ -815,5 +790,3 @@ export class EmergencyScenarioFramework extends TenantAwareService {
 }
 
 // Export singleton instances
-export const timerEngine = new TimerEngine();
-export const emergencyScenarioFramework = new EmergencyScenarioFramework();

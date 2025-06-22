@@ -32,7 +32,6 @@ describe('European Municipal Infrastructure Architecture v2', () => {
         q2MechanicsEnabled: ['drag_drop', 'timed_challenge', 'branching_narrative', 'achievement_system']
       };
 
-      const tenant = await infrastructureEngine.createEuropeanMunicipalTenant(config);
 
       expect(tenant.tenantId).toBe('malmo_stad');
       expect(tenant.config.country).toBe('sweden');
@@ -41,7 +40,6 @@ describe('European Municipal Infrastructure Architecture v2', () => {
       expect(tenant.status).toBe('active');
       
       // Verify Q2 mechanics initialization
-      const dragDropMechanic = tenant.q2Mechanics.find(m => m.config.mechanicType === 'drag_drop');
       expect(dragDropMechanic).toBeDefined();
       expect(dragDropMechanic?.config.culturalAdaptation).toBe(true);
       expect(dragDropMechanic?.config.municipalCompliance).toBe(true);
@@ -62,14 +60,12 @@ describe('European Municipal Infrastructure Architecture v2', () => {
         q2MechanicsEnabled: ['drag_drop', 'character_system', 'achievement_system']
       };
 
-      const tenant = await infrastructureEngine.createEuropeanMunicipalTenant(config);
 
       expect(tenant.tenantId).toBe('berlin_de');
       expect(tenant.config.culturalContext).toBe('german_systematik');
       expect(tenant.resourceAllocation.culturalMultiplier).toBe(1.2); // German thoroughness
       
       // Verify Q2 mechanics with German adaptation
-      const characterMechanic = tenant.q2Mechanics.find(m => m.config.mechanicType === 'character_system');
       expect(characterMechanic?.culturalAdaptation.decisionMakingStyle).toBe('hierarchical_thorough');
       expect(characterMechanic?.culturalAdaptation.communicationProtocol).toBe('formal_comprehensive');
       
@@ -88,14 +84,12 @@ describe('European Municipal Infrastructure Architecture v2', () => {
         q2MechanicsEnabled: ['branching_narrative', 'character_system', 'achievement_system']
       };
 
-      const tenant = await infrastructureEngine.createEuropeanMunicipalTenant(config);
 
       expect(tenant.tenantId).toBe('paris_fr');
       expect(tenant.config.culturalContext).toBe('french_elegance');
       expect(tenant.resourceAllocation.culturalMultiplier).toBe(1.3); // French refinement
       
       // Verify French cultural terminology
-      const narrativeMechanic = tenant.q2Mechanics.find(m => m.config.mechanicType === 'branching_narrative');
       expect(narrativeMechanic?.culturalAdaptation.terminologySet.approve).toBe('approuver');
       expect(narrativeMechanic?.culturalAdaptation.terminologySet.excellence).toBe('excellence');
       expect(narrativeMechanic?.culturalAdaptation.decisionMakingStyle).toBe('centralized_refined');
@@ -112,14 +106,12 @@ describe('European Municipal Infrastructure Architecture v2', () => {
         q2MechanicsEnabled: ['drag_drop', 'timed_challenge', 'achievement_system']
       };
 
-      const tenant = await infrastructureEngine.createEuropeanMunicipalTenant(config);
 
       expect(tenant.tenantId).toBe('amsterdam_nl');
       expect(tenant.config.culturalContext).toBe('dutch_efficiency');
       expect(tenant.resourceAllocation.culturalMultiplier).toBe(1.1); // Dutch efficiency
       
       // Verify Dutch cultural adaptation
-      const timedChallengeMechanic = tenant.q2Mechanics.find(m => m.config.mechanicType === 'timed_challenge');
       expect(timedChallengeMechanic?.culturalAdaptation.communicationProtocol).toBe('direct_practical');
       expect(timedChallengeMechanic?.culturalAdaptation.terminologySet.efficient).toBe('efficiënt');
       expect(timedChallengeMechanic?.culturalAdaptation.terminologySet.direct).toBe('direct');
@@ -156,7 +148,6 @@ describe('European Municipal Infrastructure Architecture v2', () => {
         q2MechanicsEnabled: ['drag_drop', 'timed_challenge', 'character_system'] // 15% + 20% + 30% = 65%
       };
 
-      const tenant = await infrastructureEngine.createEuropeanMunicipalTenant(config);
 
       expect(tenant.resourceAllocation.q2MechanicOverhead).toBeCloseTo(0.65, 2);
     });
@@ -172,15 +163,12 @@ describe('European Municipal Infrastructure Architecture v2', () => {
         q2MechanicsEnabled: ['drag_drop', 'character_system', 'achievement_system']
       };
 
-      const tenant = await infrastructureEngine.createEuropeanMunicipalTenant(config);
 
       // Verify drag-drop integrates with character and achievement systems
-      const dragDropMechanic = tenant.q2Mechanics.find(m => m.config.mechanicType === 'drag_drop');
       expect(dragDropMechanic?.config.crossMechanicIntegration).toContain('character_system');
       expect(dragDropMechanic?.config.crossMechanicIntegration).toContain('achievement_system');
 
       // Verify achievement system integrates with all mechanics
-      const achievementMechanic = tenant.q2Mechanics.find(m => m.config.mechanicType === 'achievement_system');
       expect(achievementMechanic?.config.crossMechanicIntegration).toContain('drag_drop');
       expect(achievementMechanic?.config.crossMechanicIntegration).toContain('character_system');
     });
@@ -197,7 +185,6 @@ describe('European Municipal Infrastructure Architecture v2', () => {
         q2MechanicsEnabled: ['drag_drop']
       };
 
-      const smallTenant = await infrastructureEngine.createEuropeanMunicipalTenant(smallConfig);
       expect(smallTenant.q2Mechanics[0].config.performanceProfile).toBe('resource_optimized');
 
       // Medium municipality - standard
@@ -211,7 +198,6 @@ describe('European Municipal Infrastructure Architecture v2', () => {
         q2MechanicsEnabled: ['timed_challenge']
       };
 
-      const mediumTenant = await infrastructureEngine.createEuropeanMunicipalTenant(mediumConfig);
       expect(mediumTenant.q2Mechanics[0].config.performanceProfile).toBe('standard');
 
       // Large municipality - high performance
@@ -225,7 +211,6 @@ describe('European Municipal Infrastructure Architecture v2', () => {
         q2MechanicsEnabled: ['character_system']
       };
 
-      const largeTenant = await infrastructureEngine.createEuropeanMunicipalTenant(largeConfig);
       expect(largeTenant.q2Mechanics[0].config.performanceProfile).toBe('high_performance');
     });
   });
@@ -255,11 +240,8 @@ describe('European Municipal Infrastructure Architecture v2', () => {
         q2MechanicsEnabled: ['timed_challenge', 'achievement_system']
       };
 
-      const swedishTenant = await infrastructureEngine.createEuropeanMunicipalTenant(swedenConfig);
-      const danishTenant = await infrastructureEngine.createEuropeanMunicipalTenant(denmarkConfig);
 
       // Establish cross-border connection
-      const connection = await infrastructureEngine.establishCrossBorderConnection(
         swedishTenant,
         'copenhagen_dk'
       );
@@ -294,10 +276,7 @@ describe('European Municipal Infrastructure Architecture v2', () => {
         q2MechanicsEnabled: ['drag_drop']
       };
 
-      const frenchTenant = await infrastructureEngine.createEuropeanMunicipalTenant(franceConfig);
-      const germanTenant = await infrastructureEngine.createEuropeanMunicipalTenant(germanyConfig);
 
-      const connection = await infrastructureEngine.establishCrossBorderConnection(
         frenchTenant,
         'kehl_de'
       );
@@ -328,10 +307,7 @@ describe('European Municipal Infrastructure Architecture v2', () => {
         q2MechanicsEnabled: ['achievement_system']
       };
 
-      const dutchTenant = await infrastructureEngine.createEuropeanMunicipalTenant(netherlandsConfig);
-      const belgianTenant = await infrastructureEngine.createEuropeanMunicipalTenant(belgiumConfig);
 
-      const connection = await infrastructureEngine.establishCrossBorderConnection(
         dutchTenant,
         'liege_be'
       );
@@ -351,7 +327,6 @@ describe('European Municipal Infrastructure Architecture v2', () => {
         q2MechanicsEnabled: ['drag_drop']
       };
 
-      const tenant = await infrastructureEngine.createEuropeanMunicipalTenant(config);
 
       await expect(
         infrastructureEngine.establishCrossBorderConnection(tenant, 'non_existent_city')
@@ -361,28 +336,6 @@ describe('European Municipal Infrastructure Architecture v2', () => {
 
   describe('European Resource Allocation', () => {
     it('should calculate cultural multipliers correctly', async () => {
-      const configs = [
-        { 
-          culturalContext: 'swedish_consensus' as const, 
-          expectedMultiplier: 1.0,
-          municipalityId: 'sweden_test'
-        },
-        { 
-          culturalContext: 'german_systematik' as const, 
-          expectedMultiplier: 1.2,
-          municipalityId: 'germany_test'
-        },
-        { 
-          culturalContext: 'french_elegance' as const, 
-          expectedMultiplier: 1.3,
-          municipalityId: 'france_test'
-        },
-        { 
-          culturalContext: 'dutch_efficiency' as const, 
-          expectedMultiplier: 1.1,
-          municipalityId: 'netherlands_test'
-        }
-      ];
 
       for (const { culturalContext, expectedMultiplier, municipalityId } of configs) {
         const config: EuropeanMunicipalityConfig = {
@@ -395,7 +348,6 @@ describe('European Municipal Infrastructure Architecture v2', () => {
           q2MechanicsEnabled: ['drag_drop']
         };
 
-        const tenant = await infrastructureEngine.createEuropeanMunicipalTenant(config);
         expect(tenant.resourceAllocation.culturalMultiplier).toBe(expectedMultiplier);
       }
     });
@@ -421,8 +373,6 @@ describe('European Municipal Infrastructure Architecture v2', () => {
         q2MechanicsEnabled: ['drag_drop']
       };
 
-      const smallTenant = await infrastructureEngine.createEuropeanMunicipalTenant(smallConfig);
-      const largeTenant = await infrastructureEngine.createEuropeanMunicipalTenant(largeConfig);
 
       expect(largeTenant.resourceAllocation.baseCpuUnits).toBeGreaterThan(
         smallTenant.resourceAllocation.baseCpuUnits
@@ -447,7 +397,6 @@ describe('European Municipal Infrastructure Architecture v2', () => {
         crossBorderCooperation: [] // Will test separately
       };
 
-      const tenant = await infrastructureEngine.createEuropeanMunicipalTenant(config);
 
       expect(tenant.resourceAllocation.crossBorderBandwidth).toBe(0); // No connections initially
     });
@@ -463,22 +412,17 @@ describe('European Municipal Infrastructure Architecture v2', () => {
         q2MechanicsEnabled: ['character_system', 'achievement_system']
       };
 
-      const tenant = await infrastructureEngine.createEuropeanMunicipalTenant(config);
 
       expect(tenant.resourceAllocation.scalingTriggers).toHaveLength(4);
       
-      const cpuTrigger = tenant.resourceAllocation.scalingTriggers.find(t => t.type === 'cpu_utilization');
       expect(cpuTrigger?.threshold).toBe(80);
       expect(cpuTrigger?.scalingAction).toBe('add_cpu_units');
       
-      const memoryTrigger = tenant.resourceAllocation.scalingTriggers.find(t => t.type === 'memory_utilization');
       expect(memoryTrigger?.threshold).toBe(85);
       
-      const q2Trigger = tenant.resourceAllocation.scalingTriggers.find(t => t.type === 'q2_mechanic_load');
       expect(q2Trigger?.threshold).toBe(75);
       expect(q2Trigger?.scalingAction).toBe('scale_q2_mechanics');
       
-      const crossBorderTrigger = tenant.resourceAllocation.scalingTriggers.find(t => t.type === 'cross_border_traffic');
       expect(crossBorderTrigger?.threshold).toBe(70);
       expect(crossBorderTrigger?.scalingAction).toBe('increase_bandwidth');
     });
@@ -496,14 +440,7 @@ describe('European Municipal Infrastructure Architecture v2', () => {
         q2MechanicsEnabled: ['branching_narrative', 'achievement_system']
       };
 
-      const tenant = await infrastructureEngine.createEuropeanMunicipalTenant(config);
       
-      const scalingTrigger = {
-        type: 'cpu_utilization',
-        threshold: 80,
-        scalingAction: 'add_cpu_units',
-        cooldownMinutes: 15
-      };
 
       // Mock high CPU utilization
       tenant.resourceAllocation.currentUtilization.cpuPercent = 85;
@@ -530,14 +467,7 @@ describe('European Municipal Infrastructure Architecture v2', () => {
         scalingEvent = event;
       });
 
-      const tenant = await infrastructureEngine.createEuropeanMunicipalTenant(config);
       
-      const scalingTrigger = {
-        type: 'q2_mechanic_load',
-        threshold: 75,
-        scalingAction: 'scale_q2_mechanics',
-        cooldownMinutes: 20
-      };
 
       await infrastructureEngine.scaleEuropeanMunicipality(tenant.tenantId, scalingTrigger);
 
@@ -559,8 +489,6 @@ describe('European Municipal Infrastructure Architecture v2', () => {
         q2MechanicsEnabled: ['drag_drop']
       };
 
-      const tenant = await infrastructureEngine.createEuropeanMunicipalTenant(swedishConfig);
-      const dragDropMechanic = tenant.q2Mechanics.find(m => m.config.mechanicType === 'drag_drop');
 
       expect(dragDropMechanic?.culturalAdaptation.terminologySet.approve).toBe('godkänn');
       expect(dragDropMechanic?.culturalAdaptation.terminologySet.consensus).toBe('konsensus');
@@ -568,28 +496,6 @@ describe('European Municipal Infrastructure Architecture v2', () => {
     });
 
     it('should configure decision-making styles appropriately', async () => {
-      const culturalTests = [
-        { 
-          culturalContext: 'swedish_consensus' as const, 
-          expectedStyle: 'consensus_based',
-          municipalityId: 'sweden_decision_test'
-        },
-        { 
-          culturalContext: 'german_systematik' as const, 
-          expectedStyle: 'hierarchical_thorough',
-          municipalityId: 'germany_decision_test'
-        },
-        { 
-          culturalContext: 'french_elegance' as const, 
-          expectedStyle: 'centralized_refined',
-          municipalityId: 'france_decision_test'
-        },
-        { 
-          culturalContext: 'dutch_efficiency' as const, 
-          expectedStyle: 'pragmatic_direct',
-          municipalityId: 'netherlands_decision_test'
-        }
-      ];
 
       for (const { culturalContext, expectedStyle, municipalityId } of culturalTests) {
         const config: EuropeanMunicipalityConfig = {
@@ -602,36 +508,12 @@ describe('European Municipal Infrastructure Architecture v2', () => {
           q2MechanicsEnabled: ['achievement_system']
         };
 
-        const tenant = await infrastructureEngine.createEuropeanMunicipalTenant(config);
-        const achievementMechanic = tenant.q2Mechanics.find(m => m.config.mechanicType === 'achievement_system');
 
         expect(achievementMechanic?.culturalAdaptation.decisionMakingStyle).toBe(expectedStyle);
       }
     });
 
     it('should set communication protocols based on cultural context', async () => {
-      const communicationTests = [
-        { 
-          culturalContext: 'swedish_consensus' as const, 
-          expectedProtocol: 'inclusive_transparent',
-          municipalityId: 'sweden_comm_test'
-        },
-        { 
-          culturalContext: 'german_systematik' as const, 
-          expectedProtocol: 'formal_comprehensive',
-          municipalityId: 'germany_comm_test'
-        },
-        { 
-          culturalContext: 'french_elegance' as const, 
-          expectedProtocol: 'refined_hierarchical',
-          municipalityId: 'france_comm_test'
-        },
-        { 
-          culturalContext: 'dutch_efficiency' as const, 
-          expectedProtocol: 'direct_practical',
-          municipalityId: 'netherlands_comm_test'
-        }
-      ];
 
       for (const { culturalContext, expectedProtocol, municipalityId } of communicationTests) {
         const config: EuropeanMunicipalityConfig = {
@@ -644,8 +526,6 @@ describe('European Municipal Infrastructure Architecture v2', () => {
           q2MechanicsEnabled: ['timed_challenge']
         };
 
-        const tenant = await infrastructureEngine.createEuropeanMunicipalTenant(config);
-        const timedChallengeMechanic = tenant.q2Mechanics.find(m => m.config.mechanicType === 'timed_challenge');
 
         expect(timedChallengeMechanic?.culturalAdaptation.communicationProtocol).toBe(expectedProtocol);
       }
@@ -706,7 +586,6 @@ describe('European Municipal Infrastructure Architecture v2', () => {
         q2MechanicsEnabled: ['achievement_system']
       };
 
-      const sourceTenant = await infrastructureEngine.createEuropeanMunicipalTenant(sourceConfig);
       await infrastructureEngine.createEuropeanMunicipalTenant(targetConfig);
 
       await infrastructureEngine.establishCrossBorderConnection(sourceTenant, 'target_municipality');

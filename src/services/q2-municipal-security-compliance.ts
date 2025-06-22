@@ -195,16 +195,12 @@ export class Q2MunicipalSecurityEngine extends EventEmitter {
     mechanicType: string,
     securityConfig: Q2SecurityConfig
   ): Promise<Q2SecurityContext> {
-    const securityContextId = `${municipalityId}_${mechanicType}`;
 
     // Determine interaction level based on mechanic type and data
-    const interactionLevel = this.determineInteractionLevel(mechanicType, securityConfig);
     
     // Classify data based on municipal context
-    const dataClassification = this.classifyMunicipalData(mechanicType, securityConfig);
     
     // Determine compliance frameworks
-    const complianceFrameworks = this.getRequiredComplianceFrameworks(
       securityConfig.country,
       dataClassification
     );
@@ -229,7 +225,6 @@ export class Q2MunicipalSecurityEngine extends EventEmitter {
     }
 
     // Validate compliance
-    const complianceValidation = await this.validateMechanicCompliance(
       securityContext,
       securityConfig
     );
@@ -261,35 +256,29 @@ export class Q2MunicipalSecurityEngine extends EventEmitter {
     sovereigntyConfig: EuropeanDataSovereigntyConfig
   ): Promise<MunicipalTenantIsolation> {
     // Determine isolation level based on data classification
-    const isolationLevel = this.determineIsolationLevel(sovereigntyConfig);
 
     // Setup network segmentation
-    const networkSegmentation = await this.setupNetworkSegmentation(
       municipalityId,
       isolationLevel
     );
 
     // Configure data encryption
-    const dataEncryption = await this.configureDataEncryption(
       municipalityId,
       sovereigntyConfig,
       isolationLevel
     );
 
     // Setup access controls
-    const accessControls = await this.setupAccessControls(
       municipalityId,
       sovereigntyConfig
     );
 
     // Initialize tenant audit trail
-    const auditTrail = await this.initializeTenantAuditTrail(
       municipalityId,
       sovereigntyConfig
     );
 
     // Setup compliance monitoring
-    const complianceMonitoring = await this.setupComplianceMonitoring(
       municipalityId,
       sovereigntyConfig
     );
@@ -328,28 +317,22 @@ export class Q2MunicipalSecurityEngine extends EventEmitter {
     mechanicType: string,
     interactionData: Q2InteractionData
   ): Promise<Q2InteractionAuditLog> {
-    const logId = this.generateSecureLogId();
-    const securityContextId = `${municipalityId}_${mechanicType}`;
-    const securityContext = this.securityContexts.get(securityContextId);
 
     if (!securityContext) {
       throw new Error(`Security context not found for ${securityContextId}`);
     }
 
     // Validate compliance for this interaction
-    const complianceValidation = await this.validateInteractionCompliance(
       securityContext,
       interactionData
     );
 
     // Check encryption status
-    const encryptionStatus = await this.checkEncryptionStatus(
       securityContextId,
       interactionData
     );
 
     // Check for cross-border involvement
-    const crossBorderInvolvement = await this.checkCrossBorderInvolvement(
       municipalityId,
       interactionData
     );
@@ -408,35 +391,30 @@ export class Q2MunicipalSecurityEngine extends EventEmitter {
     cooperationAgreement: CrossBorderAgreement
   ): Promise<CrossBorderEncryptionConfig> {
     // Validate cooperation agreement compliance
-    const agreementValidation = await this.validateCooperationAgreement(cooperationAgreement);
     
     if (!agreementValidation.isValid) {
       throw new Error(`Cross-border cooperation agreement invalid: ${agreementValidation.reason}`);
     }
 
     // Determine encryption level based on data classification
-    const encryptionLevel = this.determineCrossBorderEncryptionLevel(
       cooperationAgreement.dataClassification,
       cooperationAgreement.sourceCountry,
       cooperationAgreement.targetCountry
     );
 
     // Generate cryptographic keys
-    const encryptionKeys = await this.generateCrossBorderKeys(
       sourceMunicipalityId,
       targetMunicipalityId,
       encryptionLevel
     );
 
     // Setup secure communication channel
-    const secureChannel = await this.establishSecureCommunicationChannel(
       sourceMunicipalityId,
       targetMunicipalityId,
       encryptionKeys
     );
 
     // Configure audit trail sharing
-    const auditTrailConfig = await this.configureCrossBorderAuditTrail(
       cooperationAgreement
     );
 
@@ -466,25 +444,19 @@ export class Q2MunicipalSecurityEngine extends EventEmitter {
   async executePenetrationTesting(
     testingScope: PenetrationTestingScope
   ): Promise<PenetrationTestingResult> {
-    const testId = this.generateTestId();
     
     // Validate testing scope
-    const scopeValidation = this.validateTestingScope(testingScope);
     if (!scopeValidation.isValid) {
       throw new Error(`Invalid testing scope: ${scopeValidation.reason}`);
     }
 
     // Execute security testing
-    const testResults = await this.penetrationTester.executeTests(testingScope);
     
     // Analyze vulnerabilities
-    const vulnerabilityAnalysis = await this.analyzeVulnerabilities(testResults);
     
     // Generate remediation plan
-    const remediationPlan = await this.generateRemediationPlan(vulnerabilityAnalysis);
     
     // Validate compliance impact
-    const complianceImpact = await this.assessComplianceImpact(vulnerabilityAnalysis);
 
     const penetrationResult: PenetrationTestingResult = {
       testId,
@@ -603,13 +575,6 @@ export class Q2MunicipalSecurityEngine extends EventEmitter {
 
   // Helper methods
   private determineInteractionLevel(mechanicType: string, config: Q2SecurityConfig): Record<string, unknown> {
-    const levelMap = {
-      'drag_drop': 'municipal_internal',
-      'timed_challenge': 'emergency_response',
-      'branching_narrative': 'municipal_internal',
-      'achievement_system': 'municipal_internal',
-      'character_system': 'citizen_data'
-    };
     return levelMap[mechanicType] || 'municipal_internal';
   }
 
@@ -624,14 +589,7 @@ export class Q2MunicipalSecurityEngine extends EventEmitter {
   }
 
   private getRequiredComplianceFrameworks(country: string, dataClassification: string): string[] {
-    const frameworks = ['gdpr'];
     
-    const countryFrameworks = {
-      'sweden': 'kommunallagen',
-      'germany': 'gemeindeordnung', 
-      'france': 'cgct',
-      'netherlands': 'gemeentewet'
-    };
 
     if (countryFrameworks[country]) {
       frameworks.push(countryFrameworks[country]);

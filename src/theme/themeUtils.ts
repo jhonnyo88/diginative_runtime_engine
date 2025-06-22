@@ -4,8 +4,6 @@ import type { ThemeConfig } from '../types/game-manifest';
  * Apply theme configuration to CSS custom properties
  * This enables runtime theme switching and customization
  */
-export const applyTheme = (theme: ThemeConfig, isHighContrast: boolean = false) => {
-  const root = document.documentElement;
   
   // Apply color system
   if (theme.colors) {
@@ -50,7 +48,6 @@ export const applyTheme = (theme: ThemeConfig, isHighContrast: boolean = false) 
     }
     
     // Font size scale
-    const scale = theme.typography.fontSizeScale || 1;
     root.style.setProperty('--font-size-xs', `${0.75 * scale}rem`);
     root.style.setProperty('--font-size-sm', `${0.875 * scale}rem`);
     root.style.setProperty('--font-size-base', `${1 * scale}rem`);
@@ -108,7 +105,6 @@ export const applyTheme = (theme: ThemeConfig, isHighContrast: boolean = false) 
 /**
  * Generate CSS from theme config for static builds
  */
-export const generateThemeCSS = (theme: ThemeConfig): string => {
   const vars: string[] = [':root {'];
   
   // Add all CSS custom properties
@@ -127,7 +123,6 @@ export const generateThemeCSS = (theme: ThemeConfig): string => {
 /**
  * Validate theme colors for WCAG compliance
  */
-export const validateThemeAccessibility = (theme: ThemeConfig): {
   valid: boolean;
   issues: string[];
 } => {

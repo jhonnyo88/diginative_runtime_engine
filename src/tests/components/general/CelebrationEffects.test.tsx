@@ -16,13 +16,6 @@ import CelebrationEffects from '../../../components/animations/CelebrationEffect
 // Mock dependencies if needed
 
 
-const renderWithChakra = (component: React.ReactElement) => {
-  return render(
-    <ChakraProvider>
-      {component}
-    </ChakraProvider>
-  );
-};
 
 describe('CelebrationEffects', () => {
   beforeEach(() => {
@@ -33,14 +26,10 @@ describe('CelebrationEffects', () => {
     it('renders without crashing', () => {
       renderWithChakra(<CelebrationEffects />);
       
-      const component = screen.getByTestId('-celebration-effects');
       expect(component).toBeInTheDocument();
     });
 
     it('handles props correctly', () => {
-      const testProps = {
-        // Add relevant props based on component analysis
-      };
       
       renderWithChakra(<CelebrationEffects {...testProps} />);
       
@@ -60,7 +49,6 @@ describe('CelebrationEffects', () => {
     it('provides proper ARIA attributes', () => {
       renderWithChakra(<CelebrationEffects />);
       
-      const element = screen.getByTestId('-celebration-effects');
       
       // Check for appropriate ARIA attributes
       expect(element).toHaveAttribute('role');
@@ -69,7 +57,6 @@ describe('CelebrationEffects', () => {
     it('supports keyboard navigation', () => {
       renderWithChakra(<CelebrationEffects />);
       
-      const element = screen.getByTestId('-celebration-effects');
       
       // Test tab navigation
       element.focus();
@@ -80,7 +67,6 @@ describe('CelebrationEffects', () => {
       renderWithChakra(<CelebrationEffects />);
       
       // Basic contrast check
-      const element = screen.getByTestId('-celebration-effects');
       expect(element).toBeInTheDocument();
     });
   });

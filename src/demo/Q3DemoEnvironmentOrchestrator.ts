@@ -136,17 +136,8 @@ export class Q3DemoEnvironmentOrchestrator {
   async validateDemoEnvironment(): Promise<DemoValidationResult> {
     console.log('🔍 Validating demo environment for government demonstration');
     
-    const validationResults = {
-      infrastructure: await this.validateInfrastructure(),
-      performance: await this.validatePerformance(),
-      network: await this.validateNetwork(),
-      devices: await this.validateDevices(),
-      backups: await this.validateBackupSystems(),
-      compliance: await this.validateGovernmentCompliance()
-    };
     
-    const overallScore = this.calculateValidationScore(validationResults);
-    const isReady = overallScore >= 95; // 95% minimum for government demo
+    const _isReady = overallScore >= 95; // 95% minimum for government demo
     
     console.log(`📊 Demo Validation Score: ${overallScore}%`);
     console.log(`🎯 Demo Ready: ${isReady ? 'YES' : 'REQUIRES ATTENTION'}`);
@@ -172,7 +163,6 @@ export class Q3DemoEnvironmentOrchestrator {
   async executeEmergencyFailover(reason: string): Promise<FailoverResult> {
     console.log(`🚨 Executing emergency failover: ${reason}`);
     
-    const startTime = Date.now();
     
     try {
       // Activate primary backup system
@@ -185,9 +175,7 @@ export class Q3DemoEnvironmentOrchestrator {
       await this.redirectDemoTraffic();
       
       // Validate backup system performance
-      const backupPerformance = await this.validateBackupPerformance();
       
-      const failoverTime = Date.now() - startTime;
       
       console.log(`✅ Emergency failover completed in ${failoverTime}ms`);
       
@@ -216,7 +204,6 @@ export class Q3DemoEnvironmentOrchestrator {
    * Generate demo performance report
    */
   generateDemoPerformanceReport(): DemoPerformanceReport {
-    const recentLogs = this.performanceLog.slice(-100);
     
     return {
       demoConfiguration: this.demoConfig,
@@ -480,7 +467,6 @@ export class Q3DemoEnvironmentOrchestrator {
   }
 
   private calculateValidationScore(results: Record<string, unknown>): number {
-    const scores = Object.values(results).map((r: Record<string, unknown>) => r.score);
     return Math.round(scores.reduce((a: number, b: number) => a + b, 0) / scores.length);
   }
 
@@ -739,5 +725,4 @@ interface BackupSystem {
 }
 
 // Export factory function for creating demo environment
-export const createDemoEnvironment = (config: DemoEnvironmentConfig) => 
   new Q3DemoEnvironmentOrchestrator(config);

@@ -24,95 +24,14 @@ export const MunicipalFoundationsWorld: React.FC<MunicipalFoundationsWorldProps>
   uniqueCode,
   culturalContext
 }) => {
-  const navigate = useNavigate();
   const [loading, setLoading] = useState(true);
   const [worldState, setWorldState] = useState<Record<string, unknown>>(null);
   const [currentScenario, setCurrentScenario] = useState(0);
   const [startTime] = useState(Date.now());
 
   // Municipal Foundations scenarios
-  const scenarios = [
-    {
-      id: 'municipal-intro',
-      title: getCulturalText('municipal_intro_title'),
-      description: getCulturalText('municipal_intro_desc'),
-      type: 'introduction',
-      mechanics: ['dialogue', 'information_absorption'],
-      competencyFocus: ['municipal_administration'],
-      estimatedTime: 8 // minutes
-    },
-    {
-      id: 'org-structure',
-      title: getCulturalText('org_structure_title'),
-      description: getCulturalText('org_structure_desc'),
-      type: 'exploration',
-      mechanics: ['drag_drop_workflows', 'branching_narratives'],
-      competencyFocus: ['municipal_administration', 'compliance_knowledge'],
-      estimatedTime: 12 // minutes
-    },
-    {
-      id: 'citizen-services-basics',
-      title: getCulturalText('citizen_services_title'),
-      description: getCulturalText('citizen_services_desc'),
-      type: 'practice',
-      mechanics: ['character_relationships', 'achievement_system'],
-      competencyFocus: ['citizen_service_excellence', 'cultural_adaptation'],
-      estimatedTime: 15 // minutes
-    },
-    {
-      id: 'compliance-intro',
-      title: getCulturalText('compliance_intro_title'),
-      description: getCulturalText('compliance_intro_desc'),
-      type: 'assessment',
-      mechanics: ['timed_challenges', 'branching_narratives'],
-      competencyFocus: ['compliance_knowledge', 'municipal_administration'],
-      estimatedTime: 10 // minutes
-    }
-  ];
 
   function getCulturalText(key: string): string {
-    const texts = {
-      swedish_municipal: {
-        municipal_intro_title: 'Välkommen till Kommunala Grunder',
-        municipal_intro_desc: 'Lär dig grunderna i svensk kommunal förvaltning',
-        org_structure_title: 'Kommunal Organisation',
-        org_structure_desc: 'Utforska hur svenska kommuner är organiserade',
-        citizen_services_title: 'Grundläggande Medborgartjänster',
-        citizen_services_desc: 'Förstå hur vi tjänar våra medborgare',
-        compliance_intro_title: 'Regelefterlevnad och Processer',
-        compliance_intro_desc: 'Viktiga regler och processer för kommunalt arbete'
-      },
-      german_municipal: {
-        municipal_intro_title: 'Willkommen zu Kommunalen Grundlagen',
-        municipal_intro_desc: 'Lernen Sie die Grundlagen der deutschen Kommunalverwaltung',
-        org_structure_title: 'Kommunale Organisation',
-        org_structure_desc: 'Erkunden Sie die Organisation deutscher Kommunen',
-        citizen_services_title: 'Grundlegende Bürgerdienste',
-        citizen_services_desc: 'Verstehen Sie, wie wir unseren Bürgern dienen',
-        compliance_intro_title: 'Compliance und Prozesse',
-        compliance_intro_desc: 'Wichtige Regeln und Prozesse für kommunale Arbeit'
-      },
-      french_municipal: {
-        municipal_intro_title: 'Bienvenue aux Fondements Municipaux',
-        municipal_intro_desc: 'Apprenez les bases de l\'administration municipale française',
-        org_structure_title: 'Organisation Municipale',
-        org_structure_desc: 'Explorez l\'organisation des municipalités françaises',
-        citizen_services_title: 'Services Citoyens de Base',
-        citizen_services_desc: 'Comprenez comment nous servons nos citoyens',
-        compliance_intro_title: 'Conformité et Processus',
-        compliance_intro_desc: 'Règles et processus importants pour le travail municipal'
-      },
-      dutch_municipal: {
-        municipal_intro_title: 'Welkom bij Gemeentelijke Grondslagen',
-        municipal_intro_desc: 'Leer de basis van Nederlandse gemeentelijke administratie',
-        org_structure_title: 'Gemeentelijke Organisatie',
-        org_structure_desc: 'Verken de organisatie van Nederlandse gemeenten',
-        citizen_services_title: 'Basis Burgerdiensten',
-        citizen_services_desc: 'Begrijp hoe wij onze burgers dienen',
-        compliance_intro_title: 'Compliance en Processen',
-        compliance_intro_desc: 'Belangrijke regels en processen voor gemeentelijk werk'
-      }
-    };
     return texts[culturalContext]?.[key as keyof typeof texts['swedish_municipal']] || key;
   }
 
@@ -120,12 +39,11 @@ export const MunicipalFoundationsWorld: React.FC<MunicipalFoundationsWorldProps>
     initializeWorld();
   }, []);
 
-  const initializeWorld = async () => {
+  const _initializeWorld = async () => {
     try {
       setLoading(true);
       
       // Start world session through multi-world state manager
-      const worldSession = await multiWorldStateManager.startWorldSession(
         hubSessionId,
         1, // World 1: Municipal Foundations
         'municipal-foundations-game'
@@ -145,9 +63,8 @@ export const MunicipalFoundationsWorld: React.FC<MunicipalFoundationsWorldProps>
     }
   };
 
-  const handleScenarioCompletion = async (scenarioResults: Record<string, unknown>) => {
+  const _handleScenarioCompletion = async (scenarioResults: Record<string, unknown>) => {
     try {
-      const scenario = scenarios[currentScenario];
       
       // Update game state with scenario completion
       await gameStateManager.updateGameState(worldState.sessionId, {
@@ -170,10 +87,9 @@ export const MunicipalFoundationsWorld: React.FC<MunicipalFoundationsWorldProps>
     }
   };
 
-  const completeWorld = async (finalResults: Record<string, unknown>) => {
+  const _completeWorld = async (finalResults: Record<string, unknown>) => {
     try {
       // Complete the game session
-      const gameResults = await gameStateManager.completeGameSession(worldState.sessionId);
       
       if (gameResults) {
         // Update multi-world state
@@ -193,9 +109,6 @@ export const MunicipalFoundationsWorld: React.FC<MunicipalFoundationsWorldProps>
     }
   };
 
-  const handleReturnToHub = () => {
-    navigate(`/hub/${uniqueCode}`);
-  };
 
   if (loading) {
     return (
@@ -213,7 +126,6 @@ export const MunicipalFoundationsWorld: React.FC<MunicipalFoundationsWorldProps>
     );
   }
 
-  const currentScenarioData = scenarios[currentScenario];
 
   return (
     <div className="municipal-foundations-world" data-cultural-context={culturalContext}>

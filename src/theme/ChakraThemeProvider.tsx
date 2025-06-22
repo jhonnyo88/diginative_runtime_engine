@@ -7,9 +7,7 @@ import { municipalButtonTheme } from './municipalButtonTheme';
 /**
  * Create Chakra theme with our custom configuration for v2
  */
-export const createChakraTheme = (gameTheme?: ThemeConfig) => {
-  const theme = gameTheme || defaultTheme;
-  
+const createCustomTheme = (theme: ThemeConfig = {}) => {
   return extendTheme({
     colors: {
       brand: {
@@ -201,7 +199,6 @@ export const ChakraThemeProvider: React.FC<ChakraThemeProviderProps> = ({
   children, 
   gameTheme 
 }) => {
-  const theme = createChakraTheme(gameTheme);
   
   return (
     <ChakraProvider theme={theme}>

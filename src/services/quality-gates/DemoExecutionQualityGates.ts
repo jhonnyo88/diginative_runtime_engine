@@ -759,7 +759,6 @@ export class DemoExecutionQualityGates extends EventEmitter {
     this.executionStatus = 'initializing';
     
     // Initialize all quality gates
-    const gates = Object.keys(this.qualityGatesSpecs.qualityGates);
     for (const gate of gates) {
       this.gateResults.set(`gate_${gate}`, []);
     }
@@ -785,15 +784,6 @@ export class DemoExecutionQualityGates extends EventEmitter {
     this.executionStatus = 'executing';
 
     // Execute gates in dependency order
-    const gateOrder = [
-      'preDemo',
-      'systemReadiness', 
-      'performanceValidation',
-      'culturalCompliance',
-      'securityVerification',
-      'backupSystemCheck',
-      'finalGovernmentApproval'
-    ];
 
     for (const gateName of gateOrder) {
       await this.executeQualityGate(gateName);
@@ -814,7 +804,6 @@ export class DemoExecutionQualityGates extends EventEmitter {
     this.currentGate = gateName;
     this.emit('qualityGates:gateStarted', { gate: gateName });
 
-    const gateSpec = this.qualityGatesSpecs.qualityGates[gateName as keyof typeof this.qualityGatesSpecs.qualityGates];
     
     const result: QualityGateTestResult = {
       testType: 'quality_gate',
@@ -830,7 +819,6 @@ export class DemoExecutionQualityGates extends EventEmitter {
     };
 
     // Store results
-    const gateResults = this.gateResults.get(`gate_${gateName}`) || [];
     gateResults.push(result);
     this.gateResults.set(`gate_${gateName}`, gateResults);
 
@@ -842,8 +830,6 @@ export class DemoExecutionQualityGates extends EventEmitter {
    */
   private async validateQualityGate(gateSpec: QualityGateSpec): Promise<boolean> {
     // Simulate validation based on gate criticality and criteria
-    const passingScore = 100 - gateSpec.failureThreshold;
-    const actualScore = gateSpec.criticalForDemo ? 98 : 96;
     return actualScore >= passingScore;
   }
 
@@ -851,8 +837,6 @@ export class DemoExecutionQualityGates extends EventEmitter {
    * Calculate Pass Rate
    */
   private async calculatePassRate(gateSpec: QualityGateSpec): Promise<number> {
-    const baseRate = gateSpec.criticalForDemo ? 98 : 96;
-    const adjustment = Math.random() * 2; // 0-2% variation
     return Math.min(baseRate + adjustment, 100);
   }
 
@@ -860,17 +844,7 @@ export class DemoExecutionQualityGates extends EventEmitter {
    * Generate Validation Results
    */
   private async generateValidationResults(gateName: string): Promise<QualityGateValidationResults> {
-    const baseScores = {
-      preDemo: { technical: 99, content: 98, performance: 97, government: 99, emergency: 98 },
-      systemReadiness: { technical: 98, content: 97, performance: 99, government: 98, emergency: 97 },
-      performanceValidation: { technical: 97, content: 96, performance: 99, government: 97, emergency: 96 },
-      culturalCompliance: { technical: 96, content: 99, performance: 96, government: 99, emergency: 95 },
-      securityVerification: { technical: 99, content: 97, performance: 97, government: 100, emergency: 98 },
-      backupSystemCheck: { technical: 98, content: 96, performance: 96, government: 97, emergency: 99 },
-      finalGovernmentApproval: { technical: 99, content: 99, performance: 98, government: 100, emergency: 99 }
-    };
 
-    const scores = baseScores[gateName as keyof typeof baseScores] || { technical: 97, content: 96, performance: 97, government: 98, emergency: 97 };
 
     return {
       technicalReadiness: scores.technical,
@@ -885,7 +859,6 @@ export class DemoExecutionQualityGates extends EventEmitter {
    * Generate Performance Metrics
    */
   private async generatePerformanceMetrics(gateName: string): Promise<QualityGatePerformanceMetrics> {
-    const targets = this.qualityGatesSpecs.validationCriteria.performanceStandards;
     
     return {
       hubLoadTime: Math.round(targets.hubLoadTime * 0.9), // 10% better than target
@@ -901,8 +874,6 @@ export class DemoExecutionQualityGates extends EventEmitter {
    * Generate Compliance Results
    */
   private async generateComplianceResults(gateName: string): Promise<QualityGateComplianceResults> {
-    const isSecurityGate = gateName === 'securityVerification';
-    const isFinalGate = gateName === 'finalGovernmentApproval';
     
     return {
       securityCompliance: isSecurityGate ? 100 : 98,
@@ -946,8 +917,6 @@ export class DemoExecutionQualityGates extends EventEmitter {
    * Generate Quality Gates Summary
    */
   private async generateQualityGatesSummary(): Promise<void> {
-    const gates = Object.keys(this.qualityGatesSpecs.qualityGates);
-    const totalGates = gates.length;
     
     const summary: QualityGateTestResult = {
       testType: 'quality_gates_summary',
@@ -988,8 +957,6 @@ export class DemoExecutionQualityGates extends EventEmitter {
    * Get Quality Gates Summary
    */
   getQualityGatesSummary(): Record<string, unknown> {
-    const summary = this.gateResults.get('quality_gates_summary')?.[0];
-    const gates = Object.keys(this.qualityGatesSpecs.qualityGates);
     
     return {
       quality_gates_active: this.qualityGatesActive,

@@ -46,89 +46,25 @@ export const SummaryScene: React.FC<SummarySceneProps> = ({
   
   // Professional completion entrance - subtle fade-in with reduced motion support
   useEffect(() => {
-    const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-    const timer = setTimeout(() => setShowContent(true), prefersReducedMotion ? 100 : 300);
     return () => clearTimeout(timer);
   }, []);
   
   // Responsive design breakpoints for Anna Svensson iPhone 12 optimization
-  const isMobile = useBreakpointValue({ base: true, md: false });
-  const isTablet = useBreakpointValue({ base: false, md: true, lg: false });
-  const isDesktop = useBreakpointValue({ base: false, lg: true });
   
   // Accessibility - Check for reduced motion preference
-  const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-  const getTransition = (defaultTransition: string) => 
+  const _getTransition = (defaultTransition: string) => 
     prefersReducedMotion ? 'none' : defaultTransition;
   
   // Municipal branding validation and application
   const { sanitizedBranding } = validateMunicipalBranding(municipalBranding);
-  const municipalTheme = getMunicipalThemeOverrides(sanitizedBranding);
 
   // Municipal completion data - streamlined for professional context
-  const gameData = {
-    totalScore: 147,
-    maxPossibleScore: 160,
-    percentageScore: 92,
-    totalTime: '6 min 45 sek',
-    scenesCompleted: 5,
-    totalScenes: 5,
-    completionStatus: 'godkänd' as const,
-    // Streamlined key learnings (3-4 most important for municipal context)
-    keyLearnings: [
-      'GDPR personuppgifter och rättigheter',
-      'Datahantering och säkerhet',
-      'Anmälningsplikt vid incidenter'
-    ],
-    // Municipal workplace next steps
-    nextSteps: [
-      'Tillämpa GDPR-kunskaper på arbetsplatsen',
-      'Diskutera viktiga punkter med närmaste chef', 
-      'Kontakta IT-support vid specifika frågor'
-    ],
-    certificateEarned: true,
-    municipalContext: {
-      authority: 'Malmö Stad',
-      trainingTitle: 'GDPR-utbildning för kommunal personal',
-      participantName: 'Anna Svensson',
-      supportContact: 'it-support@malmo.se'
-    }
-  };
 
-  const handleComplete = () => {
-    analytics?.trackEvent('municipal_training_complete', {
-      sceneId: scene.id,
-      totalScore: gameData.totalScore,
-      percentageScore: gameData.percentageScore,
-      timeSpent: gameData.totalTime,
-      certificateEarned: gameData.certificateEarned,
-      municipality: sanitizedBranding.municipality,
-      culturalContext: sanitizedBranding.culturalContext
-    });
-
-    onComplete({ 
-      gameCompleted: true,
-      finalScore: gameData.totalScore,
-      maxScore: gameData.maxPossibleScore,
-      timeSpent: gameData.totalTime,
-      certificateEarned: gameData.certificateEarned,
-      municipalCompletion: true,
-      municipality: sanitizedBranding.municipality
-    });
-  };
 
   // Municipal color scheme - professional blue instead of gaming colors
-  const getMunicipalStatusColor = (status: string) => {
-    switch (status) {
-      case 'godkänd': return 'brand'; // Municipal blue from theme
-      case 'delvis_godkänd': return 'orange';
-      case 'ej_godkänd': return 'red';
-      default: return 'brand';
-    }
-  };
 
   // Municipal Summary Header Component
-  const MunicipalSummaryHeader = () => (
+  const _MunicipalSummaryHeader = () => (
     <Card 
       as="header"
       role="banner"

@@ -16,13 +16,6 @@ import LoadingStates from '../../../components/loading/LoadingStates.tsx';
 // Mock dependencies if needed
 
 
-const renderWithChakra = (component: React.ReactElement) => {
-  return render(
-    <ChakraProvider>
-      {component}
-    </ChakraProvider>
-  );
-};
 
 describe('LoadingStates', () => {
   beforeEach(() => {
@@ -33,14 +26,10 @@ describe('LoadingStates', () => {
     it('renders without crashing', () => {
       renderWithChakra(<LoadingStates />);
       
-      const component = screen.getByTestId('-loading-states');
       expect(component).toBeInTheDocument();
     });
 
     it('handles props correctly', () => {
-      const testProps = {
-        // Add relevant props based on component analysis
-      };
       
       renderWithChakra(<LoadingStates {...testProps} />);
       
@@ -60,7 +49,6 @@ describe('LoadingStates', () => {
     it('provides proper ARIA attributes', () => {
       renderWithChakra(<LoadingStates />);
       
-      const element = screen.getByTestId('-loading-states');
       
       // Check for appropriate ARIA attributes
       expect(element).toHaveAttribute('role');
@@ -69,7 +57,6 @@ describe('LoadingStates', () => {
     it('supports keyboard navigation', () => {
       renderWithChakra(<LoadingStates />);
       
-      const element = screen.getByTestId('-loading-states');
       
       // Test tab navigation
       element.focus();
@@ -80,7 +67,6 @@ describe('LoadingStates', () => {
       renderWithChakra(<LoadingStates />);
       
       // Basic contrast check
-      const element = screen.getByTestId('-loading-states');
       expect(element).toBeInTheDocument();
     });
   });

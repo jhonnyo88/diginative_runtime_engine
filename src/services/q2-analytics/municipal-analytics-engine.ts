@@ -240,7 +240,6 @@ export class MunicipalAnalyticsEngine {
   ): Promise<CulturalAdaptationMetrics> {
     this.validateGDPRCompliance();
 
-    const culturalMarket = this.determineCulturalMarket(municipality);
     
     const adaptationMetrics: CulturalAdaptationMetrics = {
       europeanMarketEffectiveness: {
@@ -275,29 +274,9 @@ export class MunicipalAnalyticsEngine {
   ): Promise<MunicipalTrainingROI> {
     this.validateGDPRCompliance();
 
-    const costFactors = {
-      trainingTimeMunicipalEmployee: await this.calculateCost('employee-time', municipality, timeframe),
-      technologyInfrastructure: await this.calculateCost('technology-infrastructure', municipality, timeframe),
-      administrativeOverhead: await this.calculateCost('administrative-overhead', municipality, timeframe),
-      municipalTrainerResources: await this.calculateCost('trainer-resources', municipality, timeframe)
-    };
 
-    const benefitMeasures = {
-      citizenServiceImprovement: await this.calculateBenefit('citizen-service-improvement', municipality, timeframe),
-      municipalEfficiencyGains: await this.calculateBenefit('municipal-efficiency-gains', municipality, timeframe),
-      emergencyResponseReadiness: await this.calculateBenefit('emergency-response-readiness', municipality, timeframe),
-      regulatoryComplianceImprovement: await this.calculateBenefit('regulatory-compliance-improvement', municipality, timeframe)
-    };
 
-    const totalCosts = Object.values(costFactors).reduce((sum, cost) => sum + cost, 0);
-    const totalBenefits = Object.values(benefitMeasures).reduce((sum, benefit) => sum + benefit, 0);
 
-    const roiCalculation = {
-      netPresentValue: totalBenefits - totalCosts,
-      paybackPeriodMonths: totalCosts / (totalBenefits / 12),
-      benefitCostRatio: totalBenefits / totalCosts,
-      annualizedReturn: ((totalBenefits - totalCosts) / totalCosts) * 100
-    };
 
     return {
       costFactors,
@@ -316,25 +295,8 @@ export class MunicipalAnalyticsEngine {
     this.validateGDPRCompliance();
 
     // Aggregate anonymized municipal data for benchmarking
-    const performanceMetrics = {
-      learningCompletionRates: await this.aggregateAnonymizedMetric('completion-rates', municipalities, timeframe),
-      competencyImprovementScores: await this.aggregateAnonymizedMetric('competency-improvement', municipalities, timeframe),
-      citizenSatisfactionCorrelation: await this.aggregateAnonymizedMetric('citizen-satisfaction', municipalities, timeframe),
-      municipalEfficiencyMetrics: await this.aggregateAnonymizedMetric('municipal-efficiency', municipalities, timeframe)
-    };
 
-    const benchmarkingScope = {
-      nordicMunicipalities: municipalities.filter(m => this.determineCulturalMarket(m) === 'swedish'),
-      germanVerwaltung: municipalities.filter(m => this.determineCulturalMarket(m) === 'german'),
-      frenchServicePublic: municipalities.filter(m => this.determineCulturalMarket(m) === 'french'),
-      dutchBestuur: municipalities.filter(m => this.determineCulturalMarket(m) === 'dutch')
-    };
 
-    const bestPracticeIdentification = {
-      highPerformingPatterns: await this.identifyBestPractices('performance-patterns', performanceMetrics),
-      culturalSuccessFactors: await this.identifyBestPractices('cultural-success-factors', performanceMetrics),
-      regulatoryComplianceExcellence: await this.identifyBestPractices('regulatory-compliance', performanceMetrics)
-    };
 
     return {
       performanceMetrics,
@@ -351,26 +313,8 @@ export class MunicipalAnalyticsEngine {
   ): Promise<RealTimeMunicipalDashboard> {
     this.validateGDPRCompliance();
 
-    const administratorOverview = {
-      systemHealthMetrics: await this.getSystemHealthMetrics(municipality),
-      userEngagementAnalytics: await this.getUserEngagementAnalytics(municipality),
-      learningEffectivenessScores: await this.getLearningEffectivenessScores(municipality),
-      culturalAdaptationSuccess: await this.getCulturalAdaptationSuccess(municipality)
-    };
 
-    const decisionMakerReporting = {
-      executiveSummary: await this.generateExecutiveSummary(municipality),
-      strategicInsights: await this.generateStrategicInsights(municipality),
-      complianceReporting: await this.generateComplianceReporting(municipality),
-      budgetJustification: await this.generateBudgetJustification(municipality)
-    };
 
-    const culturalIntelligence = {
-      europeanMarketPerformance: await this.getEuropeanMarketPerformance(municipality),
-      culturalSensitivityMonitoring: await this.getCulturalSensitivityMonitoring(municipality),
-      localizationEffectiveness: await this.getLocalizationEffectiveness(municipality),
-      marketExpansionInsights: await this.getMarketExpansionInsights(municipality)
-    };
 
     return {
       administratorOverview,
@@ -388,17 +332,8 @@ export class MunicipalAnalyticsEngine {
   ): Promise<Record<string, unknown>> {
     this.validateGDPRCompliance();
 
-    const componentMonitoring = {
-      dragDropWorkflowMetrics: await this.monitorComponentPerformance('drag-drop-workflows', municipality, timeframe),
-      timedChallengeMetrics: await this.monitorComponentPerformance('timed-challenges', municipality, timeframe),
-      branchingNarrativeMetrics: await this.monitorComponentPerformance('branching-narratives', municipality, timeframe),
-      characterSystemMetrics: await this.monitorComponentPerformance('character-system', municipality, timeframe),
-      achievementSystemMetrics: await this.monitorComponentPerformance('achievement-system', municipality, timeframe),
-      municipalComplianceMetrics: await this.monitorComponentPerformance('municipal-compliance', municipality, timeframe)
-    };
 
     // Check for performance regressions
-    const regressionDetection = await this.analyzePerformanceRegressions(componentMonitoring);
 
     return {
       componentMonitoring,
@@ -469,7 +404,6 @@ export class MunicipalAnalyticsEngine {
 
   private async getDepartmentType(municipality: string): Promise<string> {
     // Mock implementation
-    const departments = ['administration', 'emergency-services', 'citizen-services', 'it-department', 'finance'];
     return departments[Math.floor(Math.random() * departments.length)];
   }
 
@@ -490,7 +424,6 @@ export class MunicipalAnalyticsEngine {
 
   private async measureRetention(days: number, municipality: string, timeframe: Record<string, unknown>): Promise<number> {
     // Mock implementation - return retention percentage
-    const baseRetention = 90 - (days / 10); // Decreases over time
     return Math.max(Math.floor(baseRetention + Math.random() * 20 - 10), 50);
   }
 
@@ -511,23 +444,11 @@ export class MunicipalAnalyticsEngine {
 
   private async calculateCost(costType: string, municipality: string, timeframe: Record<string, unknown>): Promise<number> {
     // Mock implementation - return cost in euros
-    const baseCosts = {
-      'employee-time': 5000,
-      'technology-infrastructure': 2000,
-      'administrative-overhead': 1000,
-      'trainer-resources': 3000
-    };
     return (baseCosts[costType as keyof typeof baseCosts] || 1000) * (Math.random() * 0.5 + 0.75);
   }
 
   private async calculateBenefit(benefitType: string, municipality: string, timeframe: Record<string, unknown>): Promise<number> {
     // Mock implementation - return benefit in euros
-    const baseBenefits = {
-      'citizen-service-improvement': 15000,
-      'municipal-efficiency-gains': 12000,
-      'emergency-response-readiness': 20000,
-      'regulatory-compliance-improvement': 8000
-    };
     return (baseBenefits[benefitType as keyof typeof baseBenefits] || 5000) * (Math.random() * 0.5 + 0.75);
   }
 

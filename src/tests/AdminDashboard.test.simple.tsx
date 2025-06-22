@@ -49,11 +49,6 @@ describe('AdminDashboard Integration Test', () => {
     // Dynamic import to avoid module resolution issues
     const { AdminDashboard } = await import('../components/admin/AdminDashboard');
     
-    const props = {
-      tenantId: 'test-tenant',
-      tenantName: 'Test Municipality',
-      userRole: 'tenant_admin' as const
-    };
 
     render(<AdminDashboard {...props} />);
 

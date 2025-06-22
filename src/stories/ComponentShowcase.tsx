@@ -34,13 +34,6 @@ import { LoadingState, SceneLoadingSkeleton, NetworkErrorState } from '../compon
 import { CelebrationEffects, ButtonFeedback } from '../components/animations/CelebrationEffects';
 
 // Sample theme for testing
-const sampleTheme = {
-  colors: {
-    primary: '#2B6CB0',
-    secondary: '#3182CE',
-    accent: '#4299E1'
-  }
-};
 
 interface ComponentStoryProps {
   title: string;

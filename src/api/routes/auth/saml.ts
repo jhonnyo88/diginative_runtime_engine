@@ -18,11 +18,8 @@ import {
   type SAMLAuthResult 
 } from '../../../services/enterprise-saml-provider';
 
-const router = Router();
 
 // Middleware for SAML session validation
-export const requireSAMLAuth = (req: Request, res: Response, next: (...args: unknown[]) => unknown) => {
-  const sessionId = req.session?.samlSessionId || req.headers['x-saml-session'];
   
   if (!sessionId || !isValidSAMLSession(sessionId as string)) {
     return res.status(401).json({
@@ -31,7 +28,6 @@ export const requireSAMLAuth = (req: Request, res: Response, next: (...args: unk
     });
   }
   
-  const user = getSAMLUser(sessionId as string);
   if (!user) {
     return res.status(401).json({
       error: 'Invalid SAML session',
@@ -47,14 +43,6 @@ export const requireSAMLAuth = (req: Request, res: Response, next: (...args: unk
 // GET /auth/saml/municipalities - List available municipalities for SSO
 router.get('/municipalities', (req: Request, res: Response) => {
   try {
-    const municipalities = enterpriseSAMLProvider.getAllTenants().map(tenant => ({
-      id: tenant.id,
-      name: tenant.name,
-      country: tenant.country,
-      idpType: tenant.idpType,
-      branding: tenant.brandingConfig,
-      customDomain: tenant.brandingConfig.customDomain
-    }));
 
     res.json({
       success: true,
@@ -76,7 +64,6 @@ router.get('/login/:tenantId', async (req: Request, res: Response) => {
   const { returnUrl } = req.query;
 
   try {
-    const tenant = enterpriseSAMLProvider.getTenant(tenantId);
     if (!tenant) {
       return res.status(404).json({
         success: false,
@@ -97,7 +84,6 @@ router.get('/login/:tenantId', async (req: Request, res: Response) => {
       req.session.returnUrl = returnUrl;
     }
 
-    const loginUrl = await initiateSAMLLogin(tenantId);
     
     // For API clients, return the URL
     if (req.headers.accept?.includes('application/json')) {
@@ -152,7 +138,6 @@ router.post('/callback/:tenantId', async (req: Request, res: Response) => {
     req.session.tenantId = result.tenantId;
     req.session.userId = result.user?.email;
 
-    const returnUrl = req.session.returnUrl || result.redirectUrl || '/dashboard';
     delete req.session.returnUrl;
 
     // For API clients
@@ -184,16 +169,12 @@ router.post('/callback/:tenantId', async (req: Request, res: Response) => {
 
 // GET /auth/saml/logout - Initiate SAML logout
 router.get('/logout', async (req: Request, res: Response) => {
-  const sessionId = req.session?.samlSessionId;
-  const tenantId = req.session?.tenantId;
 
   if (!sessionId || !tenantId) {
     return res.redirect('/auth/logout/success');
   }
 
   try {
-    const user = getSAMLUser(sessionId);
-    const logoutUrl = await initiateSAMLLogout(tenantId, sessionId, user?.nameID);
 
     // Clear session
     req.session = null;
@@ -224,8 +205,6 @@ router.get('/logout', async (req: Request, res: Response) => {
 
 // GET /auth/saml/status - Check current SAML authentication status
 router.get('/status', (req: Request, res: Response) => {
-  const sessionId = req.session?.samlSessionId;
-  const tenantId = req.session?.tenantId;
 
   if (!sessionId || !isValidSAMLSession(sessionId)) {
     return res.json({
@@ -234,8 +213,6 @@ router.get('/status', (req: Request, res: Response) => {
     });
   }
 
-  const user = getSAMLUser(sessionId);
-  const tenant = tenantId ? enterpriseSAMLProvider.getTenant(tenantId) : null;
 
   res.json({
     authenticated: true,
@@ -261,7 +238,6 @@ router.get('/metadata/:tenantId', (req: Request, res: Response) => {
   const { tenantId } = req.params;
 
   try {
-    const tenant = enterpriseSAMLProvider.getTenant(tenantId);
     if (!tenant) {
       return res.status(404).json({
         success: false,
@@ -269,7 +245,6 @@ router.get('/metadata/:tenantId', (req: Request, res: Response) => {
       });
     }
 
-    const metadata = enterpriseSAMLProvider.generateServiceProviderMetadata(tenantId);
     
     res.set('Content-Type', 'application/xml');
     res.send(metadata);
@@ -283,16 +258,11 @@ router.get('/metadata/:tenantId', (req: Request, res: Response) => {
 });
 
 // Admin routes (require admin authentication)
-const adminRouter = Router();
 
 // GET /auth/saml/admin/tenants - List all tenants with stats
 adminRouter.get('/tenants', requireSAMLAuth, (req: Request, res: Response) => {
   // TODO: Add admin role check
   try {
-    const tenants = enterpriseSAMLProvider.getAllTenants().map(tenant => ({
-      ...tenant,
-      stats: enterpriseSAMLProvider.getTenantStats(tenant.id)
-    }));
 
     res.json({
       success: true,
@@ -311,10 +281,8 @@ adminRouter.get('/tenants', requireSAMLAuth, (req: Request, res: Response) => {
 // PUT /auth/saml/admin/tenants/:tenantId - Update tenant configuration
 adminRouter.put('/tenants/:tenantId', requireSAMLAuth, async (req: Request, res: Response) => {
   const { tenantId } = req.params;
-  const updates = req.body;
 
   try {
-    const success = await enterpriseSAMLProvider.updateTenantConfig(tenantId, updates);
     
     if (!success) {
       return res.status(404).json({
@@ -323,7 +291,6 @@ adminRouter.put('/tenants/:tenantId', requireSAMLAuth, async (req: Request, res:
       });
     }
 
-    const updatedTenant = enterpriseSAMLProvider.getTenant(tenantId);
     
     res.json({
       success: true,
@@ -343,7 +310,6 @@ adminRouter.delete('/tenants/:tenantId', requireSAMLAuth, (req: Request, res: Re
   const { tenantId } = req.params;
 
   try {
-    const success = enterpriseSAMLProvider.deactivateTenant(tenantId);
     
     if (!success) {
       return res.status(404).json({

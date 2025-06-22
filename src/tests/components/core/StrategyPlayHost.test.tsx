@@ -46,66 +46,14 @@ vi.mock('../../components/scenes/SummaryScene', () => ({
 }));
 
 // Mock game state manager
-const mockGameState = {
-  currentScene: 0,
-  totalScenes: 5,
-  playerName: 'Anna Svensson',
-  score: 0,
-  responses: [],
-  municipality: 'malmö'
-};
 
-const mockGameActions = {
-  nextScene: vi.fn(),
-  previousScene: vi.fn(),
-  updateScore: vi.fn(),
-  saveResponse: vi.fn(),
-  restartGame: vi.fn(),
-  saveProgress: vi.fn()
-};
 
 vi.mock('../../hooks/useGameState', () => ({
   default: () => [mockGameState, mockGameActions]
 }));
 
 // Mock scene data
-const mockSceneData = [
-  {
-    id: 'intro',
-    type: 'dialogue',
-    content: {
-      speaker: 'Anna Lindström',
-      message: 'Välkommen till GDPR-utbildningen'
-    }
-  },
-  {
-    id: 'quiz1',
-    type: 'quiz',
-    content: {
-      question: 'Vad står GDPR för?',
-      options: [
-        { text: 'General Data Protection Regulation', isCorrect: true },
-        { text: 'Global Data Privacy Rules', isCorrect: false }
-      ]
-    }
-  },
-  {
-    id: 'summary',
-    type: 'summary',
-    content: {
-      title: 'Sammanfattning',
-      achievements: ['GDPR Expert']
-    }
-  }
-];
 
-const renderWithChakra = (component: React.ReactElement) => {
-  return render(
-    <ChakraProvider>
-      {component}
-    </ChakraProvider>
-  );
-};
 
 describe('StrategyPlayHost', () => {
   beforeEach(() => {
@@ -143,9 +91,6 @@ describe('StrategyPlayHost', () => {
     });
 
     it('validates game data structure on initialization', () => {
-      const invalidGameData = [
-        { id: 'invalid', content: 'missing type' }
-      ];
 
       // Should handle invalid data gracefully
       renderWithChakra(
@@ -170,7 +115,6 @@ describe('StrategyPlayHost', () => {
         />
       );
 
-      const gameContainer = screen.getByTestId('game-container');
       expect(gameContainer).toHaveAttribute('role', 'main');
       expect(gameContainer).toHaveAttribute('aria-label', 'GDPR-utbildningsspel');
     });
@@ -199,11 +143,9 @@ describe('StrategyPlayHost', () => {
       );
 
       // Should render dialogue scene (first scene)
-      const dialogueScene = screen.getByTestId('dialogue-scene');
       expect(dialogueScene).toBeInTheDocument();
       
       // Check scene props
-      const sceneProps = JSON.parse(dialogueScene.getAttribute('data-scene-props') || '{}');
       expect(sceneProps.content.speaker).toBe('Anna Lindström');
     });
 
@@ -287,7 +229,6 @@ describe('StrategyPlayHost', () => {
         />
       );
 
-      const gameContainer = screen.getByTestId('game-container');
       
       // Test arrow key navigation
       fireEvent.keyDown(gameContainer, { key: 'ArrowRight', code: 'ArrowRight' });
@@ -308,26 +249,13 @@ describe('StrategyPlayHost', () => {
         />
       );
 
-      const gameContainer = screen.getByTestId('game-container');
       expect(gameContainer).toHaveAttribute('data-municipality', 'malmö');
       
       // Check that municipal context is passed to scenes
-      const dialogueScene = screen.getByTestId('dialogue-scene');
-      const sceneProps = JSON.parse(dialogueScene.getAttribute('data-scene-props') || '{}');
       expect(sceneProps.municipality).toBe('malmö');
     });
 
     it('displays Swedish language content correctly', () => {
-      const swedishGameData = [
-        {
-          id: 'intro',
-          type: 'dialogue',
-          content: {
-            speaker: 'Anna Lindström',
-            message: 'Välkommen till denna viktiga utbildning om GDPR och dataskydd'
-          }
-        }
-      ];
 
       renderWithChakra(
         <StrategyPlayHost 
@@ -339,12 +267,10 @@ describe('StrategyPlayHost', () => {
       );
 
       // Swedish content should be rendered
-      const dialogueScene = screen.getByTestId('dialogue-scene');
       expect(dialogueScene).toBeInTheDocument();
     });
 
     it('handles multiple municipality contexts', () => {
-      const municipalities = ['malmö', 'stockholm', 'göteborg'];
       
       municipalities.forEach(municipality => {
         const { rerender } = renderWithChakra(
@@ -355,7 +281,6 @@ describe('StrategyPlayHost', () => {
           />
         );
 
-        const gameContainer = screen.getByTestId('game-container');
         expect(gameContainer).toHaveAttribute('data-municipality', municipality);
       });
     });
@@ -390,11 +315,9 @@ describe('StrategyPlayHost', () => {
         />
       );
 
-      const quizScene = screen.getByTestId('quiz-scene');
       expect(quizScene).toBeInTheDocument();
       
       // Simulate answering quiz
-      const response = { questionId: 'quiz1', answer: 'General Data Protection Regulation', correct: true };
       mockGameActions.saveResponse(response);
       
       expect(mockGameActions.saveResponse).toHaveBeenCalledWith(response);
@@ -413,7 +336,6 @@ describe('StrategyPlayHost', () => {
       );
 
       // Should calculate 33% completion (scene 1 of 3)
-      const gameContainer = screen.getByTestId('game-container');
       expect(gameContainer).toHaveAttribute('data-progress', '33');
     });
 
@@ -443,9 +365,6 @@ describe('StrategyPlayHost', () => {
 
   describe('Error Handling and Recovery', () => {
     it('handles corrupted scene data gracefully', () => {
-      const corruptedData = [
-        { id: 'corrupt', type: 'unknown', content: null }
-      ];
 
       renderWithChakra(
         <StrategyPlayHost 
@@ -519,7 +438,7 @@ describe('StrategyPlayHost', () => {
 
   describe('Performance and Municipal Network Optimization', () => {
     it('renders efficiently with large game datasets', () => {
-      const largeGameData = Array.from({ length: 100 }, (_, i) => ({
+      const _largeGameData = Array.from({ length: 100 }, (_, i) => ({
         id: `scene-${i}`,
         type: i % 2 === 0 ? 'dialogue' : 'quiz',
         content: {
@@ -531,7 +450,6 @@ describe('StrategyPlayHost', () => {
         }
       }));
 
-      const startTime = performance.now();
       
       renderWithChakra(
         <StrategyPlayHost 
@@ -541,8 +459,6 @@ describe('StrategyPlayHost', () => {
         />
       );
 
-      const endTime = performance.now();
-      const renderTime = endTime - startTime;
       
       // Should render within performance budget
       expect(renderTime).toBeLessThan(200); // 200ms budget
@@ -575,7 +491,6 @@ describe('StrategyPlayHost', () => {
         />
       );
 
-      const gameContainer = screen.getByTestId('game-container');
       expect(gameContainer).toHaveAttribute('data-network-optimization', '3g');
       
       // Should implement optimizations for slow networks
@@ -593,7 +508,6 @@ describe('StrategyPlayHost', () => {
         />
       );
 
-      const gameContainer = screen.getByTestId('game-container');
       expect(gameContainer).toHaveAttribute('role', 'main');
       expect(gameContainer).toHaveAttribute('aria-label');
       
@@ -612,7 +526,6 @@ describe('StrategyPlayHost', () => {
       );
 
       // Should have live region for announcements
-      const liveRegion = screen.getByRole('status');
       expect(liveRegion).toHaveAttribute('aria-live', 'polite');
       
       // Simulate scene change
@@ -634,7 +547,6 @@ describe('StrategyPlayHost', () => {
         />
       );
 
-      const gameContainer = screen.getByTestId('game-container');
       expect(gameContainer).toHaveAttribute('data-high-contrast', 'true');
     });
 
@@ -661,7 +573,6 @@ describe('StrategyPlayHost', () => {
       );
 
       // Focus should be managed properly
-      const newScene = screen.getByTestId('quiz-scene');
       expect(newScene).toBeInTheDocument();
     });
   });

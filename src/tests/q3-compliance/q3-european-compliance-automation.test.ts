@@ -38,57 +38,6 @@ import { measureComplianceMetrics, validatePrivacyImplementation } from '../../.
  * - Cultural adaptation compliance (Swedish/German/French/Dutch)
  * - Municipal data sovereignty and government standards
  */
-const Q3_EUROPEAN_COMPLIANCE_SPECS = {
-  gdpr: {
-    dataMinimization: 'essential-only',
-    consentManagement: 'explicit-granular',
-    dataRetention: '12-months-automated',
-    crossBorderTransfer: 'schrems-ii-compliant',
-    userRights: ['access', 'portability', 'erasure', 'rectification']
-  },
-  markets: {
-    swedish: {
-      personalDataAct: 'pul-2018-compliance',
-      municipalRegulations: 'kommunallag-compliance',
-      culturalValues: ['lagom', 'consensus', 'transparency'],
-      dataProtectionAuthority: 'swedish-dpa'
-    },
-    german: {
-      federalDataProtection: 'bdsg-compliance',
-      municipalRegulations: 'gemeindeordnung-compliance',
-      culturalValues: ['systematik', 'hierarchy', 'expertise'],
-      dataProtectionAuthority: 'bfdi'
-    },
-    french: {
-      dataProtectionLaw: 'cnil-compliance',
-      municipalRegulations: 'cgct-compliance',
-      culturalValues: ['service-public', 'republican', 'excellence'],
-      dataProtectionAuthority: 'cnil'
-    },
-    dutch: {
-      implementationAct: 'avg-uavg-compliance',
-      municipalRegulations: 'gemeentewet-compliance',
-      culturalValues: ['polder-model', 'innovation', 'pragmatism'],
-      dataProtectionAuthority: 'dutch-ap'
-    }
-  },
-  worlds: {
-    totalComplexity: 20, // 5 worlds × 4 markets
-    worldSpecificCompliance: [
-      { world: 'municipal-foundations', focus: 'process-data-protection' },
-      { world: 'citizen-service', focus: 'citizen-data-handling' },
-      { world: 'emergency-response', focus: 'crisis-data-management' },
-      { world: 'leadership-development', focus: 'personnel-data-protection' },
-      { world: 'innovation-implementation', focus: 'project-data-governance' }
-    ]
-  },
-  municipal: {
-    governmentStandards: 'eu-government-compliance',
-    professionalAppropriate: 'workplace-training-suitable',
-    supervisorVisible: 'management-oversight-compatible',
-    certificationEligible: 'professional-development-recognized'
-  }
-};
 
 describe('Q3 European Compliance Automation - Phase 3 Implementation', () => {
   let complianceValidator: Q3ComplianceValidator;
@@ -134,7 +83,6 @@ describe('Q3 European Compliance Automation - Phase 3 Implementation', () => {
     test('Data Minimization Across 5 Worlds × 4 Markets', async () => {
       // Test data collection minimization across complete multi-world experience
       for (const [market, user] of Object.entries(testUsers)) {
-        const dataMinimizationTest = await gdprValidator.validateDataMinimization({
           user: user,
           market: market as keyof typeof Q3_EUROPEAN_COMPLIANCE_SPECS.markets,
           worldSequence: ['municipal-foundations', 'citizen-service', 'emergency-response', 'leadership-development', 'innovation-implementation'],
@@ -160,7 +108,6 @@ describe('Q3 European Compliance Automation - Phase 3 Implementation', () => {
         });
 
         // Validate market-specific requirements
-        const marketCompliance = Q3_EUROPEAN_COMPLIANCE_SPECS.markets[market as keyof typeof Q3_EUROPEAN_COMPLIANCE_SPECS.markets];
         expect(dataMinimizationTest.marketCompliance.dataProtectionAuthority).toBe(marketCompliance.dataProtectionAuthority);
         expect(dataMinimizationTest.marketCompliance.regulatoryCompliance.validated).toBe(true);
 
@@ -170,7 +117,6 @@ describe('Q3 European Compliance Automation - Phase 3 Implementation', () => {
 
     test('Cross-World Consent Management Validation', async () => {
       // Test granular consent management across multi-world progression
-      const consentManagementTest = await gdprValidator.validateCrossWorldConsentManagement({
         testScenario: 'complete-5-world-progression',
         includeConsentWithdrawal: true,
         validateConsentPersistence: true,
@@ -184,7 +130,6 @@ describe('Q3 European Compliance Automation - Phase 3 Implementation', () => {
       expect(consentManagementTest.initialConsent.withdrawable).toBe(true);
 
       // Validate consent categories
-      const consentCategories = consentManagementTest.consentCategories;
       expect(consentCategories.gameProgress.required).toBe(true);
       expect(consentCategories.professionalDevelopment.optional).toBe(false); // Essential för municipal training
       expect(consentCategories.performanceAnalytics.optional).toBe(true);
@@ -192,7 +137,6 @@ describe('Q3 European Compliance Automation - Phase 3 Implementation', () => {
       expect(consentCategories.culturalAdaptation.required).toBe(true); // European market functionality
 
       // Test consent withdrawal scenarios
-      const consentWithdrawalTest = await gdprValidator.testConsentWithdrawal({
         withdrawalScenarios: ['partial-withdrawal', 'complete-withdrawal'],
         validateDataHandling: true,
         ensureFunctionalityMaintained: true
@@ -211,7 +155,6 @@ describe('Q3 European Compliance Automation - Phase 3 Implementation', () => {
 
     test('European Data Residency Compliance', async () => {
       // Test data residency requirements across European markets
-      const dataResidencyTest = await crossBorderValidator.validateEuropeanDataResidency({
         includeAllMarkets: true,
         validateDataLocalization: true,
         checkTransferMechanisms: true,
@@ -230,7 +173,6 @@ describe('Q3 European Compliance Automation - Phase 3 Implementation', () => {
       expect(dataResidencyTest.schremsIICompliance.governmentAccess.protected).toBe(true);
 
       // Validate cross-border transfer mechanisms
-      const transferMechanisms = dataResidencyTest.transferMechanisms;
       expect(transferMechanisms.adequacyDecisions.utilized).toBe(true);
       expect(transferMechanisms.standardContractualClauses.implemented).toBe(true);
       expect(transferMechanisms.bindingCorporateRules.applicable).toBe(false); // Not applicable för municipal deployment
@@ -238,7 +180,6 @@ describe('Q3 European Compliance Automation - Phase 3 Implementation', () => {
 
       // Test data sovereignty för municipal deployment
       for (const [market, user] of Object.entries(testUsers)) {
-        const sovereigntyTest = await validateDataSovereignty(market, user);
         expect(sovereigntyTest.municipalDataSovereignty.respected).toBe(true);
         expect(sovereigntyTest.governmentAccessControls.implemented).toBe(true);
         expect(sovereigntyTest.nationalSecurityConsiderations.addressed).toBe(true);
@@ -247,7 +188,6 @@ describe('Q3 European Compliance Automation - Phase 3 Implementation', () => {
 
     test('Automated GDPR User Rights Implementation', async () => {
       // Test automated implementation of GDPR user rights
-      const userRightsTest = await gdprValidator.validateUserRightsImplementation({
         testAllRights: true,
         includeAutomation: true,
         validateResponseTimes: true,
@@ -255,21 +195,18 @@ describe('Q3 European Compliance Automation - Phase 3 Implementation', () => {
       });
 
       // Right of Access (Article 15)
-      const accessRightTest = userRightsTest.rightOfAccess;
       expect(accessRightTest.dataExport.functional).toBe(true);
       expect(accessRightTest.dataExport.format).toBe('machine-readable');
       expect(accessRightTest.dataExport.comprehensive).toBe(true);
       expect(accessRightTest.responseTime).toBeLessThan(72); // hours - within legal requirement
 
       // Right to Data Portability (Article 20)
-      const portabilityTest = userRightsTest.dataPortability;
       expect(portabilityTest.structuredFormat.provided).toBe(true);
       expect(portabilityTest.machineReadable.json).toBe(true);
       expect(portabilityTest.includesAllPersonalData).toBe(true);
       expect(portabilityTest.crossWorldDataIncluded).toBe(true);
 
       // Right to Erasure (Article 17)
-      const erasureTest = userRightsTest.rightToErasure;
       expect(erasureTest.completeDataRemoval.verified).toBe(true);
       expect(erasureTest.crossWorldDataRemoval.verified).toBe(true);
       expect(erasureTest.backupDataRemoval.scheduled).toBe(true);
@@ -277,7 +214,6 @@ describe('Q3 European Compliance Automation - Phase 3 Implementation', () => {
       expect(erasureTest.processingTime).toBeLessThan(30); // days - within legal requirement
 
       // Right to Rectification (Article 16)
-      const rectificationTest = userRightsTest.rightToRectification;
       expect(rectificationTest.dataCorrection.functional).toBe(true);
       expect(rectificationTest.crossWorldPropagation.automatic).toBe(true);
       expect(rectificationTest.thirdPartyNotification.implemented).toBe(true);
@@ -298,7 +234,6 @@ describe('Q3 European Compliance Automation - Phase 3 Implementation', () => {
   describe('Cultural Adaptation Compliance Validation', () => {
     test('Swedish Lagom Municipal Culture Validation', async () => {
       // Test Swedish cultural adaptation across all 5 worlds
-      const swedishCulturalTest = await culturalValidator.validateSwedishCulturalAdaptation({
         municipality: 'stockholm-kommun',
         worldSequence: Q3_EUROPEAN_COMPLIANCE_SPECS.worlds.worldSpecificCompliance.map(w => w.world),
         culturalValues: Q3_EUROPEAN_COMPLIANCE_SPECS.markets.swedish.culturalValues,
@@ -335,7 +270,6 @@ describe('Q3 European Compliance Automation - Phase 3 Implementation', () => {
 
     test('German Systematik Excellence Validation', async () => {
       // Test German systematic approach across leadership-focused worlds
-      const germanCulturalTest = await culturalValidator.validateGermanCulturalAdaptation({
         municipality: 'berlin-mitte',
         focusWorlds: ['emergency-response', 'leadership-development'],
         culturalValues: Q3_EUROPEAN_COMPLIANCE_SPECS.markets.german.culturalValues,
@@ -371,7 +305,6 @@ describe('Q3 European Compliance Automation - Phase 3 Implementation', () => {
 
     test('French Service Public Excellence Validation', async () => {
       // Test French public service values across citizen-focused worlds
-      const frenchCulturalTest = await culturalValidator.validateFrenchCulturalAdaptation({
         municipality: 'paris-15e',
         focusWorlds: ['citizen-service', 'municipal-foundations'],
         culturalValues: Q3_EUROPEAN_COMPLIANCE_SPECS.markets.french.culturalValues,
@@ -408,7 +341,6 @@ describe('Q3 European Compliance Automation - Phase 3 Implementation', () => {
 
     test('Dutch Innovation and Efficiency Validation', async () => {
       // Test Dutch innovation focus across innovation-implementation world
-      const dutchCulturalTest = await culturalValidator.validateDutchCulturalAdaptation({
         municipality: 'amsterdam-centrum',
         focusWorlds: ['innovation-implementation', 'leadership-development'],
         culturalValues: Q3_EUROPEAN_COMPLIANCE_SPECS.markets.dutch.culturalValues,
@@ -445,7 +377,6 @@ describe('Q3 European Compliance Automation - Phase 3 Implementation', () => {
 
     test('Cross-Cultural Consistency and Switching Performance', async () => {
       // Test cultural context switching performance across markets
-      const culturalSwitchingTest = await culturalValidator.validateCulturalSwitching({
         switchingScenarios: [
           { from: 'swedish', to: 'german' },
           { from: 'german', to: 'french' },
@@ -486,7 +417,6 @@ describe('Q3 European Compliance Automation - Phase 3 Implementation', () => {
   describe('Municipal Data Sovereignty Validation', () => {
     test('Government Data Classification and Handling', async () => {
       // Test government data classification compliance
-      const dataClassificationTest = await crossBorderValidator.validateGovernmentDataClassification({
         includeAllMarkets: true,
         validateSecurityLevels: true,
         checkHandlingProcedures: true,
@@ -494,7 +424,6 @@ describe('Q3 European Compliance Automation - Phase 3 Implementation', () => {
       });
 
       // Validate data classification levels
-      const classifications = dataClassificationTest.dataClassifications;
       expect(classifications.public.handlingProcedures.defined).toBe(true);
       expect(classifications.internal.accessControls.implemented).toBe(true);
       expect(classifications.confidential.encryptionRequired).toBe(true);
@@ -515,7 +444,6 @@ describe('Q3 European Compliance Automation - Phase 3 Implementation', () => {
 
     test('Cross-Border Government Cooperation Compliance', async () => {
       // Test cross-border cooperation functionality compliance
-      const cooperationComplianceTest = await crossBorderValidator.validateCrossBorderCooperation({
         cooperationScenarios: [
           { countries: ['sweden', 'denmark'], type: 'nordic-cooperation' },
           { countries: ['germany', 'netherlands'], type: 'eu-administrative-cooperation' },
@@ -548,7 +476,6 @@ describe('Q3 European Compliance Automation - Phase 3 Implementation', () => {
 
     test('Municipal Security Standards Validation', async () => {
       // Test municipal security standards across European markets
-      const municipalSecurityTest = await complianceValidator.validateMunicipalSecurityStandards({
         includeAllMarkets: true,
         validateGovernmentGrade: true,
         checkCyberSecurityFrameworks: true,
@@ -562,7 +489,6 @@ describe('Q3 European Compliance Automation - Phase 3 Implementation', () => {
       expect(municipalSecurityTest.governmentGradeSecurity.auditRequirements.comprehensive).toBe(true);
 
       // Validate cybersecurity frameworks
-      const cybersecurityFrameworks = municipalSecurityTest.cybersecurityFrameworks;
       expect(cybersecurityFrameworks.nisd.compliance).toBe(true); // EU NIS Directive
       expect(cybersecurityFrameworks.iso27001.implemented).toBe(true);
       expect(cybersecurityFrameworks.nationalFrameworks.compliance).toBe(true);
@@ -575,7 +501,6 @@ describe('Q3 European Compliance Automation - Phase 3 Implementation', () => {
       expect(municipalSecurityTest.incidentResponse.coordination.crossBorder).toBe(true);
 
       // Test security under multi-world complexity
-      const multiWorldSecurityTest = await complianceValidator.validateMultiWorldSecurity({
         worldSecurityIsolation: true,
         crossWorldDataProtection: true,
         stateIntegrityValidation: true
@@ -597,7 +522,6 @@ describe('Q3 European Compliance Automation - Phase 3 Implementation', () => {
   describe('Automated Compliance Monitoring and Reporting', () => {
     test('Real-time Compliance Monitoring System', async () => {
       // Test real-time compliance monitoring across all markets
-      const realTimeMonitoring = await complianceValidator.establishRealTimeMonitoring({
         monitoringScope: 'all-european-markets',
         alertThresholds: 'strict',
         reportingFrequency: 'continuous',
@@ -610,7 +534,6 @@ describe('Q3 European Compliance Automation - Phase 3 Implementation', () => {
       expect(realTimeMonitoring.reportingDashboard.accessible).toBe(true);
 
       // Test compliance alert system
-      const alertSystem = await complianceValidator.testComplianceAlertSystem({
         simulateViolations: ['minor-gdpr-issue', 'cultural-adaptation-warning', 'municipal-standard-deviation'],
         validateResponse: true,
         checkEscalation: true
@@ -628,7 +551,6 @@ describe('Q3 European Compliance Automation - Phase 3 Implementation', () => {
 
     test('Automated Regulatory Reporting', async () => {
       // Test automated reporting för European data protection authorities
-      const regulatoryReporting = await complianceValidator.generateRegulatoryReports({
         authorities: ['swedish-dpa', 'bfdi', 'cnil', 'dutch-ap'],
         reportTypes: ['gdpr-compliance', 'data-protection-impact', 'cross-border-transfer'],
         format: 'standardized-xml',
@@ -651,7 +573,6 @@ describe('Q3 European Compliance Automation - Phase 3 Implementation', () => {
       expect(regulatoryReporting.authorityAdaptations.dutchAP.avgUavgCompliance).toBe(true);
 
       // Test municipal oversight reporting
-      const municipalReporting = await complianceValidator.generateMunicipalOversightReports({
         municipalities: Object.keys(testUsers),
         includePerformanceMetrics: true,
         includeComplianceStatus: true,
@@ -665,7 +586,6 @@ describe('Q3 European Compliance Automation - Phase 3 Implementation', () => {
 
     test('Compliance Trend Analysis and Prediction', async () => {
       // Test compliance trend analysis and predictive monitoring
-      const complianceTrends = await complianceValidator.analyzeComplianceTrends({
         analysisWindow: '90-days',
         includeSeasonalPatterns: true,
         predictFutureCompliance: true,
@@ -679,7 +599,6 @@ describe('Q3 European Compliance Automation - Phase 3 Implementation', () => {
       expect(complianceTrends.municipalStandards.maintained).toBe(true);
 
       // Validate predictive compliance
-      const compliancePrediction = await complianceValidator.predictComplianceRisks({
         predictionWindow: '30-days',
         confidence: 0.95,
         includeRecommendations: true
@@ -690,7 +609,6 @@ describe('Q3 European Compliance Automation - Phase 3 Implementation', () => {
       expect(compliancePrediction.recommendations.proactive.length).toBeGreaterThan(0);
 
       // Test compliance optimization recommendations
-      const optimizationRecommendations = await complianceValidator.generateOptimizationRecommendations({
         prioritizeHighImpact: true,
         includeCostBenefit: true,
         validateFeasibility: true

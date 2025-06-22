@@ -20,9 +20,6 @@ const TestWrapper: React.FC<{ children: React.ReactNode }> = ({ children }) => (
   </ChakraThemeProvider>
 );
 
-const mockAnalytics = {
-  trackEvent: vi.fn()
-};
 
 // Sample accessible game manifest
 const accessibleGameManifest: GameManifest = {
@@ -150,7 +147,6 @@ describe('WCAG 2.1 AA Compliance Tests', () => {
         </TestWrapper>
       );
 
-      const results = await axe(container);
       expect(results).toHaveNoViolations();
     });
 
@@ -172,7 +168,6 @@ describe('WCAG 2.1 AA Compliance Tests', () => {
       expect(screen.getByRole('main')).toBeInTheDocument();
       
       // Should have proper heading hierarchy
-      const headings = screen.getAllByRole('heading');
       expect(headings[0]).toHaveAttribute('aria-level', '1');
       
       // Should have skip link
@@ -193,7 +188,6 @@ describe('WCAG 2.1 AA Compliance Tests', () => {
         </TestWrapper>
       );
 
-      const continueButton = screen.getByText('Continue');
       
       // Tab navigation
       continueButton.focus();
@@ -223,11 +217,9 @@ describe('WCAG 2.1 AA Compliance Tests', () => {
       );
 
       // Live regions for announcements
-      const liveRegions = screen.getAllByRole('status');
       expect(liveRegions.length).toBeGreaterThan(0);
       
       // Progress announcements
-      const progressBar = screen.getByRole('progressbar');
       expect(progressBar).toHaveAttribute('aria-label');
       expect(progressBar).toHaveAttribute('aria-valuenow');
       expect(progressBar).toHaveAttribute('aria-valuemin', '0');
@@ -249,8 +241,6 @@ describe('WCAG 2.1 AA Compliance Tests', () => {
       );
 
       // Theme should use high contrast colors
-      const gameContainer = screen.getByTestId('strategy-play-host');
-      const styles = getComputedStyle(gameContainer);
       
       // Primary color should be dark blue for contrast
       expect(styles.getPropertyValue('--primary-color')).toBe('#000080');
@@ -270,7 +260,6 @@ describe('WCAG 2.1 AA Compliance Tests', () => {
         </TestWrapper>
       );
 
-      const results = await axe(container);
       expect(results).toHaveNoViolations();
     });
 
@@ -293,7 +282,6 @@ describe('WCAG 2.1 AA Compliance Tests', () => {
       expect(screen.getByText('Training Coordinator')).toBeInTheDocument();
       
       // Avatar should have alt text
-      const avatar = screen.getByAltText('Anna Svensson avatar');
       expect(avatar).toBeInTheDocument();
     });
 
@@ -309,11 +297,9 @@ describe('WCAG 2.1 AA Compliance Tests', () => {
       );
 
       // Messages should be in reading order
-      const messages = screen.getAllByText(/This is an accessible dialogue/);
       expect(messages[0]).toBeInTheDocument();
       
       // Skip button should be accessible
-      const skipButton = screen.getByText('Skip to end');
       expect(skipButton).toHaveAttribute('aria-label', 'Skip to end of dialogue');
     });
 
@@ -329,7 +315,6 @@ describe('WCAG 2.1 AA Compliance Tests', () => {
       );
 
       // Focus should be managed when dialogue completes
-      const continueButton = screen.getByText('Continue');
       expect(continueButton).toBeInTheDocument();
       
       // Button should be focusable
@@ -350,7 +335,6 @@ describe('WCAG 2.1 AA Compliance Tests', () => {
         </TestWrapper>
       );
 
-      const results = await axe(container);
       expect(results).toHaveNoViolations();
     });
 
@@ -366,14 +350,12 @@ describe('WCAG 2.1 AA Compliance Tests', () => {
       );
 
       // Radio group should exist
-      const radioGroup = screen.getByRole('radiogroup');
       expect(radioGroup).toBeInTheDocument();
       
       // Question should label the radio group
       expect(radioGroup).toHaveAttribute('aria-labelledby');
       
       // Radio buttons should have proper labels
-      const radioButtons = screen.getAllByRole('radio');
       radioButtons.forEach(radio => {
         expect(radio).toHaveAttribute('aria-label');
       });
@@ -390,8 +372,6 @@ describe('WCAG 2.1 AA Compliance Tests', () => {
         </TestWrapper>
       );
 
-      const firstOption = screen.getByLabelText('Content must be perceivable');
-      const secondOption = screen.getByLabelText('Content must be invisible');
 
       // Tab to first option
       firstOption.focus();
@@ -426,7 +406,6 @@ describe('WCAG 2.1 AA Compliance Tests', () => {
       fireEvent.click(screen.getByText('Submit Answer'));
 
       // Feedback should be in live region
-      const feedbackText = screen.getByText('Correct! Perceivable is one of the four WCAG principles.');
       expect(feedbackText.closest('[aria-live]')).toBeInTheDocument();
     });
 
@@ -442,7 +421,6 @@ describe('WCAG 2.1 AA Compliance Tests', () => {
       );
 
       // Timer should be accessible
-      const timer = screen.getByRole('timer');
       expect(timer).toHaveAttribute('aria-label', 'Time remaining');
       expect(timer).toHaveAttribute('aria-live', 'polite');
     });
@@ -460,7 +438,6 @@ describe('WCAG 2.1 AA Compliance Tests', () => {
         </TestWrapper>
       );
 
-      const results = await axe(container);
       expect(results).toHaveNoViolations();
     });
 
@@ -479,14 +456,12 @@ describe('WCAG 2.1 AA Compliance Tests', () => {
       fireEvent.click(screen.getByText('Game Management'));
 
       // Table should have proper structure
-      const table = screen.getByRole('table');
       expect(table).toBeInTheDocument();
 
       // Table should have caption or aria-label
       expect(table).toHaveAttribute('aria-label');
 
       // Headers should be properly associated
-      const headers = screen.getAllByRole('columnheader');
       headers.forEach(header => {
         expect(header).toHaveAttribute('scope', 'col');
       });
@@ -504,14 +479,12 @@ describe('WCAG 2.1 AA Compliance Tests', () => {
       );
 
       // Tab list should be navigable
-      const tabs = screen.getAllByRole('tab');
       expect(tabs.length).toBeGreaterThan(0);
 
       // First tab should be selected
       expect(tabs[0]).toHaveAttribute('aria-selected', 'true');
 
       // Tab panels should be associated
-      const tabPanels = screen.getAllByRole('tabpanel');
       expect(tabPanels.length).toBeGreaterThan(0);
     });
 
@@ -530,7 +503,6 @@ describe('WCAG 2.1 AA Compliance Tests', () => {
       fireEvent.click(screen.getByText('Game Management'));
 
       // Column headers should indicate sort capability
-      const nameHeader = screen.getByText('Game Name');
       expect(nameHeader.closest('th')).toHaveAttribute('aria-sort');
     });
   });
@@ -551,12 +523,8 @@ describe('WCAG 2.1 AA Compliance Tests', () => {
       );
 
       // Test high contrast theme
-      const container = screen.getByTestId('strategy-play-host');
-      const styles = getComputedStyle(container);
 
       // Primary color should provide sufficient contrast
-      const primaryColor = styles.getPropertyValue('--primary-color');
-      const backgroundColor = styles.getPropertyValue('--background-color');
 
       expect(primaryColor).toBe('#000080'); // Dark blue
       expect(backgroundColor).toBe('#FFFFFF'); // White
@@ -581,11 +549,9 @@ describe('WCAG 2.1 AA Compliance Tests', () => {
       fireEvent.click(screen.getByText('Submit Answer'));
 
       // Error should be indicated by text, not just color
-      const feedback = screen.getByText(/Incorrect/);
       expect(feedback).toBeInTheDocument();
 
       // Icons or symbols should accompany color indicators
-      const errorIndicator = screen.getByText('❌') || screen.getByText('✗');
       expect(errorIndicator).toBeInTheDocument();
     });
   });
@@ -606,7 +572,6 @@ describe('WCAG 2.1 AA Compliance Tests', () => {
       );
 
       // Get all focusable elements
-      const focusableElements = screen.getAllByRole('button');
       
       // Tab through elements
       let currentFocus = 0;
@@ -636,7 +601,6 @@ describe('WCAG 2.1 AA Compliance Tests', () => {
       );
 
       // Verify focus is not trapped in normal flow
-      const continueButton = screen.getByText('Continue');
       continueButton.focus();
       
       fireEvent.keyDown(continueButton, { key: 'Tab' });
@@ -654,7 +618,6 @@ describe('WCAG 2.1 AA Compliance Tests', () => {
         </TestWrapper>
       );
 
-      const skipButton = screen.getByText('Skip to end');
       skipButton.focus();
       
       // Skip dialogue (causes content change)
@@ -662,7 +625,6 @@ describe('WCAG 2.1 AA Compliance Tests', () => {
 
       // Focus should move to continue button after content loads
       setTimeout(() => {
-        const continueButton = screen.getByText('Continue');
         expect(document.activeElement).toBe(continueButton);
       }, 100);
     });
@@ -683,16 +645,11 @@ describe('WCAG 2.1 AA Compliance Tests', () => {
         </TestWrapper>
       );
 
-      const container = screen.getByTestId('strategy-play-host');
-      const styles = getComputedStyle(container);
 
       // Font should be readable (Open Sans)
       expect(styles.fontFamily).toContain('Open Sans');
       
       // Font size should be at least 16px for body text
-      const bodyText = screen.getByText(/Welcome/);
-      const textStyles = getComputedStyle(bodyText);
-      const fontSize = parseInt(textStyles.fontSize);
       expect(fontSize).toBeGreaterThanOrEqual(16);
     });
 
@@ -712,10 +669,8 @@ describe('WCAG 2.1 AA Compliance Tests', () => {
 
       // Simulate text zoom (this would be done at browser level)
       // We test that layout can handle larger text
-      const container = screen.getByTestId('strategy-play-host');
       
       // Container should use relative units
-      const styles = getComputedStyle(container);
       expect(styles.fontSize).toMatch(/(rem|em|%)/);
     });
 
@@ -730,13 +685,8 @@ describe('WCAG 2.1 AA Compliance Tests', () => {
         </TestWrapper>
       );
 
-      const messageText = screen.getByText(/This is an accessible dialogue/);
-      const styles = getComputedStyle(messageText);
       
       // Line height should be at least 1.5
-      const lineHeight = parseFloat(styles.lineHeight);
-      const fontSize = parseFloat(styles.fontSize);
-      const ratio = lineHeight / fontSize;
       
       expect(ratio).toBeGreaterThanOrEqual(1.5);
     });
@@ -757,13 +707,10 @@ describe('WCAG 2.1 AA Compliance Tests', () => {
         </TestWrapper>
       );
 
-      const headings = screen.getAllByRole('heading');
       
       // Should have proper heading hierarchy (h1, h2, h3, etc.)
       expect(headings[0]).toHaveProperty('tagName', 'H1');
       if (headings[1]) {
-        const level1 = parseInt(headings[0].getAttribute('aria-level') || '1');
-        const level2 = parseInt(headings[1].getAttribute('aria-level') || '2');
         expect(level2).toBeLessThanOrEqual(level1 + 1);
       }
     });
@@ -782,9 +729,7 @@ describe('WCAG 2.1 AA Compliance Tests', () => {
       // Navigate to content with links
       fireEvent.click(screen.getByText('Game Management'));
 
-      const links = screen.getAllByRole('link');
       links.forEach(link => {
-        const linkText = link.textContent || link.getAttribute('aria-label');
         expect(linkText).toBeTruthy();
         expect(linkText).not.toBe('click here');
         expect(linkText).not.toBe('read more');
@@ -802,13 +747,11 @@ describe('WCAG 2.1 AA Compliance Tests', () => {
         </TestWrapper>
       );
 
-      const radioButtons = screen.getAllByRole('radio');
       radioButtons.forEach(radio => {
         // Each radio should have descriptive label
         expect(radio).toHaveAttribute('aria-label');
         
         // Radio group should provide context
-        const radioGroup = radio.closest('[role="radiogroup"]');
         expect(radioGroup).toHaveAttribute('aria-labelledby');
       });
     });
@@ -816,69 +759,8 @@ describe('WCAG 2.1 AA Compliance Tests', () => {
 
   describe('New Core Components WCAG Compliance', () => {
     // Test data for new components matching DevTeam JSON schema
-    const newDialogueData = {
-      scene_id: 'new-dialogue-wcag-test',
-      scene_type: 'DialogueScene' as const,
-      title: 'New WCAG Dialogue Test',
-      description: 'Testing new dialogue component accessibility',
-      characters: [
-        {
-          character_id: 'anna',
-          name: 'Anna Svensson',
-          role: 'WCAG Specialist',
-          avatar_description: 'Professional accessibility expert'
-        }
-      ],
-      dialogue_turns: [
-        {
-          speaker: 'Anna Svensson',
-          character_id: 'anna',
-          text: 'Welcome to our WCAG 2.1 AA compliant training.',
-          emotion: 'confident' as const,
-          timing: 0
-        }
-      ],
-      learning_objectives: ['Understand WCAG compliance'],
-      scene_duration: 300
-    };
 
-    const newQuizData = {
-      scene_id: 'new-quiz-wcag-test',
-      scene_type: 'QuizScene' as const,
-      title: 'New WCAG Quiz Test',
-      description: 'Testing new quiz component accessibility',
-      questions: [
-        {
-          question_id: 'wcag-q1',
-          question_type: 'multiple_choice' as const,
-          question_text: 'Which WCAG principle ensures content is accessible via keyboard?',
-          options: [
-            {
-              option_id: 'operable',
-              text: 'Operable',
-              is_correct: true
-            },
-            {
-              option_id: 'perceivable',
-              text: 'Perceivable',
-              is_correct: false
-            }
-          ],
-          explanation: 'Operable means interface components must be operable via keyboard.',
-          learning_objective: 'Understand WCAG principles',
-          points: 10
-        }
-      ],
-      passing_score: 70,
-      scene_duration: 180,
-      feedback_immediate: true
-    };
 
-    const testMunicipalBranding = {
-      primaryColor: '#1e40af',
-      logoUrl: 'https://example.se/accessibility-logo.svg',
-      municipality: 'WCAG Test Municipality'
-    };
 
     describe('New DialogueScene WCAG Compliance', () => {
       it('has no accessibility violations', async () => {
@@ -892,7 +774,6 @@ describe('WCAG 2.1 AA Compliance Tests', () => {
           </TestWrapper>
         );
 
-        const results = await axe(container);
         expect(results).toHaveNoViolations();
       });
 
@@ -912,7 +793,6 @@ describe('WCAG 2.1 AA Compliance Tests', () => {
             </TestWrapper>
           );
 
-          const results = await axe(container, {
             rules: {
               'color-contrast': { enabled: true },
               'focusable-content': { enabled: true },
@@ -936,7 +816,6 @@ describe('WCAG 2.1 AA Compliance Tests', () => {
         );
 
         // Test mobile-specific accessibility
-        const results = await axe(container, {
           rules: {
             'target-size': { enabled: true }, // 48px minimum touch targets
             'color-contrast': { enabled: true }
@@ -957,11 +836,9 @@ describe('WCAG 2.1 AA Compliance Tests', () => {
           </TestWrapper>
         );
 
-        const results = await axe(container);
         expect(results).toHaveNoViolations();
 
         // Verify municipal logo has proper alt text
-        const logo = screen.getByAltText(/WCAG Test Municipality logotyp/);
         expect(logo).toBeInTheDocument();
       });
     });
@@ -978,7 +855,6 @@ describe('WCAG 2.1 AA Compliance Tests', () => {
           </TestWrapper>
         );
 
-        const results = await axe(container);
         expect(results).toHaveNoViolations();
       });
 
@@ -993,7 +869,6 @@ describe('WCAG 2.1 AA Compliance Tests', () => {
           </TestWrapper>
         );
 
-        const results = await axe(container, {
           rules: {
             'focusable-content': { enabled: true },
             'focus-order-semantics': { enabled: true }
@@ -1006,31 +881,6 @@ describe('WCAG 2.1 AA Compliance Tests', () => {
       });
 
       it('handles different question types accessibly', async () => {
-        const questionTypes = [
-          {
-            ...newQuizData,
-            questions: [{
-              ...newQuizData.questions[0],
-              question_type: 'true_false' as const,
-              options: [
-                { option_id: 'true', text: 'Sant', is_correct: true },
-                { option_id: 'false', text: 'Falskt', is_correct: false }
-              ]
-            }]
-          },
-          {
-            ...newQuizData,
-            questions: [{
-              ...newQuizData.questions[0],
-              question_type: 'multiple_select' as const,
-              options: [
-                { option_id: 'opt1', text: 'Option 1', is_correct: true },
-                { option_id: 'opt2', text: 'Option 2', is_correct: true },
-                { option_id: 'opt3', text: 'Option 3', is_correct: false }
-              ]
-            }]
-          }
-        ];
 
         for (const quizVariant of questionTypes) {
           const { container } = render(
@@ -1043,7 +893,6 @@ describe('WCAG 2.1 AA Compliance Tests', () => {
             </TestWrapper>
           );
 
-          const results = await axe(container);
           expect(results).toHaveNoViolations();
         }
       });
@@ -1064,11 +913,9 @@ describe('WCAG 2.1 AA Compliance Tests', () => {
         fireEvent.click(screen.getByText('Svara'));
 
         // Check accessibility after feedback appears
-        const results = await axe(container);
         expect(results).toHaveNoViolations();
 
         // Verify feedback is announced to screen readers
-        const feedback = screen.getByText(/Rätt svar!/);
         expect(feedback.closest('[aria-live]')).toBeTruthy();
       });
     });
@@ -1086,7 +933,6 @@ describe('WCAG 2.1 AA Compliance Tests', () => {
         );
 
         // BITV 2.0 specific requirements
-        const results = await axe(container, {
           rules: {
             'color-contrast': { enabled: true },
             'focusable-content': { enabled: true },
@@ -1110,7 +956,6 @@ describe('WCAG 2.1 AA Compliance Tests', () => {
         );
 
         // RGAA 4.1 specific requirements  
-        const results = await axe(container, {
           rules: {
             'color-contrast': { enabled: true },
             'focusable-content': { enabled: true },
@@ -1134,7 +979,6 @@ describe('WCAG 2.1 AA Compliance Tests', () => {
         );
 
         // EN 301 549 specific requirements
-        const results = await axe(container, {
           rules: {
             'color-contrast': { enabled: true },
             'focusable-content': { enabled: true },
@@ -1157,7 +1001,6 @@ describe('WCAG 2.1 AA Compliance Tests', () => {
         );
 
         // DOS Act specific requirements
-        const results = await axe(container, {
           rules: {
             'color-contrast': { enabled: true },
             'focusable-content': { enabled: true },

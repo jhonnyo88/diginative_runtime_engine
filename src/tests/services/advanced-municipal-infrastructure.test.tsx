@@ -59,7 +59,6 @@ describe('Advanced Municipal Infrastructure', () => {
           }
         };
 
-        const tenant = await scalingEngine.createMunicipalTenant(config);
 
         expect(tenant).toBeDefined();
         expect(tenant.municipalityId).toBe('malmo_stad');
@@ -118,8 +117,6 @@ describe('Advanced Municipal Infrastructure', () => {
           }
         };
 
-        const smallTenant = await scalingEngine.createMunicipalTenant(smallMunicipality);
-        const largeTenant = await scalingEngine.createMunicipalTenant(largeMunicipality);
 
         // Large municipality should have more resources
         expect(largeTenant.resourceAllocation.cpu).toBeGreaterThan(smallTenant.resourceAllocation.cpu);
@@ -156,8 +153,6 @@ describe('Advanced Municipal Infrastructure', () => {
           dataResidencyRegion: 'france'
         };
 
-        const swedishTenant = await scalingEngine.createMunicipalTenant(swedishConfig);
-        const frenchTenant = await scalingEngine.createMunicipalTenant(frenchConfig);
 
         // French should have higher resource allocation due to cultural complexity
         expect(frenchTenant.resourceAllocation.cpu).toBeGreaterThan(swedishTenant.resourceAllocation.cpu);
@@ -216,8 +211,6 @@ describe('Advanced Municipal Infrastructure', () => {
       });
 
       it('should scale tenant resources based on demand', async () => {
-        const originalCpu = testTenant.resourceAllocation.cpu;
-        const originalMemory = testTenant.resourceAllocation.memory;
 
         await scalingEngine.scaleTenantResources('scaling_test', {
           cpu: originalCpu * 2,
@@ -225,7 +218,6 @@ describe('Advanced Municipal Infrastructure', () => {
           reason: 'increased_load'
         });
 
-        const updatedTenant = await scalingEngine.getTenantInstance('scaling_test');
         expect(updatedTenant?.resourceAllocation.cpu).toBe(originalCpu * 2);
         expect(updatedTenant?.resourceAllocation.memory).toBe(originalMemory * 1.5);
         expect(updatedTenant?.lastScalingEvent).toBeDefined();
@@ -243,14 +235,12 @@ describe('Advanced Municipal Infrastructure', () => {
       });
 
       it('should not scale down resources automatically', async () => {
-        const originalCpu = testTenant.resourceAllocation.cpu;
 
         await scalingEngine.scaleTenantResources('scaling_test', {
           cpu: originalCpu / 2, // Try to scale down
           reason: 'reduced_load'
         });
 
-        const updatedTenant = await scalingEngine.getTenantInstance('scaling_test');
         expect(updatedTenant?.resourceAllocation.cpu).toBe(originalCpu); // Should remain the same
       });
 
@@ -261,7 +251,6 @@ describe('Advanced Municipal Infrastructure', () => {
           reason: 'q2_mechanics_load'
         });
 
-        const updatedTenant = await scalingEngine.getTenantInstance('scaling_test');
         expect(updatedTenant?.lastScalingEvent?.cost_impact).toBeDefined();
         expect(updatedTenant?.lastScalingEvent?.cost_impact).toBeGreaterThan(0);
       });
@@ -287,7 +276,6 @@ describe('Advanced Municipal Infrastructure', () => {
         };
 
         await scalingEngine.createMunicipalTenant(config);
-        const retrieved = await scalingEngine.getTenantInstance('retrieve_test');
 
         expect(retrieved).toBeDefined();
         expect(retrieved?.municipalityId).toBe('retrieve_test');
@@ -295,7 +283,6 @@ describe('Advanced Municipal Infrastructure', () => {
       });
 
       it('should return null for non-existent tenant', async () => {
-        const retrieved = await scalingEngine.getTenantInstance('non_existent');
         expect(retrieved).toBeNull();
       });
 
@@ -321,7 +308,6 @@ describe('Advanced Municipal Infrastructure', () => {
           await scalingEngine.createMunicipalTenant(config);
         }
 
-        const activeTenants = await scalingEngine.listActiveTenants();
         expect(activeTenants.length).toBeGreaterThanOrEqual(3);
         expect(activeTenants.every(t => t.status === 'active')).toBe(true);
       });
@@ -348,7 +334,6 @@ describe('Advanced Municipal Infrastructure', () => {
           expectedQ2Usage: highQ2Usage
         };
 
-        const tenant = await scalingEngine.createMunicipalTenant(config);
 
         expect(tenant.resourceAllocation.q2InteractiveCapacity.dragDropConcurrency).toBeGreaterThan(100);
         expect(tenant.resourceAllocation.q2InteractiveCapacity.timedChallengeConcurrency).toBeGreaterThan(80);
@@ -392,8 +377,6 @@ describe('Advanced Municipal Infrastructure', () => {
           }
         };
 
-        const lowLoadTenant = await scalingEngine.createMunicipalTenant(lowLoadConfig);
-        const highLoadTenant = await scalingEngine.createMunicipalTenant(highLoadConfig);
 
         expect(lowLoadTenant.resourceAllocation.cacheLevel).toBe('basic');
         expect(highLoadTenant.resourceAllocation.cacheLevel).toBe('enterprise');
@@ -404,12 +387,6 @@ describe('Advanced Municipal Infrastructure', () => {
   describe('Q2CachingStrategyEngine', () => {
     describe('Interactive Mechanics Caching', () => {
       it('should cache drag-drop mechanics with appropriate TTL', async () => {
-        const mechanicData = {
-          id: 'drag_drop_001',
-          workflowType: 'permit_processing',
-          components: ['permit_form', 'approval_queue', 'validation_step'],
-          municipalityContext: 'malmo_stad'
-        };
 
         await cachingEngine.cacheInteractiveMechanics('malmo_stad', 'drag_drop', mechanicData);
 
@@ -425,13 +402,6 @@ describe('Advanced Municipal Infrastructure', () => {
       });
 
       it('should cache timed challenges with shorter TTL', async () => {
-        const challengeData = {
-          id: 'emergency_001',
-          scenarioType: 'flood_response',
-          timeLimit: 300,
-          urgencyLevel: 'high',
-          resources: ['evacuation_buses', 'emergency_shelters']
-        };
 
         await cachingEngine.cacheInteractiveMechanics('berlin_de', 'timed_challenge', challengeData);
 
@@ -447,13 +417,6 @@ describe('Advanced Municipal Infrastructure', () => {
       });
 
       it('should cache narrative branching with longer TTL', async () => {
-        const narrativeData = {
-          id: 'narrative_001',
-          scenarioType: 'budget_crisis',
-          branchingPoints: 5,
-          characterRelationships: ['mayor', 'finance_director', 'council_member'],
-          culturalContext: 'french'
-        };
 
         await cachingEngine.cacheInteractiveMechanics('paris_fr', 'narrative_branching', narrativeData);
 
@@ -471,39 +434,6 @@ describe('Advanced Municipal Infrastructure', () => {
 
     describe('Emergency Scenario Preloading', () => {
       it('should preload emergency scenarios for rapid access', async () => {
-        const scenarios = [
-          {
-            scenarioId: 'flood_001',
-            scenarioType: 'flood_response',
-            data: {
-              severity: 'high',
-              affectedAreas: ['district_1', 'district_2'],
-              resources: ['evacuation_buses', 'emergency_shelters'],
-              timeLimit: 180
-            }
-          },
-          {
-            scenarioId: 'cyber_001',
-            scenarioType: 'cyber_attack',
-            data: {
-              severity: 'critical',
-              affectedSystems: ['municipal_website', 'citizen_services'],
-              responseTeam: ['it_coordinator', 'security_specialist'],
-              timeLimit: 120
-            }
-          },
-          {
-            scenarioId: 'winter_001',
-            scenarioType: 'winter_storm',
-            data: {
-              severity: 'medium',
-              temperature: -25,
-              windSpeed: 80,
-              resources: ['snow_plows', 'heating_centers'],
-              timeLimit: 240
-            }
-          }
-        ];
 
         await cachingEngine.preloadEmergencyScenarios('stockholm_stad', scenarios);
 
@@ -538,8 +468,6 @@ describe('Advanced Municipal Infrastructure', () => {
         // This test validates that different mechanic types get appropriate cache durations
         // In a real implementation, we would test the actual cache expiration times
         
-        const mechanicTypes = ['drag_drop', 'timed_challenge', 'narrative_branching'];
-        const testData = { id: 'test', type: 'test' };
 
         for (const mechanicType of mechanicTypes) {
           await cachingEngine.cacheInteractiveMechanics(
@@ -576,15 +504,9 @@ describe('Advanced Municipal Infrastructure', () => {
         };
 
         // Create tenant
-        const tenant = await scalingEngine.createMunicipalTenant(config);
         expect(tenant).toBeDefined();
 
         // Cache Q2 mechanics for the tenant
-        const dragDropData = {
-          id: 'workflow_001',
-          type: 'permit_processing',
-          culturalAdaptation: 'dutch'
-        };
 
         await cachingEngine.cacheInteractiveMechanics(
           tenant.municipalityId,
@@ -593,13 +515,6 @@ describe('Advanced Municipal Infrastructure', () => {
         );
 
         // Preload emergency scenarios
-        const scenarios = [
-          {
-            scenarioId: 'dutch_flood_001',
-            scenarioType: 'river_flooding',
-            data: { severity: 'high', dutchContext: true }
-          }
-        ];
 
         await cachingEngine.preloadEmergencyScenarios(tenant.municipalityId, scenarios);
 
@@ -618,7 +533,6 @@ describe('Advanced Municipal Infrastructure', () => {
 
     describe('Multi-Tenant Performance', () => {
       it('should handle multiple concurrent tenant operations', async () => {
-        const tenantPromises = [];
 
         // Create multiple tenants concurrently
         for (let i = 0; i < 5; i++) {
@@ -642,14 +556,11 @@ describe('Advanced Municipal Infrastructure', () => {
           tenantPromises.push(scalingEngine.createMunicipalTenant(config));
         }
 
-        const tenants = await Promise.all(tenantPromises);
 
         expect(tenants).toHaveLength(5);
         expect(tenants.every(t => t.status === 'active')).toBe(true);
 
         // Verify different resource allocations based on population
-        const firstTenant = tenants[0];
-        const lastTenant = tenants[4];
         expect(lastTenant.resourceAllocation.cpu).toBeGreaterThan(firstTenant.resourceAllocation.cpu);
       });
     });

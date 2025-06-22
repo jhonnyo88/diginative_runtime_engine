@@ -11,114 +11,10 @@ import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 
 // Mock achievement compliance integration utilities
-const mockAchievementComplianceIntegration = {
-  integrateAchievementWithCompliance: vi.fn(),
-  validateMunicipalComplianceAchievements: vi.fn(),
-  trackProfessionalProgression: vi.fn(),
-  verifyGovernmentStandardAchievements: vi.fn(),
-  optimizeForAnnaSwenssonAchievements: vi.fn()
-};
 
 // Achievement + Municipal Compliance Integration Specifications
-const ACHIEVEMENT_COMPLIANCE_SPECS = {
-  municipalComplianceAchievements: {
-    'gdpr-compliance-expert': {
-      trigger: 'perfect-gdpr-score-5-consecutive-scenarios',
-      level: 'expert',
-      municipalValue: 'high',
-      verificationRequired: 'government-standard',
-      prerequisites: ['data-protection-basic', 'privacy-awareness', 'consent-management']
-    },
-    'accessibility-champion': {
-      trigger: 'wcag-2.1-aa-compliance-10-scenarios',
-      level: 'master',
-      municipalValue: 'critical',
-      verificationRequired: 'third-party-audit',
-      prerequisites: ['wcag-basic', 'inclusive-design', 'assistive-technology']
-    },
-    'cultural-diplomat': {
-      trigger: 'cultural-appropriateness-mastery-4-european-contexts',
-      level: 'advanced',
-      municipalValue: 'high',
-      verificationRequired: 'cultural-expert-validation',
-      prerequisites: ['cultural-awareness', 'communication-sensitivity', 'municipal-etiquette']
-    },
-    'municipal-department-head-certified': {
-      trigger: 'all-compliance-areas-expert-level',
-      level: 'leadership',
-      municipalValue: 'exceptional',
-      verificationRequired: 'municipal-authority-endorsement',
-      prerequisites: ['gdpr-compliance-expert', 'accessibility-champion', 'cultural-diplomat', 'emergency-leadership']
-    }
-  },
-  complianceTriggerMechanisms: {
-    'continuous-monitoring': 'real-time-compliance-score-tracking',
-    'milestone-validation': 'specific-compliance-threshold-achievements',
-    'scenario-completion': 'successful-compliance-scenario-completion',
-    'peer-validation': 'colleague-recognition-of-compliance-expertise',
-    'authority-verification': 'government-authority-validation-of-competency'
-  },
-  municipalProgressionFramework: {
-    levels: ['trainee', 'municipal-officer', 'senior-officer', 'department-head', 'municipal-expert'],
-    competencyAreas: ['gdpr-compliance', 'accessibility', 'cultural-appropriateness', 'emergency-response', 'stakeholder-management'],
-    verificationStandards: {
-      'government-standard': 'official-municipal-competency-recognition',
-      'third-party-audit': 'independent-compliance-verification',
-      'cultural-expert-validation': 'native-cultural-expert-endorsement',
-      'municipal-authority-endorsement': 'department-head-or-mayor-verification'
-    }
-  },
-  annaSwenssonAchievementProfile: {
-    currentLevel: 'department-head',
-    specializations: ['stakeholder-management', 'emergency-leadership', 'municipal-innovation'],
-    achievementStyle: 'thorough-methodical-progression',
-    motivationFactors: ['municipal-service-excellence', 'colleague-development', 'citizen-satisfaction'],
-    recognitionPreferences: ['peer-acknowledgment', 'municipal-authority-recognition', 'professional-development-opportunities']
-  }
-};
 
 // Municipal Achievement Scenarios
-const MUNICIPAL_ACHIEVEMENT_SCENARIOS = {
-  gdprComplianceMastery: {
-    scenario: 'comprehensive-gdpr-compliance-achievement',
-    municipality: 'malmö',
-    complianceAreas: ['data-minimization', 'consent-management', 'breach-response', 'citizen-rights', 'audit-preparation'],
-    achievementPath: [
-      { achievement: 'data-protection-basic', threshold: 0.8, scenarios: 3 },
-      { achievement: 'privacy-awareness', threshold: 0.85, scenarios: 5 },
-      { achievement: 'consent-management', threshold: 0.9, scenarios: 7 },
-      { achievement: 'gdpr-compliance-expert', threshold: 0.95, scenarios: 10 }
-    ],
-    verificationProcess: 'government-standard-validation',
-    municipalImpact: 'department-wide-gdpr-competency-improvement'
-  },
-  accessibilityChampionPath: {
-    scenario: 'wcag-accessibility-mastery-achievement',
-    municipality: 'malmö',
-    accessibilityStandards: ['wcag-2.1-aa', 'swedish-accessibility-law', 'municipal-inclusion-standards'],
-    achievementPath: [
-      { achievement: 'wcag-basic', threshold: 0.75, scenarios: 4 },
-      { achievement: 'inclusive-design', threshold: 0.8, scenarios: 6 },
-      { achievement: 'assistive-technology', threshold: 0.85, scenarios: 8 },
-      { achievement: 'accessibility-champion', threshold: 0.9, scenarios: 12 }
-    ],
-    verificationProcess: 'third-party-accessibility-audit',
-    municipalImpact: 'citywide-accessibility-improvement-leadership'
-  },
-  culturalDiplomacyMastery: {
-    scenario: 'european-cultural-competency-achievement',
-    municipality: 'malmö',
-    culturalContexts: ['swedish-consensus-building', 'german-efficiency-standards', 'french-administrative-excellence', 'dutch-innovation-culture'],
-    achievementPath: [
-      { achievement: 'cultural-awareness', threshold: 0.8, scenarios: 3 },
-      { achievement: 'communication-sensitivity', threshold: 0.85, scenarios: 6 },
-      { achievement: 'municipal-etiquette', threshold: 0.9, scenarios: 9 },
-      { achievement: 'cultural-diplomat', threshold: 0.95, scenarios: 15 }
-    ],
-    verificationProcess: 'cultural-expert-validation-from-each-context',
-    municipalImpact: 'european-municipal-collaboration-leadership'
-  }
-};
 
 describe('Achievement System + Municipal Compliance Integration Testing', () => {
   let achievementComplianceHarness: Record<string, unknown>;
@@ -132,7 +28,6 @@ describe('Achievement System + Municipal Compliance Integration Testing', () => 
 
   describe('Municipal Compliance Achievement Triggers', () => {
     it('should trigger GDPR compliance expert achievement through scenario progression', async () => {
-      const gdprAchievementTest = await achievementComplianceHarness.testGDPRComplianceAchievementProgression({
         participant: 'anna-svensson',
         municipality: 'malmö',
         achievementPath: MUNICIPAL_ACHIEVEMENT_SCENARIOS.gdprComplianceMastery.achievementPath,
@@ -184,7 +79,6 @@ describe('Achievement System + Municipal Compliance Integration Testing', () => 
     });
 
     it('should trigger accessibility champion achievement through WCAG mastery', async () => {
-      const accessibilityAchievementTest = await achievementComplianceHarness.testAccessibilityChampionAchievementProgression({
         participant: 'anna-svensson',
         municipality: 'malmö',
         achievementPath: MUNICIPAL_ACHIEVEMENT_SCENARIOS.accessibilityChampionPath.achievementPath,
@@ -236,7 +130,6 @@ describe('Achievement System + Municipal Compliance Integration Testing', () => 
     });
 
     it('should trigger cultural diplomat achievement through European context mastery', async () => {
-      const culturalDiplomacyTest = await achievementComplianceHarness.testCulturalDiplomacyAchievementProgression({
         participant: 'anna-svensson',
         municipality: 'malmö',
         achievementPath: MUNICIPAL_ACHIEVEMENT_SCENARIOS.culturalDiplomacyMastery.achievementPath,
@@ -289,7 +182,6 @@ describe('Achievement System + Municipal Compliance Integration Testing', () => 
 
   describe('Municipal Professional Progression Integration', () => {
     it('should track Anna Svensson professional progression through compliance achievements', async () => {
-      const professionalProgressionTest = await achievementComplianceHarness.testAnnaSwenssonProfessionalProgression({
         currentLevel: 'department-head',
         targetLevel: 'municipal-expert',
         progressionPath: [
@@ -345,7 +237,6 @@ describe('Achievement System + Municipal Compliance Integration Testing', () => 
     });
 
     it('should validate municipal department head certification through comprehensive compliance mastery', async () => {
-      const departmentHeadCertificationTest = await achievementComplianceHarness.testMunicipalDepartmentHeadCertification({
         participant: 'anna-svensson',
         municipality: 'malmö',
         certificationRequirements: ACHIEVEMENT_COMPLIANCE_SPECS.municipalComplianceAchievements['municipal-department-head-certified'],
@@ -395,7 +286,6 @@ describe('Achievement System + Municipal Compliance Integration Testing', () => 
 
   describe('Government-Grade Achievement Verification', () => {
     it('should implement government-standard verification for all municipal compliance achievements', async () => {
-      const governmentVerificationTest = await achievementComplianceHarness.testGovernmentStandardAchievementVerification({
         participant: 'anna-svensson',
         municipality: 'malmö',
         achievementsToVerify: [
@@ -447,7 +337,6 @@ describe('Achievement System + Municipal Compliance Integration Testing', () => 
     });
 
     it('should maintain continuous compliance monitoring for achievement validation', async () => {
-      const continuousComplianceTest = await achievementComplianceHarness.testContinuousComplianceMonitoring({
         participant: 'anna-svensson',
         municipality: 'malmö',
         monitoringDuration: 180, // 3 months
@@ -497,7 +386,6 @@ describe('Achievement System + Municipal Compliance Integration Testing', () => 
 
   describe('Anna Svensson Achievement Optimization', () => {
     it('should optimize achievement progression for Anna Svensson motivational profile', async () => {
-      const annaSwenssonOptimizationTest = await achievementComplianceHarness.testAnnaSwenssonAchievementOptimization({
         participantProfile: ACHIEVEMENT_COMPLIANCE_SPECS.annaSwenssonAchievementProfile,
         municipality: 'malmö',
         optimizationAreas: [
@@ -548,7 +436,6 @@ describe('Achievement System + Municipal Compliance Integration Testing', () => 
     });
 
     it('should provide Anna Svensson municipal impact visibility for achievement motivation', async () => {
-      const municipalImpactVisibilityTest = await achievementComplianceHarness.testAnnaSwenssonMunicipalImpactVisibility({
         participant: 'anna-svensson',
         municipality: 'malmö',
         impactMeasurementAreas: [
@@ -601,7 +488,6 @@ describe('Achievement System + Municipal Compliance Integration Testing', () => 
 
   describe('Achievement Compliance Integration Quality Assurance', () => {
     it('should generate comprehensive achievement compliance integration reports', async () => {
-      const integrationReporting = await achievementComplianceHarness.generateAchievementComplianceIntegrationReport({
         participant: 'anna-svensson',
         municipality: 'malmö',
         reportingScope: 'comprehensive-achievement-compliance-integration',

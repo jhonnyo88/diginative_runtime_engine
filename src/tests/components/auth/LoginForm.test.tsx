@@ -24,13 +24,6 @@ vi.mock('../../services/enterprise-saml-provider', () => ({
   }
 }));
 
-const renderWithChakra = (component: React.ReactElement) => {
-  return render(
-    <ChakraProvider>
-      {component}
-    </ChakraProvider>
-  );
-};
 
 describe('LoginForm', () => {
   beforeEach(() => {
@@ -41,14 +34,10 @@ describe('LoginForm', () => {
     it('renders without crashing', () => {
       renderWithChakra(<LoginForm />);
       
-      const component = screen.getByTestId('-login-form');
       expect(component).toBeInTheDocument();
     });
 
     it('handles props correctly', () => {
-      const testProps = {
-        // Add relevant props based on component analysis
-      };
       
       renderWithChakra(<LoginForm {...testProps} />);
       
@@ -68,7 +57,6 @@ describe('LoginForm', () => {
     it('provides proper ARIA attributes', () => {
       renderWithChakra(<LoginForm />);
       
-      const element = screen.getByTestId('-login-form');
       
       // Check for appropriate ARIA attributes
       expect(element).toHaveAttribute('role');
@@ -77,7 +65,6 @@ describe('LoginForm', () => {
     it('supports keyboard navigation', () => {
       renderWithChakra(<LoginForm />);
       
-      const element = screen.getByTestId('-login-form');
       
       // Test tab navigation
       element.focus();
@@ -88,7 +75,6 @@ describe('LoginForm', () => {
       renderWithChakra(<LoginForm />);
       
       // Basic contrast check
-      const element = screen.getByTestId('-login-form');
       expect(element).toBeInTheDocument();
     });
   });

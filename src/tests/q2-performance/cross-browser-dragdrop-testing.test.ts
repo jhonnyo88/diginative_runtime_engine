@@ -11,86 +11,12 @@ import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 
 // Mock cross-browser testing utilities
-const mockBrowserUtils = {
-  simulateBrowser: vi.fn(),
-  testDragDropCompatibility: vi.fn(),
-  measureBrowserPerformance: vi.fn(),
-  validateFeatureSupport: vi.fn(),
-  generateCompatibilityReport: vi.fn()
-};
 
 // Browser specifications for testing
-const BROWSER_TEST_SPECS = {
-  chrome: {
-    browserName: 'Chrome',
-    versions: ['120', '119', '118'],
-    dragDropSupport: 'native',
-    touchEventSupport: 'full',
-    performanceExpectation: 'optimal'
-  },
-  firefox: {
-    browserName: 'Firefox',
-    versions: ['120', '119', '118'],
-    dragDropSupport: 'native',
-    touchEventSupport: 'full',
-    performanceExpectation: 'good'
-  },
-  safari: {
-    browserName: 'Safari',
-    versions: ['17', '16.6', '16.5'],
-    dragDropSupport: 'native',
-    touchEventSupport: 'full',
-    performanceExpectation: 'optimal'
-  },
-  edge: {
-    browserName: 'Edge',
-    versions: ['120', '119', '118'],
-    dragDropSupport: 'native',
-    touchEventSupport: 'full',
-    performanceExpectation: 'good'
-  }
-};
 
 // Municipal workflow cross-browser scenarios
-const CROSS_BROWSER_SCENARIOS = {
-  invoiceApprovalCrossBrowser: {
-    workflowType: 'invoice-approval',
-    criticalFeatures: ['drag-drop', 'touch-events', 'file-upload', 'form-validation'],
-    performanceRequirements: {
-      minFPS: 55, // Allow 5fps degradation for cross-browser
-      maxLatency: 80, // ms
-      touchAccuracy: 0.93 // Allow 2% degradation
-    }
-  },
-  permitProcessingCrossBrowser: {
-    workflowType: 'permit-processing',
-    criticalFeatures: ['document-drag', 'form-interaction', 'cultural-validation', 'accessibility'],
-    performanceRequirements: {
-      minFPS: 55,
-      maxLatency: 80,
-      validationAccuracy: 0.94
-    }
-  }
-};
 
 // Browser-specific optimizations
-const BROWSER_OPTIMIZATIONS = {
-  webkit: {
-    optimizations: ['gpu-acceleration', 'touch-action-manipulation', 'webkit-transform'],
-    fallbacks: ['pointer-events', 'mouse-events'],
-    specificIssues: ['safari-touch-delay', 'webkit-drag-image']
-  },
-  gecko: {
-    optimizations: ['transform3d', 'will-change', 'firefox-touch-support'],
-    fallbacks: ['moz-user-select', 'pointer-events'],
-    specificIssues: ['firefox-drag-threshold', 'gecko-performance']
-  },
-  blink: {
-    optimizations: ['composite-layer', 'hardware-acceleration', 'chrome-touch'],
-    fallbacks: ['webkit-transform', 'pointer-events'],
-    specificIssues: ['chrome-memory-usage', 'blink-rendering']
-  }
-};
 
 describe('Cross-Browser Drag-Drop Testing for Q2 Municipal Workflows', () => {
   let crossBrowserHarness: Record<string, unknown>;
@@ -105,7 +31,6 @@ describe('Cross-Browser Drag-Drop Testing for Q2 Municipal Workflows', () => {
   describe('Chrome Browser Drag-Drop Testing', () => {
     it('should achieve optimal drag-drop performance in Chrome', async () => {
       for (const version of BROWSER_TEST_SPECS.chrome.versions) {
-        const chromeTest = await crossBrowserHarness.testBrowserDragDrop({
           browser: 'chrome',
           version,
           workflowType: 'invoice-approval',
@@ -145,7 +70,6 @@ describe('Cross-Browser Drag-Drop Testing for Q2 Municipal Workflows', () => {
     });
 
     it('should handle Chrome-specific touch events for municipal workflows', async () => {
-      const chromeTouchTest = await crossBrowserHarness.testChromeTouchEvents({
         workflowType: 'permit-processing',
         touchScenarios: ['single-touch-drag', 'multi-touch-select', 'touch-and-hold'],
         municipality: 'malmö'
@@ -177,7 +101,6 @@ describe('Cross-Browser Drag-Drop Testing for Q2 Municipal Workflows', () => {
   describe('Firefox Browser Drag-Drop Testing', () => {
     it('should maintain good drag-drop performance in Firefox', async () => {
       for (const version of BROWSER_TEST_SPECS.firefox.versions) {
-        const firefoxTest = await crossBrowserHarness.testBrowserDragDrop({
           browser: 'firefox',
           version,
           workflowType: 'permit-processing',
@@ -217,7 +140,6 @@ describe('Cross-Browser Drag-Drop Testing for Q2 Municipal Workflows', () => {
     });
 
     it('should handle Firefox accessibility features during drag-drop', async () => {
-      const firefoxAccessibilityTest = await crossBrowserHarness.testFirefoxAccessibility({
         accessibilityFeatures: ['screen-reader', 'keyboard-navigation', 'high-contrast'],
         workflowType: 'invoice-approval',
         municipality: 'malmö'
@@ -249,7 +171,6 @@ describe('Cross-Browser Drag-Drop Testing for Q2 Municipal Workflows', () => {
   describe('Safari Browser Drag-Drop Testing', () => {
     it('should achieve optimal drag-drop performance in Safari', async () => {
       for (const version of BROWSER_TEST_SPECS.safari.versions) {
-        const safariTest = await crossBrowserHarness.testBrowserDragDrop({
           browser: 'safari',
           version,
           workflowType: 'invoice-approval',
@@ -290,7 +211,6 @@ describe('Cross-Browser Drag-Drop Testing for Q2 Municipal Workflows', () => {
     });
 
     it('should handle Safari mobile-specific touch optimizations', async () => {
-      const safariMobileTest = await crossBrowserHarness.testSafariMobileOptimizations({
         device: 'iPhone 12',
         workflowType: 'permit-processing',
         touchOptimizations: ['touch-callout', 'touch-action', 'webkit-touch-callout'],
@@ -323,7 +243,6 @@ describe('Cross-Browser Drag-Drop Testing for Q2 Municipal Workflows', () => {
   describe('Edge Browser Drag-Drop Testing', () => {
     it('should maintain good drag-drop performance in Edge', async () => {
       for (const version of BROWSER_TEST_SPECS.edge.versions) {
-        const edgeTest = await crossBrowserHarness.testBrowserDragDrop({
           browser: 'edge',
           version,
           workflowType: 'permit-processing',
@@ -363,7 +282,6 @@ describe('Cross-Browser Drag-Drop Testing for Q2 Municipal Workflows', () => {
     });
 
     it('should handle Edge enterprise security features during workflows', async () => {
-      const edgeSecurityTest = await crossBrowserHarness.testEdgeEnterpriseSecurity({
         securityFeatures: ['windows-hello', 'credential-guard', 'application-guard'],
         workflowType: 'invoice-approval',
         municipality: 'malmö'
@@ -394,7 +312,6 @@ describe('Cross-Browser Drag-Drop Testing for Q2 Municipal Workflows', () => {
 
   describe('Cross-Browser Feature Compatibility', () => {
     it('should ensure drag-drop API consistency across all browsers', async () => {
-      const apiCompatibilityTest = await crossBrowserHarness.testAPICompatibilityAcrossBrowsers({
         browsers: ['chrome', 'firefox', 'safari', 'edge'],
         apis: ['drag-drop', 'touch-events', 'pointer-events', 'file-api'],
         municipality: 'malmö'
@@ -437,7 +354,6 @@ describe('Cross-Browser Drag-Drop Testing for Q2 Municipal Workflows', () => {
     });
 
     it('should handle browser-specific fallbacks gracefully', async () => {
-      const fallbackTest = await crossBrowserHarness.testBrowserFallbacks({
         fallbackScenarios: ['drag-drop-fallback', 'touch-event-fallback', 'api-unavailable'],
         browsers: ['chrome', 'firefox', 'safari', 'edge'],
         municipality: 'malmö'
@@ -476,7 +392,6 @@ describe('Cross-Browser Drag-Drop Testing for Q2 Municipal Workflows', () => {
 
   describe('Cross-Browser Performance Benchmarking', () => {
     it('should benchmark drag-drop performance across all browsers', async () => {
-      const performanceBenchmark = await crossBrowserHarness.benchmarkPerformanceAcrossBrowsers({
         browsers: ['chrome', 'firefox', 'safari', 'edge'],
         workflowTypes: ['invoice-approval', 'permit-processing'],
         benchmarkDuration: 300000, // 5 minutes
@@ -513,7 +428,6 @@ describe('Cross-Browser Drag-Drop Testing for Q2 Municipal Workflows', () => {
     });
 
     it('should provide optimization recommendations per browser', async () => {
-      const optimizationRecommendations = await crossBrowserHarness.generateOptimizationRecommendations({
         browsers: ['chrome', 'firefox', 'safari', 'edge'],
         performanceData: 'benchmark-results',
         municipality: 'malmö'
@@ -563,17 +477,6 @@ describe('Cross-Browser Drag-Drop Testing for Q2 Municipal Workflows', () => {
 function createCrossBrowserHarness() {
   return {
     testBrowserDragDrop: vi.fn().mockImplementation(({ browser, workflowType }) => {
-      const basePerformance = {
-        dragDropFunctional: true,
-        averageFPS: browser === 'safari' || browser === 'chrome' ? 58 : 56,
-        dragLatency: browser === 'chrome' ? 65 : 72,
-        municipalWorkflowCompatibility: {
-          [`${workflowType.replace('-', '')}Supported`]: true,
-          dragDropEventsHandled: true,
-          touchEventsSupported: true,
-          municipalUIRendered: 'correctly'
-        }
-      };
 
       if (browser === 'chrome') {
         return Promise.resolve({

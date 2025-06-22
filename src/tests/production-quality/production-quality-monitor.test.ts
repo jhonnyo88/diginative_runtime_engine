@@ -32,7 +32,6 @@ describe('Production Quality Monitor - Excellence Validation', () => {
       // Test monitoring system initialization
       expect(qualityMonitor).toBeDefined();
       
-      const summary = qualityMonitor.getQualitySummary();
       expect(summary.monitoring_active).toBe(false);
       expect(summary.latest_metrics).toBeNull();
       expect(summary.active_alerts).toBe(0);
@@ -70,7 +69,6 @@ describe('Production Quality Monitor - Excellence Validation', () => {
       // Wait for metrics collection
       await new Promise(resolve => setTimeout(resolve, 2000));
       
-      const metrics = qualityMonitor.getLatestMetrics();
       expect(metrics).toBeDefined();
       
       // Validate performance metrics
@@ -116,7 +114,6 @@ describe('Production Quality Monitor - Excellence Validation', () => {
       // Wait for performance data
       await new Promise(resolve => setTimeout(resolve, 2000));
       
-      const metrics = qualityMonitor.getLatestMetrics();
       expect(metrics).toBeDefined();
       
       // Validate Q3 performance standards
@@ -134,8 +131,6 @@ describe('Production Quality Monitor - Excellence Validation', () => {
       // Let monitoring run to establish baseline
       await new Promise(resolve => setTimeout(resolve, 3000));
       
-      const alerts = qualityMonitor.getActiveAlerts();
-      const performanceAlerts = alerts.filter(alert => alert.category === 'performance');
       
       // Should have minimal performance alerts under normal conditions
       expect(performanceAlerts.length).toBeLessThan(3);
@@ -158,7 +153,6 @@ describe('Production Quality Monitor - Excellence Validation', () => {
       // Wait for monitoring and potential optimizations
       await new Promise(resolve => setTimeout(resolve, 3000));
       
-      const summary = qualityMonitor.getQualitySummary();
       expect(summary.overall_status).toMatch(/excellent|good|acceptable/);
       
       console.log(`Automatic Optimization: Overall status ${summary.overall_status}`);
@@ -176,16 +170,11 @@ describe('Production Quality Monitor - Excellence Validation', () => {
       // Wait for compliance monitoring
       await new Promise(resolve => setTimeout(resolve, 2000));
       
-      const metrics = qualityMonitor.getLatestMetrics();
       expect(metrics).toBeDefined();
       
       // Validate GDPR compliance excellence
       expect(metrics!.compliance.gdprCompliance).toBeGreaterThan(95);
       
-      const alerts = qualityMonitor.getActiveAlerts();
-      const complianceAlerts = alerts.filter(alert => 
-        alert.category === 'compliance' && alert.message.includes('GDPR')
-      );
       
       // Should have no critical GDPR compliance issues
       expect(complianceAlerts.filter(a => a.severity === 'critical').length).toBe(0);
@@ -200,7 +189,6 @@ describe('Production Quality Monitor - Excellence Validation', () => {
       // Wait for cultural monitoring
       await new Promise(resolve => setTimeout(resolve, 2000));
       
-      const metrics = qualityMonitor.getLatestMetrics();
       expect(metrics).toBeDefined();
       
       // Validate cultural adaptation excellence
@@ -216,7 +204,6 @@ describe('Production Quality Monitor - Excellence Validation', () => {
       // Wait for municipal compliance monitoring
       await new Promise(resolve => setTimeout(resolve, 2000));
       
-      const metrics = qualityMonitor.getLatestMetrics();
       expect(metrics).toBeDefined();
       
       // Validate municipal standards excellence
@@ -238,7 +225,6 @@ describe('Production Quality Monitor - Excellence Validation', () => {
       // Wait for reliability monitoring
       await new Promise(resolve => setTimeout(resolve, 2000));
       
-      const metrics = qualityMonitor.getLatestMetrics();
       expect(metrics).toBeDefined();
       
       // Validate reliability excellence
@@ -255,7 +241,6 @@ describe('Production Quality Monitor - Excellence Validation', () => {
       // Wait for failure prevention monitoring
       await new Promise(resolve => setTimeout(resolve, 2000));
       
-      const metrics = qualityMonitor.getLatestMetrics();
       expect(metrics).toBeDefined();
       
       // Validate failure prevention activity
@@ -271,7 +256,6 @@ describe('Production Quality Monitor - Excellence Validation', () => {
       // Wait for recovery monitoring
       await new Promise(resolve => setTimeout(resolve, 2000));
       
-      const metrics = qualityMonitor.getLatestMetrics();
       expect(metrics).toBeDefined();
       
       // Validate recovery time excellence
@@ -301,7 +285,6 @@ describe('Production Quality Monitor - Excellence Validation', () => {
       // Wait for improvement discovery
       await new Promise(resolve => setTimeout(resolve, 3000));
       
-      const insights = qualityMonitor.getImprovementInsights();
       expect(Array.isArray(insights)).toBe(true);
       
       console.log(`Improvement Discovery: ${insights.length} opportunities identified`);
@@ -314,13 +297,11 @@ describe('Production Quality Monitor - Excellence Validation', () => {
       // Wait for quality analysis
       await new Promise(resolve => setTimeout(resolve, 2000));
       
-      const metrics = qualityMonitor.getLatestMetrics();
       expect(metrics).toBeDefined();
       
       // Validate improvement recommendations
       expect(Array.isArray(metrics!.quality.improvementOpportunities)).toBe(true);
       
-      const insights = qualityMonitor.getImprovementInsights();
       insights.forEach(insight => {
         expect(typeof insight).toBe('string');
         expect(insight.length).toBeGreaterThan(20); // Meaningful insight
@@ -341,7 +322,6 @@ describe('Production Quality Monitor - Excellence Validation', () => {
       // Wait for potential alerts
       await new Promise(resolve => setTimeout(resolve, 2000));
       
-      const alerts = qualityMonitor.getActiveAlerts();
       
       // Validate alert structure
       alerts.forEach(alert => {
@@ -373,7 +353,6 @@ describe('Production Quality Monitor - Excellence Validation', () => {
       // Wait for monitoring and potential auto-resolution
       await new Promise(resolve => setTimeout(resolve, 3000));
       
-      const summary = qualityMonitor.getQualitySummary();
       expect(summary.active_alerts).toBeGreaterThanOrEqual(0);
       
       console.log(`Auto-Resolution: System handling ${summary.active_alerts} active alerts`);
@@ -391,8 +370,6 @@ describe('Production Quality Monitor - Excellence Validation', () => {
       // Wait for comprehensive monitoring
       await new Promise(resolve => setTimeout(resolve, 3000));
       
-      const summary = qualityMonitor.getQualitySummary();
-      const metrics = qualityMonitor.getLatestMetrics();
       
       expect(summary.monitoring_active).toBe(true);
       expect(metrics).toBeDefined();
@@ -412,15 +389,12 @@ describe('Production Quality Monitor - Excellence Validation', () => {
       // Wait for quality framework operation
       await new Promise(resolve => setTimeout(resolve, 3000));
       
-      const insights = qualityMonitor.getImprovementInsights();
-      const summary = qualityMonitor.getQualitySummary();
       
       // Validate continuous improvement
       expect(summary.improvement_insights).toBeGreaterThanOrEqual(0);
       expect(summary.overall_status).toMatch(/excellent|good|acceptable/);
       
       // Quality trend should be stable or improving
-      const metrics = qualityMonitor.getLatestMetrics();
       expect(['improving', 'stable']).toContain(metrics!.quality.trendDirection);
       
       console.log(`Continuous Improvement: ${insights.length} insights, ${metrics!.quality.trendDirection} trend`);
@@ -433,7 +407,6 @@ describe('Production Quality Monitor - Excellence Validation', () => {
  */
 describe('Production Quality Monitor Integration', () => {
   test('Complete Production Quality Monitoring Lifecycle', async () => {
-    const monitor = new ProductionQualityMonitor(PRODUCTION_QUALITY_SPECS);
     
     // Complete lifecycle test
     expect(monitor.getQualitySummary().monitoring_active).toBe(false);
@@ -445,7 +418,6 @@ describe('Production Quality Monitor Integration', () => {
     // Monitor operation
     await new Promise(resolve => setTimeout(resolve, 3000));
     
-    const metrics = monitor.getLatestMetrics();
     expect(metrics).toBeDefined();
     expect(metrics!.quality.overallScore).toBeGreaterThan(0);
     

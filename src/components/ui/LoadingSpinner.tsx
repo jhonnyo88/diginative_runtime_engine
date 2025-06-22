@@ -21,13 +21,7 @@ export const LoadingSpinner: React.FC<LoadingSpinnerProps> = ({
   text,
   showPerformanceTarget = false
 }) => {
-  const sizeMap = {
-    small: 24,
-    medium: 48,
-    large: 72
-  };
 
-  const spinnerSize = sizeMap[size];
 
   return (
     <div className={`loading-spinner-container ${size}`}>

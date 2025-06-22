@@ -98,7 +98,7 @@ export interface CitizenEngagementSpec {
   channels: string[];
   methods: string[];
   expectations: string[];
-  feedback mechanisms: string[];
+  "feedback mechanisms": string[];
   participationLevels: string[];
 }
 
@@ -421,7 +421,7 @@ export const SWEDISH_CULTURAL_INTELLIGENCE_SPECS: SwedishCulturalIntelligenceSpe
         'enkla-processer',
         'tillgänglig-information'
       ],
-      feedbackMechanisms: [
+      "feedback mechanisms": [
         'digitala-formulär',
         'användarrecensioner',
         'support-kanaler',

@@ -68,7 +68,7 @@ interface MunicipalPartnershipFramework {
       salesTraining: boolean;
       technicalCertification: boolean;
       marketingSupport: boolean;
-      co-sellingSupport: boolean;
+      "co-sellingSupport": boolean;
     };
   };
   
@@ -299,7 +299,7 @@ export class StrategicMunicipalPartnershipProgramService extends EventEmitter {
           strategicObjective: await this.determineStrategicObjective(
             partnerData.strategicObjectives,
             partnerData.marketTargets
-          ),
+          ) as 'market-entry' | 'market-expansion' | 'solution-integration' | 'thought-leadership' | 'competitive-advantage',
           valueProposition: await this.createValueProposition(
             partnerData,
             partnershipTerms
@@ -320,7 +320,7 @@ export class StrategicMunicipalPartnershipProgramService extends EventEmitter {
             salesTraining: true,
             technicalCertification: true,
             marketingSupport: true,
-            co-sellingSupport: true
+            "co-sellingSupport": true
           }
         },
         successMetrics: {
@@ -387,7 +387,7 @@ export class StrategicMunicipalPartnershipProgramService extends EventEmitter {
       
     } catch (error) {
       this.emit('partnershipEstablishmentError', { partnerData, error });
-      throw new Error(`Strategic partnership establishment failed: ${error}`);
+      throw new Error(`"Strategic partnership establishment failed": ${error}`);
     }
   }
   
@@ -428,10 +428,13 @@ export class StrategicMunicipalPartnershipProgramService extends EventEmitter {
       const governmentRelationsFramework: GovernmentRelationsFramework = {
         governmentEntity: {
           entityId,
-          ...governmentEntityData,
+          name: governmentEntityData.name,
+          type: governmentEntityData.type as 'ministry' | 'agency' | 'municipal-association' | 'regional-authority' | 'eu-institution',
+          country: governmentEntityData.country,
+          jurisdiction: governmentEntityData.jurisdiction,
           influence: await this.assessGovernmentInfluence(
             governmentEntityData
-          ) as any,
+          ) as 'national' | 'regional' | 'local' | 'european',
           municipalImpact: await this.analyzeMunicipalImpact(
             governmentEntityData
           )
@@ -532,7 +535,7 @@ export class StrategicMunicipalPartnershipProgramService extends EventEmitter {
       
     } catch (error) {
       this.emit('governmentRelationsDevelopmentError', { governmentEntityData, error });
-      throw new Error(`Government relations development failed: ${error}`);
+      throw new Error(`"Government relations development failed": ${error}`);
     }
   }
   
@@ -573,7 +576,7 @@ export class StrategicMunicipalPartnershipProgramService extends EventEmitter {
       
     } catch (error) {
       this.emit('analyticsGenerationError', error);
-      throw new Error(`Market penetration analytics generation failed: ${error}`);
+      throw new Error(`"Market penetration analytics generation failed": ${error}`);
     }
   }
   
@@ -643,7 +646,7 @@ export class StrategicMunicipalPartnershipProgramService extends EventEmitter {
       
     } catch (error) {
       this.emit('accelerationProgramError', { accelerationTargets, error });
-      throw new Error(`Partnership acceleration program execution failed: ${error}`);
+      throw new Error(`"Partnership acceleration program execution failed": ${error}`);
     }
   }
   
@@ -711,7 +714,7 @@ export class StrategicMunicipalPartnershipProgramService extends EventEmitter {
       
     } catch (error) {
       this.emit('roiAnalysisError', { analysisScope, error });
-      throw new Error(`Partnership ROI analysis failed: ${error}`);
+      throw new Error(`"Partnership ROI analysis failed": ${error}`);
     }
   }
   
@@ -766,7 +769,7 @@ export class StrategicMunicipalPartnershipProgramService extends EventEmitter {
   private async determineStrategicObjective(
     objectives: string[],
     targets: string[]
-  ): Promise<string> {
+  ): Promise<'market-entry' | 'market-expansion' | 'solution-integration' | 'thought-leadership' | 'competitive-advantage'> {
     // Implementation for strategic objective determination
     return 'market-expansion';
   }

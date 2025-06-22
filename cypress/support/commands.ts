@@ -291,7 +291,7 @@ declare global {
       screenshotWithDeviceInfo(name: string, options?: object): Chainable<void>
       waitForMunicipalBranding(timeout?: number): Chainable<void>
       handleiOSElements(): Chainable<void>
-      auditAccessibility(options?: { logViolations?: boolean, failOnViolations?: boolean }): Chainable<any>
+      auditAccessibility(options?: { logViolations?: boolean, failOnViolations?: boolean }): Chainable<void>
       measureActionPerformance(actionName: string, actionFn: () => Cypress.Chainable): Chainable<number>
       municipalLogin(userType?: string): Chainable<void>
       simulateMunicipalNetwork(): Chainable<void>

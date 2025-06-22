@@ -100,7 +100,7 @@ export class TenantShardManager {
   async routeQuery(
     tenantId: string, 
     query: string, 
-    params: any[] = []
+    params: (string | number | boolean | null)[] = []
   ): Promise<QueryResult> {
     try {
       const shardId = this.getShardForTenant(tenantId);
@@ -368,7 +368,7 @@ export class TenantShardManager {
     return 'other';
   }
 
-  private async sendToMonitoring(data: any): Promise<void> {
+  private async sendToMonitoring(data: Record<string, unknown>): Promise<void> {
     // Expert monitoring integration
     console.log('Performance tracking:', data);
     // Implementation: Send to monitoring service
@@ -411,7 +411,7 @@ export class TenantShardManager {
     };
   }
 
-  private calculateHealthyCulturalDistribution(reports: any[]): CulturalDistribution {
+  private calculateHealthyCulturalDistribution(reports: HealthReport[]): CulturalDistribution {
     const healthyReports = reports.filter(r => r.status === 'healthy');
     const distribution = {
       swedish_mobile: 0,
@@ -450,23 +450,23 @@ interface ShardConfig {
 }
 
 interface DatabaseConnection {
-  query(text: string, params?: any[]): Promise<QueryResult>;
+  query(text: string, params?: (string | number | boolean | null)[]): Promise<QueryResult>;
 }
 
 interface QueryResult {
-  rows: any[];
+  rows: Record<string, unknown>[];
   rowCount: number;
 }
 
 interface ShardAnalyticsResult {
   shardId: string;
-  data: any[];
+  data: Record<string, unknown>[];
   tenantCount: number;
   executionTime: number;
 }
 
 interface AnalyticsResult {
-  data: any[];
+  data: Record<string, unknown>[];
   metadata: {
     shardsInvolved: number;
     totalTenants: number;
@@ -487,7 +487,7 @@ interface ShardHealthReport {
   totalShards: number;
   healthyShards: number;
   unhealthyShards: number;
-  shardDetails: any[];
+  shardDetails: ShardHealthStatus[];
   culturalDistribution: CulturalDistribution;
 }
 

@@ -27,12 +27,12 @@ export interface GameResults {
   totalScore?: number;
   timeSpent: number; // milliseconds
   scenesCompleted: string[];
-  answers?: Record<string, any>;
+  answers?: Record<string, string[]>;
   // TASK-HD-014: Municipal achievement system results
   municipalAchievements?: {
-    earned: any[];
+    earned: Record<string, unknown>[];
     competencies: string[];
-    report: any;
+    report: Record<string, unknown>;
   };
 }
 
@@ -41,7 +41,7 @@ interface StrategyPlayHostProps {
   onComplete: (results: GameResults) => void;
   onSceneChange?: (sceneId: string) => void;
   analytics?: {
-    trackEvent: (eventType: string, data: any) => void;
+    trackEvent: (eventType: string, data: Record<string, unknown>) => void;
   };
   culturalContext?: CulturalContext;
   playerName?: string;
@@ -102,7 +102,7 @@ export const StrategyPlayHost: React.FC<StrategyPlayHostProps> = ({
       const completed = gameState.scenesCompleted.length === adaptedGameManifest.scenes.length;
       performanceAnalytics.endGameSession(adaptedGameManifest.gameId, completed, gameState.score);
     };
-  }, [adaptedGameManifest.gameId]);
+  }, [adaptedGameManifest.gameId, adaptedGameManifest.scenes.length, gameState.scenesCompleted.length, gameState.score]);
 
   // Find current scene
   const currentScene = useMemo(() => {

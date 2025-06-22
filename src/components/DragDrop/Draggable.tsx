@@ -1,4 +1,4 @@
-import React, { useRef, useEffect, useState } from 'react';
+import React, { useRef, useEffect, useState, useCallback } from 'react';
 import { Box, BoxProps } from '@chakra-ui/react';
 import { useDragDrop } from './DragDropProvider';
 
@@ -41,12 +41,12 @@ export const Draggable: React.FC<DraggableProps> = ({
     });
   };
 
-  const handleMouseUp = () => {
+  const handleMouseUp = useCallback(() => {
     if (isDraggingThis) {
       setIsDraggingThis(false);
       endDrag();
     }
-  };
+  }, [isDraggingThis, endDrag]);
 
   // Handle touch events for Anna Svensson's iPhone 12
   const handleTouchStart = (e: React.TouchEvent) => {
@@ -71,13 +71,13 @@ export const Draggable: React.FC<DraggableProps> = ({
     setTouchPosition({ x: touch.clientX, y: touch.clientY });
   };
 
-  const handleTouchEnd = () => {
+  const handleTouchEnd = useCallback(() => {
     if (isDraggingThis) {
       setIsDraggingThis(false);
       setTouchPosition(null);
       endDrag();
     }
-  };
+  }, [isDraggingThis, endDrag]);
 
   // Global mouse/touch event listeners
   useEffect(() => {
@@ -93,7 +93,7 @@ export const Draggable: React.FC<DraggableProps> = ({
         window.removeEventListener('touchend', handleGlobalTouchEnd);
       };
     }
-  }, [isDraggingThis]);
+  }, [isDraggingThis, handleMouseUp, handleTouchEnd]);
 
   return (
     <>

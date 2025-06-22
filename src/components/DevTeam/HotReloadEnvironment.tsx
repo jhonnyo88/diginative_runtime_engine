@@ -6,7 +6,7 @@
  * Target: <3 second feedback loop for 10x faster iteration speed
  */
 
-import React, { useState, useEffect, useRef, useCallback } from 'react';
+import React, { useState, useEffect, useRef, useCallback, useMemo } from 'react';
 import {
   Box,
   VStack,
@@ -113,8 +113,8 @@ export const HotReloadEnvironment: React.FC<HotReloadEnvironmentProps> = ({
   const borderColor = useColorModeValue('gray.200', 'gray.600');
   const editorBg = useColorModeValue('gray.50', 'gray.900');
   
-  // Initialize validator
-  const validator = new DevTeamContentValidator();
+  // Initialize validator - memoized to prevent recreation on every render
+  const validator = useMemo(() => new DevTeamContentValidator(), []);
   
   // WebSocket connection for real-time validation
   useEffect(() => {

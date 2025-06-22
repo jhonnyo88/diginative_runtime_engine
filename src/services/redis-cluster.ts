@@ -60,7 +60,7 @@ export interface ClusterMetrics {
  */
 export class RedisClusterService {
   private config: RedisClusterConfig;
-  private cluster: any; // In production: import { Cluster } from 'ioredis'
+  private cluster: Record<string, unknown>; // In production: import { Cluster } from 'ioredis'
   private metrics: ClusterMetrics;
   private cachePatterns: Map<string, CachePattern> = new Map();
   private healthCheckInterval?: NodeJS.Timeout;
@@ -514,7 +514,7 @@ class MockRedisCluster {
     this.eventHandlers.get(event)!.push(handler);
   }
 
-  emit(event: string, ...args: any[]): void {
+  emit(event: string, ...args: Record<string, unknown>[]): void {
     const handlers = this.eventHandlers.get(event) || [];
     handlers.forEach(handler => handler(...args));
   }

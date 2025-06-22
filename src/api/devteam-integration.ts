@@ -187,7 +187,7 @@ async function processContentAsync(jobId: string, request: ContentSubmissionRequ
       await notifyWebhook(request.processingOptions.webhookUrl, processingJobs.get(jobId)!);
     }
     
-  } catch (error: any) {
+  } catch (error: Record<string, unknown>) {
     updateJobStatus(jobId, ProcessingStatus.FAILED, 0, `Processing failed: ${error.message}`, [error.message]);
     throw error;
   }
@@ -196,7 +196,7 @@ async function processContentAsync(jobId: string, request: ContentSubmissionRequ
 /**
  * Validate game content with <5s feedback
  */
-async function validateContent(gameManifest: any): Promise<{isValid: boolean; errors: string[]}> {
+async function validateContent(gameManifest: Record<string, unknown>): Promise<{isValid: boolean; errors: string[]}> {
   const startTime = Date.now();
   
   try {
@@ -209,7 +209,7 @@ async function validateContent(gameManifest: any): Promise<{isValid: boolean; er
     }
     
     return validation;
-  } catch (error: any) {
+  } catch (error: Record<string, unknown>) {
     return { isValid: false, errors: [error.message] };
   }
 }
@@ -217,12 +217,12 @@ async function validateContent(gameManifest: any): Promise<{isValid: boolean; er
 /**
  * Process game content (enhance, optimize, prepare)
  */
-async function processGameContent(gameManifest: any): Promise<any> {
+async function processGameContent(gameManifest: Record<string, unknown>): Promise<Record<string, unknown>> {
   // Add player name placeholders
   const processedManifest = { ...gameManifest };
   
   // Process each scene
-  processedManifest.scenes = processedManifest.scenes.map((scene: any) => {
+  processedManifest.scenes = processedManifest.scenes.map((scene: Record<string, unknown>) => {
     // Ensure scene has proper structure
     return {
       ...scene,
@@ -238,10 +238,10 @@ async function processGameContent(gameManifest: any): Promise<any> {
  * Apply municipal branding based on municipality and level
  */
 async function applyMunicipalBranding(
-  gameManifest: any,
+  gameManifest: Record<string, unknown>,
   municipalityId: string,
   brandingLevel: string
-): Promise<any> {
+): Promise<Record<string, unknown>> {
   // Get municipal branding configuration
   const municipalBranding = getMunicipalBranding(municipalityId);
   
@@ -267,7 +267,7 @@ async function applyMunicipalBranding(
  * Create deployment packages for different formats
  */
 async function createDeploymentPackages(
-  gameManifest: any,
+  gameManifest: Record<string, unknown>,
   formats: DeploymentFormat[]
 ): Promise<Map<DeploymentFormat, any>> {
   const packages = new Map<DeploymentFormat, any>();
@@ -346,7 +346,7 @@ function updateJobStatus(
 /**
  * Get municipal branding configuration
  */
-function getMunicipalBranding(municipalityId: string): any {
+function getMunicipalBranding(municipalityId: string): Record<string, unknown> {
   // Municipal branding database integration
   const municipalityBrandings: Record<string, any> = {
     'malmo': {
@@ -451,7 +451,7 @@ function getMunicipalBranding(municipalityId: string): any {
 /**
  * Package creation functions (stubs for now)
  */
-async function createWebPackage(gameManifest: any): Promise<any> {
+async function createWebPackage(gameManifest: Record<string, unknown>): Promise<Record<string, unknown>> {
   // Web deployment package
   const webPackage = {
     type: 'web',
@@ -487,7 +487,7 @@ async function createWebPackage(gameManifest: any): Promise<any> {
   return webPackage;
 }
 
-async function createSCORMPackage(gameManifest: any): Promise<any> {
+async function createSCORMPackage(gameManifest: Record<string, unknown>): Promise<Record<string, unknown>> {
   // SCORM 2004 package for LMS integration
   const scormPackage = {
     type: 'scorm',
@@ -523,7 +523,7 @@ async function createSCORMPackage(gameManifest: any): Promise<any> {
   return scormPackage;
 }
 
-async function createPWAPackage(gameManifest: any): Promise<any> {
+async function createPWAPackage(gameManifest: Record<string, unknown>): Promise<Record<string, unknown>> {
   // Progressive Web App package
   const pwaPackage = {
     type: 'pwa',
@@ -578,8 +578,8 @@ async function createPWAPackage(gameManifest: any): Promise<any> {
 
 async function deployToInfrastructure(
   format: DeploymentFormat,
-  packageData: any,
-  options: any
+  packageData: Record<string, unknown>,
+  options: Record<string, unknown>
 ): Promise<string> {
   // Multi-region deployment strategy
   const deploymentRegions = {

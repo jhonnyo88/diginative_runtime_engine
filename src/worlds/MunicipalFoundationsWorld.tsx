@@ -26,7 +26,7 @@ export const MunicipalFoundationsWorld: React.FC<MunicipalFoundationsWorldProps>
 }) => {
   const navigate = useNavigate();
   const [loading, setLoading] = useState(true);
-  const [worldState, setWorldState] = useState<any>(null);
+  const [worldState, setWorldState] = useState<Record<string, unknown>>(null);
   const [currentScenario, setCurrentScenario] = useState(0);
   const [startTime] = useState(Date.now());
 
@@ -145,7 +145,7 @@ export const MunicipalFoundationsWorld: React.FC<MunicipalFoundationsWorldProps>
     }
   };
 
-  const handleScenarioCompletion = async (scenarioResults: any) => {
+  const handleScenarioCompletion = async (scenarioResults: Record<string, unknown>) => {
     try {
       const scenario = scenarios[currentScenario];
       
@@ -170,7 +170,7 @@ export const MunicipalFoundationsWorld: React.FC<MunicipalFoundationsWorldProps>
     }
   };
 
-  const completeWorld = async (finalResults: any) => {
+  const completeWorld = async (finalResults: Record<string, unknown>) => {
     try {
       // Complete the game session
       const gameResults = await gameStateManager.completeGameSession(worldState.sessionId);

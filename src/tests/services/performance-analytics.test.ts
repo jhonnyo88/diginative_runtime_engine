@@ -85,9 +85,9 @@ Object.defineProperty(global, 'sessionStorage', {
 });
 
 describe('PerformanceAnalyticsService Unit Tests', () => {
-  let consoleSpy: any;
-  let consoleWarnSpy: any;
-  let consoleInfoSpy: any;
+  let consoleSpy: Record<string, unknown>;
+  let consoleWarnSpy: Record<string, unknown>;
+  let consoleInfoSpy: Record<string, unknown>;
 
   beforeEach(() => {
     vi.clearAllMocks();
@@ -301,7 +301,7 @@ describe('PerformanceAnalyticsService Unit Tests', () => {
       });
 
       const metricsBuffer = (performanceAnalytics as any).metricsBuffer;
-      const hasLCP = metricsBuffer.some((snapshot: any) => 
+      const hasLCP = metricsBuffer.some((snapshot: Record<string, unknown>) => 
         snapshot.metrics.coreWebVitals?.lcp === 2500
       );
       
@@ -322,7 +322,7 @@ describe('PerformanceAnalyticsService Unit Tests', () => {
       });
 
       const metricsBuffer = (performanceAnalytics as any).metricsBuffer;
-      const hasFID = metricsBuffer.some((snapshot: any) => 
+      const hasFID = metricsBuffer.some((snapshot: Record<string, unknown>) => 
         snapshot.metrics.coreWebVitals?.fid === 50
       );
       
@@ -342,7 +342,7 @@ describe('PerformanceAnalyticsService Unit Tests', () => {
       });
 
       const metricsBuffer = (performanceAnalytics as any).metricsBuffer;
-      const hasCLS = metricsBuffer.some((snapshot: any) => 
+      const hasCLS = metricsBuffer.some((snapshot: Record<string, unknown>) => 
         snapshot.metrics.coreWebVitals?.cls === 0.05
       );
       
@@ -362,7 +362,7 @@ describe('PerformanceAnalyticsService Unit Tests', () => {
       });
 
       const metricsBuffer = (performanceAnalytics as any).metricsBuffer;
-      const hasFCP = metricsBuffer.some((snapshot: any) => 
+      const hasFCP = metricsBuffer.some((snapshot: Record<string, unknown>) => 
         snapshot.metrics.coreWebVitals?.fcp === 1200
       );
       
@@ -565,7 +565,7 @@ describe('PerformanceAnalyticsService Unit Tests', () => {
 
       const metricsBuffer = (performanceAnalytics as any).metricsBuffer;
       const hasMemoryMetric = metricsBuffer.some(
-        (snapshot: any) => snapshot.metrics.memoryUsage === 50 * 1024 * 1024
+        (snapshot: Record<string, unknown>) => snapshot.metrics.memoryUsage === 50 * 1024 * 1024
       );
       
       expect(hasMemoryMetric).toBe(true);
@@ -979,7 +979,7 @@ describe('PerformanceAnalyticsService Performance Tests', () => {
 });
 
 describe('PerformanceAnalyticsService Error Handling', () => {
-  let consoleErrorSpy: any;
+  let consoleErrorSpy: Record<string, unknown>;
 
   beforeEach(() => {
     consoleErrorSpy = vi.spyOn(console, 'error').mockImplementation(() => {});

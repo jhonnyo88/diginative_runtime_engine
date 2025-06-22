@@ -79,7 +79,7 @@ export class DynamicComponentLoader {
     componentName: string,
     userId: string,
     priority: 'high' | 'medium' | 'low' = 'medium'
-  ): Promise<any> {
+  ): Promise<Record<string, unknown>> {
     const startTime = Date.now();
     
     try {
@@ -259,7 +259,7 @@ export class DynamicComponentLoader {
     return null;
   }
 
-  private async dynamicImport(componentName: string): Promise<any> {
+  private async dynamicImport(componentName: string): Promise<Record<string, unknown>> {
     // Dynamic import based on component name
     switch (componentName) {
       case 'MunicipalFoundationsWorld':
@@ -277,7 +277,7 @@ export class DynamicComponentLoader {
     }
   }
 
-  private cacheComponent(componentName: string, component: any, preloaded = false): void {
+  private cacheComponent(componentName: string, component: Record<string, unknown>, preloaded = false): void {
     const entry: ComponentCacheEntry = {
       component,
       cachedAt: Date.now(),
@@ -419,7 +419,7 @@ export class DynamicComponentLoader {
     }
   }
 
-  private estimateComponentSize(component: any): number {
+  private estimateComponentSize(component: Record<string, unknown>): number {
     // Rough estimation of component size in bytes
     return JSON.stringify(component).length * 2; // Rough approximation
   }
@@ -446,7 +446,7 @@ export class DynamicComponentLoader {
 
 // Supporting interfaces
 interface ComponentCacheEntry {
-  component: any;
+  component: Record<string, unknown>;
   cachedAt: number;
   lastAccessed: number;
   accessCount: number;

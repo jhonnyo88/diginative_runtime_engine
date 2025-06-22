@@ -132,22 +132,22 @@ export interface GDPRCompliantDataAggregation {
 
 export interface RealTimeMunicipalDashboard {
   administratorOverview: {
-    systemHealthMetrics: any;
-    userEngagementAnalytics: any;
-    learningEffectivenessScores: any;
-    culturalAdaptationSuccess: any;
+    systemHealthMetrics: Record<string, unknown>;
+    userEngagementAnalytics: Record<string, unknown>;
+    learningEffectivenessScores: Record<string, unknown>;
+    culturalAdaptationSuccess: Record<string, unknown>;
   };
   decisionMakerReporting: {
-    executiveSummary: any;
-    strategicInsights: any;
-    complianceReporting: any;
-    budgetJustification: any;
+    executiveSummary: Record<string, unknown>;
+    strategicInsights: Record<string, unknown>;
+    complianceReporting: Record<string, unknown>;
+    budgetJustification: Record<string, unknown>;
   };
   culturalIntelligence: {
-    europeanMarketPerformance: any;
-    culturalSensitivityMonitoring: any;
-    localizationEffectiveness: any;
-    marketExpansionInsights: any;
+    europeanMarketPerformance: Record<string, unknown>;
+    culturalSensitivityMonitoring: Record<string, unknown>;
+    localizationEffectiveness: Record<string, unknown>;
+    marketExpansionInsights: Record<string, unknown>;
   };
 }
 
@@ -385,7 +385,7 @@ export class MunicipalAnalyticsEngine {
   async detectQ2PerformanceRegressions(
     municipality: string,
     timeframe: { start: Date; end: Date }
-  ): Promise<any> {
+  ): Promise<Record<string, unknown>> {
     this.validateGDPRCompliance();
 
     const componentMonitoring = {
@@ -435,27 +435,27 @@ export class MunicipalAnalyticsEngine {
     return 'swedish'; // Default fallback
   }
 
-  private async getMechanicUsage(mechanic: string, municipality: string, timeframe: any): Promise<number> {
+  private async getMechanicUsage(mechanic: string, municipality: string, timeframe: Record<string, unknown>): Promise<number> {
     // Mock implementation - would connect to actual analytics data
     return Math.floor(Math.random() * 1000) + 100;
   }
 
-  private async calculateAverageSessionDuration(municipality: string, timeframe: any): Promise<number> {
+  private async calculateAverageSessionDuration(municipality: string, timeframe: Record<string, unknown>): Promise<number> {
     // Mock implementation - return session duration in seconds
     return Math.floor(Math.random() * 600) + 300; // 5-15 minutes
   }
 
-  private async calculateCompletionRate(municipality: string, timeframe: any): Promise<number> {
+  private async calculateCompletionRate(municipality: string, timeframe: Record<string, unknown>): Promise<number> {
     // Mock implementation - return completion rate as percentage
     return Math.floor(Math.random() * 20) + 80; // 80-100%
   }
 
-  private async calculateEngagementScore(municipality: string, timeframe: any): Promise<number> {
+  private async calculateEngagementScore(municipality: string, timeframe: Record<string, unknown>): Promise<number> {
     // Mock implementation - return engagement score 0-100
     return Math.floor(Math.random() * 30) + 70; // 70-100
   }
 
-  private async calculateCulturalAdaptationScore(municipality: string, timeframe: any): Promise<number> {
+  private async calculateCulturalAdaptationScore(municipality: string, timeframe: Record<string, unknown>): Promise<number> {
     // Mock implementation - return cultural adaptation score 0-100
     return Math.floor(Math.random() * 20) + 80; // 80-100
   }
@@ -478,38 +478,38 @@ export class MunicipalAnalyticsEngine {
     return data; // Simplified implementation
   }
 
-  private async measureCompetencyImprovement(competencyType: string, municipality: string, timeframe: any): Promise<number> {
+  private async measureCompetencyImprovement(competencyType: string, municipality: string, timeframe: Record<string, unknown>): Promise<number> {
     // Mock implementation - return improvement percentage
     return Math.floor(Math.random() * 40) + 10; // 10-50% improvement
   }
 
-  private async measureSkillTransfer(transferType: string, municipality: string, timeframe: any): Promise<number> {
+  private async measureSkillTransfer(transferType: string, municipality: string, timeframe: Record<string, unknown>): Promise<number> {
     // Mock implementation - return skill transfer effectiveness
     return Math.floor(Math.random() * 30) + 70; // 70-100%
   }
 
-  private async measureRetention(days: number, municipality: string, timeframe: any): Promise<number> {
+  private async measureRetention(days: number, municipality: string, timeframe: Record<string, unknown>): Promise<number> {
     // Mock implementation - return retention percentage
     const baseRetention = 90 - (days / 10); // Decreases over time
     return Math.max(Math.floor(baseRetention + Math.random() * 20 - 10), 50);
   }
 
-  private async measureMarketAdaptation(market: string, municipality: string, timeframe: any): Promise<number> {
+  private async measureMarketAdaptation(market: string, municipality: string, timeframe: Record<string, unknown>): Promise<number> {
     // Mock implementation - return market adaptation effectiveness
     return Math.floor(Math.random() * 20) + 80; // 80-100%
   }
 
-  private async measureCulturalSensitivity(sensitivityType: string, municipality: string, timeframe: any): Promise<number> {
+  private async measureCulturalSensitivity(sensitivityType: string, municipality: string, timeframe: Record<string, unknown>): Promise<number> {
     // Mock implementation - return cultural sensitivity score
     return Math.floor(Math.random() * 15) + 85; // 85-100%
   }
 
-  private async measureLocalizationEffectiveness(effectivenessType: string, municipality: string, timeframe: any): Promise<number> {
+  private async measureLocalizationEffectiveness(effectivenessType: string, municipality: string, timeframe: Record<string, unknown>): Promise<number> {
     // Mock implementation - return localization effectiveness score
     return Math.floor(Math.random() * 20) + 80; // 80-100%
   }
 
-  private async calculateCost(costType: string, municipality: string, timeframe: any): Promise<number> {
+  private async calculateCost(costType: string, municipality: string, timeframe: Record<string, unknown>): Promise<number> {
     // Mock implementation - return cost in euros
     const baseCosts = {
       'employee-time': 5000,
@@ -520,7 +520,7 @@ export class MunicipalAnalyticsEngine {
     return (baseCosts[costType as keyof typeof baseCosts] || 1000) * (Math.random() * 0.5 + 0.75);
   }
 
-  private async calculateBenefit(benefitType: string, municipality: string, timeframe: any): Promise<number> {
+  private async calculateBenefit(benefitType: string, municipality: string, timeframe: Record<string, unknown>): Promise<number> {
     // Mock implementation - return benefit in euros
     const baseBenefits = {
       'citizen-service-improvement': 15000,
@@ -531,7 +531,7 @@ export class MunicipalAnalyticsEngine {
     return (baseBenefits[benefitType as keyof typeof baseBenefits] || 5000) * (Math.random() * 0.5 + 0.75);
   }
 
-  private async aggregateAnonymizedMetric(metricType: string, municipalities: string[], timeframe: any): Promise<{ [municipality: string]: number }> {
+  private async aggregateAnonymizedMetric(metricType: string, municipalities: string[], timeframe: Record<string, unknown>): Promise<{ [municipality: string]: number }> {
     // Mock implementation - return anonymized aggregated metrics
     const result: { [municipality: string]: number } = {};
     municipalities.forEach(municipality => {
@@ -540,12 +540,12 @@ export class MunicipalAnalyticsEngine {
     return result;
   }
 
-  private async identifyBestPractices(practiceType: string, performanceMetrics: any): Promise<string[]> {
+  private async identifyBestPractices(practiceType: string, performanceMetrics: Record<string, unknown>): Promise<string[]> {
     // Mock implementation - identify best practices
     return [`${practiceType}-pattern-1`, `${practiceType}-pattern-2`, `${practiceType}-pattern-3`];
   }
 
-  private async getSystemHealthMetrics(municipality: string): Promise<any> {
+  private async getSystemHealthMetrics(municipality: string): Promise<Record<string, unknown>> {
     return {
       uptime: 99.9,
       responseTime: 150,
@@ -554,7 +554,7 @@ export class MunicipalAnalyticsEngine {
     };
   }
 
-  private async getUserEngagementAnalytics(municipality: string): Promise<any> {
+  private async getUserEngagementAnalytics(municipality: string): Promise<Record<string, unknown>> {
     return {
       activeUsers: Math.floor(Math.random() * 200) + 50,
       sessionDuration: Math.floor(Math.random() * 600) + 300,
@@ -562,7 +562,7 @@ export class MunicipalAnalyticsEngine {
     };
   }
 
-  private async getLearningEffectivenessScores(municipality: string): Promise<any> {
+  private async getLearningEffectivenessScores(municipality: string): Promise<Record<string, unknown>> {
     return {
       overallEffectiveness: Math.floor(Math.random() * 20) + 80,
       competencyImprovement: Math.floor(Math.random() * 30) + 70,
@@ -570,7 +570,7 @@ export class MunicipalAnalyticsEngine {
     };
   }
 
-  private async getCulturalAdaptationSuccess(municipality: string): Promise<any> {
+  private async getCulturalAdaptationSuccess(municipality: string): Promise<Record<string, unknown>> {
     return {
       culturalAppropriatenessScore: Math.floor(Math.random() * 15) + 85,
       localizationEffectiveness: Math.floor(Math.random() * 20) + 80,
@@ -578,7 +578,7 @@ export class MunicipalAnalyticsEngine {
     };
   }
 
-  private async generateExecutiveSummary(municipality: string): Promise<any> {
+  private async generateExecutiveSummary(municipality: string): Promise<Record<string, unknown>> {
     return {
       trainingEffectiveness: `${Math.floor(Math.random() * 20) + 80}% improvement in municipal competencies`,
       citizenServiceImpact: `${Math.floor(Math.random() * 15) + 10}% increase in citizen satisfaction`,
@@ -586,7 +586,7 @@ export class MunicipalAnalyticsEngine {
     };
   }
 
-  private async generateStrategicInsights(municipality: string): Promise<any> {
+  private async generateStrategicInsights(municipality: string): Promise<Record<string, unknown>> {
     return {
       competencyGaps: ['emergency-response-coordination', 'digital-transformation-leadership'],
       improvementOpportunities: ['cross-departmental-collaboration', 'citizen-engagement-enhancement'],
@@ -594,7 +594,7 @@ export class MunicipalAnalyticsEngine {
     };
   }
 
-  private async generateComplianceReporting(municipality: string): Promise<any> {
+  private async generateComplianceReporting(municipality: string): Promise<Record<string, unknown>> {
     return {
       gdprCompliance: 100,
       accessibilityCompliance: 98,
@@ -603,7 +603,7 @@ export class MunicipalAnalyticsEngine {
     };
   }
 
-  private async generateBudgetJustification(municipality: string): Promise<any> {
+  private async generateBudgetJustification(municipality: string): Promise<Record<string, unknown>> {
     return {
       trainingInvestment: 25000,
       measuredBenefits: 55000,
@@ -612,7 +612,7 @@ export class MunicipalAnalyticsEngine {
     };
   }
 
-  private async getEuropeanMarketPerformance(municipality: string): Promise<any> {
+  private async getEuropeanMarketPerformance(municipality: string): Promise<Record<string, unknown>> {
     return {
       swedishAdaptation: Math.floor(Math.random() * 20) + 80,
       germanEffectiveness: Math.floor(Math.random() * 20) + 80,
@@ -621,7 +621,7 @@ export class MunicipalAnalyticsEngine {
     };
   }
 
-  private async getCulturalSensitivityMonitoring(municipality: string): Promise<any> {
+  private async getCulturalSensitivityMonitoring(municipality: string): Promise<Record<string, unknown>> {
     return {
       terminologyAppropriateness: Math.floor(Math.random() * 15) + 85,
       decisionMakingAlignment: Math.floor(Math.random() * 20) + 80,
@@ -629,7 +629,7 @@ export class MunicipalAnalyticsEngine {
     };
   }
 
-  private async getLocalizationEffectiveness(municipality: string): Promise<any> {
+  private async getLocalizationEffectiveness(municipality: string): Promise<Record<string, unknown>> {
     return {
       professionalFeedback: Math.floor(Math.random() * 15) + 85,
       crossCulturalTransfer: Math.floor(Math.random() * 20) + 80,
@@ -637,7 +637,7 @@ export class MunicipalAnalyticsEngine {
     };
   }
 
-  private async getMarketExpansionInsights(municipality: string): Promise<any> {
+  private async getMarketExpansionInsights(municipality: string): Promise<Record<string, unknown>> {
     return {
       expansionReadiness: Math.floor(Math.random() * 20) + 80,
       culturalAdaptationGaps: ['terminology-refinement', 'process-localization'],
@@ -645,7 +645,7 @@ export class MunicipalAnalyticsEngine {
     };
   }
 
-  private async monitorComponentPerformance(component: string, municipality: string, timeframe: any): Promise<any> {
+  private async monitorComponentPerformance(component: string, municipality: string, timeframe: Record<string, unknown>): Promise<Record<string, unknown>> {
     return {
       responseTime: Math.floor(Math.random() * 100) + 50,
       accuracy: Math.floor(Math.random() * 10) + 90,
@@ -654,7 +654,7 @@ export class MunicipalAnalyticsEngine {
     };
   }
 
-  private async analyzePerformanceRegressions(componentMonitoring: any): Promise<any> {
+  private async analyzePerformanceRegressions(componentMonitoring: Record<string, unknown>): Promise<Record<string, unknown>> {
     return {
       regressionsDetected: [],
       performanceStable: true,
@@ -663,7 +663,7 @@ export class MunicipalAnalyticsEngine {
     };
   }
 
-  private async generatePerformanceAlerts(regressionDetection: any): Promise<string[]> {
+  private async generatePerformanceAlerts(regressionDetection: Record<string, unknown>): Promise<string[]> {
     return []; // No alerts in mock implementation
   }
 }

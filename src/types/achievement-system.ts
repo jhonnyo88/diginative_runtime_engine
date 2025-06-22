@@ -105,7 +105,7 @@ export interface ProfessionalAchievement {
 
 export interface AchievementEvidence {
   evidenceType: 'scenario_completion' | 'performance_data' | 'peer_assessment' | 'supervisor_validation' | 'citizen_feedback';
-  evidenceData: any;
+  evidenceData: Record<string, unknown>;
   timestamp: Date;
   validatedBy: string;
   reliability: number; // 0-100

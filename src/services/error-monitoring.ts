@@ -331,7 +331,7 @@ class ErrorMonitoringService {
     }
   }
 
-  private async sendToEndpoint(endpoint: string, data: any): Promise<void> {
+  private async sendToEndpoint(endpoint: string, data: Record<string, unknown>): Promise<void> {
     // In production, this would send to your monitoring backend
     // For now, we'll use console.info for development visibility
     console.info(`[Monitoring] ${endpoint}:`, data);

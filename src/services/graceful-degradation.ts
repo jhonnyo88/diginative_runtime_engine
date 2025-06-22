@@ -81,8 +81,8 @@ export interface FallbackGameManifest {
 }
 
 // Recovery callback types
-export type RecoveryCallback = (context: DegradationContext) => Promise<any>;
-export type FallbackProvider = (reason: DegradationReason, originalContent?: any) => any;
+export type RecoveryCallback = (context: DegradationContext) => Promise<Record<string, unknown>>;
+export type FallbackProvider = (reason: DegradationReason, originalContent?: Record<string, unknown>) => any;
 
 /**
  * Graceful Degradation Service
@@ -191,12 +191,12 @@ export class GracefulDegradationService {
   /**
    * Handle content gracefully with fallback mechanisms
    */
-  public async handleContent(content: any, options: {
+  public async handleContent(content: Record<string, unknown>, options: {
     gameId?: string;
     retryCount?: number;
     maxRetries?: number;
     timeout?: number;
-  } = {}): Promise<any> {
+  } = {}): Promise<Record<string, unknown>> {
     const { gameId, retryCount = 0, maxRetries = 3, timeout = 5000 } = options;
     
     try {
@@ -244,7 +244,7 @@ export class GracefulDegradationService {
   /**
    * Validate content with timeout
    */
-  private async validateContentWithTimeout(content: any, timeout: number): Promise<any> {
+  private async validateContentWithTimeout(content: Record<string, unknown>, timeout: number): Promise<Record<string, unknown>> {
     return Promise.race([
       new Promise((resolve) => {
         const result = this.validator.validateGameManifest(content);
@@ -259,7 +259,7 @@ export class GracefulDegradationService {
   /**
    * Classify error type for appropriate degradation
    */
-  private classifyError(error: any): DegradationReason {
+  private classifyError(error: Record<string, unknown>): DegradationReason {
     const errorMessage = error?.message?.toLowerCase() || '';
     
     if (errorMessage.includes('network') || errorMessage.includes('fetch')) {
@@ -303,13 +303,13 @@ export class GracefulDegradationService {
    */
   public degradeContent(
     reason: DegradationReason,
-    originalContent?: any,
+    originalContent?: Record<string, unknown>,
     options: {
       retryCount?: number;
       maxRetries?: number;
       metadata?: Record<string, any>;
     } = {}
-  ): any {
+  ): Record<string, unknown> {
     const { retryCount = 0, maxRetries = 3, metadata = {} } = options;
     
     // Create degradation context
@@ -442,7 +442,7 @@ export class GracefulDegradationService {
   /**
    * Log degradation event
    */
-  private logDegradation(context: DegradationContext, originalContent?: any): void {
+  private logDegradation(context: DegradationContext, originalContent?: Record<string, unknown>): void {
     console.warn('Content degradation event:', {
       level: context.level,
       reason: context.reason,
@@ -467,7 +467,7 @@ export class GracefulDegradationService {
   /**
    * Attempt to repair malformed content
    */
-  private attemptContentRepair(content: any): any | null {
+  private attemptContentRepair(content: Record<string, unknown>): Record<string, unknown> | null {
     if (!content || typeof content !== 'object') {
       return null;
     }
@@ -522,7 +522,7 @@ export class GracefulDegradationService {
     title: string,
     message: string,
     reason: DegradationReason,
-    originalContent?: any
+    originalContent?: Record<string, unknown>
   ): FallbackGameManifest {
     return {
       gameId: `error-${Date.now()}`,
@@ -626,7 +626,7 @@ export class GracefulDegradationService {
   /**
    * Create simplified game manifest
    */
-  private createSimplifiedGameManifest(reason: DegradationReason, originalContent?: any): FallbackGameManifest {
+  private createSimplifiedGameManifest(reason: DegradationReason, originalContent?: Record<string, unknown>): FallbackGameManifest {
     return {
       gameId: originalContent?.gameId || `simplified-${Date.now()}`,
       version: '1.0.0',
@@ -661,7 +661,7 @@ export class GracefulDegradationService {
   /**
    * Create generic error manifest
    */
-  private createGenericErrorManifest(reason: DegradationReason, originalContent?: any): FallbackGameManifest {
+  private createGenericErrorManifest(reason: DegradationReason, originalContent?: Record<string, unknown>): FallbackGameManifest {
     return this.createErrorGameManifest(
       'Technical Issue',
       'A technical issue occurred. Using basic content instead.',
@@ -673,7 +673,7 @@ export class GracefulDegradationService {
   /**
    * Cache content for offline use
    */
-  private cacheContent(gameId: string, content: any): void {
+  private cacheContent(gameId: string, content: Record<string, unknown>): void {
     try {
       this.contentCache.set(gameId, content);
       
@@ -694,7 +694,7 @@ export class GracefulDegradationService {
   /**
    * Get cached content
    */
-  private getCachedContent(gameId?: string): any | null {
+  private getCachedContent(gameId?: string): Record<string, unknown> | null {
     if (!gameId) return null;
     
     // Try memory cache first

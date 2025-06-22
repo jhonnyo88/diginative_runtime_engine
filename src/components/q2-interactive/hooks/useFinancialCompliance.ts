@@ -9,7 +9,7 @@
 import { useCallback } from 'react';
 
 interface FinancialComplianceRequest {
-  invoice: any;
+  invoice: Record<string, unknown>;
   targetStage: string;
   municipality: string;
   userRole: string;
@@ -200,7 +200,7 @@ export const useFinancialCompliance = () => {
     };
   }, []);
 
-  const validateVATCompliance = (invoice: any, vatRegulations: any) => {
+  const validateVATCompliance = (invoice: Record<string, unknown>, vatRegulations: Record<string, unknown>) => {
     const errors: string[] = [];
     const warnings: string[] = [];
 
@@ -247,7 +247,7 @@ export const useFinancialCompliance = () => {
     };
   };
 
-  const validateProcurementCompliance = (invoice: any, procurementRegulations: any) => {
+  const validateProcurementCompliance = (invoice: Record<string, unknown>, procurementRegulations: Record<string, unknown>) => {
     const errors: string[] = [];
     const warnings: string[] = [];
 
@@ -296,7 +296,7 @@ export const useFinancialCompliance = () => {
     };
   };
 
-  const validateBudgetCompliance = (invoice: any, targetStage: string, userRole: string, budgetRegulations: any) => {
+  const validateBudgetCompliance = (invoice: Record<string, unknown>, targetStage: string, userRole: string, budgetRegulations: Record<string, unknown>) => {
     const errors: string[] = [];
     const warnings: string[] = [];
 
@@ -346,7 +346,7 @@ export const useFinancialCompliance = () => {
     };
   };
 
-  const validateCurrencyCompliance = (invoice: any, country: string) => {
+  const validateCurrencyCompliance = (invoice: Record<string, unknown>, country: string) => {
     const warnings: string[] = [];
     
     const localCurrencies = {
@@ -385,7 +385,7 @@ export const useFinancialCompliance = () => {
     return countryMap[locale as keyof typeof countryMap] || 'sweden';
   };
 
-  const getCountryFromVATReg = (vatRegulations: any): string => {
+  const getCountryFromVATReg = (vatRegulations: Record<string, unknown>): string => {
     // Reverse lookup - in real implementation would be more sophisticated
     return 'sweden'; // Default för now
   };
@@ -414,7 +414,7 @@ export const useFinancialCompliance = () => {
     return amount;
   };
 
-  const getRequiredApprovalRole = (amount: number, approvalLevels: any): string => {
+  const getRequiredApprovalRole = (amount: number, approvalLevels: Record<string, unknown>): string => {
     const sortedLevels = Object.keys(approvalLevels)
       .map(Number)
       .sort((a, b) => b - a); // Descending order
@@ -443,7 +443,7 @@ export const useFinancialCompliance = () => {
     return userLevel >= requiredLevel;
   };
 
-  const getCurrentFiscalYear = (fiscalYear: any) => {
+  const getCurrentFiscalYear = (fiscalYear: Record<string, unknown>) => {
     const currentYear = new Date().getFullYear();
     return {
       start: new Date(`${currentYear}-${fiscalYear.start}`),
@@ -451,12 +451,12 @@ export const useFinancialCompliance = () => {
     };
   };
 
-  const isWithinFiscalYear = (date: Date, fiscalYear: any): boolean => {
+  const isWithinFiscalYear = (date: Date, fiscalYear: Record<string, unknown>): boolean => {
     return date >= fiscalYear.start && date <= fiscalYear.end;
   };
 
   const generateApprovalNotes = (context: {
-    invoice: any;
+    invoice: Record<string, unknown>;
     targetStage: string;
     country: string;
     locale: string;

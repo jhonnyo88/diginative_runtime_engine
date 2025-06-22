@@ -95,7 +95,7 @@ describe('Q3 European Compliance Automation - Phase 3 Implementation', () => {
   let gdprValidator: GDPRMultiWorldValidator;
   let culturalValidator: CulturalAdaptationValidator;
   let crossBorderValidator: CrossBorderComplianceValidator;
-  let testUsers: any;
+  let testUsers: Record<string, unknown>;
 
   beforeEach(async () => {
     // Initialize Q3 European compliance testing infrastructure
@@ -153,7 +153,7 @@ describe('Q3 European Compliance Automation - Phase 3 Implementation', () => {
         expect(dataMinimizationTest.dataCategories.socialConnections).toBe(false); // Not collected
 
         // Validate data necessity justification
-        dataMinimizationTest.collectedData.forEach((dataPoint: any) => {
+        dataMinimizationTest.collectedData.forEach((dataPoint: Record<string, unknown>) => {
           expect(dataPoint.necessity.justified).toBe(true);
           expect(dataPoint.purpose.defined).toBe(true);
           expect(dataPoint.legalBasis.valid).toBe(true);
@@ -306,7 +306,7 @@ describe('Q3 European Compliance Automation - Phase 3 Implementation', () => {
       });
 
       // Validate lagom (balanced) approach
-      swedishCulturalTest.worldAdaptations.forEach((world: any) => {
+      swedishCulturalTest.worldAdaptations.forEach((world: Record<string, unknown>) => {
         expect(world.lagomApproach.balanced).toBe(true);
         expect(world.lagomApproach.notExcessive).toBe(true);
         expect(world.lagomApproach.culturallyAppropriate).toBe(true);
@@ -458,7 +458,7 @@ describe('Q3 European Compliance Automation - Phase 3 Implementation', () => {
       });
 
       // Validate switching performance
-      culturalSwitchingTest.switchingScenarios.forEach((scenario: any) => {
+      culturalSwitchingTest.switchingScenarios.forEach((scenario: Record<string, unknown>) => {
         expect(scenario.switchingTime).toBeLessThan(Q3_EUROPEAN_COMPLIANCE_SPECS.gdpr.crossBorderTransfer === 'schrems-ii-compliant' ? 300 : 500); // <300ms för compliant systems
         expect(scenario.terminologyUpdate.complete).toBe(true);
         expect(scenario.visualAdaptation.updated).toBe(true);
@@ -527,7 +527,7 @@ describe('Q3 European Compliance Automation - Phase 3 Implementation', () => {
       });
 
       // Validate cooperation compliance
-      cooperationComplianceTest.cooperationScenarios.forEach((scenario: any) => {
+      cooperationComplianceTest.cooperationScenarios.forEach((scenario: Record<string, unknown>) => {
         expect(scenario.legalFramework.valid).toBe(true);
         expect(scenario.dataSharing.gdprCompliant).toBe(true);
         expect(scenario.sovereignty.respected).toBe(true);
@@ -616,7 +616,7 @@ describe('Q3 European Compliance Automation - Phase 3 Implementation', () => {
         checkEscalation: true
       });
 
-      alertSystem.alertTests.forEach((alert: any) => {
+      alertSystem.alertTests.forEach((alert: Record<string, unknown>) => {
         expect(alert.detectionTime).toBeLessThan(60); // seconds
         expect(alert.notification.sent).toBe(true);
         expect(alert.automatedResponse.triggered).toBe(true);
@@ -636,7 +636,7 @@ describe('Q3 European Compliance Automation - Phase 3 Implementation', () => {
       });
 
       // Validate report generation
-      regulatoryReporting.reports.forEach((report: any) => {
+      regulatoryReporting.reports.forEach((report: Record<string, unknown>) => {
         expect(report.format.standardized).toBe(true);
         expect(report.content.comprehensive).toBe(true);
         expect(report.evidence.included).toBe(true);
@@ -697,7 +697,7 @@ describe('Q3 European Compliance Automation - Phase 3 Implementation', () => {
       });
 
       expect(optimizationRecommendations.recommendations.length).toBeGreaterThan(0);
-      optimizationRecommendations.recommendations.forEach((recommendation: any) => {
+      optimizationRecommendations.recommendations.forEach((recommendation: Record<string, unknown>) => {
         expect(recommendation.impact.assessed).toBe(true);
         expect(recommendation.feasibility.validated).toBe(true);
         expect(recommendation.costBenefit.analyzed).toBe(true);
@@ -712,7 +712,7 @@ describe('Q3 European Compliance Automation - Phase 3 Implementation', () => {
  * Supporting utilities för comprehensive European compliance testing
  */
 export class Q3EuropeanComplianceUtilities {
-  static async generateComplianceReport(): Promise<any> {
+  static async generateComplianceReport(): Promise<Record<string, unknown>> {
     // Generate comprehensive Q3 European compliance report
     return {
       complianceSpecifications: Q3_EUROPEAN_COMPLIANCE_SPECS,
@@ -724,27 +724,27 @@ export class Q3EuropeanComplianceUtilities {
     };
   }
 
-  private static async assessGDPRCompliance(): Promise<any> {
+  private static async assessGDPRCompliance(): Promise<Record<string, unknown>> {
     // Assess GDPR compliance across multi-world system
     return {}; // Implementation pending
   }
 
-  private static async assessCulturalAdaptation(): Promise<any> {
+  private static async assessCulturalAdaptation(): Promise<Record<string, unknown>> {
     // Assess cultural adaptation across European markets
     return {}; // Implementation pending
   }
 
-  private static async assessMunicipalStandards(): Promise<any> {
+  private static async assessMunicipalStandards(): Promise<Record<string, unknown>> {
     // Assess municipal standards compliance
     return {}; // Implementation pending
   }
 
-  private static async assessCrossBorderCompliance(): Promise<any> {
+  private static async assessCrossBorderCompliance(): Promise<Record<string, unknown>> {
     // Assess cross-border compliance requirements
     return {}; // Implementation pending
   }
 
-  private static async assessAutomatedMonitoring(): Promise<any> {
+  private static async assessAutomatedMonitoring(): Promise<Record<string, unknown>> {
     // Assess automated monitoring effectiveness
     return {}; // Implementation pending
   }

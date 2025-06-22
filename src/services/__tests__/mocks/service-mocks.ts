@@ -12,11 +12,11 @@ import { vi } from 'vitest';
 export interface MockService {
   reset(): void;
   getCallCount(): number;
-  getLastCall(): any;
+  getLastCall(): Record<string, unknown>;
 }
 
 export interface MockServiceConfig {
-  defaultReturnValue?: any;
+  defaultReturnValue?: Record<string, unknown>;
   throwOnCall?: boolean;
   errorMessage?: string;
   asyncDelay?: number;
@@ -27,7 +27,7 @@ export interface MockServiceConfig {
  * Provides common functionality for all service mocks
  */
 export class BaseMockService implements MockService {
-  protected calls: any[] = [];
+  protected calls: Record<string, unknown>[] = [];
   protected config: MockServiceConfig;
   
   constructor(config: MockServiceConfig = {}) {
@@ -42,15 +42,15 @@ export class BaseMockService implements MockService {
     return this.calls.length;
   }
   
-  getLastCall(): any {
+  getLastCall(): Record<string, unknown> {
     return this.calls[this.calls.length - 1];
   }
   
-  protected recordCall(method: string, args: any[]): void {
+  protected recordCall(method: string, args: Record<string, unknown>[]): void {
     this.calls.push({ method, args, timestamp: Date.now() });
   }
   
-  protected async handleCall(method: string, args: any[]): Promise<any> {
+  protected async handleCall(method: string, args: Record<string, unknown>[]): Promise<Record<string, unknown>> {
     this.recordCall(method, args);
     
     if (this.config.throwOnCall) {
@@ -69,7 +69,7 @@ export class BaseMockService implements MockService {
  * Enterprise SSO Mock
  */
 export class MockEnterpriseSSO extends BaseMockService {
-  authenticateUser = vi.fn(async (tenantId: string, authMethod: string, authData: any) => {
+  authenticateUser = vi.fn(async (tenantId: string, authMethod: string, authData: Record<string, unknown>) => {
     return this.handleCall('authenticateUser', [tenantId, authMethod, authData]) || {
       id: `${tenantId}:mock-user`,
       email: 'mock@user.com',
@@ -107,11 +107,11 @@ export class MockInfrastructureMonitoring extends BaseMockService {
     return this.instance;
   }
   
-  recordMetric = vi.fn((metric: any) => {
+  recordMetric = vi.fn((metric: Record<string, unknown>) => {
     this.recordCall('recordMetric', [metric]);
   });
   
-  reportError = vi.fn((error: Error, context?: any) => {
+  reportError = vi.fn((error: Error, context?: Record<string, unknown>) => {
     this.recordCall('reportError', [error, context]);
   });
   
@@ -141,14 +141,14 @@ export class MockInfrastructureMonitoring extends BaseMockService {
  * GDPR Compliance Framework Mock
  */
 export class MockGDPRComplianceFramework extends BaseMockService {
-  checkCompliance = vi.fn(async (data: any) => {
+  checkCompliance = vi.fn(async (data: Record<string, unknown>) => {
     return this.handleCall('checkCompliance', [data]) || {
       compliant: true,
       issues: []
     };
   });
   
-  anonymizeData = vi.fn((data: any) => {
+  anonymizeData = vi.fn((data: Record<string, unknown>) => {
     return this.handleCall('anonymizeData', [data]) || {
       ...data,
       personalData: '[REDACTED]'
@@ -168,7 +168,7 @@ export class MockGDPRComplianceFramework extends BaseMockService {
  * Error Monitoring Mock
  */
 export class MockErrorMonitoring extends BaseMockService {
-  captureException = vi.fn((error: Error, context?: any) => {
+  captureException = vi.fn((error: Error, context?: Record<string, unknown>) => {
     this.recordCall('captureException', [error, context]);
     return { eventId: 'mock-event-id' };
   });
@@ -178,11 +178,11 @@ export class MockErrorMonitoring extends BaseMockService {
     return { eventId: 'mock-event-id' };
   });
   
-  setUser = vi.fn((user: any) => {
+  setUser = vi.fn((user: Record<string, unknown>) => {
     this.recordCall('setUser', [user]);
   });
   
-  setContext = vi.fn((key: string, context: any) => {
+  setContext = vi.fn((key: string, context: Record<string, unknown>) => {
     this.recordCall('setContext', [key, context]);
   });
 }
@@ -191,7 +191,7 @@ export class MockErrorMonitoring extends BaseMockService {
  * Performance Analytics Mock
  */
 export class MockPerformanceAnalytics extends BaseMockService {
-  trackMetric = vi.fn((name: string, value: number, tags?: any) => {
+  trackMetric = vi.fn((name: string, value: number, tags?: Record<string, unknown>) => {
     this.recordCall('trackMetric', [name, value, tags]);
   });
   
@@ -219,7 +219,7 @@ export class MockPerformanceAnalytics extends BaseMockService {
  * Municipal Integration APIs Mock
  */
 export class MockMunicipalIntegrationAPIs extends BaseMockService {
-  validateMunicipalConfig = vi.fn(async (config: any) => {
+  validateMunicipalConfig = vi.fn(async (config: Record<string, unknown>) => {
     return this.handleCall('validateMunicipalConfig', [config]) || {
       valid: true,
       errors: []
@@ -233,7 +233,7 @@ export class MockMunicipalIntegrationAPIs extends BaseMockService {
     };
   });
   
-  syncWithMunicipalSystem = vi.fn(async (tenantId: string, data: any) => {
+  syncWithMunicipalSystem = vi.fn(async (tenantId: string, data: Record<string, unknown>) => {
     return this.handleCall('syncWithMunicipalSystem', [tenantId, data]) || {
       synced: true,
       timestamp: new Date().toISOString()
@@ -287,7 +287,7 @@ export class ServiceMockFactory {
  * Provides pre-configured mocks for common test scenarios
  */
 export class MockProvider {
-  static getAuthenticatedUserMock(overrides?: Partial<any>) {
+  static getAuthenticatedUserMock(overrides?: Partial<Record<string, unknown>>) {
     return {
       id: 'malmo_stad:anna.svensson',
       email: 'anna.svensson@malmo.se',
@@ -305,7 +305,7 @@ export class MockProvider {
     };
   }
   
-  static getTenantConfigMock(tenantId: string, overrides?: Partial<any>) {
+  static getTenantConfigMock(tenantId: string, overrides?: Partial<Record<string, unknown>>) {
     const configs: Record<string, any> = {
       malmo_stad: {
         name: 'Malmö Stad',

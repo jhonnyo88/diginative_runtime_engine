@@ -121,8 +121,8 @@ const MUNICIPAL_ACHIEVEMENT_SCENARIOS = {
 };
 
 describe('Achievement System + Municipal Compliance Integration Testing', () => {
-  let achievementComplianceHarness: any;
-  let municipalVerificationSystem: any;
+  let achievementComplianceHarness: Record<string, unknown>;
+  let municipalVerificationSystem: Record<string, unknown>;
 
   beforeEach(() => {
     vi.clearAllMocks();

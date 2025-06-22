@@ -43,7 +43,7 @@ const MUNICIPAL_DRAG_DROP_SCENARIOS = {
 };
 
 describe('Drag & Drop Test Utilities', () => {
-  let dragDropHarness: any;
+  let dragDropHarness: Record<string, unknown>;
   
   beforeEach(() => {
     vi.clearAllMocks();
@@ -360,7 +360,7 @@ function createDragDropTestHarness() {
   };
 }
 
-function createTouchDragHarness(config: any) {
+function createTouchDragHarness(config: Record<string, unknown>) {
   return {
     touchDrag: vi.fn().mockResolvedValue({ success: true }),
     getPerformanceMetrics: vi.fn().mockReturnValue({
@@ -380,7 +380,7 @@ function createAccessibilityDragHarness() {
   };
 }
 
-function createWorkflowTestHarness(config: any) {
+function createWorkflowTestHarness(config: Record<string, unknown>) {
   return {
     dragProcessStep: vi.fn().mockResolvedValue({ success: true }),
     validateWorkflowCompliance: vi.fn().mockReturnValue({
@@ -396,7 +396,7 @@ function createWorkflowTestHarness(config: any) {
   };
 }
 
-function createDragDropPerformanceHarness(config: any) {
+function createDragDropPerformanceHarness(config: Record<string, unknown>) {
   return {
     measureDragDropPerformance: vi.fn().mockResolvedValue({
       dragInitiation: 85,
@@ -407,7 +407,7 @@ function createDragDropPerformanceHarness(config: any) {
   };
 }
 
-function createEmergencyDragDropHarness(config: any) {
+function createEmergencyDragDropHarness(config: Record<string, unknown>) {
   return {
     deployResource: vi.fn().mockResolvedValue({
       deployed: true,
@@ -423,7 +423,7 @@ function createEmergencyDragDropHarness(config: any) {
   };
 }
 
-function createMultiTouchDragHarness(config: any) {
+function createMultiTouchDragHarness(config: Record<string, unknown>) {
   return {
     simultaneousDeployment: vi.fn().mockResolvedValue({
       deployments: [
@@ -464,7 +464,7 @@ function createGDPRDragDropHarness() {
 }
 
 // Mock components for testing
-function MunicipalDocumentRoutingWorkflow({ testId, municipality, locale }: any) {
+function MunicipalDocumentRoutingWorkflow({ testId, municipality, locale }: Record<string, unknown>) {
   return (
     <div data-testid={testId}>
       <div data-testid="document-gdpr-training-001" draggable className="municipal-document">

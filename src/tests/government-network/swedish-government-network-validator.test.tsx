@@ -14,11 +14,11 @@ import { describe, test, expect, beforeEach, afterEach } from 'vitest';
 
 // Mock implementation for testing
 class SwedishGovernmentNetworkValidator {
-  private networkSpecs: any;
+  private networkSpecs: Record<string, unknown>;
   private validationActive: boolean = false;
-  private validationResults: Map<string, any[]> = new Map();
+  private validationResults: Map<string, Record<string, unknown>[]> = new Map();
 
-  constructor(specs?: any) {
+  constructor(specs?: Record<string, unknown>) {
     this.networkSpecs = specs || {
       networks: {
         riksdag: {
@@ -129,7 +129,7 @@ class SwedishGovernmentNetworkValidator {
     this.validationResults.set('performance_validation', []);
   }
 
-  async executeComprehensiveNetworkValidation(): Promise<Map<string, any[]>> {
+  async executeComprehensiveNetworkValidation(): Promise<Map<string, Record<string, unknown>[]>> {
     if (!this.validationActive) {
       throw new Error('Network validation not initialized');
     }
@@ -146,7 +146,7 @@ class SwedishGovernmentNetworkValidator {
     return this.validationResults;
   }
 
-  private async validateGovernmentNetwork(networkName: string, spec: any): Promise<any[]> {
+  private async validateGovernmentNetwork(networkName: string, spec: Record<string, unknown>): Promise<Record<string, unknown>[]> {
     const results = [];
 
     // Performance validation
@@ -283,7 +283,7 @@ class SwedishGovernmentNetworkValidator {
     this.validationResults.set('performance_validation', [performanceSummary]);
   }
 
-  getNetworkValidationSummary(): any {
+  getNetworkValidationSummary(): Record<string, unknown> {
     const summary = this.validationResults.get('validation_summary')?.[0];
     const networks = Object.keys(this.networkSpecs.networks);
     

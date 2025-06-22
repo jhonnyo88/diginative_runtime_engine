@@ -9,7 +9,7 @@
 import { useCallback } from 'react';
 
 interface ComplianceValidationRequest {
-  permit?: any;
+  permit?: Record<string, unknown>;
   targetStage: string;
   municipality: string;
   locale: string;
@@ -226,7 +226,7 @@ export const useMunicipalCompliance = () => {
     return { valid: true };
   };
 
-  const validateCulturalCompliance = (permit: any, regulations: any, locale: string) => {
+  const validateCulturalCompliance = (permit: Record<string, unknown>, regulations: Record<string, unknown>, locale: string) => {
     const warnings: string[] = [];
     
     // Check cultural considerations based on locale
@@ -254,7 +254,7 @@ export const useMunicipalCompliance = () => {
     };
   };
 
-  const validateGDPRCompliance = (permit: any, regulations: any) => {
+  const validateGDPRCompliance = (permit: Record<string, unknown>, regulations: Record<string, unknown>) => {
     const errors: string[] = [];
     
     if (!regulations.dataProtection.gdprCompliance) {
@@ -284,7 +284,7 @@ export const useMunicipalCompliance = () => {
     };
   };
 
-  const validateAccessibilityCompliance = (permit: any) => {
+  const validateAccessibilityCompliance = (permit: Record<string, unknown>) => {
     const warnings: string[] = [];
     
     // Check if digital content meets WCAG 2.1 AA
@@ -325,7 +325,7 @@ export const useMunicipalCompliance = () => {
   };
 
   const generateReviewNotes = (context: {
-    permit: any;
+    permit: Record<string, unknown>;
     targetStage: string;
     country: string;
     locale: string;

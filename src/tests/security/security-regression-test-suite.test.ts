@@ -134,8 +134,8 @@ const MUNICIPAL_SECURITY_STANDARDS = {
 };
 
 describe('Security Regression Test Suite', () => {
-  let securityRegressionHarness: any;
-  let baselineValidator: any;
+  let securityRegressionHarness: Record<string, unknown>;
+  let baselineValidator: Record<string, unknown>;
 
   beforeEach(() => {
     vi.clearAllMocks();

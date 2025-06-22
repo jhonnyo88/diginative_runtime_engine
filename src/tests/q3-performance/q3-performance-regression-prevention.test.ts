@@ -72,7 +72,7 @@ describe('Q3 Performance Regression Prevention - Phase 2 Implementation', () => 
   let regressionDetector: Q3RegressionDetector;
   let memoryOptimizer: Q3MemoryOptimizer;
   let loadBalancer: Q3LoadBalancer;
-  let testUser: any;
+  let testUser: Record<string, unknown>;
   let testUserCode: string;
 
   beforeEach(async () => {
@@ -217,7 +217,7 @@ describe('Q3 Performance Regression Prevention - Phase 2 Implementation', () => 
         { stage: 'full-system', action: 'complete Q3 system loaded' }
       ];
       
-      const memoryProgression: any[] = [];
+      const memoryProgression: Record<string, unknown>[] = [];
       
       for (const stage of memoryStages) {
         let currentMemory: number;
@@ -289,7 +289,7 @@ describe('Q3 Performance Regression Prevention - Phase 2 Implementation', () => 
       });
       
       // Test synchronization performance to multiple devices
-      const syncResults: any[] = [];
+      const syncResults: Record<string, unknown>[] = [];
       
       for (let i = 1; i < devices.length; i++) {
         const syncStart = performance.now();
@@ -607,7 +607,7 @@ describe('Q3 Performance Regression Prevention - Phase 2 Implementation', () => 
       expect(memoryAllocationTest.systemOverhead.allocated).toBeLessThanOrEqual(Q3_PERFORMANCE_TARGETS.memory.systemOverhead);
       
       // Validate total allocation
-      const totalAllocated = Object.values(memoryAllocationTest).reduce((sum: number, allocation: any) => 
+      const totalAllocated = Object.values(memoryAllocationTest).reduce((sum: number, allocation: Record<string, unknown>) => 
         sum + allocation.allocated, 0);
       expect(totalAllocated).toBeLessThanOrEqual(Q3_PERFORMANCE_TARGETS.enhanced.memoryTotal);
       
@@ -683,7 +683,7 @@ describe('Q3 Performance Regression Prevention - Phase 2 Implementation', () => 
  * Supporting utilities för comprehensive Q3 performance testing and monitoring
  */
 export class Q3PerformanceUtilities {
-  static async generatePerformanceReport(): Promise<any> {
+  static async generatePerformanceReport(): Promise<Record<string, unknown>> {
     // Generate comprehensive Q3 performance report
     return {
       performanceTargets: Q3_PERFORMANCE_TARGETS,
@@ -695,27 +695,27 @@ export class Q3PerformanceUtilities {
     };
   }
 
-  private static async measureCurrentPerformance(): Promise<any> {
+  private static async measureCurrentPerformance(): Promise<Record<string, unknown>> {
     // Measure current Q3 system performance
     return {}; // Implementation pending
   }
 
-  private static async analyzePerformanceRegression(): Promise<any> {
+  private static async analyzePerformanceRegression(): Promise<Record<string, unknown>> {
     // Analyze performance regression trends
     return {}; // Implementation pending
   }
 
-  private static async generateOptimizationRecommendations(): Promise<any> {
+  private static async generateOptimizationRecommendations(): Promise<Record<string, unknown>> {
     // Generate performance optimization recommendations
     return {}; // Implementation pending
   }
 
-  private static async validateMunicipalNetworkCompatibility(): Promise<any> {
+  private static async validateMunicipalNetworkCompatibility(): Promise<Record<string, unknown>> {
     // Validate compatibility with municipal networks
     return {}; // Implementation pending
   }
 
-  private static async validateAnnaSvenssonCompliance(): Promise<any> {
+  private static async validateAnnaSvenssonCompliance(): Promise<Record<string, unknown>> {
     // Validate Anna Svensson iPhone 12 compliance
     return {}; // Implementation pending
   }

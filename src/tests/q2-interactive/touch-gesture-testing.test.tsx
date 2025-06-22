@@ -85,8 +85,8 @@ const IPHONE_12_SPECS = {
 };
 
 describe('Touch Gesture Testing Framework', () => {
-  let touchHarness: any;
-  let gestureRecognizer: any;
+  let touchHarness: Record<string, unknown>;
+  let gestureRecognizer: Record<string, unknown>;
 
   beforeEach(() => {
     vi.clearAllMocks();
@@ -470,7 +470,7 @@ describe('Touch Gesture Testing Framework', () => {
 });
 
 // Test harness factory functions
-function createTouchGestureHarness(deviceSpecs: any) {
+function createTouchGestureHarness(deviceSpecs: Record<string, unknown>) {
   return {
     simulateSingleTap: vi.fn().mockResolvedValue({
       responseTime: 45,
@@ -523,7 +523,7 @@ function createGestureRecognizer() {
   };
 }
 
-function createAccessibilityGestureHarness(config: any) {
+function createAccessibilityGestureHarness(config: Record<string, unknown>) {
   return {
     testAdaptiveGesture: vi.fn().mockResolvedValue({
       gestureRecognized: true,
@@ -538,7 +538,7 @@ function createAccessibilityGestureHarness(config: any) {
   };
 }
 
-function createTouchPerformanceHarness(config: any) {
+function createTouchPerformanceHarness(config: Record<string, unknown>) {
   return {
     measureGesturePerformance: vi.fn().mockResolvedValue({
       cpuUsage: 0.25,
@@ -554,7 +554,7 @@ function createTouchPerformanceHarness(config: any) {
   };
 }
 
-function createNetworkGestureHarness(config: any) {
+function createNetworkGestureHarness(config: Record<string, unknown>) {
   return {
     testGesturesUnderNetworkStress: vi.fn().mockResolvedValue({
       gestureResponseTime: 85,
@@ -569,7 +569,7 @@ function createNetworkGestureHarness(config: any) {
   };
 }
 
-function createCulturalGestureHarness(config: any) {
+function createCulturalGestureHarness(config: Record<string, unknown>) {
   return {
     validateGestureCulturalAppropriateness: vi.fn().mockResolvedValue({
       culturallyAppropriate: true,
@@ -587,7 +587,7 @@ function createCulturalGestureHarness(config: any) {
   };
 }
 
-function createMultiTouchHarness(config: any) {
+function createMultiTouchHarness(config: Record<string, unknown>) {
   return {
     simulateEmergencyCoordination: vi.fn().mockResolvedValue({
       allGesturesRecognized: true,
@@ -603,7 +603,7 @@ function createMultiTouchHarness(config: any) {
 }
 
 // Mock components for testing
-function MunicipalDocumentInterface({ userPersona, device, municipality }: any) {
+function MunicipalDocumentInterface({ userPersona, device, municipality }: Record<string, unknown>) {
   return (
     <div data-testid="municipal-document-interface">
       <div data-testid="municipal-document-001" className="document">
@@ -615,7 +615,7 @@ function MunicipalDocumentInterface({ userPersona, device, municipality }: any) 
   );
 }
 
-function EmergencyActionInterface({ scenario, municipality, optimizeFor }: any) {
+function EmergencyActionInterface({ scenario, municipality, optimizeFor }: Record<string, unknown>) {
   return (
     <div data-testid="emergency-action-interface">
       <button data-testid="emergency-action-button">Emergency Action</button>
@@ -624,7 +624,7 @@ function EmergencyActionInterface({ scenario, municipality, optimizeFor }: any) 
   );
 }
 
-function MunicipalWorkflowInterface({ step, accessibility, municipality }: any) {
+function MunicipalWorkflowInterface({ step, accessibility, municipality }: Record<string, unknown>) {
   return (
     <div data-testid="municipal-workflow-interface">
       <div data-testid="workflow-step-approval">Approval Step</div>
@@ -636,7 +636,7 @@ function MunicipalWorkflowInterface({ step, accessibility, municipality }: any) 
   );
 }
 
-function MunicipalDocumentViewer({ document, municipality, zoomEnabled }: any) {
+function MunicipalDocumentViewer({ document, municipality, zoomEnabled }: Record<string, unknown>) {
   return (
     <div data-testid="municipal-document-viewer">
       <div data-testid="document-viewer">Document Content</div>
@@ -645,7 +645,7 @@ function MunicipalDocumentViewer({ document, municipality, zoomEnabled }: any) {
   );
 }
 
-function MunicipalWorkflowStepper({ totalSteps, currentStep, municipality, navigationMode }: any) {
+function MunicipalWorkflowStepper({ totalSteps, currentStep, municipality, navigationMode }: Record<string, unknown>) {
   return (
     <div data-testid="municipal-workflow-stepper">
       <div data-testid="workflow-container">
@@ -656,7 +656,7 @@ function MunicipalWorkflowStepper({ totalSteps, currentStep, municipality, navig
   );
 }
 
-function AccessibleMunicipalContent({ contentLength, accessibilityMode, municipality }: any) {
+function AccessibleMunicipalContent({ contentLength, accessibilityMode, municipality }: Record<string, unknown>) {
   return (
     <div data-testid="accessible-municipal-content">
       <div data-testid="accessible-content">Long content...</div>
@@ -665,7 +665,7 @@ function AccessibleMunicipalContent({ contentLength, accessibilityMode, municipa
   );
 }
 
-function AdaptiveGestureInterface({ adaptations, municipality }: any) {
+function AdaptiveGestureInterface({ adaptations, municipality }: Record<string, unknown>) {
   return (
     <div data-testid="adaptive-gesture-interface">
       <button data-testid="adaptive-gesture-button">Adaptive Button</button>
@@ -673,7 +673,7 @@ function AdaptiveGestureInterface({ adaptations, municipality }: any) {
   );
 }
 
-function EmergencyCoordinationInterface({ resources, municipality, multiTouchEnabled }: any) {
+function EmergencyCoordinationInterface({ resources, municipality, multiTouchEnabled }: Record<string, unknown>) {
   return (
     <div data-testid="emergency-coordination-interface">
       {resources.map((resource: string) => (

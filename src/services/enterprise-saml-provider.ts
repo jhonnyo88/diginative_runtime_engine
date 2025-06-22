@@ -352,7 +352,7 @@ class EnterpriseSAMLProvider {
     return samlInstance.generateServiceProviderMetadata(tenant.samlConfig.cert, tenant.samlConfig.cert);
   }
 
-  private extractAttribute(attributes: any, ...keys: string[]): string | undefined {
+  private extractAttribute(attributes: Record<string, unknown>, ...keys: string[]): string | undefined {
     if (!attributes) return undefined;
     
     for (const key of keys) {
@@ -365,7 +365,7 @@ class EnterpriseSAMLProvider {
     return undefined;
   }
 
-  private extractRoles(attributes: any, tenant: MunicipalTenant): string[] {
+  private extractRoles(attributes: Record<string, unknown>, tenant: MunicipalTenant): string[] {
     const roles: string[] = [];
     
     // Extract roles from SAML attributes

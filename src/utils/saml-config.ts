@@ -491,7 +491,7 @@ function getDefaultSecondaryColor(country: string): string {
 export async function testSAMLConnection(config: SAMLConfiguration): Promise<{
   success: boolean;
   error?: string;
-  metadata?: any;
+  metadata?: Record<string, unknown>;
 }> {
   try {
     // Test IdP metadata endpoint

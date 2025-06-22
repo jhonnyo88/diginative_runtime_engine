@@ -394,9 +394,9 @@ describe('Performance Tests - 10,000+ Concurrent Users', () => {
   describe('Network Performance', () => {
     it('should handle offline scenarios gracefully', async () => {
       let isOnline = true;
-      const offlineQueue: any[] = [];
+      const offlineQueue: Record<string, unknown>[] = [];
 
-      const sendAnalytics = (data: any): Promise<boolean> => {
+      const sendAnalytics = (data: Record<string, unknown>): Promise<boolean> => {
         return new Promise((resolve) => {
           if (isOnline) {
             setTimeout(() => resolve(true), 10);
@@ -437,13 +437,13 @@ describe('Performance Tests - 10,000+ Concurrent Users', () => {
     });
 
     it('should batch API requests efficiently', async () => {
-      const requests: any[] = [];
+      const requests: Record<string, unknown>[] = [];
       let batchedRequests = 0;
 
       const batchSize = 10;
       const batchDelay = 100; // ms
 
-      const addRequest = (data: any) => {
+      const addRequest = (data: Record<string, unknown>) => {
         requests.push(data);
         
         if (requests.length >= batchSize) {
@@ -527,7 +527,7 @@ describe('Performance Tests - 10,000+ Concurrent Users', () => {
       const startTime = performance.now();
       
       // Simulate theme switching
-      const applyTheme = (theme: any) => {
+      const applyTheme = (theme: Record<string, unknown>) => {
         Object.keys(theme).forEach(key => {
           document.documentElement.style.setProperty(`--${key}`, theme[key]);
         });

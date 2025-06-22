@@ -4,7 +4,7 @@
  */
 
 export interface GameContentWithPlayerName {
-  [key: string]: any;
+  [key: string]: Record<string, unknown>;
 }
 
 /**
@@ -50,7 +50,7 @@ export const replacePlayerNameInObject = <T extends GameContentWithPlayerName>(
  * Process dialogue scene data to replace player name placeholders
  */
 export const processDialogueSceneWithPlayerName = (
-  sceneData: any,
+  sceneData: Record<string, unknown>,
   playerName: string
 ) => {
   if (!playerName) return sceneData;
@@ -62,7 +62,7 @@ export const processDialogueSceneWithPlayerName = (
  * Process quiz scene data to replace player name placeholders
  */
 export const processQuizSceneWithPlayerName = (
-  sceneData: any,
+  sceneData: Record<string, unknown>,
   playerName: string
 ) => {
   if (!playerName) return sceneData;
@@ -74,7 +74,7 @@ export const processQuizSceneWithPlayerName = (
  * Process entire game manifest to replace player name placeholders
  */
 export const processGameManifestWithPlayerName = (
-  gameManifest: any,
+  gameManifest: Record<string, unknown>,
   playerName: string
 ) => {
   if (!playerName) return gameManifest;

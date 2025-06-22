@@ -187,7 +187,7 @@ export const useAnimations = () => {
 };
 
 // Utility hook for staggered animations
-export const useStaggeredAnimation = (items: any[], delayBetween = 100) => {
+export const useStaggeredAnimation = (items: Record<string, unknown>[], delayBetween = 100) => {
   const { prefersReducedMotion } = useAnimations();
   
   const getStaggeredVariants = () => {

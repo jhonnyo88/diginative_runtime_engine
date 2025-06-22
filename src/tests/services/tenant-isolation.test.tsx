@@ -382,7 +382,7 @@ describe('Municipal Tenant Isolation', () => {
         return this.validateTenantAccess(requestMunicipalityId, resourceMunicipalityId, userId, action);
       }
       
-      testValidateQuery(query: string, params: any[], expectedMunicipalityId: string) {
+      testValidateQuery(query: string, params: Record<string, unknown>[], expectedMunicipalityId: string) {
         return this.validateQueryTenantFilter(query, params, expectedMunicipalityId);
       }
     }

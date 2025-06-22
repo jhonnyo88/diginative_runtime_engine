@@ -219,7 +219,7 @@ export class MunicipalAchievementEngine {
     }
   }
 
-  private emit(event: string, data: any): void {
+  private emit(event: string, data: Record<string, unknown>): void {
     if (this.listeners[event]) {
       this.listeners[event].forEach(callback => callback(data));
     }
@@ -424,10 +424,10 @@ export class MunicipalAchievementEngine {
 
   // Municipal reporting and export
   public generateMunicipalReport(): {
-    participantInfo: any;
-    achievementSummary: any;
-    competencyDevelopment: any;
-    municipalValue: any;
+    participantInfo: Record<string, unknown>;
+    achievementSummary: Record<string, unknown>;
+    competencyDevelopment: Record<string, unknown>;
+    municipalValue: Record<string, unknown>;
     exportTimestamp: Date;
   } {
     return {

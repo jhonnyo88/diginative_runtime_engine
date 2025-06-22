@@ -660,7 +660,7 @@ export class SverigeDemoReliabilityAssurance extends EventEmitter {
     return ['Triple redundancy', 'Real-time monitoring', 'Automatic recovery', 'Contingency plans'];
   }
 
-  private assessDemoReadiness(health: any, performance: any, reliability: any, quality: any): boolean {
+  private assessDemoReadiness(health: Record<string, unknown>, performance: Record<string, unknown>, reliability: Record<string, unknown>, quality: Record<string, unknown>): boolean {
     // Comprehensive readiness assessment
     return (
       health.primarySystem === 'operational' &&
@@ -672,7 +672,7 @@ export class SverigeDemoReliabilityAssurance extends EventEmitter {
     );
   }
 
-  private async handleReliabilityFailure(error: any): Promise<void> {
+  private async handleReliabilityFailure(error: Record<string, unknown>): Promise<void> {
     console.error('🚨 Reliability check failure:', error);
     // Emergency reliability failure handling
   }

@@ -280,7 +280,7 @@ describe('Monitoring Infrastructure Performance Benchmarks', () => {
 });
 
 // Helper functions
-function generateMetrics(count: number): any[] {
+function generateMetrics(count: number): Record<string, unknown>[] {
   return Array.from({ length: count }, (_, i) => ({
     name: `metric.${i}`,
     value: Math.random() * 100,
@@ -289,22 +289,22 @@ function generateMetrics(count: number): any[] {
   }));
 }
 
-function formatMetric(metric: any): string {
+function formatMetric(metric: Record<string, unknown>): string {
   return `${metric.name}: ${metric.value.toFixed(2)}`;
 }
 
-function categorizeMetric(metric: any): string {
+function categorizeMetric(metric: Record<string, unknown>): string {
   if (metric.value > 80) return 'critical';
   if (metric.value > 60) return 'warning';
   return 'normal';
 }
 
-function calculateSeverity(metric: any): number {
+function calculateSeverity(metric: Record<string, unknown>): number {
   return Math.min(100, metric.value * 1.2);
 }
 
-function aggregateMetrics(metrics: any[]): any {
-  const aggregated: any = {};
+function aggregateMetrics(metrics: Record<string, unknown>[]): Record<string, unknown> {
+  const aggregated: Record<string, unknown> = {};
   
   metrics.forEach(metric => {
     if (!aggregated[metric.type]) {
@@ -321,25 +321,25 @@ function aggregateMetrics(metrics: any[]): any {
   return aggregated;
 }
 
-function calculateOptimalPayload(network: any): number {
+function calculateOptimalPayload(network: Record<string, unknown>): number {
   const targetLoadTime = 1500; // ms (leaving 500ms buffer)
   const bandwidthKBps = network.bandwidth / 8;
   const availableDownloadTime = targetLoadTime - network.latency - 100;
   return Math.floor(bandwidthKBps * (availableDownloadTime / 1000));
 }
 
-function updateMetric(metric: any): void {
+function updateMetric(metric: Record<string, unknown>): void {
   // Simulate metric update operation
   const cache = new Map();
   cache.set(metric.name, metric);
 }
 
-function batchUpdateMetrics(metrics: any[]): void {
+function batchUpdateMetrics(metrics: Record<string, unknown>[]): void {
   const cache = new Map();
   metrics.forEach(m => cache.set(m.name, m));
 }
 
-function processMetrics(metrics: any[]): void {
+function processMetrics(metrics: Record<string, unknown>[]): void {
   metrics.forEach(m => {
     formatMetric(m);
     categorizeMetric(m);
@@ -347,7 +347,7 @@ function processMetrics(metrics: any[]): void {
   });
 }
 
-function virtualizedRender(total: number, visible: number): any[] {
+function virtualizedRender(total: number, visible: number): Record<string, unknown>[] {
   // Simulate virtualized rendering - only render visible items
   const startIndex = 0;
   const endIndex = Math.min(visible, total);

@@ -46,7 +46,7 @@ export interface SecurityViolation {
 
 export interface ComplianceResult {
   success: boolean;
-  data?: any;
+  data?: Record<string, unknown>;
   deletedRecords?: number;
   deletedCacheKeys?: number;
   exportedRecords?: number;
@@ -293,7 +293,7 @@ export abstract class TenantAwareService {
    */
   protected validateQueryTenantFilter(
     query: string,
-    params: any[],
+    params: Record<string, unknown>[],
     expectedMunicipalityId: string
   ): void {
     const queryLower = query.toLowerCase();
@@ -364,7 +364,7 @@ export class TenantSecurityValidator {
    * Validate API response data doesn't contain cross-tenant information
    */
   async validateResponseData(
-    data: any,
+    data: Record<string, unknown>,
     requestMunicipalityId: string
   ): Promise<boolean> {
     if (Array.isArray(data)) {
@@ -615,7 +615,7 @@ export class GDPRComplianceTenantManager {
     municipalityId: string,
     subjectId?: string
   ): Promise<ComplianceResult> {
-    const exportData: any = {};
+    const exportData: Record<string, unknown> = {};
     let totalRecords = 0;
     
     // Export from cache

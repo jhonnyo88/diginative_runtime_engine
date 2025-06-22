@@ -21,7 +21,7 @@ export interface MunicipalUserContext {
   hubSessionId: string;
   uniqueCode: string;
   currentWorld: number;
-  workInProgress: any;
+  workInProgress: Record<string, unknown>;
   municipality: string;
   userRole: string;
   isFieldWorker: boolean;
@@ -47,10 +47,10 @@ export interface RecoveryResult {
 export interface MunicipalWorkState {
   sessionId: string;
   worldIndex: number;
-  scenarioProgress: any;
-  formData: any;
-  userInputs: any;
-  achievements: any;
+  scenarioProgress: Record<string, unknown>;
+  formData: Record<string, unknown>;
+  userInputs: Record<string, unknown>;
+  achievements: Record<string, unknown>;
   timestamp: number;
   checksum: string;
 }
@@ -93,7 +93,7 @@ export class AdvancedErrorRecovery {
    */
   async handleComponentError(
     error: Error,
-    errorInfo: any,
+    errorInfo: Record<string, unknown>,
     userContext: MunicipalUserContext
   ): Promise<RecoveryResult> {
     const errorContext = this.createErrorContext(error, errorInfo, userContext);
@@ -244,7 +244,7 @@ export class AdvancedErrorRecovery {
 
   private createErrorContext(
     error: Error,
-    errorInfo: any,
+    errorInfo: Record<string, unknown>,
     userContext: MunicipalUserContext
   ): ErrorContext {
     const errorId = this.generateErrorId();
@@ -500,7 +500,7 @@ export class AdvancedErrorRecovery {
            (now - workState.timestamp) < maxAge;
   }
 
-  private generateWorkStateChecksum(workData: any): string {
+  private generateWorkStateChecksum(workData: Record<string, unknown>): string {
     return btoa(JSON.stringify(workData)).substr(0, 16);
   }
 

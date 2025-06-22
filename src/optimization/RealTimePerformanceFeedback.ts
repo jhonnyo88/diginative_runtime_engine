@@ -176,7 +176,7 @@ export class RealTimePerformanceFeedback {
   getTransparencyReport(): {
     currentStatus: string;
     metrics: PerformanceMetrics;
-    targets: any;
+    targets: Record<string, unknown>;
     compliance: boolean;
     recommendations: string[];
   } {

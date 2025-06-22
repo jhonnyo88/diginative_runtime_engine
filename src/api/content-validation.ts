@@ -326,10 +326,10 @@ export async function validateBatch(
  * Real-time validation WebSocket handler
  * Provides instant feedback during content creation
  */
-export function setupRealtimeValidation(io: any): void {
+export function setupRealtimeValidation(io: Record<string, unknown>): void {
   const monitoring = InfrastructureMonitoring.getInstance();
   
-  io.on('connection', (socket: any) => {
+  io.on('connection', (socket: Record<string, unknown>) => {
     console.log('DevTeam editor connected for real-time validation');
     
     socket.on('validate', async (data: ValidationRequest) => {
@@ -409,7 +409,7 @@ export function validationHealthCheck(req: Request, res: Response): void {
 }
 
 // Export validation router setup
-export function setupValidationRoutes(router: any): void {
+export function setupValidationRoutes(router: Record<string, unknown>): void {
   router.post('/api/validate', validateContent);
   router.post('/api/validate/batch', validateBatch);
   router.get('/api/validate/health', validationHealthCheck);

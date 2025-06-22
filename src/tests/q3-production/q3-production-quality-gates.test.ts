@@ -169,7 +169,7 @@ describe('Q3 Production Quality Gates - European Municipal Deployment Excellence
       expect(functionalValidation.authenticationSystem.gdprCompliance.validated).toBe(true);
 
       // Validate European market functionality
-      functionalValidation.europeanMarkets.forEach((market: any) => {
+      functionalValidation.europeanMarkets.forEach((market: Record<string, unknown>) => {
         expect(market.culturalAdaptation.complete).toBe(true);
         expect(market.languageLocalization.accurate).toBe(true);
         expect(market.municipalCompliance.validated).toBe(true);
@@ -228,7 +228,7 @@ describe('Q3 Production Quality Gates - European Municipal Deployment Excellence
       });
 
       // Validate role-specific functionality
-      municipalValidation.roleValidation.forEach((role: any) => {
+      municipalValidation.roleValidation.forEach((role: Record<string, unknown>) => {
         expect(role.accessControls.appropriate).toBe(true);
         expect(role.dashboard.functional).toBe(true);
         expect(role.reportingCapabilities.available).toBe(true);
@@ -281,7 +281,7 @@ describe('Q3 Production Quality Gates - European Municipal Deployment Excellence
       expect(loadTesting.concurrentUserHandling.resourceUtilization.efficient).toBe(true);
 
       // Validate European market performance
-      loadTesting.marketPerformance.forEach((market: any) => {
+      loadTesting.marketPerformance.forEach((market: Record<string, unknown>) => {
         expect(market.performanceTargets.met).toBe(true);
         expect(market.networkOptimization.effective).toBe(true);
         expect(market.culturalAdaptation.performant).toBe(true);
@@ -330,7 +330,7 @@ describe('Q3 Production Quality Gates - European Municipal Deployment Excellence
       });
 
       // Validate network performance across Europe
-      municipalNetworkTesting.countryResults.forEach((country: any) => {
+      municipalNetworkTesting.countryResults.forEach((country: Record<string, unknown>) => {
         expect(country.performanceTargets.met).toBe(true);
         expect(country.networkOptimization.effective).toBe(true);
         expect(country.latencyTolerance.acceptable).toBe(true);
@@ -432,7 +432,7 @@ describe('Q3 Production Quality Gates - European Municipal Deployment Excellence
       expect(penetrationTesting.applicationSecurity.secure).toBe(true);
 
       // Validate remediation
-      penetrationTesting.identifiedIssues.forEach((issue: any) => {
+      penetrationTesting.identifiedIssues.forEach((issue: Record<string, unknown>) => {
         expect(issue.severity).not.toBe('critical');
         expect(issue.severity).not.toBe('high');
         if (issue.severity === 'medium') {
@@ -487,7 +487,7 @@ describe('Q3 Production Quality Gates - European Municipal Deployment Excellence
       expect(municipalDataSecurity.crossBorderProtection.governmentAccess.protected).toBe(true);
 
       // Validate municipal-specific security
-      municipalDataSecurity.municipalSecurity.forEach((municipality: any) => {
+      municipalDataSecurity.municipalSecurity.forEach((municipality: Record<string, unknown>) => {
         expect(municipality.dataClassification.appropriate).toBe(true);
         expect(municipality.accessControls.roleBasedMunicipal).toBe(true);
         expect(municipality.auditTrails.governmentCompliant).toBe(true);
@@ -610,7 +610,7 @@ describe('Q3 Production Quality Gates - European Municipal Deployment Excellence
       });
 
       // Validate each market certification
-      marketCertification.marketResults.forEach((market: any) => {
+      marketCertification.marketResults.forEach((market: Record<string, unknown>) => {
         expect(market.regulatoryCompliance.certified).toBe(true);
         expect(market.culturalAdaptation.validated).toBe(true);
         expect(market.marketReadiness.confirmed).toBe(true);
@@ -697,7 +697,7 @@ describe('Q3 Production Quality Gates - European Municipal Deployment Excellence
  * Supporting utilities för comprehensive production quality validation
  */
 export class Q3ProductionQualityAssuranceUtilities {
-  static async generateProductionQualityReport(): Promise<any> {
+  static async generateProductionQualityReport(): Promise<Record<string, unknown>> {
     // Generate comprehensive production quality report
     return {
       qualityGateSpecifications: Q3_PRODUCTION_QUALITY_GATES,
@@ -710,7 +710,7 @@ export class Q3ProductionQualityAssuranceUtilities {
     };
   }
 
-  private static async assessFunctionalCompleteness(): Promise<any> {
+  private static async assessFunctionalCompleteness(): Promise<Record<string, unknown>> {
     // Assess functional completeness quality gate
     return {
       systemFunctionality: 'complete',
@@ -720,7 +720,7 @@ export class Q3ProductionQualityAssuranceUtilities {
     };
   }
 
-  private static async assessPerformanceValidation(): Promise<any> {
+  private static async assessPerformanceValidation(): Promise<Record<string, unknown>> {
     // Assess performance validation quality gate
     return {
       loadTesting: 'passed',
@@ -730,7 +730,7 @@ export class Q3ProductionQualityAssuranceUtilities {
     };
   }
 
-  private static async assessSecurityCertification(): Promise<any> {
+  private static async assessSecurityCertification(): Promise<Record<string, unknown>> {
     // Assess security certification quality gate
     return {
       governmentGrade: 'certified',
@@ -740,7 +740,7 @@ export class Q3ProductionQualityAssuranceUtilities {
     };
   }
 
-  private static async assessReliabilityDemonstration(): Promise<any> {
+  private static async assessReliabilityDemonstration(): Promise<Record<string, unknown>> {
     // Assess reliability demonstration quality gate
     return {
       uptimeRequirement: 'exceeded',
@@ -750,7 +750,7 @@ export class Q3ProductionQualityAssuranceUtilities {
     };
   }
 
-  private static async assessEuropeanReadiness(): Promise<any> {
+  private static async assessEuropeanReadiness(): Promise<Record<string, unknown>> {
     // Assess European readiness quality gate
     return {
       marketCertification: '4-markets-certified',
@@ -760,7 +760,7 @@ export class Q3ProductionQualityAssuranceUtilities {
     };
   }
 
-  private static async assessOverallProductionReadiness(): Promise<any> {
+  private static async assessOverallProductionReadiness(): Promise<Record<string, unknown>> {
     // Assess overall production readiness
     return {
       readinessLevel: 'production-ready',

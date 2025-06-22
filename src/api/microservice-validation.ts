@@ -391,11 +391,11 @@ router.get('/validate/health', async (req: Request, res: Response) => {
 /**
  * WebSocket handler for real-time validation
  */
-export function setupMicroserviceValidationWebSocket(io: any): void {
-  io.on('connection', (socket: any) => {
+export function setupMicroserviceValidationWebSocket(io: Record<string, unknown>): void {
+  io.on('connection', (socket: Record<string, unknown>) => {
     console.log('Client connected to microservice validation WebSocket');
 
-    socket.on('validate-realtime', async (data: any) => {
+    socket.on('validate-realtime', async (data: Record<string, unknown>) => {
       try {
         const requestId = `ws_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
         

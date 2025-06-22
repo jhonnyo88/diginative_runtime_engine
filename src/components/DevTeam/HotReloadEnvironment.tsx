@@ -92,7 +92,7 @@ export const HotReloadEnvironment: React.FC<HotReloadEnvironmentProps> = ({
 }) => {
   // State management
   const [content, setContent] = useState(initialContent);
-  const [parsedContent, setParsedContent] = useState<any>(null);
+  const [parsedContent, setParsedContent] = useState<Record<string, unknown>>(null);
   const [validationStatus, setValidationStatus] = useState<ValidationStatus | null>(null);
   const [isValidating, setIsValidating] = useState(false);
   const [previewMode, setPreviewMode] = useState<PreviewMode>('split');

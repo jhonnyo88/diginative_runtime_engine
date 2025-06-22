@@ -987,7 +987,7 @@ export class DemoExecutionQualityGates extends EventEmitter {
   /**
    * Get Quality Gates Summary
    */
-  getQualityGatesSummary(): any {
+  getQualityGatesSummary(): Record<string, unknown> {
     const summary = this.gateResults.get('quality_gates_summary')?.[0];
     const gates = Object.keys(this.qualityGatesSpecs.qualityGates);
     

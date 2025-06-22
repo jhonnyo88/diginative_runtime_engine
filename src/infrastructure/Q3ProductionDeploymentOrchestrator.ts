@@ -422,7 +422,7 @@ export class Q3ProductionDeploymentOrchestrator {
       .map(imp => imp.description);
   }
 
-  private async handleDeploymentFailure(deploymentId: string, error: any): Promise<void> {
+  private async handleDeploymentFailure(deploymentId: string, error: Record<string, unknown>): Promise<void> {
     console.error(`Handling deployment failure for ${deploymentId}:`, error);
     
     this.discoverImprovement(deploymentId, {

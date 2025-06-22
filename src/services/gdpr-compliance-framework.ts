@@ -454,7 +454,7 @@ export class EUComplianceManager {
     }
   }
 
-  private calculateComplianceScore(auditResults: any): number {
+  private calculateComplianceScore(auditResults: Record<string, unknown>): number {
     // Expert calculation: Compliance scoring algorithm
     const totalChecks = auditResults.totalChecks;
     const passedChecks = auditResults.passedChecks;
@@ -497,7 +497,7 @@ class ComplianceAuditLogger {
     console.log('Compliance validation logged:', logEntry);
   }
 
-  async generateComplianceReport(tenantId: string, jurisdiction: string): Promise<any> {
+  async generateComplianceReport(tenantId: string, jurisdiction: string): Promise<Record<string, unknown>> {
     // Expert implementation: Generate comprehensive compliance report
     return {
       totalChecks: 100,
@@ -562,13 +562,13 @@ interface ComplianceRules {
     authentication: string;
     session_management: string;
   };
-  consent_management?: any;
-  data_portability?: any;
-  proportionality_assessment?: any;
-  transparency_obligations?: any;
-  digital_government_compliance?: any;
-  municipal_specific_requirements?: any;
-  datainspektionen_compliance?: any;
+  consent_management?: Record<string, unknown>;
+  data_portability?: Record<string, unknown>;
+  proportionality_assessment?: Record<string, unknown>;
+  transparency_obligations?: Record<string, unknown>;
+  digital_government_compliance?: Record<string, unknown>;
+  municipal_specific_requirements?: Record<string, unknown>;
+  datainspektionen_compliance?: Record<string, unknown>;
 }
 
 interface RetentionPeriod {
@@ -580,8 +580,8 @@ interface RetentionPeriod {
 }
 
 interface SecurityMeasures {
-  encryption: any;
-  access_controls: any;
+  encryption: Record<string, unknown>;
+  access_controls: Record<string, unknown>;
   monitoring: {
     security_monitoring: string;
     incident_response: string;

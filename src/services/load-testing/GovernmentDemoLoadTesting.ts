@@ -632,7 +632,7 @@ export class GovernmentDemoLoadTesting extends EventEmitter {
   /**
    * Get Load Testing Summary
    */
-  getLoadTestingSummary(): any {
+  getLoadTestingSummary(): Record<string, unknown> {
     const summary = this.loadTestResults.get('load_testing_summary')?.[0];
     const scenarios = Object.keys(this.loadTestingSpecs.loadScenarios);
     

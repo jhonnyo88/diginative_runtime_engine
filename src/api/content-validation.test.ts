@@ -12,8 +12,8 @@ describe('Content Validation API', () => {
   let mockRequest: Partial<Request>;
   let mockResponse: Partial<Response>;
   let mockNext: vi.Mock;
-  let mockValidator: any;
-  let mockMonitoring: any;
+  let mockValidator: Record<string, unknown>;
+  let mockMonitoring: Record<string, unknown>;
 
   beforeEach(() => {
     // Reset mocks

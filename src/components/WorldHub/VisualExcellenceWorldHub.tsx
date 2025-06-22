@@ -51,8 +51,8 @@ interface WorldHubSection {
   id: string;
   name: string;
   displayName: string;
-  icon: any;
-  component: React.ComponentType<any>;
+  icon: Record<string, unknown>;
+  component: React.ComponentType<Record<string, unknown>>;
   requiresData?: boolean;
   culturalAdaptive?: boolean;
   professionalFocus?: boolean;
@@ -261,7 +261,7 @@ interface VisualExcellenceHubContentProps {
   visualSettings: VisualEnhancementSettings;
   onWorldSelect: (worldId: string) => void;
   onSettingsClick: () => void;
-  onAchievementClick: (achievement: any) => void;
+  onAchievementClick: (achievement: Record<string, unknown>) => void;
 }
 
 const VisualExcellenceHubContent: React.FC<VisualExcellenceHubContentProps> = ({
@@ -697,7 +697,7 @@ const VisualSettingsPanel: React.FC<VisualSettingsPanelProps> = ({
 
   if (!isOpen) return null;
 
-  const handleSettingChange = (key: keyof VisualEnhancementSettings, value: any) => {
+  const handleSettingChange = (key: keyof VisualEnhancementSettings, value: Record<string, unknown>) => {
     onSettingsChange({ ...settings, [key]: value });
   };
 
@@ -785,7 +785,7 @@ const VisualSettingsPanel: React.FC<VisualSettingsPanelProps> = ({
 interface VisualExcellenceWorldHubProps {
   onWorldSelect?: (worldId: string) => void;
   onSettingsClick?: () => void;
-  onAchievementClick?: (achievement: any) => void;
+  onAchievementClick?: (achievement: Record<string, unknown>) => void;
   initialVisualSettings?: Partial<VisualEnhancementSettings>;
 }
 

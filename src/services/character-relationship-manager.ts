@@ -596,7 +596,7 @@ export interface RelationshipChange {
 export interface WorkplaceDynamics {
   relationshipType: RelationshipType;
   workplaceDynamics: WorkplaceDynamicsPattern;
-  culturalPattern: any;
+  culturalPattern: Record<string, unknown>;
   department: string;
   hierarchy: string;
   communicationEffectiveness: number;

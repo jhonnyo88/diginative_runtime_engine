@@ -111,7 +111,7 @@ export class WebSocketValidationService {
     });
   }
 
-  private async handleValidation(socket: any, request: RealtimeValidationRequest): Promise<void> {
+  private async handleValidation(socket: Record<string, unknown>, request: RealtimeValidationRequest): Promise<void> {
     const startTime = Date.now();
     const session = this.sessions.get(socket.id);
 
@@ -206,7 +206,7 @@ export class WebSocketValidationService {
     }
   }
 
-  private async handleIncrementalValidation(socket: any, request: RealtimeValidationRequest): Promise<void> {
+  private async handleIncrementalValidation(socket: Record<string, unknown>, request: RealtimeValidationRequest): Promise<void> {
     // Debounce incremental validation
     const session = this.sessions.get(socket.id);
     if (!session || !request.partial) return;
@@ -234,7 +234,7 @@ export class WebSocketValidationService {
     });
   }
 
-  private generateSmartSuggestions(errors: any[], contentType: string): string[] {
+  private generateSmartSuggestions(errors: Record<string, unknown>[], contentType: string): string[] {
     const suggestions: string[] = [];
 
     errors.forEach(error => {

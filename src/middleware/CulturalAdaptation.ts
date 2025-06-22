@@ -48,7 +48,7 @@ export interface CulturalTheme {
 
 // Cultural adaptation implementations
 export class GermanSystematicAdapter {
-  adapt(gameManifest: any): any {
+  adapt(gameManifest: Record<string, unknown>): Record<string, unknown> {
     return {
       ...gameManifest,
       theme: {
@@ -64,7 +64,7 @@ export class GermanSystematicAdapter {
           }
         }
       },
-      scenes: gameManifest.scenes.map((scene: any) => ({
+      scenes: gameManifest.scenes.map((scene: Record<string, unknown>) => ({
         ...scene,
         cultural_context: 'german_systematic',
         ui_adaptations: {
@@ -78,7 +78,7 @@ export class GermanSystematicAdapter {
 }
 
 export class FrenchCollaborativeAdapter {
-  adapt(gameManifest: any): any {
+  adapt(gameManifest: Record<string, unknown>): Record<string, unknown> {
     return {
       ...gameManifest,
       theme: {
@@ -94,7 +94,7 @@ export class FrenchCollaborativeAdapter {
           }
         }
       },
-      scenes: gameManifest.scenes.map((scene: any) => ({
+      scenes: gameManifest.scenes.map((scene: Record<string, unknown>) => ({
         ...scene,
         cultural_context: 'french_collaborative',
         ui_adaptations: {
@@ -108,7 +108,7 @@ export class FrenchCollaborativeAdapter {
 }
 
 export class DutchProgressiveAdapter {
-  adapt(gameManifest: any): any {
+  adapt(gameManifest: Record<string, unknown>): Record<string, unknown> {
     return {
       ...gameManifest,
       theme: {
@@ -124,7 +124,7 @@ export class DutchProgressiveAdapter {
           }
         }
       },
-      scenes: gameManifest.scenes.map((scene: any) => ({
+      scenes: gameManifest.scenes.map((scene: Record<string, unknown>) => ({
         ...scene,
         cultural_context: 'dutch_progressive',
         ui_adaptations: {
@@ -138,7 +138,7 @@ export class DutchProgressiveAdapter {
 }
 
 export class SwedishMobileFirstAdapter {
-  adapt(gameManifest: any): any {
+  adapt(gameManifest: Record<string, unknown>): Record<string, unknown> {
     return {
       ...gameManifest,
       theme: {
@@ -154,7 +154,7 @@ export class SwedishMobileFirstAdapter {
           }
         }
       },
-      scenes: gameManifest.scenes.map((scene: any) => ({
+      scenes: gameManifest.scenes.map((scene: Record<string, unknown>) => ({
         ...scene,
         cultural_context: 'swedish_mobile',
         ui_adaptations: {
@@ -176,7 +176,7 @@ export const CulturalMiddleware = {
 };
 
 // Auto-detection and adaptation
-export const detectAndAdaptCultural = (gameManifest: any, userContext: CulturalContext) => {
+export const detectAndAdaptCultural = (gameManifest: Record<string, unknown>, userContext: CulturalContext) => {
   const adapter = CulturalMiddleware[userContext];
   if (!adapter) {
     console.warn(`Cultural adapter not found for ${userContext}, using Swedish default`);
@@ -187,7 +187,7 @@ export const detectAndAdaptCultural = (gameManifest: any, userContext: CulturalC
 };
 
 // Expert requirement: Performance tracking for cultural adaptations
-export const trackCulturalPerformance = (culturalContext: CulturalContext, metrics: any) => {
+export const trackCulturalPerformance = (culturalContext: CulturalContext, metrics: Record<string, unknown>) => {
   console.log(`Cultural performance tracking for ${culturalContext}:`, metrics);
   // Implementation: Send to analytics service
 };

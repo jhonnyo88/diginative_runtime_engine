@@ -45,7 +45,7 @@ vi.mock('../redis-cluster', () => ({
 
 describe('ValidationMicroservice', () => {
   let validationService: ValidationMicroservice;
-  let redisCluster: any;
+  let redisCluster: Record<string, unknown>;
 
   beforeEach(() => {
     redisCluster = getRedisCluster();

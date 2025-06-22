@@ -681,4 +681,4 @@ export const EnhancedMonitoringDashboard: React.FC = () => {
 };
 
 // Helper component
-const Icon: React.FC<{ as: any }> = ({ as: Component }) => <Box as={Component} />;
+const Icon: React.FC<{ as: Record<string, unknown> }> = ({ as: Component }) => <Box as={Component} />;

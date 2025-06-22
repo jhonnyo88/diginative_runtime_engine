@@ -601,7 +601,7 @@ describe('DevTeam Content Validation', () => {
       });
 
       it('handles malformed JSON gracefully', async () => {
-        const circularRef: any = { name: 'test' };
+        const circularRef: Record<string, unknown> = { name: 'test' };
         circularRef.self = circularRef;
 
         const result = await validateDevTeamContent(circularRef);

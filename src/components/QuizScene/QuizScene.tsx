@@ -77,7 +77,7 @@ interface QuizResults {
 }
 
 // Cultural adaptation (Game Designer specification)
-const getCulturalQuizStyles = (context: string, theme: any) => {
+const getCulturalQuizStyles = (context: string, theme: Record<string, unknown>) => {
   switch (context) {
     case 'swedish':
       return {

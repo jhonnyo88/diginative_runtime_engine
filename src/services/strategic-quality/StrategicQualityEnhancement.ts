@@ -230,7 +230,7 @@ export class StrategicQualityEnhancement extends EventEmitter {
   /**
    * Add Quality Enhancement Insight
    */
-  async addQualityInsight(insightData: any): Promise<QualityEnhancementInsight> {
+  async addQualityInsight(insightData: Record<string, unknown>): Promise<QualityEnhancementInsight> {
     const insight: QualityEnhancementInsight = {
       id: `insight_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`,
       timestamp: Date.now(),
@@ -637,14 +637,14 @@ export class StrategicQualityEnhancement extends EventEmitter {
   }
 
   // Helper methods for insight assessment
-  private assessImplementationEffort(insight: any): 'minimal' | 'moderate' | 'significant' {
+  private assessImplementationEffort(insight: Record<string, unknown>): 'minimal' | 'moderate' | 'significant' {
     if (insight.category === 'performance') return 'moderate';
     if (insight.category === 'cultural') return 'significant';
     if (insight.category === 'municipal') return 'minimal';
     return 'moderate';
   }
 
-  private estimateImplementationTimeline(insight: any): string {
+  private estimateImplementationTimeline(insight: Record<string, unknown>): string {
     const timelines = {
       'performance': '2-3 weeks',
       'cultural': '3-4 weeks', 
@@ -655,7 +655,7 @@ export class StrategicQualityEnhancement extends EventEmitter {
     return timelines[insight.category] || '2-4 weeks';
   }
 
-  private identifyDependencies(insight: any): string[] {
+  private identifyDependencies(insight: Record<string, unknown>): string[] {
     const dependencies = {
       'performance': ['Testing framework', 'Monitoring system'],
       'cultural': ['Translation system', 'Cultural validation'],
@@ -666,7 +666,7 @@ export class StrategicQualityEnhancement extends EventEmitter {
     return dependencies[insight.category] || [];
   }
 
-  private calculateExpectedBenefit(insight: any): string {
+  private calculateExpectedBenefit(insight: Record<string, unknown>): string {
     const benefits = {
       'performance': '15-25% performance improvement',
       'cultural': '98%+ cultural accuracy',
@@ -677,15 +677,15 @@ export class StrategicQualityEnhancement extends EventEmitter {
     return benefits[insight.category] || 'Significant quality improvement';
   }
 
-  private assessCompetitiveAdvantage(insight: any): boolean {
+  private assessCompetitiveAdvantage(insight: Record<string, unknown>): boolean {
     return insight.impact === 'high' || insight.impact === 'critical';
   }
 
-  private assessMarketDifferentiation(insight: any): boolean {
+  private assessMarketDifferentiation(insight: Record<string, unknown>): boolean {
     return insight.category === 'cultural' || insight.category === 'strategic';
   }
 
-  private assessPremiumJustification(insight: any): boolean {
+  private assessPremiumJustification(insight: Record<string, unknown>): boolean {
     return insight.impact === 'high' || insight.impact === 'critical';
   }
 

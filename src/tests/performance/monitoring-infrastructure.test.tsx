@@ -234,7 +234,7 @@ describe('Monitoring Infrastructure Performance Tests', () => {
       cleanupFns.push(unmount);
       
       // Generate large dataset
-      const metrics: any[] = [];
+      const metrics: Record<string, unknown>[] = [];
       for (let i = 0; i < 1000; i++) {
         metrics.push({
           name: `metric.${i}`,
@@ -315,7 +315,7 @@ describe('Monitoring Infrastructure Performance Tests', () => {
 
     it('should handle concurrent health checks efficiently', async () => {
       const concurrentChecks = 10;
-      const checkPromises: Promise<any>[] = [];
+      const checkPromises: Promise<Record<string, unknown>>[] = [];
       
       const startTime = performance.now();
       

@@ -65,8 +65,8 @@ const MUNICIPAL_CONTENT_TYPES = [
 ];
 
 describe('Script Tag Sanitization Testing', () => {
-  let scriptSanitizer: any;
-  let contentValidator: any;
+  let scriptSanitizer: Record<string, unknown>;
+  let contentValidator: Record<string, unknown>;
 
   beforeEach(() => {
     vi.clearAllMocks();

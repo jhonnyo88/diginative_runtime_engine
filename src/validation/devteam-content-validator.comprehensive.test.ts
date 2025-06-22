@@ -437,7 +437,7 @@ describe('DevTeamContentValidator - Comprehensive Test Suite', () => {
 
   describe('Malformed Structure Tests', () => {
     it('should handle circular references gracefully', () => {
-      const manifest: any = {
+      const manifest: Record<string, unknown> = {
         gameId: 'circular-ref',
         version: '1.0.0',
         metadata: {

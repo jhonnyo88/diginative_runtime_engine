@@ -412,7 +412,7 @@ export class Q2AdvancedAnalyticsSystem {
     };
   }
 
-  private measureTrainingEffectiveness(sessions: GameSession[]): any {
+  private measureTrainingEffectiveness(sessions: GameSession[]): Record<string, unknown> {
     // Measure municipal training effectiveness
     return {
       competencyImprovement: 0.87,
@@ -422,7 +422,7 @@ export class Q2AdvancedAnalyticsSystem {
     };
   }
 
-  private measureEmployeeEngagement(sessions: GameSession[]): any {
+  private measureEmployeeEngagement(sessions: GameSession[]): Record<string, unknown> {
     // Measure municipal employee engagement
     return {
       participationRate: 0.94,
@@ -432,7 +432,7 @@ export class Q2AdvancedAnalyticsSystem {
     };
   }
 
-  private measureOperationalImpact(municipalId: string, period: any): any {
+  private measureOperationalImpact(municipalId: string, period: Record<string, unknown>): Record<string, unknown> {
     // Measure municipal operational impact
     return {
       processEfficiencyImprovement: 0.23, // 23% improvement
@@ -442,7 +442,7 @@ export class Q2AdvancedAnalyticsSystem {
     };
   }
 
-  private measureEuropeanExpansionPotential(sessions: GameSession[]): any {
+  private measureEuropeanExpansionPotential(sessions: GameSession[]): Record<string, unknown> {
     // Measure European expansion metrics
     return {
       crossBorderKnowledgeTransfer: 0.85,
@@ -488,7 +488,7 @@ export class Q2AdvancedAnalyticsSystem {
     console.warn(`Performance alert: Loading times approaching 2s limit. Current average: ${loadingTimes.average}ms`);
   }
 
-  private compileMunicipalDashboardData(municipalId: string): any {
+  private compileMunicipalDashboardData(municipalId: string): Record<string, unknown> {
     // Compile comprehensive municipal dashboard data
     return {
       executiveSummary: {

@@ -79,9 +79,9 @@ Object.defineProperty(global, 'navigator', {
 });
 
 describe('ErrorMonitoringService - Emergency Service Testing', () => {
-  let consoleInfoSpy: any;
-  let consoleErrorSpy: any;
-  let consoleWarnSpy: any;
+  let consoleInfoSpy: Record<string, unknown>;
+  let consoleErrorSpy: Record<string, unknown>;
+  let consoleWarnSpy: Record<string, unknown>;
   let monitoringMock: MockInfrastructureMonitoring;
   
   beforeEach(() => {

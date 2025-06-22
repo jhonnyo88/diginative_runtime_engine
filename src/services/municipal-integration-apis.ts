@@ -72,7 +72,7 @@ export class SharePointConnector {
 
       const data = await response.json();
       
-      return data.value.map((item: any) => ({
+      return data.value.map((item: Record<string, unknown>) => ({
         id: item.id,
         name: item.name,
         url: item.webUrl,
@@ -200,7 +200,7 @@ export class SAPSuccessFactorsConnector {
       });
 
       const data = await response.json();
-      return data.d.results.map((user: any) => ({
+      return data.d.results.map((user: Record<string, unknown>) => ({
         id: user.userId,
         email: user.email,
         firstName: user.firstName,
@@ -337,7 +337,7 @@ export class SAPSuccessFactorsConnector {
     return requirements;
   }
 
-  private async sendToSAP(endpoint: string, data: any): Promise<void> {
+  private async sendToSAP(endpoint: string, data: Record<string, unknown>): Promise<void> {
     const auth = Buffer.from(`${this.username}:${this.password}`).toString('base64');
     
     await fetch(`${this.apiUrl}${endpoint}`, {
@@ -502,7 +502,7 @@ export class WorkdayConnector {
     }
   }
 
-  private async generateCertificate(data: any): Promise<any> {
+  private async generateCertificate(data: Record<string, unknown>): Promise<Record<string, unknown>> {
     // Expert implementation: PDF certificate generation
     const certificate = {
       id: `cert_${Date.now()}`,
@@ -513,7 +513,7 @@ export class WorkdayConnector {
     return certificate;
   }
 
-  private async generateCertificatePDF(data: any): Promise<Buffer> {
+  private async generateCertificatePDF(data: Record<string, unknown>): Promise<Buffer> {
     // Expert requirement: Municipal-appropriate certificate design
     // Implementation: Use PDF generation library with municipal branding
     const pdfContent = `Municipal Training Certificate
@@ -530,7 +530,7 @@ This certificate verifies successful completion of municipal training requiremen
     return Buffer.from(pdfContent); // Placeholder - use actual PDF library
   }
 
-  private async uploadToWorkday(certificate: any): Promise<void> {
+  private async uploadToWorkday(certificate: Record<string, unknown>): Promise<void> {
     const auth = Buffer.from(`${this.username}:${this.password}`).toString('base64');
     
     await fetch(`${this.apiUrl}/ccx/api/v1/${this.tenant}/certificates`, {

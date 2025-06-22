@@ -43,7 +43,7 @@ export interface MunicipalToastNotificationProps {
     onDismiss?: () => void;
     onViewPortfolio?: () => void; // Link to achievement portfolio
     onShare?: () => void; // Professional sharing options
-    analytics?: (event: string, data: any) => void;
+    analytics?: (event: string, data: Record<string, unknown>) => void;
   };
 }
 

@@ -722,7 +722,7 @@ const DemoQuickActionsPanel: React.FC = () => {
 interface InteractiveDemoElementsProps {
   onElementActivated?: (elementId: string) => void;
   onElementDeactivated?: (elementId: string) => void;
-  onSessionUpdate?: (metrics: any) => void;
+  onSessionUpdate?: (metrics: Record<string, unknown>) => void;
 }
 
 export const InteractiveDemoElements: React.FC<InteractiveDemoElementsProps> = ({

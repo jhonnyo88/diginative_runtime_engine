@@ -117,7 +117,7 @@ export const StrategyPlayHost: React.FC<StrategyPlayHostProps> = ({
   }, [gameState.scenesCompleted.length, gameManifest.scenes.length]);
 
   // Handle scene completion
-  const handleSceneComplete = useCallback((results: any) => {
+  const handleSceneComplete = useCallback((results: Record<string, unknown>) => {
     const endTracking = trackGameInteraction(gameManifest.gameId, currentSceneId, 'scene_complete');
     
     // Track analytics

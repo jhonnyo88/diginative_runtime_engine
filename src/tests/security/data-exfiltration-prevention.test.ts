@@ -77,8 +77,8 @@ const PROTECTED_MUNICIPAL_DATA = [
 ];
 
 describe('Data Exfiltration Prevention Testing', () => {
-  let dataProtectionHarness: any;
-  let exfiltrationMonitor: any;
+  let dataProtectionHarness: Record<string, unknown>;
+  let exfiltrationMonitor: Record<string, unknown>;
 
   beforeEach(() => {
     vi.clearAllMocks();

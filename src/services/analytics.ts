@@ -92,7 +92,7 @@ class AnalyticsService {
     }
   }
 
-  private handleMessage(data: any) {
+  private handleMessage(data: Record<string, unknown>) {
     const { type, payload } = data;
     const listeners = this.listeners.get(type) || [];
     

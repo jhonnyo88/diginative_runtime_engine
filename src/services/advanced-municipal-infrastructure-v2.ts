@@ -665,15 +665,15 @@ export class EuropeanMunicipalInfrastructureEngine extends EventEmitter {
     }
   }
 
-  private async calculateQ2ScalingRequirements(tenant: MunicipalTenantInstanceV2, trigger: ScalingTrigger): Promise<any> {
+  private async calculateQ2ScalingRequirements(tenant: MunicipalTenantInstanceV2, trigger: ScalingTrigger): Promise<Record<string, unknown>> {
     return {};
   }
 
-  private async scaleResources(tenant: MunicipalTenantInstanceV2, requirements: any): Promise<void> {}
-  private async scaleQ2ProductionMechanics(tenant: MunicipalTenantInstanceV2, requirements: any): Promise<void> {}
-  private async scaleRealTimeSync(tenant: MunicipalTenantInstanceV2, requirements: any): Promise<void> {}
-  private async scaleCachingStrategy(tenant: MunicipalTenantInstanceV2, requirements: any): Promise<void> {}
-  private async scaleCrossBorderConnections(tenant: MunicipalTenantInstanceV2, requirements: any): Promise<void> {}
+  private async scaleResources(tenant: MunicipalTenantInstanceV2, requirements: Record<string, unknown>): Promise<void> {}
+  private async scaleQ2ProductionMechanics(tenant: MunicipalTenantInstanceV2, requirements: Record<string, unknown>): Promise<void> {}
+  private async scaleRealTimeSync(tenant: MunicipalTenantInstanceV2, requirements: Record<string, unknown>): Promise<void> {}
+  private async scaleCachingStrategy(tenant: MunicipalTenantInstanceV2, requirements: Record<string, unknown>): Promise<void> {}
+  private async scaleCrossBorderConnections(tenant: MunicipalTenantInstanceV2, requirements: Record<string, unknown>): Promise<void> {}
   private async setupCrossBorderSync(source: MunicipalTenantInstanceV2, target: MunicipalTenantInstanceV2, connection: CrossBorderConnection): Promise<void> {}
   private determineEncryptionLevel(connectionType: string): 'standard' | 'government_grade' | 'classified' {
     return 'government_grade';
@@ -737,11 +737,11 @@ interface SyncConnection {
 
 interface ConflictResolutionEngine {
   strategy: string;
-  resolutionRules: any[];
+  resolutionRules: Record<string, unknown>[];
 }
 
 interface MunicipalAuditTrail {
-  entries: any[];
+  entries: Record<string, unknown>[];
   complianceLevel: string;
 }
 
@@ -754,20 +754,20 @@ interface SyncPerformanceMetrics {
 interface CrossBorderProtocol {
   protocolId: string;
   countries: string[];
-  dataFlowRules: any[];
+  dataFlowRules: Record<string, unknown>[];
 }
 
 // Placeholder classes
 class CrossBorderManagement {}
 class EuropeanComplianceOrchestrator {
-  async validateCrossBorderCooperation(source: any, target: any) {
+  async validateCrossBorderCooperation(source: Record<string, unknown>, target: Record<string, unknown>) {
     return { approved: true, agreementId: 'agreement_001', requiredFrameworks: ['gdpr'] };
   }
 }
 class Q2ProductionMetrics {}
 class DisasterRecoveryOrchestrator {}
 class MunicipalPerformanceMonitor {
-  constructor(config: any) {}
+  constructor(config: Record<string, unknown>) {}
   async startMonitoring() {}
 }
 class CulturalIntelligenceEngine {

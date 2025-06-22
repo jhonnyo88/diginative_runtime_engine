@@ -13,7 +13,7 @@ export interface OfflineState {
   lastSync: number;
   pendingActions: OfflineAction[];
   worldStates: Map<number, any>;
-  userProgress: any;
+  userProgress: Record<string, unknown>;
   municipalContext: MunicipalContext;
 }
 
@@ -21,7 +21,7 @@ export interface OfflineAction {
   id: string;
   type: 'world_progress' | 'achievement_unlock' | 'scenario_completion' | 'cultural_preference';
   worldIndex?: number;
-  payload: any;
+  payload: Record<string, unknown>;
   timestamp: number;
   retryCount: number;
 }
@@ -104,7 +104,7 @@ export class OfflineResilienceManager {
   /**
    * Save complete world state for offline access
    */
-  async saveWorldStateOffline(worldIndex: number, worldState: any): Promise<void> {
+  async saveWorldStateOffline(worldIndex: number, worldState: Record<string, unknown>): Promise<void> {
     const offlineState = await this.getOfflineState();
     if (offlineState) {
       offlineState.worldStates.set(worldIndex, {

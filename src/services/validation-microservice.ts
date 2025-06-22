@@ -266,7 +266,7 @@ export class ValidationMicroservice {
   /**
    * Recursive sanitization
    */
-  private sanitizeRecursive(obj: any): void {
+  private sanitizeRecursive(obj: Record<string, unknown>): void {
     if (!obj || typeof obj !== 'object') return;
 
     for (const [key, value] of Object.entries(obj)) {
@@ -294,7 +294,7 @@ export class ValidationMicroservice {
   /**
    * Apply content limits
    */
-  private applyContentLimits(obj: any): void {
+  private applyContentLimits(obj: Record<string, unknown>): void {
     if (!obj || typeof obj !== 'object') return;
 
     // Limit array sizes
@@ -314,7 +314,7 @@ export class ValidationMicroservice {
   /**
    * Normalize text encoding
    */
-  private normalizeTextEncoding(obj: any): void {
+  private normalizeTextEncoding(obj: Record<string, unknown>): void {
     if (!obj || typeof obj !== 'object') return;
 
     for (const [key, value] of Object.entries(obj)) {

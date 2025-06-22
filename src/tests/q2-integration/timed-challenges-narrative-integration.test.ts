@@ -135,8 +135,8 @@ const ANNA_SVENSSON_TIME_PRESSURE_PROFILE = {
 };
 
 describe('Timed Challenges + Branching Narratives Integration Testing', () => {
-  let timedNarrativeHarness: any;
-  let timePressureMonitor: any;
+  let timedNarrativeHarness: Record<string, unknown>;
+  let timePressureMonitor: Record<string, unknown>;
 
   beforeEach(() => {
     vi.clearAllMocks();

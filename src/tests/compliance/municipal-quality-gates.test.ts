@@ -36,7 +36,7 @@ const COMPLIANCE_THRESHOLDS = {
 };
 
 describe('Municipal Compliance Quality Gates', () => {
-  let complianceReport: any = {};
+  let complianceReport: Record<string, unknown> = {};
 
   beforeAll(async () => {
     console.log('🏛️ Running Municipal Compliance Quality Gates...');
@@ -268,8 +268,8 @@ describe('Municipal Compliance Quality Gates', () => {
         });
         
         const auditResults = JSON.parse(auditOutput);
-        const criticalVulns = auditResults.vulnerabilities?.filter((v: any) => v.severity === 'critical')?.length || 0;
-        const highVulns = auditResults.vulnerabilities?.filter((v: any) => v.severity === 'high')?.length || 0;
+        const criticalVulns = auditResults.vulnerabilities?.filter((v: Record<string, unknown>) => v.severity === 'critical')?.length || 0;
+        const highVulns = auditResults.vulnerabilities?.filter((v: Record<string, unknown>) => v.severity === 'high')?.length || 0;
         
         complianceReport.security = {
           criticalVulnerabilities: criticalVulns,
@@ -580,7 +580,7 @@ function findFiles(patterns: string[], excludePatterns: string[] = []): string[]
   ];
 }
 
-async function generateComplianceReport(report: any) {
+async function generateComplianceReport(report: Record<string, unknown>) {
   console.log('\n🏛️ Municipal Compliance Quality Gates Report');
   console.log('=============================================');
   
@@ -588,7 +588,7 @@ async function generateComplianceReport(report: any) {
     timestamp: new Date().toISOString(),
     summary: {
       totalGates: Object.keys(report).length,
-      passedGates: Object.values(report).filter((gate: any) => gate.passed !== false).length,
+      passedGates: Object.values(report).filter((gate: Record<string, unknown>) => gate.passed !== false).length,
       overallCompliance: calculateOverallCompliance(report)
     },
     details: report,
@@ -610,15 +610,15 @@ async function generateComplianceReport(report: any) {
   }
 }
 
-function calculateOverallCompliance(report: any): number {
+function calculateOverallCompliance(report: Record<string, unknown>): number {
   const scores = Object.values(report)
-    .filter((gate: any) => gate.score !== undefined)
-    .map((gate: any) => gate.score);
+    .filter((gate: Record<string, unknown>) => gate.score !== undefined)
+    .map((gate: Record<string, unknown>) => gate.score);
   
   return scores.length > 0 ? Math.round(scores.reduce((a: number, b: number) => a + b, 0) / scores.length) : 100;
 }
 
-function generateRecommendations(report: any): string[] {
+function generateRecommendations(report: Record<string, unknown>): string[] {
   const recommendations = [];
   
   if (report.testCoverage?.actual < 95) {

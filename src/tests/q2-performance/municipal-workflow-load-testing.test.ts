@@ -148,8 +148,8 @@ const MUNICIPAL_USER_PERSONAS = {
 };
 
 describe('Municipal Workflow Load Testing for Q2 Drag-Drop Operations', () => {
-  let loadTestHarness: any;
-  let performanceMonitor: any;
+  let loadTestHarness: Record<string, unknown>;
+  let performanceMonitor: Record<string, unknown>;
 
   beforeEach(() => {
     vi.clearAllMocks();

@@ -134,7 +134,7 @@ describe('Q2 Municipal Security and Compliance Framework', () => {
     });
 
     it('should emit security establishment event', async () => {
-      let securityEvent: any = null;
+      let securityEvent: Record<string, unknown> = null;
       securityEngine.on('q2_mechanic_security_established', (event) => {
         securityEvent = event;
       });
@@ -331,7 +331,7 @@ describe('Q2 Municipal Security and Compliance Framework', () => {
     });
 
     it('should emit tenant isolation event', async () => {
-      let isolationEvent: any = null;
+      let isolationEvent: Record<string, unknown> = null;
       securityEngine.on('municipal_tenant_isolation_established', (event) => {
         isolationEvent = event;
       });
@@ -490,7 +490,7 @@ describe('Q2 Municipal Security and Compliance Framework', () => {
     });
 
     it('should emit interaction logging event', async () => {
-      let loggingEvent: any = null;
+      let loggingEvent: Record<string, unknown> = null;
       securityEngine.on('q2_interaction_logged', (event) => {
         loggingEvent = event;
       });
@@ -602,7 +602,7 @@ describe('Q2 Municipal Security and Compliance Framework', () => {
     });
 
     it('should emit cross-border encryption event', async () => {
-      let encryptionEvent: any = null;
+      let encryptionEvent: Record<string, unknown> = null;
       securityEngine.on('cross_border_encryption_established', (event) => {
         encryptionEvent = event;
       });
@@ -678,7 +678,7 @@ describe('Q2 Municipal Security and Compliance Framework', () => {
     });
 
     it('should emit penetration testing completion event', async () => {
-      let testingEvent: any = null;
+      let testingEvent: Record<string, unknown> = null;
       securityEngine.on('penetration_testing_completed', (event) => {
         testingEvent = event;
       });
@@ -789,7 +789,7 @@ describe('Q2 Municipal Security and Compliance Framework', () => {
 
   describe('Security Event Monitoring', () => {
     it('should monitor and emit all required security events', async () => {
-      const events: any[] = [];
+      const events: Record<string, unknown>[] = [];
       const eventTypes = [
         'q2_mechanic_security_established',
         'municipal_tenant_isolation_established',

@@ -86,7 +86,7 @@ interface DialogueSceneProps {
 }
 
 // Cultural adaptation based on Game Designer specifications
-const getCulturalStyles = (context: string, theme: any) => {
+const getCulturalStyles = (context: string, theme: Record<string, unknown>) => {
   switch (context) {
     case 'swedish':
       return {
@@ -238,7 +238,7 @@ export const DialogueScene: React.FC<DialogueSceneProps> = ({
   const characters = processedSceneData.characters || [];
   
   const currentTurn = dialogueTurns[currentTurnIndex];
-  const character = characters.find((c: any) => c.character_id === currentTurn?.character_id);
+  const character = characters.find((c: Record<string, unknown>) => c.character_id === currentTurn?.character_id);
   const progress = dialogueTurns.length > 0 ? ((currentTurnIndex + 1) / dialogueTurns.length) * 100 : 0;
 
   // Character system enhancements
@@ -511,7 +511,7 @@ export const DialogueScene: React.FC<DialogueSceneProps> = ({
             Läringsmål:
           </Text>
           <VStack align="start" spacing={1}>
-            {(processedSceneData.learning_objectives || []).map((objective: any, index: number) => (
+            {(processedSceneData.learning_objectives || []).map((objective: Record<string, unknown>, index: number) => (
               <Text key={index} fontSize="sm" color={mutedTextColor}>
                 • {objective}
               </Text>

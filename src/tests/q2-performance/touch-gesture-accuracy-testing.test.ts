@@ -95,8 +95,8 @@ const MUNICIPAL_TOUCH_PATTERNS = {
 };
 
 describe('Touch Gesture Accuracy Testing for Q2 Municipal Workflows', () => {
-  let touchAccuracyHarness: any;
-  let gestureValidator: any;
+  let touchAccuracyHarness: Record<string, unknown>;
+  let gestureValidator: Record<string, unknown>;
 
   beforeEach(() => {
     vi.clearAllMocks();
@@ -106,16 +106,16 @@ describe('Touch Gesture Accuracy Testing for Q2 Municipal Workflows', () => {
     // Mock Anna Svensson iPhone 12 touch environment
     Object.defineProperty(window, 'TouchEvent', {
       value: class MockTouchEvent {
-        constructor(type: string, options: any) {
+        constructor(type: string, options: Record<string, unknown>) {
           this.type = type;
           this.touches = options.touches || [];
           this.targetTouches = options.targetTouches || [];
           this.changedTouches = options.changedTouches || [];
         }
         type: string;
-        touches: any[];
-        targetTouches: any[];
-        changedTouches: any[];
+        touches: Record<string, unknown>[];
+        targetTouches: Record<string, unknown>[];
+        changedTouches: Record<string, unknown>[];
       },
       writable: true
     });

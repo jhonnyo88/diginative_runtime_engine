@@ -74,8 +74,8 @@ const MUNICIPAL_DATABASE_CONTEXTS = [
 ];
 
 describe('SQL Injection Prevention Testing', () => {
-  let sqlSecurityHarness: any;
-  let queryValidator: any;
+  let sqlSecurityHarness: Record<string, unknown>;
+  let queryValidator: Record<string, unknown>;
 
   beforeEach(() => {
     vi.clearAllMocks();

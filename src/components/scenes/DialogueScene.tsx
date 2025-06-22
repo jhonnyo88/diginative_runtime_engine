@@ -12,9 +12,9 @@ import type { DialogueScene as DialogueSceneType } from '../../types/game-manife
 
 interface DialogueSceneProps {
   scene: DialogueSceneType;
-  onComplete: (results: any) => void;
+  onComplete: (results: Record<string, unknown>) => void;
   analytics?: {
-    trackEvent: (eventType: string, data: any) => void;
+    trackEvent: (eventType: string, data: Record<string, unknown>) => void;
   };
 }
 

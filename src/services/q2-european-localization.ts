@@ -312,7 +312,7 @@ class Q2EuropeanLocalizationManager {
     return adaptedMessage;
   }
 
-  public adaptDecisionScenario(scenario: any, locale: string): any {
+  public adaptDecisionScenario(scenario: Record<string, unknown>, locale: string): Record<string, unknown> {
     const context = this.getCulturalContext(locale);
     const rules = this.getCulturalAdaptationRules(locale);
     
@@ -323,14 +323,14 @@ class Q2EuropeanLocalizationManager {
     // Adapt decision-making approach based on cultural context
     if (context.decisionMakingStyle === 'consensus' && (locale === 'sv' || locale === 'nl')) {
       // Add consensus-building choices
-      adaptedScenario.choices = adaptedScenario.choices?.map((choice: any) => ({
+      adaptedScenario.choices = adaptedScenario.choices?.map((choice: Record<string, unknown>) => ({
         ...choice,
         consensus_building: true,
         stakeholder_consultation: 'broad'
       }));
     } else if (context.decisionMakingStyle === 'hierarchical' && (locale === 'de' || locale === 'fr')) {
       // Emphasize authority and proper channels
-      adaptedScenario.choices = adaptedScenario.choices?.map((choice: any) => ({
+      adaptedScenario.choices = adaptedScenario.choices?.map((choice: Record<string, unknown>) => ({
         ...choice,
         authority_approval: true,
         formal_procedure: 'required'
@@ -468,7 +468,7 @@ class Q2EuropeanLocalizationManager {
     return frameworks[locale as keyof typeof frameworks] || frameworks.sv;
   }
 
-  public validateCulturalAppropriateness(content: any, locale: string): {
+  public validateCulturalAppropriateness(content: Record<string, unknown>, locale: string): {
     score: number;
     recommendations: string[];
     culturalRisks: string[];

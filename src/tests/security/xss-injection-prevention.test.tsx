@@ -68,8 +68,8 @@ const MUNICIPAL_CONTENT_FIELDS = [
 ];
 
 describe('XSS Injection Prevention Testing', () => {
-  let securityHarness: any;
-  let contentSanitizer: any;
+  let securityHarness: Record<string, unknown>;
+  let contentSanitizer: Record<string, unknown>;
 
   beforeEach(() => {
     vi.clearAllMocks();
@@ -546,7 +546,7 @@ function createContentSanitizer() {
 }
 
 // Mock components for testing
-function SecureContentRenderer({ content, municipality, contentType }: any) {
+function SecureContentRenderer({ content, municipality, contentType }: Record<string, unknown>) {
   return (
     <div data-testid="secure-content-renderer">
       <div>{content.replace(/<script[^>]*>.*?<\/script>/gi, '')}</div>
@@ -554,7 +554,7 @@ function SecureContentRenderer({ content, municipality, contentType }: any) {
   );
 }
 
-function SecureMunicipalForm({ municipality, formType }: any) {
+function SecureMunicipalForm({ municipality, formType }: Record<string, unknown>) {
   return (
     <form data-testid="secure-municipal-form">
       <label htmlFor="feedback">Your Feedback</label>
@@ -565,7 +565,7 @@ function SecureMunicipalForm({ municipality, formType }: any) {
   );
 }
 
-function MunicipalDocumentWorkflow({ municipality, documentType }: any) {
+function MunicipalDocumentWorkflow({ municipality, documentType }: Record<string, unknown>) {
   return (
     <div data-testid="municipal-document-workflow">
       <input type="text" data-testid="document-upload-field" />

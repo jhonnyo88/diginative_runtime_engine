@@ -474,7 +474,7 @@ export class Q3DevTeamAIScaler {
   private async validateQualityAndCompliance(content: WorldContent[], request: MultiWorldGenerationRequest): Promise<QualityMetrics> { return {} as QualityMetrics; }
   private async validateMunicipalCompliance(content: WorldContent[], request: MultiWorldGenerationRequest): Promise<ComplianceValidation> { return {} as ComplianceValidation; }
   private async cacheSuccessfulGeneration(request: MultiWorldGenerationRequest, result: DevTeamGenerationResult): Promise<void> {}
-  private async handleGenerationFailure(sessionId: string, error: any): Promise<void> {}
+  private async handleGenerationFailure(sessionId: string, error: Record<string, unknown>): Promise<void> {}
   private async checkQualityCache(theme: WorldTheme, cultural: string, difficulty: number): Promise<WorldContent | null> { return null; }
   private async cacheWorldContent(theme: WorldTheme, cultural: string, difficulty: number, content: WorldContent): Promise<void> {}
   private async optimizeGenerationPerformance(): Promise<void> {}
@@ -526,31 +526,31 @@ interface ComplianceValidation {
 
 interface CulturalAdaptation {
   culturalContext: string;
-  adaptations: any[];
+  adaptations: Record<string, unknown>[];
 }
 
 interface Scenario {
   id: string;
-  content: any;
+  content: Record<string, unknown>;
 }
 
 interface Dialogue {
   id: string;
-  content: any;
+  content: Record<string, unknown>;
 }
 
 interface Achievement {
   id: string;
-  content: any;
+  content: Record<string, unknown>;
 }
 
 interface ProgressionLogic {
-  rules: any[];
+  rules: Record<string, unknown>[];
 }
 
 interface WorldCulturalAdaptation {
   context: string;
-  adaptations: any[];
+  adaptations: Record<string, unknown>[];
 }
 
 // Export singleton instance

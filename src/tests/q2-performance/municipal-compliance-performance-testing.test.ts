@@ -79,8 +79,8 @@ const PERFORMANCE_COMPLIANCE_INTEGRATION = {
 };
 
 describe('Municipal Compliance Performance Testing for Q2 Workflows', () => {
-  let complianceHarness: any;
-  let performanceMonitor: any;
+  let complianceHarness: Record<string, unknown>;
+  let performanceMonitor: Record<string, unknown>;
 
   beforeEach(() => {
     vi.clearAllMocks();
@@ -155,7 +155,7 @@ describe('Municipal Compliance Performance Testing for Q2 Workflows', () => {
       });
 
       // All rights should be processed quickly
-      Object.values(dataSubjectRightsTest.rightsPerformanceMetrics).forEach((latency: any) => {
+      Object.values(dataSubjectRightsTest.rightsPerformanceMetrics).forEach((latency: Record<string, unknown>) => {
         expect(latency).toBeLessThan(500); // <500ms per right
       });
 
@@ -377,7 +377,7 @@ describe('Municipal Compliance Performance Testing for Q2 Workflows', () => {
       });
 
       // All permit types should validate quickly
-      Object.values(permitCulturalValidation.permitTypeCulturalPerformance).forEach((validationTime: any) => {
+      Object.values(permitCulturalValidation.permitTypeCulturalPerformance).forEach((validationTime: Record<string, unknown>) => {
         expect(validationTime).toBeLessThan(25); // <25ms per permit type
       });
 

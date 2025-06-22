@@ -489,13 +489,13 @@ export class NetherlandsMunicipalValidator extends EventEmitter {
   /**
    * Calculate Overall Compliance Score
    */
-  private calculateOverallCompliance(regulatory: any, cultural: any, municipal: any, technical: any, quality: any): number {
+  private calculateOverallCompliance(regulatory: Record<string, unknown>, cultural: Record<string, unknown>, municipal: Record<string, unknown>, technical: Record<string, unknown>, quality: Record<string, unknown>): number {
     // Weighted compliance calculation
-    const regulatoryScore = Object.values(regulatory).reduce((sum: number, score: any) => sum + score, 0) / Object.keys(regulatory).length;
-    const culturalScore = Object.values(cultural).reduce((sum: number, score: any) => sum + score, 0) / Object.keys(cultural).length;
-    const municipalScore = Object.values(municipal).reduce((sum: number, score: any) => sum + score, 0) / Object.keys(municipal).length;
-    const technicalScore = Object.values(technical).reduce((sum: number, score: any) => sum + score, 0) / Object.keys(technical).length;
-    const qualityScore = Object.values(quality).reduce((sum: number, score: any) => sum + score, 0) / Object.keys(quality).length;
+    const regulatoryScore = Object.values(regulatory).reduce((sum: number, score: Record<string, unknown>) => sum + score, 0) / Object.keys(regulatory).length;
+    const culturalScore = Object.values(cultural).reduce((sum: number, score: Record<string, unknown>) => sum + score, 0) / Object.keys(cultural).length;
+    const municipalScore = Object.values(municipal).reduce((sum: number, score: Record<string, unknown>) => sum + score, 0) / Object.keys(municipal).length;
+    const technicalScore = Object.values(technical).reduce((sum: number, score: Record<string, unknown>) => sum + score, 0) / Object.keys(technical).length;
+    const qualityScore = Object.values(quality).reduce((sum: number, score: Record<string, unknown>) => sum + score, 0) / Object.keys(quality).length;
 
     // Weighted average (regulatory and technical are most critical)
     return (regulatoryScore * 0.3 + culturalScore * 0.2 + municipalScore * 0.2 + technicalScore * 0.3) * 0.85 + qualityScore * 0.15;
@@ -504,7 +504,7 @@ export class NetherlandsMunicipalValidator extends EventEmitter {
   /**
    * Generate Compliance Recommendations
    */
-  private generateRecommendations(regulatory: any, cultural: any, municipal: any, technical: any, quality: any): string[] {
+  private generateRecommendations(regulatory: Record<string, unknown>, cultural: Record<string, unknown>, municipal: Record<string, unknown>, technical: Record<string, unknown>, quality: Record<string, unknown>): string[] {
     const recommendations: string[] = [];
 
     // Regulatory recommendations
@@ -544,7 +544,7 @@ export class NetherlandsMunicipalValidator extends EventEmitter {
   /**
    * Identify Critical Issues
    */
-  private identifyCriticalIssues(regulatory: any, cultural: any, municipal: any, technical: any, quality: any): string[] {
+  private identifyCriticalIssues(regulatory: Record<string, unknown>, cultural: Record<string, unknown>, municipal: Record<string, unknown>, technical: Record<string, unknown>, quality: Record<string, unknown>): string[] {
     const criticalIssues: string[] = [];
 
     // Critical regulatory issues

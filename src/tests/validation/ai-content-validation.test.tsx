@@ -193,7 +193,7 @@ class AIContentValidator {
     return warnings;
   }
 
-  private sanitizeContent(manifest: z.infer<typeof GameManifestSchema>): any {
+  private sanitizeContent(manifest: z.infer<typeof GameManifestSchema>): Record<string, unknown> {
     // Deep clone and sanitize
     const sanitized = JSON.parse(JSON.stringify(manifest));
     
@@ -208,7 +208,7 @@ class AIContentValidator {
     };
     
     // Recursively sanitize all text fields
-    const sanitizeObject = (obj: any): void => {
+    const sanitizeObject = (obj: Record<string, unknown>): void => {
       for (const key in obj) {
         if (typeof obj[key] === 'string') {
           obj[key] = sanitizeText(obj[key]);
@@ -271,7 +271,7 @@ interface ValidationResult {
   success: boolean;
   errors: string[];
   warnings: string[];
-  sanitizedContent: any | null;
+  sanitizedContent: Record<string, unknown> | null;
   suggestion?: string;
 }
 
@@ -418,7 +418,7 @@ describe('AI Content Validation Test Framework', () => {
     });
 
     it('handles circular references gracefully', async () => {
-      const circularManifest: any = {
+      const circularManifest: Record<string, unknown> = {
         game_id: 'circular',
         game_version: '1.0.0',
         title: 'Circular Test',

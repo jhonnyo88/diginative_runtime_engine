@@ -45,7 +45,7 @@ const MUNICIPAL_TIMER_SCENARIOS = {
 };
 
 describe('Timer-Based Challenge Framework', () => {
-  let timerHarness: any;
+  let timerHarness: Record<string, unknown>;
   let realSetTimeout: typeof setTimeout;
   let realClearTimeout: typeof clearTimeout;
 
@@ -407,7 +407,7 @@ function createTimerTestHarness() {
   };
 }
 
-function createMobileTimerHarness(config: any) {
+function createMobileTimerHarness(config: Record<string, unknown>) {
   return {
     measureTimerPerformance: vi.fn().mockResolvedValue({
       timerAccuracy: 99.7,
@@ -420,7 +420,7 @@ function createMobileTimerHarness(config: any) {
   };
 }
 
-function createNetworkTimerHarness(config: any) {
+function createNetworkTimerHarness(config: Record<string, unknown>) {
   return {
     testTimerSynchronization: vi.fn().mockResolvedValue({
       synchronizationAccuracy: 97.5,
@@ -435,7 +435,7 @@ function createNetworkTimerHarness(config: any) {
   };
 }
 
-function createTimerStressHarness(config: any) {
+function createTimerStressHarness(config: Record<string, unknown>) {
   return {
     runTimerStressTest: vi.fn().mockResolvedValue({
       averageAccuracy: 99.95,
@@ -451,7 +451,7 @@ function createTimerStressHarness(config: any) {
   };
 }
 
-function createTimerPersistenceHarness(config: any) {
+function createTimerPersistenceHarness(config: Record<string, unknown>) {
   return {
     startTimer: vi.fn().mockResolvedValue({ started: true }),
     progressTimer: vi.fn().mockResolvedValue({ progressed: true }),
@@ -467,7 +467,7 @@ function createTimerPersistenceHarness(config: any) {
   };
 }
 
-function createEvacuationTimerHarness(config: any) {
+function createEvacuationTimerHarness(config: Record<string, unknown>) {
   return {
     runEvacuationDrill: vi.fn().mockResolvedValue({
       success: true,
@@ -493,7 +493,7 @@ function createEvacuationTimerHarness(config: any) {
   };
 }
 
-function createResourceDeploymentHarness(config: any) {
+function createResourceDeploymentHarness(config: Record<string, unknown>) {
   return {
     runResourceDeployment: vi.fn().mockResolvedValue({
       deploymentSuccess: true,
@@ -508,7 +508,7 @@ function createResourceDeploymentHarness(config: any) {
   };
 }
 
-function createTimerAnalyticsHarness(config: any) {
+function createTimerAnalyticsHarness(config: Record<string, unknown>) {
   return {
     trackTimerSession: vi.fn().mockResolvedValue({
       analytics: {
@@ -532,7 +532,7 @@ function createTimerAnalyticsHarness(config: any) {
   };
 }
 
-function createTimerAccessibilityHarness(config: any) {
+function createTimerAccessibilityHarness(config: Record<string, unknown>) {
   return {
     testAccessibleTimer: vi.fn().mockResolvedValue({
       wcagCompliance: 'AA',
@@ -549,7 +549,7 @@ function createTimerAccessibilityHarness(config: any) {
 }
 
 // Mock components for testing
-function EmergencyTimerChallenge({ scenario, userPersona, networkConditions }: any) {
+function EmergencyTimerChallenge({ scenario, userPersona, networkConditions }: Record<string, unknown>) {
   return (
     <div data-testid="emergency-timer-challenge">
       <h1>{scenario.name}</h1>
@@ -565,7 +565,7 @@ function EmergencyTimerChallenge({ scenario, userPersona, networkConditions }: a
   );
 }
 
-function MobileEmergencyTimer({ scenario, optimizeFor }: any) {
+function MobileEmergencyTimer({ scenario, optimizeFor }: Record<string, unknown>) {
   return (
     <div data-testid="mobile-emergency-timer">
       <h1>{scenario.name}</h1>

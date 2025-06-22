@@ -473,7 +473,7 @@ router.get('/health', async (req: Request, res: Response) => {
 /**
  * Helper function to poll for processing result
  */
-async function pollForResult(processingId: string, timeoutMs: number): Promise<any> {
+async function pollForResult(processingId: string, timeoutMs: number): Promise<Record<string, unknown>> {
   const startTime = Date.now();
   const pollInterval = 500; // Check every 500ms
   

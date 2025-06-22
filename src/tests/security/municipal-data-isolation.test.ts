@@ -133,8 +133,8 @@ const CROSS_TENANT_ACCESS_SCENARIOS = [
 ];
 
 describe('Municipal Data Isolation Verification Testing', () => {
-  let isolationHarness: any;
-  let municipalDataManager: any;
+  let isolationHarness: Record<string, unknown>;
+  let municipalDataManager: Record<string, unknown>;
 
   beforeEach(() => {
     vi.clearAllMocks();

@@ -34,7 +34,7 @@ interface WorldInfo {
   description: string;
   difficulty: 'Foundation' | 'Intermediate' | 'Advanced' | 'Expert' | 'Master';
   estimatedTime: string;
-  icon: any;
+  icon: Record<string, unknown>;
   theme: {
     primaryColor: string;
     secondaryColor: string;

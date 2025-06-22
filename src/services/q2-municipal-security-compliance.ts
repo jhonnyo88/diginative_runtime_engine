@@ -602,7 +602,7 @@ export class Q2MunicipalSecurityEngine extends EventEmitter {
   }
 
   // Helper methods
-  private determineInteractionLevel(mechanicType: string, config: Q2SecurityConfig): any {
+  private determineInteractionLevel(mechanicType: string, config: Q2SecurityConfig): Record<string, unknown> {
     const levelMap = {
       'drag_drop': 'municipal_internal',
       'timed_challenge': 'emergency_response',
@@ -613,7 +613,7 @@ export class Q2MunicipalSecurityEngine extends EventEmitter {
     return levelMap[mechanicType] || 'municipal_internal';
   }
 
-  private classifyMunicipalData(mechanicType: string, config: Q2SecurityConfig): any {
+  private classifyMunicipalData(mechanicType: string, config: Q2SecurityConfig): Record<string, unknown> {
     if (mechanicType === 'character_system' || mechanicType === 'achievement_system') {
       return 'confidential';
     }
@@ -661,7 +661,7 @@ export class Q2MunicipalSecurityEngine extends EventEmitter {
   // Placeholder methods for complex functionality
   private async setupMechanicEncryption(contextId: string, context: Q2SecurityContext): Promise<void> {}
   private async initializeAuditTrail(contextId: string, context: Q2SecurityContext): Promise<void> {}
-  private async validateMechanicCompliance(context: Q2SecurityContext, config: any): Promise<ComplianceValidationResult> {
+  private async validateMechanicCompliance(context: Q2SecurityContext, config: Record<string, unknown>): Promise<ComplianceValidationResult> {
     return {
       isCompliant: true,
       frameworks: context.complianceFrameworks,
@@ -670,14 +670,14 @@ export class Q2MunicipalSecurityEngine extends EventEmitter {
       mitigationActions: []
     };
   }
-  private determineIsolationLevel(config: EuropeanDataSovereigntyConfig): any { return 'government_grade'; }
-  private async setupNetworkSegmentation(municipalityId: string, level: string): Promise<any> { return {}; }
-  private async configureDataEncryption(municipalityId: string, config: any, level: string): Promise<any> { return {}; }
-  private async setupAccessControls(municipalityId: string, config: any): Promise<any> { return {}; }
-  private async initializeTenantAuditTrail(municipalityId: string, config: any): Promise<any> { return {}; }
-  private async setupComplianceMonitoring(municipalityId: string, config: any): Promise<any> { return {}; }
-  private async validateDataSovereigntyCompliance(isolation: any, config: any): Promise<void> {}
-  private async validateInteractionCompliance(context: Q2SecurityContext, data: any): Promise<ComplianceValidationResult> {
+  private determineIsolationLevel(config: EuropeanDataSovereigntyConfig): Record<string, unknown> { return 'government_grade'; }
+  private async setupNetworkSegmentation(municipalityId: string, level: string): Promise<Record<string, unknown>> { return {}; }
+  private async configureDataEncryption(municipalityId: string, config: Record<string, unknown>, level: string): Promise<Record<string, unknown>> { return {}; }
+  private async setupAccessControls(municipalityId: string, config: Record<string, unknown>): Promise<Record<string, unknown>> { return {}; }
+  private async initializeTenantAuditTrail(municipalityId: string, config: Record<string, unknown>): Promise<Record<string, unknown>> { return {}; }
+  private async setupComplianceMonitoring(municipalityId: string, config: Record<string, unknown>): Promise<Record<string, unknown>> { return {}; }
+  private async validateDataSovereigntyCompliance(isolation: Record<string, unknown>, config: Record<string, unknown>): Promise<void> {}
+  private async validateInteractionCompliance(context: Q2SecurityContext, data: Record<string, unknown>): Promise<ComplianceValidationResult> {
     return {
       isCompliant: true,
       frameworks: context.complianceFrameworks,
@@ -686,7 +686,7 @@ export class Q2MunicipalSecurityEngine extends EventEmitter {
       mitigationActions: []
     };
   }
-  private async checkEncryptionStatus(contextId: string, data: any): Promise<EncryptionStatus> {
+  private async checkEncryptionStatus(contextId: string, data: Record<string, unknown>): Promise<EncryptionStatus> {
     return {
       algorithm: 'aes256',
       keyRotationStatus: 'current',
@@ -694,27 +694,27 @@ export class Q2MunicipalSecurityEngine extends EventEmitter {
       auditTrailEncrypted: true
     };
   }
-  private async checkCrossBorderInvolvement(municipalityId: string, data: any): Promise<CrossBorderSecurityContext | undefined> {
+  private async checkCrossBorderInvolvement(municipalityId: string, data: Record<string, unknown>): Promise<CrossBorderSecurityContext | undefined> {
     return undefined;
   }
   private async encryptAuditLog(log: Q2InteractionAuditLog): Promise<void> {}
   private async monitorComplianceViolations(log: Q2InteractionAuditLog): Promise<void> {}
   private async shareCrossBorderAuditTrail(log: Q2InteractionAuditLog, context: CrossBorderSecurityContext): Promise<void> {}
-  private async validateCooperationAgreement(agreement: any): Promise<{ isValid: boolean; reason?: string }> {
+  private async validateCooperationAgreement(agreement: Record<string, unknown>): Promise<{ isValid: boolean; reason?: string }> {
     return { isValid: true };
   }
   private determineCrossBorderEncryptionLevel(classification: string, source: string, target: string): string {
     return 'government_grade';
   }
-  private async generateCrossBorderKeys(source: string, target: string, level: string): Promise<any> { return {}; }
-  private async establishSecureCommunicationChannel(source: string, target: string, keys: any): Promise<any> { return {}; }
-  private async configureCrossBorderAuditTrail(agreement: any): Promise<any> { return {}; }
-  private calculateKeyRotationSchedule(level: string): any { return {}; }
-  private validateTestingScope(scope: any): { isValid: boolean; reason?: string } { return { isValid: true }; }
-  private async analyzeVulnerabilities(results: any): Promise<any> { return { vulnerabilities: [], riskAssessment: { highRiskVulnerabilities: 0 } }; }
-  private async generateRemediationPlan(analysis: any): Promise<any> { return {}; }
-  private async assessComplianceImpact(analysis: any): Promise<any> { return { overallCompliance: 'compliant' }; }
-  private async generatePenetrationTestingReport(result: any): Promise<void> {}
+  private async generateCrossBorderKeys(source: string, target: string, level: string): Promise<Record<string, unknown>> { return {}; }
+  private async establishSecureCommunicationChannel(source: string, target: string, keys: Record<string, unknown>): Promise<Record<string, unknown>> { return {}; }
+  private async configureCrossBorderAuditTrail(agreement: Record<string, unknown>): Promise<Record<string, unknown>> { return {}; }
+  private calculateKeyRotationSchedule(level: string): Record<string, unknown> { return {}; }
+  private validateTestingScope(scope: Record<string, unknown>): { isValid: boolean; reason?: string } { return { isValid: true }; }
+  private async analyzeVulnerabilities(results: Record<string, unknown>): Promise<Record<string, unknown>> { return { vulnerabilities: [], riskAssessment: { highRiskVulnerabilities: 0 } }; }
+  private async generateRemediationPlan(analysis: Record<string, unknown>): Promise<Record<string, unknown>> { return {}; }
+  private async assessComplianceImpact(analysis: Record<string, unknown>): Promise<Record<string, unknown>> { return { overallCompliance: 'compliant' }; }
+  private async generatePenetrationTestingReport(result: Record<string, unknown>): Promise<void> {}
 }
 
 // Supporting interfaces and classes
@@ -741,11 +741,11 @@ interface CrossBorderAgreement {
 interface CrossBorderEncryptionConfig {
   agreementId: string;
   encryptionLevel: string;
-  encryptionKeys: any;
-  secureChannel: any;
-  auditTrailConfig: any;
+  encryptionKeys: Record<string, unknown>;
+  secureChannel: Record<string, unknown>;
+  auditTrailConfig: Record<string, unknown>;
   complianceFrameworks: string[];
-  keyRotationSchedule: any;
+  keyRotationSchedule: Record<string, unknown>;
 }
 
 interface PenetrationTestingScope {
@@ -758,10 +758,10 @@ interface PenetrationTestingResult {
   testId: string;
   timestamp: Date;
   scope: PenetrationTestingScope;
-  vulnerabilities: any[];
-  riskAssessment: any;
-  remediationPlan: any;
-  complianceImpact: any;
+  vulnerabilities: Record<string, unknown>[];
+  riskAssessment: Record<string, unknown>;
+  remediationPlan: Record<string, unknown>;
+  complianceImpact: Record<string, unknown>;
   retestingRequired: boolean;
 }
 
@@ -781,12 +781,12 @@ interface FirewallRule {
 }
 
 interface RoleBasedAccess {
-  roles: any[];
-  permissions: any[];
+  roles: Record<string, unknown>[];
+  permissions: Record<string, unknown>[];
 }
 
 interface PrivilegedAccessManagement {
-  adminAccess: any;
+  adminAccess: Record<string, unknown>;
   auditLogging: boolean;
 }
 
@@ -796,18 +796,18 @@ interface SessionManagement {
 }
 
 interface IncidentResponseConfig {
-  escalationProcedure: any;
+  escalationProcedure: Record<string, unknown>;
   notificationRequirements: string[];
 }
 
 interface TenantAuditTrail {
-  logs: any[];
-  retention: any;
+  logs: Record<string, unknown>[];
+  retention: Record<string, unknown>;
 }
 
 interface ComplianceMonitoring {
   realTimeChecks: boolean;
-  reportingSchedule: any;
+  reportingSchedule: Record<string, unknown>;
 }
 
 // Placeholder classes
@@ -815,7 +815,7 @@ class EncryptionManager {}
 class ComplianceValidator {}
 class SecurityMonitor {}
 class PenetrationTester {
-  async executeTests(scope: PenetrationTestingScope): Promise<any> {
+  async executeTests(scope: PenetrationTestingScope): Promise<Record<string, unknown>> {
     return { vulnerabilities: [] };
   }
 }

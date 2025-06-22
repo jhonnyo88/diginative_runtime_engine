@@ -103,7 +103,7 @@ describe('Content Security Testing', () => {
     });
 
     it('should validate input types before database operations', () => {
-      const validateInput = (input: any, type: string): boolean => {
+      const validateInput = (input: Record<string, unknown>, type: string): boolean => {
         switch (type) {
           case 'number':
             return typeof input === 'number' && !isNaN(input);
@@ -228,7 +228,7 @@ describe('Content Security Testing', () => {
         additionalProperties: false
       };
 
-      const validateApiInput = (input: any): boolean => {
+      const validateApiInput = (input: Record<string, unknown>): boolean => {
         // Check required fields
         if (!input.userId || !input.content) return false;
         
@@ -322,7 +322,7 @@ describe('Content Security Testing', () => {
     });
 
     it('should enforce role-based access control', () => {
-      const checkPermission = (user: any, resource: string, action: string): boolean => {
+      const checkPermission = (user: Record<string, unknown>, resource: string, action: string): boolean => {
         const permissions: Record<string, Record<string, string[]>> = {
           admin: {
             content: ['create', 'read', 'update', 'delete'],

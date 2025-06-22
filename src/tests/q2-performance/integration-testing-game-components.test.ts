@@ -90,8 +90,8 @@ const GAME_SYSTEM_COMPATIBILITY = {
 };
 
 describe('Integration Testing with Existing Game Components for Q2 Drag-Drop Workflows', () => {
-  let integrationHarness: any;
-  let gameSystemTester: any;
+  let integrationHarness: Record<string, unknown>;
+  let gameSystemTester: Record<string, unknown>;
 
   beforeEach(() => {
     vi.clearAllMocks();

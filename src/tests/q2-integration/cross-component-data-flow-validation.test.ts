@@ -142,8 +142,8 @@ const MUNICIPAL_DATA_FLOW_SCENARIOS = {
 };
 
 describe('Cross-Component Testing and Data Flow Validation for Q2 Interactive Mechanics', () => {
-  let crossComponentHarness: any;
-  let dataFlowValidator: any;
+  let crossComponentHarness: Record<string, unknown>;
+  let dataFlowValidator: Record<string, unknown>;
 
   beforeEach(() => {
     vi.clearAllMocks();

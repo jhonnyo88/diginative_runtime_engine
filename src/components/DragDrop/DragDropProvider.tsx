@@ -4,7 +4,7 @@ import { Box } from '@chakra-ui/react';
 export interface DragItem {
   id: string;
   type: string;
-  data: any;
+  data: Record<string, unknown>;
   sourceZone?: string;
 }
 

@@ -106,8 +106,8 @@ const CROSS_COMPONENT_DATA_FLOW = {
 };
 
 describe('Q2 Integration Testing Suite for Interactive Mechanics', () => {
-  let q2IntegrationHarness: any;
-  let mechanicsCoordinator: any;
+  let q2IntegrationHarness: Record<string, unknown>;
+  let mechanicsCoordinator: Record<string, unknown>;
 
   beforeEach(() => {
     vi.clearAllMocks();

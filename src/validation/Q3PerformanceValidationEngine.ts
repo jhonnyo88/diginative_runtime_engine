@@ -580,7 +580,7 @@ export class Q3PerformanceValidationEngine {
     );
   }
 
-  private async measureDemoScenario(scenario: any): Promise<DemoMeasurement> {
+  private async measureDemoScenario(scenario: Record<string, unknown>): Promise<DemoMeasurement> {
     // Simulate demo scenario measurement
     return {
       scenario: scenario.scenarioId,
@@ -593,7 +593,7 @@ export class Q3PerformanceValidationEngine {
     };
   }
 
-  private compileValidationResults(phaseResults: any[]): ValidationResult {
+  private compileValidationResults(phaseResults: Record<string, unknown>[]): ValidationResult {
     // Compile all phase results into comprehensive validation result
     const score = this.calculateOverallScore(phaseResults);
     
@@ -608,12 +608,12 @@ export class Q3PerformanceValidationEngine {
     };
   }
 
-  private calculateOverallScore(phaseResults: any[]): number {
+  private calculateOverallScore(phaseResults: Record<string, unknown>[]): number {
     // Calculate overall validation score
     return 96; // Simulated excellent score
   }
 
-  private compileMetrics(phaseResults: any[]): ValidatedMetrics {
+  private compileMetrics(phaseResults: Record<string, unknown>[]): ValidatedMetrics {
     return {
       hubLoading: { target: 500, achieved: 450, variance: 10, passed: true, confidence: 95, measurements: [440, 450, 460] },
       worldTransition: { target: 800, achieved: 750, variance: 15, passed: true, confidence: 93, measurements: [740, 750, 760] },
@@ -652,15 +652,15 @@ export class Q3PerformanceValidationEngine {
     return 'Q3 Performance Validation completed with excellent results. All targets met for government demonstration.';
   }
 
-  private analyzeHistoricalTrends(): any {
+  private analyzeHistoricalTrends(): Record<string, unknown> {
     return { trend: 'improving', averageScore: 96 };
   }
 
-  private analyzeSwedishNetworks(): any {
+  private analyzeSwedishNetworks(): Record<string, unknown> {
     return { coverage: 'comprehensive', compatibility: 'excellent' };
   }
 
-  private analyzeDevicePerformance(): any {
+  private analyzeDevicePerformance(): Record<string, unknown> {
     return { compatibility: 'excellent', performance: 'meets_targets' };
   }
 }
@@ -785,9 +785,9 @@ interface PerformanceValidationReport {
   executiveSummary: string;
   validationConfiguration: PerformanceValidationConfig;
   latestResults: ValidationResult;
-  historicalTrends: any;
-  swedishNetworkAnalysis: any;
-  devicePerformanceAnalysis: any;
+  historicalTrends: Record<string, unknown>;
+  swedishNetworkAnalysis: Record<string, unknown>;
+  devicePerformanceAnalysis: Record<string, unknown>;
   governmentDemoReadiness: GovernmentReadinessAssessment;
   recommendations: string[];
 }

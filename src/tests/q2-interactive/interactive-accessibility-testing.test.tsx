@@ -71,8 +71,8 @@ const MUNICIPAL_A11Y_REQUIREMENTS = {
 };
 
 describe('Interactive Accessibility Testing Framework', () => {
-  let accessibilityHarness: any;
-  let screenReaderSimulator: any;
+  let accessibilityHarness: Record<string, unknown>;
+  let screenReaderSimulator: Record<string, unknown>;
 
   beforeEach(() => {
     vi.clearAllMocks();
@@ -545,7 +545,7 @@ function createScreenReaderSimulator() {
   };
 }
 
-function createVoiceControlHarness(config: any) {
+function createVoiceControlHarness(config: Record<string, unknown>) {
   return {
     executeVoiceCommand: vi.fn().mockResolvedValue({
       commandRecognized: true,
@@ -556,7 +556,7 @@ function createVoiceControlHarness(config: any) {
   };
 }
 
-function createSwitchNavigationHarness(config: any) {
+function createSwitchNavigationHarness(config: Record<string, unknown>) {
   return {
     performSwitchDragDrop: vi.fn().mockResolvedValue({
       dragDropCompleted: true,
@@ -566,7 +566,7 @@ function createSwitchNavigationHarness(config: any) {
   };
 }
 
-function createTimeExtensionHarness(config: any) {
+function createTimeExtensionHarness(config: Record<string, unknown>) {
   return {
     requestTimeExtension: vi.fn().mockResolvedValue({
       extendedTime: 450000,
@@ -581,7 +581,7 @@ function createTimeExtensionHarness(config: any) {
   };
 }
 
-function createCognitiveAccessibilityHarness(config: any) {
+function createCognitiveAccessibilityHarness(config: Record<string, unknown>) {
   return {
     validateCognitiveSupport: vi.fn().mockResolvedValue({
       progressClarityScore: 0.94,
@@ -592,7 +592,7 @@ function createCognitiveAccessibilityHarness(config: any) {
   };
 }
 
-function createMotorAccessibilityHarness(config: any) {
+function createMotorAccessibilityHarness(config: Record<string, unknown>) {
   return {
     testGestureAdaptations: vi.fn().mockResolvedValue({
       adaptationSuccessful: true,
@@ -607,7 +607,7 @@ function createMotorAccessibilityHarness(config: any) {
   };
 }
 
-function createGestureTimingHarness(config: any) {
+function createGestureTimingHarness(config: Record<string, unknown>) {
   return {
     testTimingAccommodations: vi.fn().mockResolvedValue({
       accommodationsActive: true,
@@ -619,7 +619,7 @@ function createGestureTimingHarness(config: any) {
   };
 }
 
-function createColorContrastHarness(config: any) {
+function createColorContrastHarness(config: Record<string, unknown>) {
   return {
     measureContrast: vi.fn().mockResolvedValue({
       normalTextContrast: 7.2,
@@ -633,7 +633,7 @@ function createColorContrastHarness(config: any) {
   };
 }
 
-function createMagnificationHarness(config: any) {
+function createMagnificationHarness(config: Record<string, unknown>) {
   return {
     testMagnification: vi.fn().mockResolvedValue({
       allZoomLevelsUsable: true,
@@ -650,7 +650,7 @@ function createMagnificationHarness(config: any) {
   };
 }
 
-function createAuditoryAccessibilityHarness(config: any) {
+function createAuditoryAccessibilityHarness(config: Record<string, unknown>) {
   return {
     testAudioAlternatives: vi.fn().mockResolvedValue({
       visualAlternativesProvided: true,
@@ -662,7 +662,7 @@ function createAuditoryAccessibilityHarness(config: any) {
   };
 }
 
-function createGovernmentComplianceHarness(config: any) {
+function createGovernmentComplianceHarness(config: Record<string, unknown>) {
   return {
     validateGovernmentCompliance: vi.fn().mockResolvedValue({
       en301549Compliant: true,
@@ -679,7 +679,7 @@ function createGovernmentComplianceHarness(config: any) {
 }
 
 // Mock components for testing
-function AccessibleDragDropInterface({ municipality, keyboardNavigation, screenReaderSupport }: any) {
+function AccessibleDragDropInterface({ municipality, keyboardNavigation, screenReaderSupport }: Record<string, unknown>) {
   return (
     <div data-testid="accessible-drag-drop">
       <div data-testid="draggable-document" tabIndex={0} role="button" aria-label="Document to move">
@@ -695,7 +695,7 @@ function AccessibleDragDropInterface({ municipality, keyboardNavigation, screenR
   );
 }
 
-function VoiceControlledDragDrop({ municipality, voiceCommands, swedishSupport }: any) {
+function VoiceControlledDragDrop({ municipality, voiceCommands, swedishSupport }: Record<string, unknown>) {
   return (
     <div data-testid="voice-controlled-drag-drop">
       <div>Dokument flyttat</div>
@@ -703,7 +703,7 @@ function VoiceControlledDragDrop({ municipality, voiceCommands, swedishSupport }
   );
 }
 
-function SwitchNavigableDragDrop({ municipality, switchNavigation, scanningEnabled }: any) {
+function SwitchNavigableDragDrop({ municipality, switchNavigation, scanningEnabled }: Record<string, unknown>) {
   return (
     <div data-testid="switch-navigable-drag-drop">
       <div data-testid="scanning-indicator">Scanning...</div>
@@ -712,7 +712,7 @@ function SwitchNavigableDragDrop({ municipality, switchNavigation, scanningEnabl
   );
 }
 
-function AccessibleTimerChallenge({ scenario, municipality, timeExtensions, cognitiveSupport }: any) {
+function AccessibleTimerChallenge({ scenario, municipality, timeExtensions, cognitiveSupport }: Record<string, unknown>) {
   return (
     <div data-testid="accessible-timer-challenge">
       <div data-testid="timer-display">07:30</div>
@@ -720,7 +720,7 @@ function AccessibleTimerChallenge({ scenario, municipality, timeExtensions, cogn
   );
 }
 
-function CognitiveAccessibleTimer({ municipality, simplifiedUI, progressIndicators }: any) {
+function CognitiveAccessibleTimer({ municipality, simplifiedUI, progressIndicators }: Record<string, unknown>) {
   return (
     <div data-testid="cognitive-accessible-timer">
       <div data-testid="progress-bar" role="progressbar" aria-valuenow={40} aria-valuemin={0} aria-valuemax={100} />
@@ -730,7 +730,7 @@ function CognitiveAccessibleTimer({ municipality, simplifiedUI, progressIndicato
   );
 }
 
-function ScreenReaderTimerChallenge({ municipality, announcementLevel, swedishSupport }: any) {
+function ScreenReaderTimerChallenge({ municipality, announcementLevel, swedishSupport }: Record<string, unknown>) {
   return (
     <div data-testid="screen-reader-timer">
       <div data-testid="timer-announcements" aria-live="assertive" />
@@ -739,7 +739,7 @@ function ScreenReaderTimerChallenge({ municipality, announcementLevel, swedishSu
   );
 }
 
-function MotorAccessibleGestures({ municipality, gestureAlternatives, adaptiveTargets }: any) {
+function MotorAccessibleGestures({ municipality, gestureAlternatives, adaptiveTargets }: Record<string, unknown>) {
   return (
     <div data-testid="motor-accessible-gestures">
       <button style={{ minWidth: '60px', minHeight: '60px' }}>Large Target</button>
@@ -747,7 +747,7 @@ function MotorAccessibleGestures({ municipality, gestureAlternatives, adaptiveTa
   );
 }
 
-function TimingAccommodatedGestures({ municipality, extendedTimeouts, dwellActivation }: any) {
+function TimingAccommodatedGestures({ municipality, extendedTimeouts, dwellActivation }: Record<string, unknown>) {
   return (
     <div data-testid="timing-accommodated-gestures">
       <button>Dwell Activated Button</button>
@@ -755,7 +755,7 @@ function TimingAccommodatedGestures({ municipality, extendedTimeouts, dwellActiv
   );
 }
 
-function HighContrastInteractiveElements({ municipality, contrastMode, colorBlindSupport }: any) {
+function HighContrastInteractiveElements({ municipality, contrastMode, colorBlindSupport }: Record<string, unknown>) {
   return (
     <div data-testid="high-contrast-elements" style={{ backgroundColor: '#ffffff', color: '#003366' }}>
       <button style={{ backgroundColor: '#003366', color: '#ffffff' }}>High Contrast Button</button>
@@ -763,7 +763,7 @@ function HighContrastInteractiveElements({ municipality, contrastMode, colorBlin
   );
 }
 
-function MagnificationSupportedInterface({ municipality, maxZoom, reflowEnabled }: any) {
+function MagnificationSupportedInterface({ municipality, maxZoom, reflowEnabled }: Record<string, unknown>) {
   return (
     <div data-testid="magnification-supported">
       <div style={{ maxWidth: '100%', overflow: 'hidden' }}>Reflowing content</div>
@@ -771,7 +771,7 @@ function MagnificationSupportedInterface({ municipality, maxZoom, reflowEnabled 
   );
 }
 
-function VisualAudioAlternatives({ municipality, visualFeedback, captionsEnabled }: any) {
+function VisualAudioAlternatives({ municipality, visualFeedback, captionsEnabled }: Record<string, unknown>) {
   return (
     <div data-testid="visual-audio-alternatives">
       <div aria-live="polite">Visual feedback for audio</div>
@@ -779,7 +779,7 @@ function VisualAudioAlternatives({ municipality, visualFeedback, captionsEnabled
   );
 }
 
-function SwedishGovernmentCompliantInterface({ municipality, complianceLevel, governmentStandard }: any) {
+function SwedishGovernmentCompliantInterface({ municipality, complianceLevel, governmentStandard }: Record<string, unknown>) {
   return (
     <div data-testid="government-compliant-interface" role="main" aria-label="Municipal interface">
       <h1>Malmö Municipality Interface</h1>

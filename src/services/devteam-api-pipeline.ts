@@ -663,7 +663,7 @@ export class DevTeamAPIPipeline {
     `.replace(/\s+/g, ' ').trim();
   }
 
-  private generateContentHash(content: any): string {
+  private generateContentHash(content: Record<string, unknown>): string {
     const str = JSON.stringify(content);
     let hash = 0;
     for (let i = 0; i < str.length; i++) {
@@ -709,7 +709,7 @@ export class DevTeamAPIPipeline {
     return batches;
   }
 
-  private async pollForValidationResult(id: string, timeout: number): Promise<any> {
+  private async pollForValidationResult(id: string, timeout: number): Promise<Record<string, unknown>> {
     const startTime = Date.now();
     const pollInterval = 100;
     
@@ -724,14 +724,14 @@ export class DevTeamAPIPipeline {
     return null;
   }
 
-  private async applyContentOptimizations(content: GameManifest, validationResult: any): Promise<GameManifest> {
+  private async applyContentOptimizations(content: GameManifest, validationResult: Record<string, unknown>): Promise<GameManifest> {
     // Apply optimizations based on validation warnings and performance hints
     return {
       ...content,
       scenes: content.scenes?.map(scene => ({
         ...scene,
         // Optimize based on validation feedback
-        ...(validationResult.warnings?.some((w: any) => w.type === 'performance') && {
+        ...(validationResult.warnings?.some((w: Record<string, unknown>) => w.type === 'performance') && {
           preload: true
         })
       }))

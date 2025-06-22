@@ -113,7 +113,7 @@ export class DevTeamContentValidator {
 
     // Validate scenes
     if (Array.isArray(manifest.scenes)) {
-      manifest.scenes.forEach((scene: any, index: number) => {
+      manifest.scenes.forEach((scene: Record<string, unknown>, index: number) => {
         this.validateScene(scene, `scenes[${index}]`);
       });
     }
@@ -129,7 +129,7 @@ export class DevTeamContentValidator {
   /**
    * Validate game metadata
    */
-  private validateMetadata(metadata: any): void {
+  private validateMetadata(metadata: Record<string, unknown>): void {
     const path = 'metadata';
     
     // Required metadata fields
@@ -161,7 +161,7 @@ export class DevTeamContentValidator {
   /**
    * Validate individual scene
    */
-  private validateScene(scene: any, path: string): void {
+  private validateScene(scene: Record<string, unknown>, path: string): void {
     // Required scene fields
     this.validateRequiredField(scene, 'id', 'string', path);
     this.validateRequiredField(scene, 'type', 'string', path);
@@ -196,14 +196,14 @@ export class DevTeamContentValidator {
   /**
    * Validate dialogue scene specifics
    */
-  private validateDialogueScene(scene: any, path: string): void {
+  private validateDialogueScene(scene: Record<string, unknown>, path: string): void {
     // Handle both direct messages and DevTeam format
     if (scene.dialogue_turns) {
       // DevTeam format
       if (!Array.isArray(scene.dialogue_turns)) {
         this.addError(`${path}.dialogue_turns`, 'dialogue_turns must be an array', 'invalid_type');
       } else {
-        scene.dialogue_turns.forEach((turn: any, index: number) => {
+        scene.dialogue_turns.forEach((turn: Record<string, unknown>, index: number) => {
           const turnPath = `${path}.dialogue_turns[${index}]`;
           this.validateRequiredField(turn, 'speaker', 'string', turnPath);
           this.validateRequiredField(turn, 'text', 'string', turnPath);
@@ -225,21 +225,21 @@ export class DevTeamContentValidator {
   /**
    * Validate quiz scene specifics
    */
-  private validateQuizScene(scene: any, path: string): void {
+  private validateQuizScene(scene: Record<string, unknown>, path: string): void {
     // Handle both formats
     if (scene.questions) {
       // DevTeam format with questions array
       if (!Array.isArray(scene.questions)) {
         this.addError(`${path}.questions`, 'questions must be an array', 'invalid_type');
       } else {
-        scene.questions.forEach((question: any, qIndex: number) => {
+        scene.questions.forEach((question: Record<string, unknown>, qIndex: number) => {
           const qPath = `${path}.questions[${qIndex}]`;
           this.validateRequiredField(question, 'question_text', 'string', qPath);
           this.validateRequiredField(question, 'options', 'array', qPath);
           
           if (Array.isArray(question.options)) {
             let hasCorrect = false;
-            question.options.forEach((option: any, oIndex: number) => {
+            question.options.forEach((option: Record<string, unknown>, oIndex: number) => {
               const optPath = `${qPath}.options[${oIndex}]`;
               // Support both 'text' and 'option_text'
               if (!option.text && !option.option_text) {
@@ -270,7 +270,7 @@ export class DevTeamContentValidator {
   /**
    * Validate scene navigation
    */
-  private validateNavigation(navigation: any, path: string): void {
+  private validateNavigation(navigation: Record<string, unknown>, path: string): void {
     if (navigation.next && typeof navigation.next !== 'string') {
       this.addError(`${path}.next`, 'Navigation next must be a string (scene ID or "end")', 'invalid_type');
     }
@@ -280,7 +280,7 @@ export class DevTeamContentValidator {
    * Helper to validate required fields
    */
   private validateRequiredField(
-    obj: any, 
+    obj: Record<string, unknown>, 
     field: string, 
     expectedType: string, 
     parentPath: string = ''

@@ -60,7 +60,7 @@ global.WebSocket = MockWebSocket as any;
 
 // Mock GameContainer
 vi.mock('../GameContainer/GameContainer', () => ({
-  GameContainer: ({ gameData, isPreviewMode }: any) => (
+  GameContainer: ({ gameData, isPreviewMode }: Record<string, unknown>) => (
     <div data-testid="game-container">
       {isPreviewMode ? 'Preview Mode' : 'Normal Mode'}
       {gameData && <div data-testid="game-data">{gameData.metadata?.title}</div>}

@@ -747,7 +747,7 @@ export class SAMLProductionManager {
     return null;
   }
 
-  private generateSecurityRecommendations(summary: any, risks: SecurityRisk[]): string[] {
+  private generateSecurityRecommendations(summary: Record<string, unknown>, risks: SecurityRisk[]): string[] {
     const recommendations: string[] = [];
 
     if (summary.failedLogins > summary.totalLogins * 0.1) {

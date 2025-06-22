@@ -37,8 +37,8 @@ export const MonitoringDashboard: React.FC<MonitoringDashboardProps> = ({
   position = 'bottom-right'
 }) => {
   const [isOpen, setIsOpen] = useState(show);
-  const [sessionData, setSessionData] = useState<any>(null);
-  const [performanceMetrics, setPerformanceMetrics] = useState<any>(null);
+  const [sessionData, setSessionData] = useState<Record<string, unknown>>(null);
+  const [performanceMetrics, setPerformanceMetrics] = useState<Record<string, unknown>>(null);
   const [isEnabled, setIsEnabled] = useState(false);
 
   const bgColor = useColorModeValue('white', 'gray.800');

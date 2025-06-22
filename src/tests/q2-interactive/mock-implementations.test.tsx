@@ -65,8 +65,8 @@ const MUNICIPAL_MOCK_DATA = {
 };
 
 describe('Q2 Interactive Mechanics Mock Implementations', () => {
-  let mockHarness: any;
-  let stateManager: any;
+  let mockHarness: Record<string, unknown>;
+  let stateManager: Record<string, unknown>;
 
   beforeEach(() => {
     vi.clearAllMocks();
@@ -510,7 +510,7 @@ function createMockStateManager() {
   };
 }
 
-function createDragDropMock(config: any) {
+function createDragDropMock(config: Record<string, unknown>) {
   return {
     simulateDocumentMove: vi.fn().mockResolvedValue({
       success: true,
@@ -520,7 +520,7 @@ function createDragDropMock(config: any) {
   };
 }
 
-function createWorkflowValidationMock(config: any) {
+function createWorkflowValidationMock(config: Record<string, unknown>) {
   return {
     validateDocumentTransition: vi.fn().mockResolvedValue({
       valid: false,
@@ -530,7 +530,7 @@ function createWorkflowValidationMock(config: any) {
   };
 }
 
-function createAccessibilityDragDropMock(config: any) {
+function createAccessibilityDragDropMock(config: Record<string, unknown>) {
   return {
     simulateKeyboardDragDrop: vi.fn().mockResolvedValue({
       success: true,
@@ -540,7 +540,7 @@ function createAccessibilityDragDropMock(config: any) {
   };
 }
 
-function createTimerChallengeMock(config: any) {
+function createTimerChallengeMock(config: Record<string, unknown>) {
   return {
     simulateEmergencyChallenge: vi.fn().mockResolvedValue({
       completion: true,
@@ -560,7 +560,7 @@ function createTimerChallengeMock(config: any) {
   };
 }
 
-function createMultiParticipantTimerMock(config: any) {
+function createMultiParticipantTimerMock(config: Record<string, unknown>) {
   return {
     simulateMultiParticipantChallenge: vi.fn().mockResolvedValue({
       allParticipantsSync: true,
@@ -578,7 +578,7 @@ function createMultiParticipantTimerMock(config: any) {
   };
 }
 
-function createAdaptiveDifficultyMock(config: any) {
+function createAdaptiveDifficultyMock(config: Record<string, unknown>) {
   return {
     simulateAdaptiveDifficulty: vi.fn().mockResolvedValue({
       adjustedDifficulty: 'intermediate-plus',
@@ -588,7 +588,7 @@ function createAdaptiveDifficultyMock(config: any) {
   };
 }
 
-function createCharacterInteractionMock(config: any) {
+function createCharacterInteractionMock(config: Record<string, unknown>) {
   return {
     simulateCharacterDialogue: vi.fn().mockResolvedValue({
       dialogueFlow: 'natural',
@@ -602,7 +602,7 @@ function createCharacterInteractionMock(config: any) {
   };
 }
 
-function createBranchingNarrativeMock(config: any) {
+function createBranchingNarrativeMock(config: Record<string, unknown>) {
   return {
     simulateBranchingNarrative: vi.fn().mockResolvedValue({
       pathTaken: ['conservative-approach', 'citizen-consultation', 'transparency-focus'],
@@ -617,7 +617,7 @@ function createBranchingNarrativeMock(config: any) {
   };
 }
 
-function createMunicipalAPIMock(config: any) {
+function createMunicipalAPIMock(config: Record<string, unknown>) {
   return {
     simulateAPICall: vi.fn()
       .mockResolvedValueOnce({
@@ -634,7 +634,7 @@ function createMunicipalAPIMock(config: any) {
   };
 }
 
-function createStateManagementMock(config: any) {
+function createStateManagementMock(config: Record<string, unknown>) {
   return {
     simulateStateTransition: vi.fn().mockResolvedValue({
       stateTransition: 'successful',
@@ -652,7 +652,7 @@ function createStateManagementMock(config: any) {
   };
 }
 
-function createHotReloadMock(config: any) {
+function createHotReloadMock(config: Record<string, unknown>) {
   return {
     simulateComponentUpdate: vi.fn().mockResolvedValue({
       reloadTime: 85,
@@ -662,7 +662,7 @@ function createHotReloadMock(config: any) {
   };
 }
 
-function createDesignValidationMock(config: any) {
+function createDesignValidationMock(config: Record<string, unknown>) {
   return {
     validateDesign: vi.fn().mockResolvedValue({
       municipalAppropriateness: true,
@@ -675,7 +675,7 @@ function createDesignValidationMock(config: any) {
 }
 
 // Mock components for testing
-function MockDragDropWorkflow({ configuration, mockData, municipality }: any) {
+function MockDragDropWorkflow({ configuration, mockData, municipality }: Record<string, unknown>) {
   return (
     <div data-testid="mock-drag-drop-workflow">
       <div data-testid="mock-document-gdpr-001">GDPR Training Document</div>
@@ -686,7 +686,7 @@ function MockDragDropWorkflow({ configuration, mockData, municipality }: any) {
   );
 }
 
-function MockWorkflowValidation({ municipalRules, validationLevel, municipality }: any) {
+function MockWorkflowValidation({ municipalRules, validationLevel, municipality }: Record<string, unknown>) {
   return (
     <div data-testid="mock-workflow-validation">
       <div>Supervisor approval required</div>
@@ -695,7 +695,7 @@ function MockWorkflowValidation({ municipalRules, validationLevel, municipality 
   );
 }
 
-function MockAccessibleDragDrop({ keyboardSupport, screenReaderSupport, municipality }: any) {
+function MockAccessibleDragDrop({ keyboardSupport, screenReaderSupport, municipality }: Record<string, unknown>) {
   return (
     <div data-testid="mock-accessible-drag-drop">
       <div aria-label="document selected for moving">Document</div>
@@ -704,7 +704,7 @@ function MockAccessibleDragDrop({ keyboardSupport, screenReaderSupport, municipa
   );
 }
 
-function MockTimedChallenge({ scenario, duration, municipality }: any) {
+function MockTimedChallenge({ scenario, duration, municipality }: Record<string, unknown>) {
   return (
     <div data-testid="mock-timed-challenge">
       <div data-testid="challenge-timer">05:00</div>
@@ -713,7 +713,7 @@ function MockTimedChallenge({ scenario, duration, municipality }: any) {
   );
 }
 
-function MockMultiParticipantTimer({ participantCount, synchronization, municipality }: any) {
+function MockMultiParticipantTimer({ participantCount, synchronization, municipality }: Record<string, unknown>) {
   return (
     <div data-testid="mock-multi-participant-timer">
       <div data-testid="participant-count">{participantCount}</div>
@@ -722,7 +722,7 @@ function MockMultiParticipantTimer({ participantCount, synchronization, municipa
   );
 }
 
-function MockAdaptiveDifficulty({ initialDifficulty, adaptationEnabled, municipality }: any) {
+function MockAdaptiveDifficulty({ initialDifficulty, adaptationEnabled, municipality }: Record<string, unknown>) {
   return (
     <div data-testid="mock-adaptive-difficulty">
       <div data-testid="difficulty-indicator">Intermediate-plus</div>
@@ -731,7 +731,7 @@ function MockAdaptiveDifficulty({ initialDifficulty, adaptationEnabled, municipa
   );
 }
 
-function MockCharacterInteraction({ characters, municipality, culturalContext }: any) {
+function MockCharacterInteraction({ characters, municipality, culturalContext }: Record<string, unknown>) {
   return (
     <div data-testid="mock-character-interaction">
       <div data-testid="character-anna">Vi behöver förbereda oss</div>
@@ -740,7 +740,7 @@ function MockCharacterInteraction({ characters, municipality, culturalContext }:
   );
 }
 
-function MockBranchingNarrative({ scenario, branchingEnabled, municipality }: any) {
+function MockBranchingNarrative({ scenario, branchingEnabled, municipality }: Record<string, unknown>) {
   return (
     <div data-testid="mock-branching-narrative">
       <div data-testid="scenario-name">{scenario}</div>
@@ -749,7 +749,7 @@ function MockBranchingNarrative({ scenario, branchingEnabled, municipality }: an
   );
 }
 
-function MockAPIIntegration({ endpoints, municipality }: any) {
+function MockAPIIntegration({ endpoints, municipality }: Record<string, unknown>) {
   return (
     <div data-testid="mock-api-integration">
       <div data-testid="api-status">Connected</div>
@@ -758,7 +758,7 @@ function MockAPIIntegration({ endpoints, municipality }: any) {
   );
 }
 
-function MockStateManagement({ initialState, persistenceEnabled, municipality }: any) {
+function MockStateManagement({ initialState, persistenceEnabled, municipality }: Record<string, unknown>) {
   return (
     <div data-testid="mock-state-management">
       <div data-testid="state-status">Active</div>
@@ -767,7 +767,7 @@ function MockStateManagement({ initialState, persistenceEnabled, municipality }:
   );
 }
 
-function MockHotReloadEnvironment({ mockComponents, municipality }: any) {
+function MockHotReloadEnvironment({ mockComponents, municipality }: Record<string, unknown>) {
   return (
     <div data-testid="mock-hot-reload-environment">
       <div data-testid="reload-indicator">Updated</div>
@@ -776,7 +776,7 @@ function MockHotReloadEnvironment({ mockComponents, municipality }: any) {
   );
 }
 
-function MockDesignValidation({ validationCriteria, municipality }: any) {
+function MockDesignValidation({ validationCriteria, municipality }: Record<string, unknown>) {
   return (
     <div data-testid="mock-design-validation">
       <div data-testid="validation-score">95%</div>

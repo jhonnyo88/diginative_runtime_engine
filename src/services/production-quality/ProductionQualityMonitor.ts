@@ -290,7 +290,7 @@ export class ProductionQualityMonitor extends EventEmitter {
   /**
    * Calculate Overall Quality Score
    */
-  private async calculateQualityScore(performance: any, compliance: any, reliability: any) {
+  private async calculateQualityScore(performance: Record<string, unknown>, compliance: Record<string, unknown>, reliability: Record<string, unknown>) {
     // Calculate weighted quality score
     const performanceScore = this.calculatePerformanceScore(performance);
     const complianceScore = (compliance.gdprCompliance + compliance.culturalAdaptation + 
@@ -315,7 +315,7 @@ export class ProductionQualityMonitor extends EventEmitter {
   /**
    * Calculate Performance Score
    */
-  private calculatePerformanceScore(performance: any): number {
+  private calculatePerformanceScore(performance: Record<string, unknown>): number {
     // Calculate scores based on performance excellence (higher is better)
     const hubScore = Math.max(0, Math.min(100, 100 * (this.specs.performance.hubLoadingThreshold / performance.hubLoadTime)));
     const transitionScore = Math.max(0, Math.min(100, 100 * (this.specs.performance.worldTransitionThreshold / performance.worldTransitionTime)));
@@ -606,7 +606,7 @@ export class ProductionQualityMonitor extends EventEmitter {
   /**
    * Assess Risk Level
    */
-  private assessRiskLevel(score: number, performance: any, compliance: any, reliability: any): 'low' | 'medium' | 'high' {
+  private assessRiskLevel(score: number, performance: Record<string, unknown>, compliance: Record<string, unknown>, reliability: Record<string, unknown>): 'low' | 'medium' | 'high' {
     if (score < 85 || reliability.uptime < 99.5 || compliance.gdprCompliance < 95) {
       return 'high';
     }
@@ -619,7 +619,7 @@ export class ProductionQualityMonitor extends EventEmitter {
   /**
    * Identify Improvement Opportunities
    */
-  private identifyImprovementOpportunities(performance: any, compliance: any, reliability: any): string[] {
+  private identifyImprovementOpportunities(performance: Record<string, unknown>, compliance: Record<string, unknown>, reliability: Record<string, unknown>): string[] {
     const opportunities: string[] = [];
 
     if (performance.hubLoadTime > 600) {
@@ -638,7 +638,7 @@ export class ProductionQualityMonitor extends EventEmitter {
   /**
    * Handle Quality Check Failure
    */
-  private async handleQualityCheckFailure(error: any): Promise<void> {
+  private async handleQualityCheckFailure(error: Record<string, unknown>): Promise<void> {
     await this.createAlert({
       severity: 'error',
       category: 'quality',

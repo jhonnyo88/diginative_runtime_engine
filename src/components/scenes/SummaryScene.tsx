@@ -28,9 +28,9 @@ import { validateMunicipalBranding, getMunicipalThemeOverrides, type MunicipalBr
 
 interface SummarySceneProps {
   scene: SummarySceneType;
-  onComplete: (results: any) => void;
+  onComplete: (results: Record<string, unknown>) => void;
   analytics?: {
-    trackEvent: (eventType: string, data: any) => void;
+    trackEvent: (eventType: string, data: Record<string, unknown>) => void;
   };
   // Municipal branding integration
   municipalBranding?: Partial<MunicipalBranding>;

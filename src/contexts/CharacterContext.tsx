@@ -489,7 +489,7 @@ export const CharacterProvider: React.FC<{ children: ReactNode }> = ({ children 
     return Math.min(100, Math.round((positiveInteractions / totalInteractions) * 100));
   };
 
-  const analyzeEmotionTrend = (emotionHistory: any[]): 'improving' | 'stable' | 'declining' => {
+  const analyzeEmotionTrend = (emotionHistory: Record<string, unknown>[]): 'improving' | 'stable' | 'declining' => {
     if (emotionHistory.length < 3) return 'stable';
     
     const recent = emotionHistory.slice(-3);

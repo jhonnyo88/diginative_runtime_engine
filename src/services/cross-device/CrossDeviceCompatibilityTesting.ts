@@ -833,7 +833,7 @@ export class CrossDeviceCompatibilityTesting extends EventEmitter {
   /**
    * Get Cross-Device Testing Summary
    */
-  getCrossDeviceTestingSummary(): any {
+  getCrossDeviceTestingSummary(): Record<string, unknown> {
     const summary = this.testResults.get('compatibility_summary')?.[0];
     const categories = Object.keys(this.compatibilitySpecs.deviceCategories);
     

@@ -19,9 +19,9 @@ import { CheckIcon, StarIcon, CertificateIcon } from '../icons/GameIcons';
 
 interface AssessmentSceneProps {
   scene: AssessmentSceneType;
-  onComplete: (results: any) => void;
+  onComplete: (results: Record<string, unknown>) => void;
   analytics?: {
-    trackEvent: (eventType: string, data: any) => void;
+    trackEvent: (eventType: string, data: Record<string, unknown>) => void;
   };
 }
 

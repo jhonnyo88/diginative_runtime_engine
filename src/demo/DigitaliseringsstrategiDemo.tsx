@@ -119,7 +119,7 @@ export const DigitaliseringsstrategiDemo: React.FC = () => {
             culturalContext="swedish_mobile"
             playerName={playerName}
             analytics={{
-              trackEvent: (eventType: string, data: any) => {
+              trackEvent: (eventType: string, data: Record<string, unknown>) => {
                 console.log('Analytics:', eventType, data);
               }
             }}

@@ -57,8 +57,8 @@ const ANNA_SVENSSON_CONSTRAINTS = {
 };
 
 describe('Bundle Size Monitoring and Prevention', () => {
-  let bundleAnalyzer: any;
-  let budgetMonitor: any;
+  let bundleAnalyzer: Record<string, unknown>;
+  let budgetMonitor: Record<string, unknown>;
 
   beforeEach(() => {
     vi.clearAllMocks();
@@ -283,7 +283,7 @@ describe('Bundle Size Monitoring and Prevention', () => {
       expect(budgetViolations.warnings).toHaveLength(expect.any(Number));
 
       // Test violation severity levels
-      budgetViolations.warnings.forEach((warning: any) => {
+      budgetViolations.warnings.forEach((warning: Record<string, unknown>) => {
         expect(warning.severity).toMatch(/yellow|orange|red/);
         expect(warning.budgetType).toMatch(/javascript|css|assets|session/);
         expect(warning.impact).toMatch(/low|medium|high|critical/);
@@ -344,19 +344,19 @@ describe('Bundle Size Monitoring and Prevention', () => {
       expect(optimizationSuggestions.estimatedImpact).toBeGreaterThan(0.1); // >10% improvement
 
       // Verify suggestion categories
-      const suggestionCategories = optimizationSuggestions.suggestions.map((s: any) => s.category);
+      const suggestionCategories = optimizationSuggestions.suggestions.map((s: Record<string, unknown>) => s.category);
       expect(suggestionCategories).toContain('bundle-splitting');
       expect(suggestionCategories).toContain('asset-optimization');
       expect(suggestionCategories).toContain('caching-strategy');
 
       // Test municipal-specific optimizations
       const municipalSuggestions = optimizationSuggestions.suggestions.filter(
-        (s: any) => s.municipalSpecific === true
+        (s: Record<string, unknown>) => s.municipalSpecific === true
       );
       expect(municipalSuggestions.length).toBeGreaterThan(0);
 
       // Verify implementation priorities
-      optimizationSuggestions.suggestions.forEach((suggestion: any) => {
+      optimizationSuggestions.suggestions.forEach((suggestion: Record<string, unknown>) => {
         expect(suggestion).toMatchObject({
           title: expect.any(String),
           description: expect.any(String),
@@ -585,7 +585,7 @@ function createBudgetMonitor() {
   };
 }
 
-function createNetworkOptimizer(constraints: any) {
+function createNetworkOptimizer(constraints: Record<string, unknown>) {
   return {
     optimizeForNetworkConditions: vi.fn().mockResolvedValue({
       downloadTime: 8500, // 8.5s (under 10s target)

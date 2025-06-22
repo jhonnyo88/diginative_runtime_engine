@@ -524,7 +524,7 @@ export class MultiWorldStateManager {
   /**
    * GDPR compliance: Export user data
    */
-  async exportUserData(userId: string): Promise<any> {
+  async exportUserData(userId: string): Promise<Record<string, unknown>> {
     try {
       const { data, error } = await supabase
         .from('world_hub_sessions')

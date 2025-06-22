@@ -93,8 +93,8 @@ const BROWSER_OPTIMIZATIONS = {
 };
 
 describe('Cross-Browser Drag-Drop Testing for Q2 Municipal Workflows', () => {
-  let crossBrowserHarness: any;
-  let browserSimulator: any;
+  let crossBrowserHarness: Record<string, unknown>;
+  let browserSimulator: Record<string, unknown>;
 
   beforeEach(() => {
     vi.clearAllMocks();
@@ -497,7 +497,7 @@ describe('Cross-Browser Drag-Drop Testing for Q2 Municipal Workflows', () => {
       });
 
       // All browsers should meet minimum performance requirements
-      Object.values(performanceBenchmark.browserPerformanceRankings).forEach((browserPerf: any) => {
+      Object.values(performanceBenchmark.browserPerformanceRankings).forEach((browserPerf: Record<string, unknown>) => {
         expect(browserPerf.averageFPS).toBeGreaterThanOrEqual(55);
         expect(browserPerf.dragLatency).toBeLessThan(80);
         expect(browserPerf.memoryEfficiency).toBeGreaterThan(0.8);

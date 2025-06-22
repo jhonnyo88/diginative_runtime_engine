@@ -17,7 +17,7 @@ import { EUComplianceManager } from '../../services/gdpr-compliance-framework';
 
 describe('EUComplianceManager Unit Tests', () => {
   let complianceManager: EUComplianceManager;
-  let consoleSpy: any;
+  let consoleSpy: Record<string, unknown>;
 
   beforeEach(() => {
     complianceManager = new EUComplianceManager();
@@ -942,7 +942,7 @@ describe('EUComplianceManager Security Tests', () => {
 
 describe('EUComplianceManager Error Handling', () => {
   let complianceManager: EUComplianceManager;
-  let consoleErrorSpy: any;
+  let consoleErrorSpy: Record<string, unknown>;
 
   beforeEach(() => {
     complianceManager = new EUComplianceManager();

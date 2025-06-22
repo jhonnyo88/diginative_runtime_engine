@@ -5,7 +5,7 @@ import { useDragDrop } from './DragDropProvider';
 interface DraggableProps extends BoxProps {
   itemId: string;
   itemType: string;
-  itemData?: any;
+  itemData?: Record<string, unknown>;
   children: React.ReactNode;
   isDisabled?: boolean;
   sourceZone?: string;

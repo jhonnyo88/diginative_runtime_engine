@@ -1081,7 +1081,7 @@ export class SwedishCulturalIntelligenceTesting extends EventEmitter {
   /**
    * Get Cultural Intelligence Testing Summary
    */
-  getCulturalTestingSummary(): any {
+  getCulturalTestingSummary(): Record<string, unknown> {
     const summary = this.testResults.get('cultural_validation_summary')?.[0];
     const dimensions = Object.keys(this.culturalSpecs.culturalDimensions);
     

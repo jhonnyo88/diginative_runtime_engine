@@ -122,8 +122,8 @@ const MUNICIPAL_CHARACTER_SCENARIOS = {
 };
 
 describe('Drag-Drop Workflows + Character System Integration Testing', () => {
-  let characterDragHarness: any;
-  let emotionCalculator: any;
+  let characterDragHarness: Record<string, unknown>;
+  let emotionCalculator: Record<string, unknown>;
 
   beforeEach(() => {
     vi.clearAllMocks();

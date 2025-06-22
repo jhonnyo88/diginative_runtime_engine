@@ -479,12 +479,12 @@ export class Q3DemoEnvironmentOrchestrator {
     return { success: true, score: 99, details: 'Government compliance validated' };
   }
 
-  private calculateValidationScore(results: any): number {
-    const scores = Object.values(results).map((r: any) => r.score);
+  private calculateValidationScore(results: Record<string, unknown>): number {
+    const scores = Object.values(results).map((r: Record<string, unknown>) => r.score);
     return Math.round(scores.reduce((a: number, b: number) => a + b, 0) / scores.length);
   }
 
-  private generateValidationRecommendations(results: any): string[] {
+  private generateValidationRecommendations(results: Record<string, unknown>): string[] {
     return ['All systems operational for government demonstration'];
   }
 
@@ -559,22 +559,22 @@ export class Q3DemoEnvironmentOrchestrator {
     return { success: true };
   }
 
-  private calculatePerformanceMetrics(logs: DemoPerformanceLog[]): any {
+  private calculatePerformanceMetrics(logs: DemoPerformanceLog[]): Record<string, unknown> {
     return {
       averageHubLoading: logs.reduce((sum, log) => sum + log.hubLoading, 0) / logs.length,
       averageWorldTransition: logs.reduce((sum, log) => sum + log.worldTransition, 0) / logs.length
     };
   }
 
-  private analyzeNetworkPerformance(): any {
+  private analyzeNetworkPerformance(): Record<string, unknown> {
     return { status: 'excellent', latency: 45, stability: 99 };
   }
 
-  private analyzeDevicePerformance(): any {
+  private analyzeDevicePerformance(): Record<string, unknown> {
     return { status: 'excellent', averagePerformance: 97 };
   }
 
-  private getBackupSystemStatus(): any {
+  private getBackupSystemStatus(): Record<string, unknown> {
     return { status: 'ready', failoverCapability: 'validated' };
   }
 
@@ -582,7 +582,7 @@ export class Q3DemoEnvironmentOrchestrator {
     return ['Performance excellent for government demonstration'];
   }
 
-  private assessGovernmentCompliance(): any {
+  private assessGovernmentCompliance(): Record<string, unknown> {
     return { status: 'compliant', score: 99 };
   }
 
@@ -691,7 +691,7 @@ interface DemoReadinessReport {
 interface DemoValidationResult {
   ready: boolean;
   score: number;
-  results: any;
+  results: Record<string, unknown>;
   recommendations: string[];
 }
 
@@ -706,12 +706,12 @@ interface FailoverResult {
 interface DemoPerformanceReport {
   demoConfiguration: DemoEnvironmentConfig;
   environmentStatus: DemoEnvironmentStatus;
-  performanceMetrics: any;
-  networkAnalysis: any;
-  devicePerformance: any;
-  backupSystemStatus: any;
+  performanceMetrics: Record<string, unknown>;
+  networkAnalysis: Record<string, unknown>;
+  devicePerformance: Record<string, unknown>;
+  backupSystemStatus: Record<string, unknown>;
   recommendations: string[];
-  governmentCompliance: any;
+  governmentCompliance: Record<string, unknown>;
 }
 
 interface DemoPerformanceLog {

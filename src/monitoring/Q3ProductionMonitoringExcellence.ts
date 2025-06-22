@@ -252,13 +252,13 @@ export class Q3ProductionMonitoringExcellence {
    * Generate comprehensive monitoring report
    */
   generateMonitoringReport(): {
-    summary: any;
+    summary: Record<string, unknown>;
     metrics: MonitoringMetrics;
-    health: any;
+    health: Record<string, unknown>;
     alerts: MonitoringAlert[];
-    optimizations: any;
+    optimizations: Record<string, unknown>;
     recommendations: string[];
-    deploymentReadiness: any;
+    deploymentReadiness: Record<string, unknown>;
   } {
     return {
       summary: {
@@ -639,7 +639,7 @@ export class Q3ProductionMonitoringExcellence {
     return this.alertHistory.filter(alert => alert.timestamp > oneHourAgo);
   }
 
-  private getOptimizationInsights(): any {
+  private getOptimizationInsights(): Record<string, unknown> {
     return {
       dynamicLoading: this.currentMetrics.optimization.dynamicLoadingEfficiency,
       caching: this.currentMetrics.optimization.cacheHitRate,

@@ -75,7 +75,7 @@ describe('Q3 Multi-World Testing Harness - Phase 1 Core Implementation', () => {
   let hubTestManager: WorldHubTestManager;
   let stateValidator: MultiWorldStateValidator;
   let navigationTester: CrossWorldNavigationTester;
-  let testUser: any;
+  let testUser: Record<string, unknown>;
   let testUserCode: string;
 
   beforeEach(async () => {

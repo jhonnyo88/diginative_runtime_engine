@@ -57,7 +57,7 @@ export const createChakraTheme = (gameTheme?: ThemeConfig) => {
         },
         variants: {
           ...municipalButtonTheme.variants,
-          solid: (props: any) => {
+          solid: (props: Record<string, unknown>) => {
             const { colorScheme } = props;
             if (colorScheme === 'brand') {
               return {
@@ -131,7 +131,7 @@ export const createChakraTheme = (gameTheme?: ThemeConfig) => {
             }
             return {};
           },
-          outline: (props: any) => {
+          outline: (props: Record<string, unknown>) => {
             const { colorScheme } = props;
             if (colorScheme === 'blue') {
               return {

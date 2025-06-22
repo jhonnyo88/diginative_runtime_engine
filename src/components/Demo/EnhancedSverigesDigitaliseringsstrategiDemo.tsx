@@ -69,7 +69,7 @@ interface EnhancedDemoStage {
     animations: boolean;
     interactivity: boolean;
   };
-  demoComponent?: React.ComponentType<any>;
+  demoComponent?: React.ComponentType<Record<string, unknown>>;
   metrics: {
     engagement: number;
     roi: number;

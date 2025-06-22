@@ -40,7 +40,7 @@ interface Achievement {
   category: 'world_specific' | 'cross_world_synthesis' | 'cultural_intelligence' | 'professional_certification';
   level: 'novice' | 'competent' | 'proficient' | 'expert' | 'master';
   worldId?: string;
-  icon: any;
+  icon: Record<string, unknown>;
   color: string;
   earned: boolean;
   progress?: number;

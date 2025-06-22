@@ -144,8 +144,8 @@ const MUNICIPAL_CONCURRENT_USAGE_PATTERNS = {
 };
 
 describe('Performance Testing Under Multiple Concurrent Interactions for Q2 Interactive Mechanics', () => {
-  let concurrentPerformanceHarness: any;
-  let loadTestingEngine: any;
+  let concurrentPerformanceHarness: Record<string, unknown>;
+  let loadTestingEngine: Record<string, unknown>;
 
   beforeEach(() => {
     vi.clearAllMocks();

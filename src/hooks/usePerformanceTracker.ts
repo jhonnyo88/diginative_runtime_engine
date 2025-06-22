@@ -275,7 +275,7 @@ export function useMobilePerformanceOptimization() {
 
       // Battery status (if available)
       if ('getBattery' in navigator) {
-        (navigator as any).getBattery().then((battery: any) => {
+        (navigator as any).getBattery().then((battery: Record<string, unknown>) => {
           captureMetric({
             name: 'mobile.battery_level',
             value: battery.level * 100,

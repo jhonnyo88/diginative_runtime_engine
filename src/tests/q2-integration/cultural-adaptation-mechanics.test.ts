@@ -200,8 +200,8 @@ const ANNA_SVENSSON_CULTURAL_PROFILE = {
 };
 
 describe('Cultural Adaptation Testing Across All Q2 Interactive Mechanics', () => {
-  let culturalAdaptationHarness: any;
-  let culturalValidationEngine: any;
+  let culturalAdaptationHarness: Record<string, unknown>;
+  let culturalValidationEngine: Record<string, unknown>;
 
   beforeEach(() => {
     vi.clearAllMocks();

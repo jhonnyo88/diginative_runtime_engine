@@ -79,8 +79,8 @@ const RAF_OPTIMIZATION_PATTERNS = {
 };
 
 describe('Q2 Drag-Drop Performance Validation Testing', () => {
-  let performanceHarness: any;
-  let deviceSimulator: any;
+  let performanceHarness: Record<string, unknown>;
+  let deviceSimulator: Record<string, unknown>;
 
   beforeEach(() => {
     vi.clearAllMocks();
@@ -278,7 +278,7 @@ describe('Q2 Drag-Drop Performance Validation Testing', () => {
       });
 
       // All permit types should have >95% accuracy
-      Object.values(permitWorkflowTouchTest.permitSpecificAccuracy).forEach((accuracy: any) => {
+      Object.values(permitWorkflowTouchTest.permitSpecificAccuracy).forEach((accuracy: Record<string, unknown>) => {
         expect(accuracy).toBeGreaterThan(0.95);
       });
 
@@ -314,7 +314,7 @@ describe('Q2 Drag-Drop Performance Validation Testing', () => {
       });
 
       // Financial workflows require higher accuracy (>97%)
-      Object.values(invoiceWorkflowTouchTest.approvalStageAccuracy).forEach((accuracy: any) => {
+      Object.values(invoiceWorkflowTouchTest.approvalStageAccuracy).forEach((accuracy: Record<string, unknown>) => {
         expect(accuracy).toBeGreaterThan(0.97);
       });
 
@@ -420,7 +420,7 @@ describe('Q2 Drag-Drop Performance Validation Testing', () => {
       });
 
       // All cultural contexts should validate in <25ms
-      Object.values(culturalAppropriatenessTest.culturalPerformanceByContext).forEach((performanceTime: any) => {
+      Object.values(culturalAppropriatenessTest.culturalPerformanceByContext).forEach((performanceTime: Record<string, unknown>) => {
         expect(performanceTime).toBeLessThan(25);
       });
 

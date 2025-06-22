@@ -111,7 +111,7 @@ describe('Q3 Demo Readiness Validation - Sveriges Digitaliseringsstrategi Excell
   let sverigesValidator: SverigesDigitaliseringsstrategiValidator;
   let presentationSimulator: PresentationConditionSimulator;
   let scenarioTester: DemoScenarioTester;
-  let demoUser: any;
+  let demoUser: Record<string, unknown>;
   let demoOrchestrator: Q3DemoOrchestrator;
 
   beforeEach(async () => {
@@ -282,7 +282,7 @@ describe('Q3 Demo Readiness Validation - Sveriges Digitaliseringsstrategi Excell
       });
 
       // Validate visual quality across conditions
-      visualExcellenceTest.testResults.forEach((result: any) => {
+      visualExcellenceTest.testResults.forEach((result: Record<string, unknown>) => {
         expect(result.visualClarity.excellent).toBe(true);
         expect(result.colorAccuracy.professional).toBe(true);
         expect(result.textReadability.perfect).toBe(true);
@@ -363,7 +363,7 @@ describe('Q3 Demo Readiness Validation - Sveriges Digitaliseringsstrategi Excell
       });
 
       // Validate European market readiness
-      europeanReadiness.marketReadiness.forEach((market: any) => {
+      europeanReadiness.marketReadiness.forEach((market: Record<string, unknown>) => {
         expect(market.culturalAdaptation.appropriate).toBe(true);
         expect(market.complianceValidation.complete).toBe(true);
         expect(market.municipalRelevance.high).toBe(true);
@@ -555,7 +555,7 @@ describe('Q3 Demo Readiness Validation - Sveriges Digitaliseringsstrategi Excell
       });
 
       // Validate recovery capabilities
-      recoverySystem.recoveryTests.forEach((test: any) => {
+      recoverySystem.recoveryTests.forEach((test: Record<string, unknown>) => {
         expect(test.recoveryTime).toBeLessThan(200); // ms - instant recovery
         expect(test.demoFlow.maintained).toBe(true);
         expect(test.audienceAwareness.minimal).toBe(true);
@@ -606,7 +606,7 @@ describe('Q3 Demo Readiness Validation - Sveriges Digitaliseringsstrategi Excell
  * Supporting utilities för comprehensive demo validation and excellence
  */
 export class Q3DemoQualityAssuranceUtilities {
-  static async generateDemoReadinessReport(): Promise<any> {
+  static async generateDemoReadinessReport(): Promise<Record<string, unknown>> {
     // Generate comprehensive demo readiness report
     return {
       demoSpecifications: SVERIGES_DIGITALISERINGSSTRATEGI_DEMO_SPECS,
@@ -618,7 +618,7 @@ export class Q3DemoQualityAssuranceUtilities {
     };
   }
 
-  private static async assessTechnicalExcellence(): Promise<any> {
+  private static async assessTechnicalExcellence(): Promise<Record<string, unknown>> {
     // Assess technical excellence demonstration readiness
     return {
       performanceTargets: 'exceeded',
@@ -628,7 +628,7 @@ export class Q3DemoQualityAssuranceUtilities {
     };
   }
 
-  private static async assessMunicipalValue(): Promise<any> {
+  private static async assessMunicipalValue(): Promise<Record<string, unknown>> {
     // Assess municipal value demonstration readiness
     return {
       valueProposition: 'clear',
@@ -638,7 +638,7 @@ export class Q3DemoQualityAssuranceUtilities {
     };
   }
 
-  private static async assessInnovationLeadership(): Promise<any> {
+  private static async assessInnovationLeadership(): Promise<Record<string, unknown>> {
     // Assess innovation leadership demonstration readiness
     return {
       technicalInnovation: 'groundbreaking',
@@ -648,7 +648,7 @@ export class Q3DemoQualityAssuranceUtilities {
     };
   }
 
-  private static async assessFailurePrevention(): Promise<any> {
+  private static async assessFailurePrevention(): Promise<Record<string, unknown>> {
     // Assess failure prevention system readiness
     return {
       preventionSystems: 'comprehensive',
@@ -658,7 +658,7 @@ export class Q3DemoQualityAssuranceUtilities {
     };
   }
 
-  private static async assessOverallDemoReadiness(): Promise<any> {
+  private static async assessOverallDemoReadiness(): Promise<Record<string, unknown>> {
     // Assess overall demo readiness
     return {
       readinessLevel: 'excellent',

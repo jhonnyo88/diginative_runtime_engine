@@ -299,7 +299,7 @@ export class CharacterEvolutionTracker {
   }
 
   // Private helper methods
-  private initializeSkillAreas(archetype: MunicipalArchetypeId): Array<any> {
+  private initializeSkillAreas(archetype: MunicipalArchetypeId): Array<Record<string, unknown>> {
     // Initialize skill areas based on archetype
     const commonSkills = [
       { skillArea: 'citizen_service', initialLevel: 50, currentLevel: 50, improvementRate: 0, municipalRelevance: 'direct_citizen_interaction' },
@@ -312,7 +312,7 @@ export class CharacterEvolutionTracker {
     return [...commonSkills, ...archetypeSpecificSkills];
   }
 
-  private getArchetypeSpecificSkills(archetype: MunicipalArchetypeId): Array<any> {
+  private getArchetypeSpecificSkills(archetype: MunicipalArchetypeId): Array<Record<string, unknown>> {
     const archetypeSkills = {
       'frontline_professional': [
         { skillArea: 'conflict_resolution', initialLevel: 60, currentLevel: 60, improvementRate: 0, municipalRelevance: 'citizen_problem_solving' }

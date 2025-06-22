@@ -798,7 +798,7 @@ export class Q3BackupSystemArchitecture {
     return this.GOVERNMENT_DEMO_TARGETS.maxDowntime === 0;
   }
 
-  private generateValidationRecommendations(checks: any): string[] {
+  private generateValidationRecommendations(checks: Record<string, unknown>): string[] {
     return ['Backup system architecture ready for government demonstration'];
   }
 }
@@ -864,7 +864,7 @@ interface BackupDeploymentResult {
 interface BackupValidationResult {
   ready: boolean;
   score: number;
-  validationChecks: any;
+  validationChecks: Record<string, unknown>;
   recommendations: string[];
 }
 

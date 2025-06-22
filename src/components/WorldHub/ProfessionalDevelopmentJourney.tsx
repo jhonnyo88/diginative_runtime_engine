@@ -67,7 +67,7 @@ interface MunicipalWorld {
   displayName: string;
   description: string;
   color: string;
-  icon: any;
+  icon: Record<string, unknown>;
   competencyLevels: CompetencyLevel[];
   prerequisites: string[];
   estimatedTimeWeeks: number;

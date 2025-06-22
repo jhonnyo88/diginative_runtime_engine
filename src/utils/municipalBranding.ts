@@ -308,9 +308,9 @@ export const getDefaultBranding = (culturalContext: 'swedish' | 'german' | 'fren
  * Used by automated deployment pipeline
  */
 export const applyMunicipalBrandingToManifest = (
-  gameManifest: any,
+  gameManifest: Record<string, unknown>,
   branding: MunicipalBranding & { brandingLevel?: string }
-): any => {
+): Record<string, unknown> => {
   const brandedManifest = JSON.parse(JSON.stringify(gameManifest)); // Deep clone
   
   // Initialize theme if not exists

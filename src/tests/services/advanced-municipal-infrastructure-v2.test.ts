@@ -525,7 +525,7 @@ describe('European Municipal Infrastructure Architecture v2', () => {
         q2MechanicsEnabled: ['drag_drop']
       };
 
-      let scalingEvent: any = null;
+      let scalingEvent: Record<string, unknown> = null;
       infrastructureEngine.on('european_municipality_scaled', (event) => {
         scalingEvent = event;
       });
@@ -654,7 +654,7 @@ describe('European Municipal Infrastructure Architecture v2', () => {
 
   describe('Event Emission and Monitoring', () => {
     it('should emit tenant creation event with comprehensive metadata', async () => {
-      let creationEvent: any = null;
+      let creationEvent: Record<string, unknown> = null;
       infrastructureEngine.on('european_tenant_created', (event) => {
         creationEvent = event;
       });
@@ -681,7 +681,7 @@ describe('European Municipal Infrastructure Architecture v2', () => {
     });
 
     it('should emit cross-border connection event', async () => {
-      let connectionEvent: any = null;
+      let connectionEvent: Record<string, unknown> = null;
       infrastructureEngine.on('cross_border_connection_established', (event) => {
         connectionEvent = event;
       });

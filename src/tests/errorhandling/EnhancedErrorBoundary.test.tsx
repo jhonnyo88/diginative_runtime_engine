@@ -22,7 +22,7 @@ const MockEnhancedErrorBoundary: React.FC<{
     logoUrl: string;
     municipality: string;
   };
-  onError?: (error: Error, errorInfo: any) => void;
+  onError?: (error: Error, errorInfo: Record<string, unknown>) => void;
   errorType?: 'content_loading' | 'network_timeout' | 'component_crash' | 'data_validation' | 'user_session';
 }> = ({ 
   children, 

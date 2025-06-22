@@ -768,7 +768,7 @@ export class APIGateway {
   /**
    * Extract SAML user privileges for rate limiting
    */
-  private extractSAMLPrivileges(samlUser: any): string[] {
+  private extractSAMLPrivileges(samlUser: Record<string, unknown>): string[] {
     const privileges: string[] = [];
     const roles = samlUser.roles || [];
 

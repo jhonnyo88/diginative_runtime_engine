@@ -92,8 +92,8 @@ const ANNA_SVENSSON_RAF_SCENARIOS = {
 };
 
 describe('RAF Optimization Validation Testing', () => {
-  let rafOptimizer: any;
-  let frameMonitor: any;
+  let rafOptimizer: Record<string, unknown>;
+  let frameMonitor: Record<string, unknown>;
 
   beforeEach(() => {
     vi.clearAllMocks();
@@ -351,7 +351,7 @@ describe('RAF Optimization Validation Testing', () => {
       });
 
       // All approval stages maintain 60fps
-      Object.values(invoiceRAFTest.invoiceWorkflowPerformance).forEach((stageFPS: any) => {
+      Object.values(invoiceRAFTest.invoiceWorkflowPerformance).forEach((stageFPS: Record<string, unknown>) => {
         expect(stageFPS).toBeGreaterThanOrEqual(58);
       });
     });
@@ -386,7 +386,7 @@ describe('RAF Optimization Validation Testing', () => {
       });
 
       // All permit types maintain optimal performance
-      Object.values(permitRAFTest.permitTypePerformance).forEach((permitFPS: any) => {
+      Object.values(permitRAFTest.permitTypePerformance).forEach((permitFPS: Record<string, unknown>) => {
         expect(permitFPS).toBeGreaterThanOrEqual(57);
       });
 

@@ -19,14 +19,14 @@ import { useAnimations } from '../../hooks/useAnimations';
 
 interface QuizSceneProps {
   scene: QuizSceneType;
-  onComplete: (results: any) => void;
+  onComplete: (results: Record<string, unknown>) => void;
   analytics?: {
-    trackEvent: (eventType: string, data: any) => void;
+    trackEvent: (eventType: string, data: Record<string, unknown>) => void;
   };
 }
 
 // Data transformation helper to handle both option_text and text formats
-const transformQuizOptions = (options: any[]): QuizSceneType['options'] => {
+const transformQuizOptions = (options: Record<string, unknown>[]): QuizSceneType['options'] => {
   return options.map(option => ({
     id: option.id || option.option_id,
     text: option.text || option.option_text || '',

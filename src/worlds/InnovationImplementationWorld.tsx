@@ -18,7 +18,7 @@ export const InnovationImplementationWorld: React.FC<WorldComponentProps> = ({
 }) => {
   const navigate = useNavigate();
   const [loading, setLoading] = useState(true);
-  const [worldState, setWorldState] = useState<any>(null);
+  const [worldState, setWorldState] = useState<Record<string, unknown>>(null);
 
   useEffect(() => {
     initializeWorld();

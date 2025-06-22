@@ -587,7 +587,7 @@ export class SwedishMunicipalNetworkTester {
     return `swedish_test_${networkSpec.networkId}_${Date.now()}`;
   }
 
-  private async validateNetworkInfrastructure(networkSpec: SwedishGovernmentNetworkSpec): Promise<any> {
+  private async validateNetworkInfrastructure(networkSpec: SwedishGovernmentNetworkSpec): Promise<Record<string, unknown>> {
     console.log(`🔧 Validating network infrastructure for ${networkSpec.organizationName}`);
     await this.simulateTestPhase(2000);
     return { passed: true, score: 95 };
@@ -605,7 +605,7 @@ export class SwedishMunicipalNetworkTester {
     };
   }
 
-  private async executePerformanceTesting(networkSpec: SwedishGovernmentNetworkSpec): Promise<any> {
+  private async executePerformanceTesting(networkSpec: SwedishGovernmentNetworkSpec): Promise<Record<string, unknown>> {
     console.log(`⚡ Executing performance testing for ${networkSpec.organizationName}`);
     await this.simulateTestPhase(4000);
     return { passed: true, score: 94 };
@@ -623,13 +623,13 @@ export class SwedishMunicipalNetworkTester {
     };
   }
 
-  private async executeLoadTesting(networkSpec: SwedishGovernmentNetworkSpec): Promise<any> {
+  private async executeLoadTesting(networkSpec: SwedishGovernmentNetworkSpec): Promise<Record<string, unknown>> {
     console.log(`📈 Executing load testing for ${networkSpec.organizationName}`);
     await this.simulateTestPhase(3500);
     return { passed: true, score: 93 };
   }
 
-  private async executePeakHourTesting(networkSpec: SwedishGovernmentNetworkSpec): Promise<any> {
+  private async executePeakHourTesting(networkSpec: SwedishGovernmentNetworkSpec): Promise<Record<string, unknown>> {
     console.log(`🕐 Executing peak hour testing for ${networkSpec.organizationName}`);
     await this.simulateTestPhase(3000);
     return { passed: true, score: 91 };
@@ -699,7 +699,7 @@ export class SwedishMunicipalNetworkTester {
     ];
   }
 
-  private compilePerformanceResults(phaseResults: any[]): NetworkPerformanceResults {
+  private compilePerformanceResults(phaseResults: Record<string, unknown>[]): NetworkPerformanceResults {
     return {
       metrics: {
         hubLoading: { target: 500, achieved: 450, variance: 25, passed: true, measurements: [440, 450, 460], statisticalAnalysis: { mean: 450, stdDev: 10, confidence: 95 } },
@@ -715,7 +715,7 @@ export class SwedishMunicipalNetworkTester {
     };
   }
 
-  private generateNetworkRecommendations(networkSpec: SwedishGovernmentNetworkSpec, results: any[]): NetworkRecommendation[] {
+  private generateNetworkRecommendations(networkSpec: SwedishGovernmentNetworkSpec, results: Record<string, unknown>[]): NetworkRecommendation[] {
     return [
       {
         category: 'performance',
@@ -727,7 +727,7 @@ export class SwedishMunicipalNetworkTester {
     ];
   }
 
-  private assessGovernmentReadiness(networkSpec: SwedishGovernmentNetworkSpec, results: any[]): GovernmentReadinessScore {
+  private assessGovernmentReadiness(networkSpec: SwedishGovernmentNetworkSpec, results: Record<string, unknown>[]): GovernmentReadinessScore {
     return {
       score: 96,
       ready: true,
@@ -751,19 +751,19 @@ export class SwedishMunicipalNetworkTester {
     return `Swedish Government Network Testing completed with excellent results. ${results.length} networks tested with average readiness score of ${this.calculateOverallGovernmentReadiness(results)}%.`;
   }
 
-  private analyzeNetworkCoverage(): any {
+  private analyzeNetworkCoverage(): Record<string, unknown> {
     return { coverage: 'comprehensive', networkTypes: ['kommuner', 'regioner', 'statliga_myndigheter'] };
   }
 
-  private analyzeSwedishNetworkPerformance(results: NetworkTestResult[]): any {
+  private analyzeSwedishNetworkPerformance(results: NetworkTestResult[]): Record<string, unknown> {
     return { averagePerformance: 'excellent', meetsGovernmentStandards: true };
   }
 
-  private analyzeSecurityCompliance(results: NetworkTestResult[]): any {
+  private analyzeSecurityCompliance(results: NetworkTestResult[]): Record<string, unknown> {
     return { overallCompliance: 'excellent', securityLevel: 'government_grade' };
   }
 
-  private analyzeGovernmentReadiness(results: NetworkTestResult[]): any {
+  private analyzeGovernmentReadiness(results: NetworkTestResult[]): Record<string, unknown> {
     return { readinessScore: this.calculateOverallGovernmentReadiness(results), ready: true };
   }
 
@@ -771,11 +771,11 @@ export class SwedishMunicipalNetworkTester {
     return ['Swedish government networks ready for Q3 demonstration'];
   }
 
-  private generateImplementationPlan(results: NetworkTestResult[]): any {
+  private generateImplementationPlan(results: NetworkTestResult[]): Record<string, unknown> {
     return { phase: 'ready_for_deployment', timeline: 'immediate' };
   }
 
-  private generateRiskAssessment(results: NetworkTestResult[]): any {
+  private generateRiskAssessment(results: NetworkTestResult[]): Record<string, unknown> {
     return { riskLevel: 'low', mitigationStrategies: ['backup_systems_active'] };
   }
 
@@ -812,18 +812,18 @@ interface TestScenario {
 }
 
 interface SecurityValidationResults {
-  tlsValidation: any;
-  certificateValidation: any;
-  authenticationValidation: any;
-  encryptionValidation: any;
+  tlsValidation: Record<string, unknown>;
+  certificateValidation: Record<string, unknown>;
+  authenticationValidation: Record<string, unknown>;
+  encryptionValidation: Record<string, unknown>;
   overallSecurityScore: number;
 }
 
 interface ComplianceAssessmentResults {
-  gdprCompliance: any;
-  accessibilityCompliance: any;
-  dos2000Compliance: any;
-  dataResidencyCompliance: any;
+  gdprCompliance: Record<string, unknown>;
+  accessibilityCompliance: Record<string, unknown>;
+  dos2000Compliance: Record<string, unknown>;
+  dataResidencyCompliance: Record<string, unknown>;
   overallComplianceScore: number;
 }
 
@@ -844,9 +844,9 @@ interface LoadTestResults {
 }
 
 interface MobilityTestResults {
-  iphoneCompatibility: any;
-  mobileBandwidth?: any;
-  mobileLatency?: any;
+  iphoneCompatibility: Record<string, unknown>;
+  mobileBandwidth?: Record<string, unknown>;
+  mobileLatency?: Record<string, unknown>;
   overallMobilityScore: number;
 }
 
@@ -894,13 +894,13 @@ interface AnnaSvenssonCompatibilityResult {
 
 interface SwedishGovernmentNetworkReport {
   executiveSummary: string;
-  networkCoverage: any;
-  performanceAnalysis: any;
-  securityCompliance: any;
-  governmentReadiness: any;
+  networkCoverage: Record<string, unknown>;
+  performanceAnalysis: Record<string, unknown>;
+  securityCompliance: Record<string, unknown>;
+  governmentReadiness: Record<string, unknown>;
   recommendations: string[];
-  implementationPlan: any;
-  riskAssessment: any;
+  implementationPlan: Record<string, unknown>;
+  riskAssessment: Record<string, unknown>;
 }
 
 interface SwedishNetworkTestingStatus {

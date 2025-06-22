@@ -95,7 +95,7 @@ export class EnterpriseSSOIntegrationService extends EventEmitter {
   private ssoConfig: DutchMunicipalSSOConfig;
   private integrationStatus: MunicipalITIntegrationStatus;
   private activeSessions: Map<string, SSOAuthenticationResult>;
-  private complianceValidator: any;
+  private complianceValidator: Record<string, unknown>;
   
   constructor(config: DutchMunicipalSSOConfig) {
     super();
@@ -159,7 +159,7 @@ export class EnterpriseSSOIntegrationService extends EventEmitter {
   async authenticateMunicipalProfessional(
     authenticationRequest: {
       method: 'digiD' | 'activeDirectory' | 'smartCard';
-      credentials: any;
+      credentials: Record<string, unknown>;
       municipalContext: {
         municipalityId: string;
         department: string;
@@ -434,7 +434,7 @@ export class EnterpriseSSOIntegrationService extends EventEmitter {
     // This would involve LDAP connection setup and validation
   }
   
-  private async synchronizeSecurityGroups(): Promise<any> {
+  private async synchronizeSecurityGroups(): Promise<Record<string, unknown>> {
     // Implementation for security group synchronization
     return { updated: 0, added: 0, removed: 0 };
   }
@@ -448,8 +448,8 @@ export class EnterpriseSSOIntegrationService extends EventEmitter {
   }
   
   private async authenticateWithDigiD(
-    credentials: any,
-    municipalContext: any
+    credentials: Record<string, unknown>,
+    municipalContext: Record<string, unknown>
   ): Promise<SSOAuthenticationResult> {
     // Implementation for DigiD authentication
     return {
@@ -468,8 +468,8 @@ export class EnterpriseSSOIntegrationService extends EventEmitter {
   }
   
   private async authenticateWithActiveDirectory(
-    credentials: any,
-    municipalContext: any
+    credentials: Record<string, unknown>,
+    municipalContext: Record<string, unknown>
   ): Promise<SSOAuthenticationResult> {
     // Implementation for Active Directory authentication
     return {
@@ -488,8 +488,8 @@ export class EnterpriseSSOIntegrationService extends EventEmitter {
   }
   
   private async authenticateWithSmartCard(
-    credentials: any,
-    municipalContext: any
+    credentials: Record<string, unknown>,
+    municipalContext: Record<string, unknown>
   ): Promise<SSOAuthenticationResult> {
     // Implementation for smart card authentication
     return {
@@ -518,30 +518,30 @@ export class EnterpriseSSOIntegrationService extends EventEmitter {
     return permissions.some(permission => highPrivilegePermissions.includes(permission));
   }
   
-  private async initiateApprovalWorkflow(accessRequest: any): Promise<string> {
+  private async initiateApprovalWorkflow(accessRequest: Record<string, unknown>): Promise<string> {
     // Implementation for approval workflow initiation
     return 'workflow123';
   }
   
-  private async logAuthenticationEvent(authResult: SSOAuthenticationResult, request: any): Promise<void> {
+  private async logAuthenticationEvent(authResult: SSOAuthenticationResult, request: Record<string, unknown>): Promise<void> {
     // Implementation for authentication event logging
   }
   
-  private async logCrossDepartmentAccess(sessionId: string, request: any, result: any): Promise<void> {
+  private async logCrossDepartmentAccess(sessionId: string, request: Record<string, unknown>, result: Record<string, unknown>): Promise<void> {
     // Implementation for cross-department access logging
   }
   
-  private async synchronizeUsers(): Promise<any> {
+  private async synchronizeUsers(): Promise<Record<string, unknown>> {
     // Implementation for user synchronization
     return { updated: 0, added: 0, removed: 0 };
   }
   
-  private async synchronizeDepartmentStructure(): Promise<any> {
+  private async synchronizeDepartmentStructure(): Promise<Record<string, unknown>> {
     // Implementation for department structure synchronization
     return { updated: 0, restructured: 0 };
   }
   
-  private async validateComplianceStatus(): Promise<any> {
+  private async validateComplianceStatus(): Promise<Record<string, unknown>> {
     // Implementation for compliance status validation
     return { validated: 0, issues: 0 };
   }
@@ -575,17 +575,17 @@ export class EnterpriseSSOIntegrationService extends EventEmitter {
     ];
   }
   
-  private createAuditLogger(): any {
+  private createAuditLogger(): Record<string, unknown> {
     // Implementation for audit logger creation
     return {};
   }
   
-  private createEncryptionValidator(): any {
+  private createEncryptionValidator(): Record<string, unknown> {
     // Implementation for encryption validator creation
     return {};
   }
   
-  private createSessionValidator(): any {
+  private createSessionValidator(): Record<string, unknown> {
     // Implementation for session validator creation
     return {};
   }

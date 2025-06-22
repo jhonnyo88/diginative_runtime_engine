@@ -81,8 +81,8 @@ const MUNICIPAL_NETWORK_TARGETS = {
 };
 
 describe('Component Loading Time Budgets', () => {
-  let performanceMonitor: any;
-  let loadingTimeTracker: any;
+  let performanceMonitor: Record<string, unknown>;
+  let loadingTimeTracker: Record<string, unknown>;
 
   beforeEach(() => {
     vi.clearAllMocks();
@@ -382,7 +382,7 @@ describe('Component Loading Time Budgets', () => {
       expect(regressionAnalysis.overallTrend).toMatch(/improving|stable|degrading/);
 
       // Test regression detail analysis
-      regressionAnalysis.regressionsDetected.forEach((regression: any) => {
+      regressionAnalysis.regressionsDetected.forEach((regression: Record<string, unknown>) => {
         expect(regression).toMatchObject({
           component: expect.any(String),
           currentPerformance: expect.any(Number),
@@ -411,7 +411,7 @@ describe('Component Loading Time Budgets', () => {
       expect(optimizationRecommendations.estimatedImpact).toBeGreaterThan(0.15); // >15% improvement
 
       // Test recommendation prioritization
-      optimizationRecommendations.recommendations.forEach((rec: any) => {
+      optimizationRecommendations.recommendations.forEach((rec: Record<string, unknown>) => {
         expect(rec).toMatchObject({
           component: expect.any(String),
           optimization: expect.any(String),
@@ -423,7 +423,7 @@ describe('Component Loading Time Budgets', () => {
 
       // Verify municipal-specific recommendations
       const municipalRecommendations = optimizationRecommendations.recommendations.filter(
-        (rec: any) => rec.municipalSpecific === true
+        (rec: Record<string, unknown>) => rec.municipalSpecific === true
       );
       expect(municipalRecommendations.length).toBeGreaterThan(0);
     });
@@ -607,7 +607,7 @@ function createLoadingTimeTracker() {
 }
 
 // Mock components for testing
-function PerformanceTrackedGameContainer({ municipality, gameType, q2FeaturesEnabled }: any) {
+function PerformanceTrackedGameContainer({ municipality, gameType, q2FeaturesEnabled }: Record<string, unknown>) {
   return (
     <div data-testid="performance-tracked-game-container">
       <div data-testid="game-container-ready">Game Container Ready</div>

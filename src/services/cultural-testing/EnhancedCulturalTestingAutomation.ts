@@ -586,7 +586,7 @@ export class EnhancedCulturalTestingAutomation extends EventEmitter {
   }
 
   // Helper methods for testing categories
-  private identifyTerminologyIssues(market: string, tests: any): string[] {
+  private identifyTerminologyIssues(market: string, tests: Record<string, unknown>): string[] {
     const issues: string[] = [];
     if (tests.municipalTerms < 96) issues.push('Municipal terminology needs refinement');
     if (tests.culturalNuances < 95) issues.push('Cultural nuances require attention');
@@ -602,7 +602,7 @@ export class EnhancedCulturalTestingAutomation extends EventEmitter {
   }
 
   // Similar helper methods for other categories...
-  private identifyVisualIssues(market: string, tests: any): string[] {
+  private identifyVisualIssues(market: string, tests: Record<string, unknown>): string[] {
     const issues: string[] = [];
     if (tests.layoutCulturalPreferences < 94) issues.push('Layout cultural preferences need adjustment');
     return issues;
@@ -616,7 +616,7 @@ export class EnhancedCulturalTestingAutomation extends EventEmitter {
     return [`Visual cultural expert review positive`, `${market} design principles validated`];
   }
 
-  private identifyBehavioralIssues(market: string, tests: any): string[] {
+  private identifyBehavioralIssues(market: string, tests: Record<string, unknown>): string[] {
     const issues: string[] = [];
     if (tests.communicationStyle < 94) issues.push('Communication style alignment needed');
     return issues;
@@ -630,7 +630,7 @@ export class EnhancedCulturalTestingAutomation extends EventEmitter {
     return [`Behavioral patterns align with ${market} expectations`, `Cultural behavior validation successful`];
   }
 
-  private identifyContextualIssues(market: string, tests: any): string[] {
+  private identifyContextualIssues(market: string, tests: Record<string, unknown>): string[] {
     const issues: string[] = [];
     if (tests.socialNormAlignment < 93) issues.push('Social norm alignment requires improvement');
     return issues;
@@ -644,7 +644,7 @@ export class EnhancedCulturalTestingAutomation extends EventEmitter {
     return [`Contextual appropriateness confirmed for ${market}`, `Cultural context validation complete`];
   }
 
-  private identifyGovernmentalIssues(market: string, tests: any): string[] {
+  private identifyGovernmentalIssues(market: string, tests: Record<string, unknown>): string[] {
     const issues: string[] = [];
     if (tests.accountabilityMechanisms < 94) issues.push('Accountability mechanisms need enhancement');
     return issues;
@@ -704,7 +704,7 @@ export class EnhancedCulturalTestingAutomation extends EventEmitter {
     // Cultural insights generation logic
   }
 
-  private async performQuickCulturalValidation(): Promise<any> {
+  private async performQuickCulturalValidation(): Promise<Record<string, unknown>> {
     // Quick cultural validation for continuous monitoring
     return {
       timestamp: Date.now(),
@@ -713,14 +713,14 @@ export class EnhancedCulturalTestingAutomation extends EventEmitter {
     };
   }
 
-  private async applyRealTimeCulturalCorrections(validation: any): Promise<void> {
+  private async applyRealTimeCulturalCorrections(validation: Record<string, unknown>): Promise<void> {
     // Real-time cultural corrections
     if (validation.overallAccuracy < 95) {
       console.log('🔧 Applying real-time cultural corrections...');
     }
   }
 
-  private async generateContinuousCulturalInsights(validation: any): Promise<void> {
+  private async generateContinuousCulturalInsights(validation: Record<string, unknown>): Promise<void> {
     // Generate insights from continuous monitoring
   }
 

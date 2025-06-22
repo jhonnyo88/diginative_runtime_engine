@@ -45,7 +45,7 @@ export class CulturalPerformanceMonitor {
 
       // Expert tracking: Override response.end to capture completion time
       const originalEnd = res.end;
-      res.end = function(this: Response, ...args: any[]) {
+      res.end = function(this: Response, ...args: Record<string, unknown>[]) {
         const endTime = performance.now();
         const responseTime = endTime - startTime;
 
@@ -304,7 +304,7 @@ export class CulturalPerformanceMonitor {
   }
 
   // Expert function: Send metrics to monitoring system
-  private sendToMonitoringSystem(aggregatedMetrics: any): void {
+  private sendToMonitoringSystem(aggregatedMetrics: Record<string, unknown>): void {
     // Expert implementation: Send to Prometheus via HTTP POST
     // This would integrate with the Prometheus pushgateway or direct scraping endpoint
     
@@ -317,7 +317,7 @@ export class CulturalPerformanceMonitor {
   }
 
   // Expert function: Format metrics för Prometheus
-  private formatPrometheusMetrics(metrics: any): string {
+  private formatPrometheusMetrics(metrics: Record<string, unknown>): string {
     const lines: string[] = [];
 
     // Expert metric: Cultural response time

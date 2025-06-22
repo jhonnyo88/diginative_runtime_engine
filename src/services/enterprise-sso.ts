@@ -89,7 +89,7 @@ export class EnterpriseSSO {
   async authenticateUser(
     tenantId: string, 
     authMethod: 'saml' | 'oauth', 
-    authData: any
+    authData: Record<string, unknown>
   ): Promise<AuthenticatedUser> {
     try {
       if (authMethod === 'saml') {
@@ -124,7 +124,7 @@ export class EnterpriseSSO {
   }
 
   // Expert specification: Tenant isolation implementation
-  private async mapToTenantUser(profile: any, tenantId: string): Promise<AuthenticatedUser> {
+  private async mapToTenantUser(profile: Record<string, unknown>, tenantId: string): Promise<AuthenticatedUser> {
     return {
       id: `${tenantId}:${profile.nameID}`,
       email: profile.email || profile.mail,
@@ -170,7 +170,7 @@ export class EnterpriseSSO {
   }
 
   // Expert specification: Validation method
-  private async validateOAuthToken(token: string, tenantId: string): Promise<any> {
+  private async validateOAuthToken(token: string, tenantId: string): Promise<Record<string, unknown>> {
     // Implementation depends on OAuth provider
     // Return user profile from token validation
     return {};

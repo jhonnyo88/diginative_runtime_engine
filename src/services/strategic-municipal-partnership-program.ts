@@ -239,9 +239,9 @@ interface MarketPenetrationAnalytics {
 export class StrategicMunicipalPartnershipProgramService extends EventEmitter {
   private partnershipFrameworks: Map<string, MunicipalPartnershipFramework>;
   private governmentRelations: Map<string, GovernmentRelationsFramework>;
-  private partnershipAnalytics: any;
-  private marketIntelligence: any;
-  private partnerEnablementProgram: any;
+  private partnershipAnalytics: Record<string, unknown>;
+  private marketIntelligence: Record<string, unknown>;
+  private partnerEnablementProgram: Record<string, unknown>;
   
   constructor() {
     super();
@@ -261,7 +261,7 @@ export class StrategicMunicipalPartnershipProgramService extends EventEmitter {
   async establishStrategicPartnership(
     partnerData: {
       partnerType: string;
-      partnerDetails: any;
+      partnerDetails: Record<string, unknown>;
       strategicObjectives: string[];
       collaborationModel: string;
       marketTargets: string[];
@@ -269,15 +269,15 @@ export class StrategicMunicipalPartnershipProgramService extends EventEmitter {
     partnershipTerms: {
       partnershipDuration: number;
       exclusivityLevel: string;
-      revenueSharing: any;
-      performanceTargets: any;
+      revenueSharing: Record<string, unknown>;
+      performanceTargets: Record<string, unknown>;
       partnerInvestment: number;
     }
   ): Promise<{
     partnershipFramework: MunicipalPartnershipFramework;
-    partnershipAgreement: any;
-    implementationPlan: any;
-    enablementProgram: any;
+    partnershipAgreement: Record<string, unknown>;
+    implementationPlan: Record<string, unknown>;
+    enablementProgram: Record<string, unknown>;
   }> {
     try {
       // Generate partnership ID
@@ -289,7 +289,7 @@ export class StrategicMunicipalPartnershipProgramService extends EventEmitter {
       // Create comprehensive partnership framework
       const partnershipFramework: MunicipalPartnershipFramework = {
         partnershipId,
-        partnerType: partnerData.partnerType as any,
+        partnerType: partnerData.partnerType as 'technology-vendor' | 'consulting-firm' | 'government-institution' | 'academic-institution' | 'professional-association',
         partnerDetails: {
           ...partnerData.partnerDetails,
           marketPosition: await this.assessMarketPosition(partnerData.partnerDetails),
@@ -403,7 +403,7 @@ export class StrategicMunicipalPartnershipProgramService extends EventEmitter {
       type: string;
       country: string;
       jurisdiction: string;
-      municipalImpact: any;
+      municipalImpact: Record<string, unknown>;
     },
     relationshipObjectives: {
       strategicObjectives: string[];
@@ -413,9 +413,9 @@ export class StrategicMunicipalPartnershipProgramService extends EventEmitter {
     }
   ): Promise<{
     governmentRelationsFramework: GovernmentRelationsFramework;
-    engagementStrategy: any;
-    stakeholderPlan: any;
-    influenceMap: any;
+    engagementStrategy: Record<string, unknown>;
+    stakeholderPlan: Record<string, unknown>;
+    influenceMap: Record<string, unknown>;
   }> {
     try {
       // Generate entity ID
@@ -594,10 +594,10 @@ export class StrategicMunicipalPartnershipProgramService extends EventEmitter {
       priorityPartnerships: string[];
     }
   ): Promise<{
-    accelerationPlan: any;
-    coordinatedActivities: any[];
-    performanceTargets: any;
-    executionTimeline: any;
+    accelerationPlan: Record<string, unknown>;
+    coordinatedActivities: Record<string, unknown>[];
+    performanceTargets: Record<string, unknown>;
+    executionTimeline: Record<string, unknown>;
   }> {
     try {
       // Create acceleration plan
@@ -665,10 +665,10 @@ export class StrategicMunicipalPartnershipProgramService extends EventEmitter {
     }
   ): Promise<{
     overallROI: number;
-    partnershipROIBreakdown: any[];
+    partnershipROIBreakdown: Record<string, unknown>[];
     marketValueCreated: number;
-    investmentOptimization: any;
-    futureProjections: any;
+    investmentOptimization: Record<string, unknown>;
+    futureProjections: Record<string, unknown>;
   }> {
     try {
       // Calculate overall ROI
@@ -751,12 +751,12 @@ export class StrategicMunicipalPartnershipProgramService extends EventEmitter {
     return `PARTNER-${type.toUpperCase()}-${sanitizedName}-${timestamp}`;
   }
   
-  private async assessMarketPosition(partnerDetails: any): Promise<string> {
+  private async assessMarketPosition(partnerDetails: Record<string, unknown>): Promise<string> {
     // Implementation for market position assessment
     return 'established-player';
   }
   
-  private async analyzePartnerClientBase(partnerDetails: any): Promise<any> {
+  private async analyzePartnerClientBase(partnerDetails: Record<string, unknown>): Promise<Record<string, unknown>> {
     // Implementation for partner client base analysis
     return {
       municipalCount: 50,
@@ -775,9 +775,9 @@ export class StrategicMunicipalPartnershipProgramService extends EventEmitter {
   }
   
   private async createValueProposition(
-    partnerData: any,
-    terms: any
-  ): Promise<any> {
+    partnerData: Record<string, unknown>,
+    terms: Record<string, unknown>
+  ): Promise<Record<string, unknown>> {
     // Implementation for value proposition creation
     return {
       partnerBenefits: [],
@@ -790,7 +790,7 @@ export class StrategicMunicipalPartnershipProgramService extends EventEmitter {
   private async designPartnershipPhases(
     objectives: string[],
     duration: number
-  ): Promise<any[]> {
+  ): Promise<Record<string, unknown>[]> {
     // Implementation for partnership phases design
     return [];
   }
@@ -798,7 +798,7 @@ export class StrategicMunicipalPartnershipProgramService extends EventEmitter {
   private async defineIntegrationRequirements(
     partnerType: string,
     collaborationModel: string
-  ): Promise<any> {
+  ): Promise<Record<string, unknown>> {
     // Implementation for integration requirements definition
     return {
       technicalIntegration: [],
@@ -810,22 +810,22 @@ export class StrategicMunicipalPartnershipProgramService extends EventEmitter {
   
   private async generatePartnershipAgreement(
     framework: MunicipalPartnershipFramework,
-    terms: any
-  ): Promise<any> {
+    terms: Record<string, unknown>
+  ): Promise<Record<string, unknown>> {
     // Implementation for partnership agreement generation
     return {};
   }
   
   private async createPartnershipImplementationPlan(
     framework: MunicipalPartnershipFramework
-  ): Promise<any> {
+  ): Promise<Record<string, unknown>> {
     // Implementation for implementation plan creation
     return {};
   }
   
   private async designPartnerEnablementProgram(
     framework: MunicipalPartnershipFramework
-  ): Promise<any> {
+  ): Promise<Record<string, unknown>> {
     // Implementation for enablement program design
     return {};
   }
@@ -838,7 +838,7 @@ export class StrategicMunicipalPartnershipProgramService extends EventEmitter {
   
   private async launchPartnerEnablement(
     framework: MunicipalPartnershipFramework,
-    program: any
+    program: Record<string, unknown>
   ): Promise<void> {
     // Implementation for partner enablement launch
   }
@@ -854,12 +854,12 @@ export class StrategicMunicipalPartnershipProgramService extends EventEmitter {
     return `GOV-${country.toUpperCase()}-${sanitizedName}-${timestamp}`;
   }
   
-  private async assessGovernmentInfluence(entityData: any): Promise<string> {
+  private async assessGovernmentInfluence(entityData: Record<string, unknown>): Promise<string> {
     // Implementation for government influence assessment
     return 'national';
   }
   
-  private async analyzeMunicipalImpact(entityData: any): Promise<any> {
+  private async analyzeMunicipalImpact(entityData: Record<string, unknown>): Promise<Record<string, unknown>> {
     // Implementation for municipal impact analysis
     return {
       municipalitiesInfluenced: 100,
@@ -869,7 +869,7 @@ export class StrategicMunicipalPartnershipProgramService extends EventEmitter {
     };
   }
   
-  private async mapGovernmentStakeholders(entityData: any): Promise<any> {
+  private async mapGovernmentStakeholders(entityData: Record<string, unknown>): Promise<Record<string, unknown>> {
     // Implementation for stakeholder mapping
     return {
       primaryContacts: [],
@@ -878,9 +878,9 @@ export class StrategicMunicipalPartnershipProgramService extends EventEmitter {
   }
   
   private async createGovernmentValueProposition(
-    entityData: any,
-    objectives: any
-  ): Promise<any> {
+    entityData: Record<string, unknown>,
+    objectives: Record<string, unknown>
+  ): Promise<Record<string, unknown>> {
     // Implementation for government value proposition creation
     return {
       governmentBenefits: [],
@@ -892,14 +892,14 @@ export class StrategicMunicipalPartnershipProgramService extends EventEmitter {
   
   // Analytics Helper Methods
   
-  private async analyzePartnershipPerformance(): Promise<any[]> {
+  private async analyzePartnershipPerformance(): Promise<Record<string, unknown>[]> {
     // Implementation for partnership performance analysis
     return [];
   }
   
   private async generateMarketPenetrationInsights(
-    performance: any[]
-  ): Promise<any> {
+    performance: Record<string, unknown>[]
+  ): Promise<Record<string, unknown>> {
     // Implementation for market penetration insights
     return {
       geographicPenetration: [],
@@ -909,9 +909,9 @@ export class StrategicMunicipalPartnershipProgramService extends EventEmitter {
   }
   
   private async generateStrategicRecommendations(
-    performance: any[],
-    insights: any
-  ): Promise<any> {
+    performance: Record<string, unknown>[],
+    insights: Record<string, unknown>
+  ): Promise<Record<string, unknown>> {
     // Implementation for strategic recommendations
     return {
       partnershipOptimization: [],
@@ -921,73 +921,73 @@ export class StrategicMunicipalPartnershipProgramService extends EventEmitter {
     };
   }
   
-  private async storeMarketPenetrationAnalytics(analytics: any): Promise<void> {
+  private async storeMarketPenetrationAnalytics(analytics: Record<string, unknown>): Promise<void> {
     // Implementation for analytics storage
   }
   
   // Additional helper methods would be implemented here for all the other functions
   // Referenced in the public methods but not implemented for brevity
   
-  private async identifyPolicyConsultations(entityData: any): Promise<string[]> {
+  private async identifyPolicyConsultations(entityData: Record<string, unknown>): Promise<string[]> {
     return [];
   }
   
-  private async identifyExpertiseContributions(entityData: any): Promise<string[]> {
+  private async identifyExpertiseContributions(entityData: Record<string, unknown>): Promise<string[]> {
     return [];
   }
   
-  private async identifyResearchCollaborations(entityData: any): Promise<string[]> {
+  private async identifyResearchCollaborations(entityData: Record<string, unknown>): Promise<string[]> {
     return [];
   }
   
-  private async identifyStandardsParticipation(entityData: any): Promise<string[]> {
+  private async identifyStandardsParticipation(entityData: Record<string, unknown>): Promise<string[]> {
     return [];
   }
   
-  private async identifySpeakingEngagements(entityData: any): Promise<string[]> {
+  private async identifySpeakingEngagements(entityData: Record<string, unknown>): Promise<string[]> {
     return [];
   }
   
-  private async identifyPublicationContributions(entityData: any): Promise<string[]> {
+  private async identifyPublicationContributions(entityData: Record<string, unknown>): Promise<string[]> {
     return [];
   }
   
-  private async identifyConferenceParticipation(entityData: any): Promise<string[]> {
+  private async identifyConferenceParticipation(entityData: Record<string, unknown>): Promise<string[]> {
     return [];
   }
   
-  private async identifyExpertPanels(entityData: any): Promise<string[]> {
+  private async identifyExpertPanels(entityData: Record<string, unknown>): Promise<string[]> {
     return [];
   }
   
-  private async identifyPilotPrograms(entityData: any): Promise<string[]> {
+  private async identifyPilotPrograms(entityData: Record<string, unknown>): Promise<string[]> {
     return [];
   }
   
-  private async identifyShowcaseProjects(entityData: any): Promise<string[]> {
+  private async identifyShowcaseProjects(entityData: Record<string, unknown>): Promise<string[]> {
     return [];
   }
   
-  private async identifyGovernmentDemonstrations(entityData: any): Promise<string[]> {
+  private async identifyGovernmentDemonstrations(entityData: Record<string, unknown>): Promise<string[]> {
     return [];
   }
   
   private async developGovernmentEngagementStrategy(
     framework: GovernmentRelationsFramework,
-    objectives: any
-  ): Promise<any> {
+    objectives: Record<string, unknown>
+  ): Promise<Record<string, unknown>> {
     return {};
   }
   
   private async createGovernmentStakeholderPlan(
     framework: GovernmentRelationsFramework
-  ): Promise<any> {
+  ): Promise<Record<string, unknown>> {
     return {};
   }
   
   private async generateGovernmentInfluenceMap(
     framework: GovernmentRelationsFramework
-  ): Promise<any> {
+  ): Promise<Record<string, unknown>> {
     return {};
   }
   
@@ -997,59 +997,59 @@ export class StrategicMunicipalPartnershipProgramService extends EventEmitter {
     // Implementation for relationship tracking
   }
   
-  private async createPartnershipAccelerationPlan(targets: any): Promise<any> {
+  private async createPartnershipAccelerationPlan(targets: Record<string, unknown>): Promise<Record<string, unknown>> {
     return {};
   }
   
   private async coordinatePartnershipActivities(
-    targets: any,
-    plan: any
-  ): Promise<any[]> {
+    targets: Record<string, unknown>,
+    plan: Record<string, unknown>
+  ): Promise<Record<string, unknown>[]> {
     return [];
   }
   
   private async setAccelerationPerformanceTargets(
-    targets: any,
-    plan: any
-  ): Promise<any> {
+    targets: Record<string, unknown>,
+    plan: Record<string, unknown>
+  ): Promise<Record<string, unknown>> {
     return {};
   }
   
   private async createAccelerationExecutionTimeline(
-    plan: any,
-    activities: any[]
-  ): Promise<any> {
+    plan: Record<string, unknown>,
+    activities: Record<string, unknown>[]
+  ): Promise<Record<string, unknown>> {
     return {};
   }
   
   private async launchAccelerationProgram(
-    plan: any,
-    activities: any[],
-    targets: any
+    plan: Record<string, unknown>,
+    activities: Record<string, unknown>[],
+    targets: Record<string, unknown>
   ): Promise<void> {
     // Implementation for acceleration program launch
   }
   
-  private async calculateOverallPartnershipROI(scope: any): Promise<number> {
+  private async calculateOverallPartnershipROI(scope: Record<string, unknown>): Promise<number> {
     return 250; // 250% ROI example
   }
   
-  private async generatePartnershipROIBreakdown(scope: any): Promise<any[]> {
+  private async generatePartnershipROIBreakdown(scope: Record<string, unknown>): Promise<Record<string, unknown>[]> {
     return [];
   }
   
-  private async calculateMarketValueCreated(scope: any): Promise<number> {
+  private async calculateMarketValueCreated(scope: Record<string, unknown>): Promise<number> {
     return 5000000; // €5M example
   }
   
-  private async analyzeInvestmentOptimization(breakdown: any[]): Promise<any> {
+  private async analyzeInvestmentOptimization(breakdown: Record<string, unknown>[]): Promise<Record<string, unknown>> {
     return {};
   }
   
   private async generatePartnershipFutureProjections(
-    breakdown: any[],
-    optimization: any
-  ): Promise<any> {
+    breakdown: Record<string, unknown>[],
+    optimization: Record<string, unknown>
+  ): Promise<Record<string, unknown>> {
     return {};
   }
 }

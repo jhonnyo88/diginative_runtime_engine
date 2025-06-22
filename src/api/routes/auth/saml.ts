@@ -374,7 +374,7 @@ export default router;
 declare global {
   namespace Express {
     interface Request {
-      samlUser?: any;
+      samlUser?: Record<string, unknown>;
       samlSessionId?: string;
     }
   }

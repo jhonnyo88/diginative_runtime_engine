@@ -521,7 +521,7 @@ describe('MunicipalAchievementEngine Unit Tests', () => {
       const criticalAchievements = report.achievementSummary.criticalAchievements;
 
       // Should include municipal_certified and compliance_champion if earned
-      const criticalIds = criticalAchievements.map((a: any) => a.id);
+      const criticalIds = criticalAchievements.map((a: Record<string, unknown>) => a.id);
       expect(criticalIds).toContain('municipal_certified');
       expect(criticalIds).toContain('compliance_champion');
     });

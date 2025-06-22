@@ -70,10 +70,10 @@ Object.defineProperty(global, 'window', {
 });
 
 describe('ErrorMonitoringService Unit Tests', () => {
-  let consoleSpy: any;
-  let consoleErrorSpy: any;
-  let consoleWarnSpy: any;
-  let consoleInfoSpy: any;
+  let consoleSpy: Record<string, unknown>;
+  let consoleErrorSpy: Record<string, unknown>;
+  let consoleWarnSpy: Record<string, unknown>;
+  let consoleInfoSpy: Record<string, unknown>;
 
   beforeEach(() => {
     // Reset mocks
@@ -526,8 +526,8 @@ describe('ErrorMonitoringService Unit Tests', () => {
 });
 
 describe('ErrorMonitoringService Integration Tests', () => {
-  let originalFetch: any;
-  let fetchSpy: any;
+  let originalFetch: Record<string, unknown>;
+  let fetchSpy: Record<string, unknown>;
 
   beforeEach(() => {
     vi.clearAllMocks();
@@ -729,7 +729,7 @@ describe('ErrorMonitoringService Health Checks', () => {
 });
 
 describe('ErrorMonitoringService Security Tests', () => {
-  let consoleInfoSpy: any;
+  let consoleInfoSpy: Record<string, unknown>;
 
   beforeEach(() => {
     vi.clearAllMocks();
@@ -935,7 +935,7 @@ describe('ErrorMonitoringService Performance Tests', () => {
 });
 
 describe('ErrorMonitoringService Error Handling', () => {
-  let consoleErrorSpy: any;
+  let consoleErrorSpy: Record<string, unknown>;
 
   beforeEach(() => {
     vi.clearAllMocks();

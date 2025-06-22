@@ -429,7 +429,7 @@ export class LiveDemoTechnicalProtocol {
   /**
    * Activate emergency contingency
    */
-  async activateEmergencyContingency(error: any): Promise<void> {
+  async activateEmergencyContingency(error: Record<string, unknown>): Promise<void> {
     console.log('🚨 Activating Emergency Contingency Protocol');
     
     const contingencyAction = await this.contingencyManager.selectEmergencyContingency(error);
@@ -528,7 +528,7 @@ export class LiveDemoTechnicalProtocol {
     }
   }
 
-  private async performTechnicalAction(action: string, step: TechnicalStep): Promise<any> {
+  private async performTechnicalAction(action: string, step: TechnicalStep): Promise<Record<string, unknown>> {
     console.log(`🔧 Executing technical action: ${action}`);
     
     switch (action) {
@@ -564,7 +564,7 @@ export class LiveDemoTechnicalProtocol {
     }
   }
 
-  private async validateStepCriteria(criteria: string[], actionResult: any): Promise<ValidationResult> {
+  private async validateStepCriteria(criteria: string[], actionResult: Record<string, unknown>): Promise<ValidationResult> {
     const validationResults: { [key: string]: boolean } = {};
     
     for (const criterion of criteria) {
@@ -580,7 +580,7 @@ export class LiveDemoTechnicalProtocol {
     };
   }
 
-  private async validateCriterion(criterion: string, actionResult: any): Promise<boolean> {
+  private async validateCriterion(criterion: string, actionResult: Record<string, unknown>): Promise<boolean> {
     switch (criterion) {
       case 'all_systems_green':
         return actionResult?.systemHealth === 'operational';
@@ -717,53 +717,53 @@ export class LiveDemoTechnicalProtocol {
   }
 
   // Technical action implementations
-  private async runSystemHealthCheck(): Promise<any> {
+  private async runSystemHealthCheck(): Promise<Record<string, unknown>> {
     await new Promise(resolve => setTimeout(resolve, 1000));
     return { systemHealth: 'operational', performanceScore: 98 };
   }
 
-  private async loadQ3HubWithTiming(): Promise<any> {
+  private async loadQ3HubWithTiming(): Promise<Record<string, unknown>> {
     const startTime = Date.now();
     await new Promise(resolve => setTimeout(resolve, 450)); // Simulate 450ms loading
     const loadingTime = Date.now() - startTime;
     return { loadingTime, uiResponsiveness: 97 };
   }
 
-  private async demonstrateMunicipalBranding(): Promise<any> {
+  private async demonstrateMunicipalBranding(): Promise<Record<string, unknown>> {
     await new Promise(resolve => setTimeout(resolve, 500));
     return { brandingApplied: true, swedishStyling: true };
   }
 
-  private async executeWorldTransitions(): Promise<any> {
+  private async executeWorldTransitions(): Promise<Record<string, unknown>> {
     const startTime = Date.now();
     await new Promise(resolve => setTimeout(resolve, 750)); // Simulate 750ms transition
     const transitionTime = Date.now() - startTime;
     return { transitionTime, errors: [] };
   }
 
-  private async demonstrateSwedishMunicipalContent(): Promise<any> {
+  private async demonstrateSwedishMunicipalContent(): Promise<Record<string, unknown>> {
     await new Promise(resolve => setTimeout(resolve, 1000));
     return { contentLoaded: true, culturalAdaptation: true };
   }
 
-  private async activateStakeholderTablets(): Promise<any> {
+  private async activateStakeholderTablets(): Promise<Record<string, unknown>> {
     await new Promise(resolve => setTimeout(resolve, 1500));
     return { connectedDevices: 5, expectedDevices: 5, syncWorking: true };
   }
 
-  private async demonstrateAnnaSvenssonJourney(): Promise<any> {
+  private async demonstrateAnnaSvenssonJourney(): Promise<Record<string, unknown>> {
     const startTime = Date.now();
     await new Promise(resolve => setTimeout(resolve, 2000));
     const syncTime = Date.now() - startTime;
     return { mobilePerformance: 95, syncTime: 180 };
   }
 
-  private async showLivePerformanceDashboard(): Promise<any> {
+  private async showLivePerformanceDashboard(): Promise<Record<string, unknown>> {
     await new Promise(resolve => setTimeout(resolve, 500));
     return { metricsUpdating: true, dashboardResponsive: true };
   }
 
-  private async highlightTechnicalSuperiority(): Promise<any> {
+  private async highlightTechnicalSuperiority(): Promise<Record<string, unknown>> {
     await new Promise(resolve => setTimeout(resolve, 800));
     return { comparisonVisible: true, advantagesClear: true };
   }
@@ -856,11 +856,11 @@ export class LiveDemoTechnicalProtocol {
     }
   }
 
-  private getPhasePerformanceMetrics(): any {
+  private getPhasePerformanceMetrics(): Record<string, unknown> {
     return { score: 96, metrics: {} };
   }
 
-  private getPhaseAudienceEngagement(): any {
+  private getPhaseAudienceEngagement(): Record<string, unknown> {
     return { score: 94, engagement: 'high' };
   }
 
@@ -915,19 +915,19 @@ export class LiveDemoTechnicalProtocol {
     return 'Live demo technical protocol executed successfully with excellent performance and stakeholder engagement.';
   }
 
-  private analyzePerformanceData(): any {
+  private analyzePerformanceData(): Record<string, unknown> {
     return { analysis: 'Performance exceeded all targets' };
   }
 
-  private analyzeAudienceEngagement(): any {
+  private analyzeAudienceEngagement(): Record<string, unknown> {
     return { analysis: 'High audience engagement throughout demo' };
   }
 
-  private analyzeTechnicalExecution(): any {
+  private analyzeTechnicalExecution(): Record<string, unknown> {
     return { analysis: 'Technical execution flawless with minimal contingency activation' };
   }
 
-  private analyzeContingencyActivations(): any {
+  private analyzeContingencyActivations(): Record<string, unknown> {
     return { analysis: 'Contingency systems ready but minimal activation required' };
   }
 
@@ -948,7 +948,7 @@ export class LiveDemoTechnicalProtocol {
 class DemoPerformanceMonitor {
   constructor(private targets: DemoPerformanceTargets) {}
   
-  getCurrentStatus(): any {
+  getCurrentStatus(): Record<string, unknown> {
     return { status: 'excellent', score: 96 };
   }
   
@@ -979,7 +979,7 @@ class ContingencyManager {
     };
   }
   
-  async selectEmergencyContingency(error: any): Promise<ContingencyAction> {
+  async selectEmergencyContingency(error: Record<string, unknown>): Promise<ContingencyAction> {
     return {
       actionId: 'emergency_backup',
       description: 'Emergency backup activation',
@@ -999,7 +999,7 @@ interface DemoExecution {
   startTime: number;
   config: DemoProtocolConfiguration;
   currentPhase: DemoPhase | null;
-  performanceLog: any[];
+  performanceLog: Record<string, unknown>[];
   issues: TechnicalIssue[];
   contingencyActivations: ContingencyActivation[];
 }
@@ -1009,22 +1009,22 @@ interface PhaseExecutionResult {
   success: boolean;
   duration: number;
   stepResults: StepExecutionResult[];
-  performanceMetrics: any;
-  audienceEngagement: any;
+  performanceMetrics: Record<string, unknown>;
+  audienceEngagement: Record<string, unknown>;
 }
 
 interface StepExecutionResult {
   stepId: string;
   success: boolean;
   duration: number;
-  actionResult: any;
+  actionResult: Record<string, unknown>;
   validation: ValidationResult;
   fallbackUsed: string | null;
 }
 
 interface ValidationResult {
   passed: boolean;
-  details: any;
+  details: Record<string, unknown>;
   score: number;
 }
 
@@ -1095,7 +1095,7 @@ interface DemoExecutionStatus {
   executionId: string | null;
   startTime: number;
   elapsedTime: number;
-  performanceStatus: any;
+  performanceStatus: Record<string, unknown>;
   issuesCount: number;
   contingencyActivations: number;
 }
@@ -1103,10 +1103,10 @@ interface DemoExecutionStatus {
 interface DemoReport {
   executiveSummary: string;
   executionDetails: DemoExecutionResult;
-  performanceAnalysis: any;
-  audienceEngagementAnalysis: any;
-  technicalAnalysis: any;
-  contingencyAnalysis: any;
+  performanceAnalysis: Record<string, unknown>;
+  audienceEngagementAnalysis: Record<string, unknown>;
+  technicalAnalysis: Record<string, unknown>;
+  contingencyAnalysis: Record<string, unknown>;
   recommendations: string[];
   lessonsLearned: string[];
   nextStepsProposal: string[];
@@ -1139,7 +1139,7 @@ interface PresentationSetup {
 interface DeviceSetup {
   deviceType: string;
   count: number;
-  specifications: any;
+  specifications: Record<string, unknown>;
 }
 
 interface NetworkSetup {
@@ -1170,7 +1170,7 @@ interface RecordingSetup {
 interface MonitoringProtocol {
   interval: number;
   metrics: string[];
-  alertThresholds: any;
+  alertThresholds: Record<string, unknown>;
 }
 
 // Export factory function for creating demo protocol

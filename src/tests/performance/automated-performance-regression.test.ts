@@ -56,8 +56,8 @@ const MUNICIPAL_PERFORMANCE_BASELINES = {
 };
 
 describe('Automated Performance Regression Detection', () => {
-  let regressionDetector: any;
-  let cicdGates: any;
+  let regressionDetector: Record<string, unknown>;
+  let cicdGates: Record<string, unknown>;
 
   beforeEach(() => {
     vi.clearAllMocks();
@@ -157,7 +157,7 @@ describe('Automated Performance Regression Detection', () => {
       expect(pullRequestAnalysis.regressionsDetected).toBeInstanceOf(Array);
 
       // Test regression severity classification
-      pullRequestAnalysis.regressionsDetected.forEach((regression: any) => {
+      pullRequestAnalysis.regressionsDetected.forEach((regression: Record<string, unknown>) => {
         expect(regression).toMatchObject({
           component: expect.any(String),
           metric: expect.any(String),
@@ -227,7 +227,7 @@ describe('Automated Performance Regression Detection', () => {
 
       // Verify anomaly detection
       expect(continuousMonitoring.anomaliesDetected).toBeInstanceOf(Array);
-      continuousMonitoring.anomaliesDetected.forEach((anomaly: any) => {
+      continuousMonitoring.anomaliesDetected.forEach((anomaly: Record<string, unknown>) => {
         expect(anomaly).toMatchObject({
           timestamp: expect.any(Number),
           metric: expect.any(String),
@@ -319,7 +319,7 @@ describe('Automated Performance Regression Detection', () => {
 
       // Verify actionable recommendations
       expect(cicdReport.actionableRecommendations).toBeInstanceOf(Array);
-      cicdReport.actionableRecommendations.forEach((recommendation: any) => {
+      cicdReport.actionableRecommendations.forEach((recommendation: Record<string, unknown>) => {
         expect(recommendation).toMatchObject({
           category: expect.any(String),
           priority: expect.any(String),
@@ -420,7 +420,7 @@ describe('Automated Performance Regression Detection', () => {
 
       // Verify feature correlation analysis
       expect(trendAnalysis.featureCorrelations).toBeInstanceOf(Array);
-      trendAnalysis.featureCorrelations.forEach((correlation: any) => {
+      trendAnalysis.featureCorrelations.forEach((correlation: Record<string, unknown>) => {
         expect(correlation).toMatchObject({
           feature: expect.any(String),
           performanceImpact: expect.any(Number),
@@ -458,7 +458,7 @@ describe('Automated Performance Regression Detection', () => {
 
       // Test proactive recommendations
       expect(performancePrediction.proactiveRecommendations).toBeInstanceOf(Array);
-      performancePrediction.proactiveRecommendations.forEach((rec: any) => {
+      performancePrediction.proactiveRecommendations.forEach((rec: Record<string, unknown>) => {
         expect(rec).toMatchObject({
           recommendation: expect.any(String),
           preventionTarget: expect.any(String),

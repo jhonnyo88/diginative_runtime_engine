@@ -77,7 +77,7 @@ interface PerfectDemoStage {
     cultural_adaptation: number;
     government_value: number;
   };
-  demoComponent: React.ComponentType<any>;
+  demoComponent: React.ComponentType<Record<string, unknown>>;
   stakeholderFocus: 'executives' | 'hr_directors' | 'technical_leaders' | 'budget_committee' | 'citizen_services';
   governmentValue: string;
   nextAction: string;

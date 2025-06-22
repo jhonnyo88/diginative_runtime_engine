@@ -210,7 +210,7 @@ export class InfrastructureMonitoring {
       // Observe First Input Delay (FID)
       const fidObserver = new PerformanceObserver((list) => {
         const entries = list.getEntries();
-        entries.forEach((entry: any) => {
+        entries.forEach((entry: Record<string, unknown>) => {
           this.recordMetric({
             name: 'fid',
             value: entry.processingStart - entry.startTime,
@@ -226,7 +226,7 @@ export class InfrastructureMonitoring {
       const clsObserver = new PerformanceObserver((list) => {
         const entries = list.getEntries();
         let clsScore = 0;
-        entries.forEach((entry: any) => {
+        entries.forEach((entry: Record<string, unknown>) => {
           if (!entry.hadRecentInput) {
             clsScore += entry.value;
           }

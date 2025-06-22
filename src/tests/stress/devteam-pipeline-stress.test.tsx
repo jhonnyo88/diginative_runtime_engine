@@ -221,7 +221,7 @@ describe('DevTeam Pipeline Stress Testing', () => {
       const batches = 10; // 500 total submissions
       const batchInterval = 30000; // 30 seconds between batches
       
-      const allResults: any[] = [];
+      const allResults: Record<string, unknown>[] = [];
       const performanceMetrics: number[] = [];
 
       // Mock consistent Redis behavior
@@ -528,8 +528,8 @@ describe('DevTeam Pipeline Stress Testing', () => {
     it('should validate system remains stable under sustained load', async () => {
       const sustainedLoadDuration = 30000; // 30 seconds of sustained load
       const submissionInterval = 500; // New submission every 500ms
-      const submissions: any[] = [];
-      const results: any[] = [];
+      const submissions: Record<string, unknown>[] = [];
+      const results: Record<string, unknown>[] = [];
 
       mockRedis.get.mockResolvedValue(null);
       mockRedis.set.mockResolvedValue('OK');

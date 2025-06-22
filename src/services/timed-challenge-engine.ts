@@ -151,7 +151,7 @@ export interface ChallengeResult {
 export interface DecisionTrace {
   timestamp: number;
   actionType: string;
-  actionData: any;
+  actionData: Record<string, unknown>;
   correctness: number; // 0-1 scale
   responseTime: number; // milliseconds
 }

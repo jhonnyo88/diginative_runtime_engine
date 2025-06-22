@@ -162,7 +162,7 @@ export interface EmergencyPreloadConfig {
 export class MunicipalTenantScalingEngine extends TenantAwareService {
   private tenantInstances: Map<string, TenantInstance> = new Map();
   private resourcePools: Map<string, any> = new Map();
-  private scalingMetrics: any;
+  private scalingMetrics: Record<string, unknown>;
   
   constructor() {
     super();
@@ -548,7 +548,7 @@ export class Q2CachingStrategyEngine extends TenantAwareService {
   async cacheInteractiveMechanics(
     municipalityId: string,
     mechanicType: 'drag_drop' | 'timed_challenge' | 'narrative_branching',
-    mechanicData: any
+    mechanicData: Record<string, unknown>
   ): Promise<void> {
     await this.validateTenantAccess(municipalityId, municipalityId, 'system', 'cache_mechanics');
     
@@ -574,7 +574,7 @@ export class Q2CachingStrategyEngine extends TenantAwareService {
    */
   async preloadEmergencyScenarios(
     municipalityId: string,
-    scenarios: Array<{ scenarioId: string; scenarioType: string; data: any }>
+    scenarios: Array<{ scenarioId: string; scenarioType: string; data: Record<string, unknown> }>
   ): Promise<void> {
     await this.validateTenantAccess(municipalityId, municipalityId, 'system', 'preload_scenarios');
     

@@ -914,7 +914,7 @@ export class AIContentGenerationReliability extends EventEmitter {
   /**
    * Get AI Content Reliability Summary
    */
-  getAIContentReliabilitySummary(): any {
+  getAIContentReliabilitySummary(): Record<string, unknown> {
     const summary = this.testResults.get('reliability_summary')?.[0];
     const contentTypes = Object.keys(this.reliabilitySpecs.contentTypes);
     const scenarios = Object.keys(this.reliabilitySpecs.testingScenarios);

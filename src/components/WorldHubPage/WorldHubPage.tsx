@@ -138,7 +138,7 @@ export const WorldHubPage: React.FC<WorldHubPageProps> = ({ uniqueCode }) => {
   /**
    * Handle return from completed world
    */
-  const handleWorldCompletion = useCallback(async (worldIndex: number, results: any) => {
+  const handleWorldCompletion = useCallback(async (worldIndex: number, results: Record<string, unknown>) => {
     if (!hubState) return;
 
     try {

@@ -121,7 +121,7 @@ export interface AuthResult {
 export interface AuthError {
   code: AuthErrorCode;
   message: string;
-  details?: any;
+  details?: Record<string, unknown>;
 }
 
 export type AuthErrorCode =
@@ -151,7 +151,7 @@ export interface AuditLogEntry {
   userId: string;
   action: AuditAction;
   resource: string;
-  details: any;
+  details: Record<string, unknown>;
   timestamp: string;
   ipAddress: string;
   userAgent: string;

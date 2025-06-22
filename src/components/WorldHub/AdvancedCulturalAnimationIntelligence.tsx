@@ -380,7 +380,7 @@ const CulturalAnimationControlPanel: React.FC<CulturalAnimationControlPanelProps
 }) => {
   const { currentTheme } = useCulturalTheme();
 
-  const handleSettingChange = (key: keyof AnimationIntelligenceSettings, value: any) => {
+  const handleSettingChange = (key: keyof AnimationIntelligenceSettings, value: Record<string, unknown>) => {
     onSettingsChange({ ...settings, [key]: value });
   };
 

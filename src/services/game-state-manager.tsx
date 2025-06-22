@@ -171,7 +171,7 @@ class GameStateManager {
   async updateGameState(
     sessionId: string,
     updates: Partial<Pick<GameState, 'currentSceneId' | 'sceneIndex'>> & {
-      sceneResult?: any;
+      sceneResult?: Record<string, unknown>;
       timeSpent?: number;
     }
   ): Promise<void> {
@@ -438,7 +438,7 @@ class GameStateManager {
     return /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
   }
 
-  private async trackAnalyticsEvent(eventType: string, eventData: any): Promise<void> {
+  private async trackAnalyticsEvent(eventType: string, eventData: Record<string, unknown>): Promise<void> {
     try {
       await supabase
         .from('analytics_events')
@@ -488,7 +488,7 @@ export function useGameState(sessionId?: string) {
     }
   };
 
-  const updateState = async (updates: any) => {
+  const updateState = async (updates: Record<string, unknown>) => {
     if (gameState) {
       await gameStateManager.updateGameState(gameState.sessionId, updates);
     }

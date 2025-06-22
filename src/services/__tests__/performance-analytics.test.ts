@@ -127,9 +127,9 @@ Object.defineProperty(global, 'performance', {
 });
 
 describe('PerformanceAnalyticsService - Emergency Service Testing', () => {
-  let consoleInfoSpy: any;
-  let consoleWarnSpy: any;
-  let consoleErrorSpy: any;
+  let consoleInfoSpy: Record<string, unknown>;
+  let consoleWarnSpy: Record<string, unknown>;
+  let consoleErrorSpy: Record<string, unknown>;
   let monitoringMock: MockInfrastructureMonitoring;
   
   beforeEach(() => {

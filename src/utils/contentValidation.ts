@@ -27,7 +27,7 @@ const PERFORMANCE_BUDGETS = {
   VALIDATION_TIMEOUT: 5000,      // 5 seconds max validation
 };
 
-export const validateDevTeamContent = async (content: any): Promise<ValidationResult> => {
+export const validateDevTeamContent = async (content: Record<string, unknown>): Promise<ValidationResult> => {
   const startTime = Date.now();
   const errors: string[] = [];
   const warnings: string[] = [];
@@ -116,7 +116,7 @@ export const validateDevTeamContent = async (content: any): Promise<ValidationRe
   }
 };
 
-const validateDialogueScene = (scene: any, errors: string[], warnings: string[]) => {
+const validateDialogueScene = (scene: Record<string, unknown>, errors: string[], warnings: string[]) => {
   if (!scene.scene_id) {
     errors.push(`DialogueScene missing scene_id`);
   }
@@ -131,7 +131,7 @@ const validateDialogueScene = (scene: any, errors: string[], warnings: string[])
 
   // Validate dialogue turns
   if (scene.dialogue_turns) {
-    scene.dialogue_turns.forEach((turn: any, index: number) => {
+    scene.dialogue_turns.forEach((turn: Record<string, unknown>, index: number) => {
       if (!turn.speaker || !turn.character_id || !turn.text) {
         errors.push(`DialogueScene ${scene.scene_id} turn ${index} missing required fields`);
       }
@@ -148,7 +148,7 @@ const validateDialogueScene = (scene: any, errors: string[], warnings: string[])
   }
 };
 
-const validateQuizScene = (scene: any, errors: string[], warnings: string[]) => {
+const validateQuizScene = (scene: Record<string, unknown>, errors: string[], warnings: string[]) => {
   if (!scene.scene_id) {
     errors.push(`QuizScene missing scene_id`);
   }
@@ -159,7 +159,7 @@ const validateQuizScene = (scene: any, errors: string[], warnings: string[]) => 
 
   // Validate questions
   if (scene.questions) {
-    scene.questions.forEach((question: any, index: number) => {
+    scene.questions.forEach((question: Record<string, unknown>, index: number) => {
       if (!question.question_id || !question.question_type || !question.question_text) {
         errors.push(`QuizScene ${scene.scene_id} question ${index} missing required fields`);
       }
@@ -174,7 +174,7 @@ const validateQuizScene = (scene: any, errors: string[], warnings: string[]) => 
 
       // Validate options
       if (question.options) {
-        const correctOptions = question.options.filter((opt: any) => opt.is_correct);
+        const correctOptions = question.options.filter((opt: Record<string, unknown>) => opt.is_correct);
         
         if (correctOptions.length === 0) {
           errors.push(`QuizScene ${scene.scene_id} question ${index} has no correct options`);
@@ -184,7 +184,7 @@ const validateQuizScene = (scene: any, errors: string[], warnings: string[]) => 
           errors.push(`QuizScene ${scene.scene_id} question ${index} true_false must have exactly 2 options`);
         }
 
-        question.options.forEach((option: any, optIndex: number) => {
+        question.options.forEach((option: Record<string, unknown>, optIndex: number) => {
           if (!option.option_id || !option.text || typeof option.is_correct !== 'boolean') {
             errors.push(`QuizScene ${scene.scene_id} question ${index} option ${optIndex} missing required fields`);
           }
@@ -199,7 +199,7 @@ const validateQuizScene = (scene: any, errors: string[], warnings: string[]) => 
   }
 };
 
-export const validateMunicipalBranding = (branding: any): ValidationResult => {
+export const validateMunicipalBranding = (branding: Record<string, unknown>): ValidationResult => {
   const errors: string[] = [];
   const warnings: string[] = [];
 
@@ -248,7 +248,7 @@ export const validateMunicipalBranding = (branding: any): ValidationResult => {
 };
 
 // Validate complete game manifest (for DevTeam API integration)
-export const validateGameManifest = (manifest: any): ValidationResult => {
+export const validateGameManifest = (manifest: Record<string, unknown>): ValidationResult => {
   const startTime = Date.now();
   const errors: string[] = [];
   const warnings: string[] = [];
@@ -275,7 +275,7 @@ export const validateGameManifest = (manifest: any): ValidationResult => {
       errors.push("Missing or invalid scenes array");
     } else {
       // Validate each scene
-      manifest.scenes.forEach((scene: any, index: number) => {
+      manifest.scenes.forEach((scene: Record<string, unknown>, index: number) => {
         if (!scene.id) {
           errors.push(`Scene ${index} missing id`);
         }

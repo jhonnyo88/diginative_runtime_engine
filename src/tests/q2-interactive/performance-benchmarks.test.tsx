@@ -52,8 +52,8 @@ const ANNA_SVENSSON_SESSION = {
 };
 
 describe('Interactive Elements Performance Benchmarks', () => {
-  let performanceHarness: any;
-  let memoryProfiler: any;
+  let performanceHarness: Record<string, unknown>;
+  let memoryProfiler: Record<string, unknown>;
 
   beforeEach(() => {
     vi.clearAllMocks();
@@ -439,7 +439,7 @@ function createMemoryProfiler() {
   };
 }
 
-function createDragPerformanceHarness(config: any) {
+function createDragPerformanceHarness(config: Record<string, unknown>) {
   return {
     measureDragPerformance: vi.fn().mockResolvedValue({
       averageFPS: 58.5,
@@ -456,7 +456,7 @@ function createDragPerformanceHarness(config: any) {
   };
 }
 
-function createDragPreviewHarness(config: any) {
+function createDragPreviewHarness(config: Record<string, unknown>) {
   return {
     measurePreviewPerformance: vi.fn().mockResolvedValue({
       renderTime: 14.2,
@@ -468,7 +468,7 @@ function createDragPreviewHarness(config: any) {
   };
 }
 
-function createTimerAnimationHarness(config: any) {
+function createTimerAnimationHarness(config: Record<string, unknown>) {
   return {
     measureTimerAnimations: vi.fn().mockResolvedValue({
       frameRate: 59.8,
@@ -482,7 +482,7 @@ function createTimerAnimationHarness(config: any) {
   };
 }
 
-function createSessionPerformanceHarness(sessionConfig: any) {
+function createSessionPerformanceHarness(sessionConfig: Record<string, unknown>) {
   return {
     measureSessionPerformance: vi.fn().mockResolvedValue({
       totalBatteryImpact: 0.042,
@@ -494,7 +494,7 @@ function createSessionPerformanceHarness(sessionConfig: any) {
   };
 }
 
-function createTouchPerformanceHarness(config: any) {
+function createTouchPerformanceHarness(config: Record<string, unknown>) {
   return {
     measureTouchPerformance: vi.fn().mockResolvedValue({
       averageResponseTime: 45,
@@ -508,7 +508,7 @@ function createTouchPerformanceHarness(config: any) {
   };
 }
 
-function createNetworkStressHarness(config: any) {
+function createNetworkStressHarness(config: Record<string, unknown>) {
   return {
     testGestureUnderNetworkStress: vi.fn().mockResolvedValue({
       gestureResponseMaintained: true,
@@ -520,7 +520,7 @@ function createNetworkStressHarness(config: any) {
   };
 }
 
-function createMemoryLeakHarness(config: any) {
+function createMemoryLeakHarness(config: Record<string, unknown>) {
   return {
     runMemoryLeakTest: vi.fn().mockResolvedValue({
       memoryLeaks: 0,
@@ -540,7 +540,7 @@ function createMemoryLeakHarness(config: any) {
   };
 }
 
-function createObjectPoolHarness(config: any) {
+function createObjectPoolHarness(config: Record<string, unknown>) {
   return {
     testObjectPooling: vi.fn().mockResolvedValue({
       poolEfficiency: 0.93,
@@ -555,7 +555,7 @@ function createObjectPoolHarness(config: any) {
   };
 }
 
-function createMunicipalNetworkHarness(config: any) {
+function createMunicipalNetworkHarness(config: Record<string, unknown>) {
   return {
     testMunicipalNetworkPerformance: vi.fn().mockResolvedValue({
       averageLoadTime: 1800,
@@ -575,7 +575,7 @@ function createMunicipalNetworkHarness(config: any) {
   };
 }
 
-function createBatteryOptimizationHarness(config: any) {
+function createBatteryOptimizationHarness(config: Record<string, unknown>) {
   return {
     measureBatteryImpact: vi.fn().mockResolvedValue({
       totalBatteryDrain: 0.043,
@@ -592,7 +592,7 @@ function createBatteryOptimizationHarness(config: any) {
   };
 }
 
-function createRegressionDetectionHarness(config: any) {
+function createRegressionDetectionHarness(config: Record<string, unknown>) {
   return {
     detectPerformanceRegression: vi.fn().mockResolvedValue({
       regressionDetected: false,
@@ -610,7 +610,7 @@ function createRegressionDetectionHarness(config: any) {
 }
 
 // Mock components for testing
-function PerformanceOptimizedDragDrop({ elementCount, municipality, animationEnabled }: any) {
+function PerformanceOptimizedDragDrop({ elementCount, municipality, animationEnabled }: Record<string, unknown>) {
   return (
     <div data-testid="performance-optimized-drag-drop">
       {Array.from({ length: elementCount }, (_, i) => (
@@ -622,7 +622,7 @@ function PerformanceOptimizedDragDrop({ elementCount, municipality, animationEna
   );
 }
 
-function MunicipalDragPreview({ municipality, documentType, previewEnabled }: any) {
+function MunicipalDragPreview({ municipality, documentType, previewEnabled }: Record<string, unknown>) {
   return (
     <div data-testid="municipal-drag-preview">
       <canvas data-testid="preview-canvas" width={300} height={200} />
@@ -630,7 +630,7 @@ function MunicipalDragPreview({ municipality, documentType, previewEnabled }: an
   );
 }
 
-function AnimatedTimerInterface({ timerCount, animationStyle, municipality }: any) {
+function AnimatedTimerInterface({ timerCount, animationStyle, municipality }: Record<string, unknown>) {
   return (
     <div data-testid="animated-timer-interface">
       {Array.from({ length: timerCount }, (_, i) => (
@@ -642,7 +642,7 @@ function AnimatedTimerInterface({ timerCount, animationStyle, municipality }: an
   );
 }
 
-function AnnaSvenssonOptimizedTimer({ sessionDuration, networkConditions, device }: any) {
+function AnnaSvenssonOptimizedTimer({ sessionDuration, networkConditions, device }: Record<string, unknown>) {
   return (
     <div data-testid="anna-svensson-timer">
       <div data-testid="session-timer">07:00</div>
@@ -650,7 +650,7 @@ function AnnaSvenssonOptimizedTimer({ sessionDuration, networkConditions, device
   );
 }
 
-function TouchOptimizedInterface({ gestureTypes, municipality, deviceOptimization }: any) {
+function TouchOptimizedInterface({ gestureTypes, municipality, deviceOptimization }: Record<string, unknown>) {
   return (
     <div data-testid="touch-optimized-interface">
       {gestureTypes.map((gesture: string) => (
@@ -662,7 +662,7 @@ function TouchOptimizedInterface({ gestureTypes, municipality, deviceOptimizatio
   );
 }
 
-function MemoryOptimizedInteractives({ enableGarbageCollection, memoryLimit, municipality }: any) {
+function MemoryOptimizedInteractives({ enableGarbageCollection, memoryLimit, municipality }: Record<string, unknown>) {
   return (
     <div data-testid="memory-optimized-interactives">
       <div data-testid="memory-monitor">Memory: {memoryLimit}MB</div>

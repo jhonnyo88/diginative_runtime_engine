@@ -1035,7 +1035,7 @@ export class BackupSystemFailoverTesting extends EventEmitter {
   /**
    * Get Backup Failover Testing Summary
    */
-  getBackupFailoverTestingSummary(): any {
+  getBackupFailoverTestingSummary(): Record<string, unknown> {
     const summary = this.testResults.get('failover_summary')?.[0];
     const backupSystems = Object.keys(this.failoverSpecs.backupSystems);
     const scenarios = Object.keys(this.failoverSpecs.failoverScenarios);

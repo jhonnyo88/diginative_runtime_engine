@@ -60,7 +60,7 @@ describe('Draggable', () => {
   });
 
   it('starts drag on mouse down', () => {
-    let draggedItem: any = null;
+    let draggedItem: Record<string, unknown> = null;
     
     const TestComponent = () => {
       const { draggedItem: item } = useDragDrop();
@@ -145,7 +145,7 @@ describe('DropZone', () => {
   });
 
   it('shows drop indicator when compatible item is dragged over', async () => {
-    let startDragFn: any;
+    let startDragFn: Record<string, unknown>;
     
     const TestComponent = () => {
       const { startDrag } = useDragDrop();
@@ -180,7 +180,7 @@ describe('DropZone', () => {
   });
 
   it('does not accept incompatible items', () => {
-    let startDragFn: any;
+    let startDragFn: Record<string, unknown>;
     const handleDrop = jest.fn();
     
     const TestComponent = () => {
@@ -215,7 +215,7 @@ describe('DropZone', () => {
   });
 
   it('calls onDrop when compatible item is dropped', () => {
-    let startDragFn: any;
+    let startDragFn: Record<string, unknown>;
     const handleDrop = jest.fn();
     
     const TestComponent = () => {

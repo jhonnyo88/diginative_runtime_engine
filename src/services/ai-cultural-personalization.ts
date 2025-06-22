@@ -585,7 +585,7 @@ export class AICulturalPersonalizationService extends EventEmitter {
       },
       languagePreferences: {
         primaryLanguage: this.getCountryLanguage(country),
-        professionalTerminology: {},
+        professionalTerminology: Record<string, unknown>,
         politenessLevel: 'professional',
         activeVoicePreference: true,
         municipalJargon: []

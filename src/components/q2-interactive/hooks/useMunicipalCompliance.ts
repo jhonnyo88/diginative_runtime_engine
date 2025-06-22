@@ -91,8 +91,8 @@ export const useMunicipalCompliance = () => {
   ): Promise<ComplianceValidationResult> => {
     const { permit, targetStage, municipality, locale, userRole } = request;
     
-    let errors: string[] = [];
-    let warnings: string[] = [];
+    const errors: string[] = [];
+    const warnings: string[] = [];
     let reviewNotes = '';
     
     // Get country from municipality or locale
@@ -334,7 +334,7 @@ export const useMunicipalCompliance = () => {
   }): string => {
     const { permit, targetStage, country, locale, hasErrors, hasWarnings } = context;
     
-    let notes = [];
+    const notes = [];
     
     // Stage transition note
     notes.push(`Stage transition: ${permit?.status || 'unknown'} → ${targetStage}`);

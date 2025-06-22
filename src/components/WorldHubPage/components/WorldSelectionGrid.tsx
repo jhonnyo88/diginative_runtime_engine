@@ -32,7 +32,7 @@ export const WorldSelectionGrid: React.FC<WorldSelectionGridProps> = ({
       completionPercentage: 0,
       timeSpent: 0,
       achievementsUnlocked: [],
-      competencyGains: {}
+      competencyGains: Record<string, unknown>
     };
   };
 
@@ -128,8 +128,8 @@ export const WorldSelectionGrid: React.FC<WorldSelectionGridProps> = ({
               transition={{ delay: index * 0.1, duration: 0.6 }}
               className={`world-card ${worldStatus.status} ${isSelected ? 'selected' : ''}`}
               onClick={() => isClickable && onWorldSelect(worldIndex)}
-              whileHover={isClickable ? { scale: 1.02 } : {}}
-              whileTap={isClickable ? { scale: 0.98 } : {}}
+              whileHover={isClickable ? { scale: 1.02 } : Record<string, unknown>}
+              whileTap={isClickable ? { scale: 0.98 } : Record<string, unknown>}
             >
               {/* World Header */}
               <div className="world-header">

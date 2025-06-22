@@ -75,7 +75,7 @@ export class RedisClusterService {
       averageResponseTime: 0,
       memoryUsage: 0,
       activeConnections: 0,
-      nodeHealth: {}
+      nodeHealth: Record<string, unknown>
     };
     
     this.initializeCachePatterns();
@@ -507,7 +507,7 @@ class MockRedisCluster {
     }, 100);
   }
 
-  on(event: string, handler: Function): void {
+  on(event: string, handler: (...args: unknown[]) => unknown): void {
     if (!this.eventHandlers.has(event)) {
       this.eventHandlers.set(event, []);
     }

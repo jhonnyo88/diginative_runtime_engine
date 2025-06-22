@@ -857,7 +857,7 @@ export class LiveDemoTechnicalProtocol {
   }
 
   private getPhasePerformanceMetrics(): Record<string, unknown> {
-    return { score: 96, metrics: {} };
+    return { score: 96, metrics: Record<string, unknown> };
   }
 
   private getPhaseAudienceEngagement(): Record<string, unknown> {

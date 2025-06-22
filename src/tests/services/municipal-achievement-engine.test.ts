@@ -678,7 +678,7 @@ describe('MunicipalAchievementEngine Unit Tests', () => {
         correctAnswers: -1,
         totalQuestions: Infinity,
         sectionsCompleted: 'invalid' as any,
-        totalSections: {} as any
+        totalSections: Record<string, unknown> as any
       };
 
       // Should not throw errors

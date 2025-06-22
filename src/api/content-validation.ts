@@ -6,7 +6,7 @@
  * Enables <30 seconds validation feedback for DevTeam
  */
 
-import { Request, Response, NextFunction } from 'express';
+import { Request, Response } from 'express';
 import { DevTeamContentValidator } from '../validation/devteam-content-validator';
 import { InfrastructureMonitoring } from '../services/infrastructure-monitoring';
 import type { ValidationResult, ValidationError, ValidationWarning } from '../validation/devteam-content-validator';
@@ -250,7 +250,7 @@ export async function validateContent(
  * Batch validation endpoint for multiple content items
  */
 export async function validateBatch(
-  req: Request<{}, {}, { items: ValidationRequest[] }>,
+  req: Request<Record<string, unknown>, unknown, { items: ValidationRequest[] }>,
   res: Response<{ results: ValidationResponse[]; totalProcessingTime: number }>
 ): Promise<void> {
   const startTime = Date.now();

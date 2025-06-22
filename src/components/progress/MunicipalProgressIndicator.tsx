@@ -155,7 +155,7 @@ export const MunicipalProgressIndicator: React.FC<MunicipalProgressIndicatorProp
         _hover={isClickable ? {
           transform: 'translate(-50%, -50%) scale(1.1)',
           boxShadow: 'md'
-        } : {}}
+        } : Record<string, unknown>}
         onClick={() => handleMilestoneClick(milestone)}
         onMouseEnter={() => handleMilestoneHover(milestone, true)}
         onMouseLeave={() => handleMilestoneHover(milestone, false)}

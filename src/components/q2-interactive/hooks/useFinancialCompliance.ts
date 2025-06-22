@@ -131,8 +131,8 @@ export const useFinancialCompliance = () => {
   ): Promise<FinancialComplianceResult> => {
     const { invoice, targetStage, municipality, userRole, locale } = request;
     
-    let errors: string[] = [];
-    let warnings: string[] = [];
+    const errors: string[] = [];
+    const warnings: string[] = [];
     let approvalNotes = '';
     
     const country = getCountryFromLocale(locale);
@@ -466,7 +466,7 @@ export const useFinancialCompliance = () => {
   }): string => {
     const { invoice, targetStage, country, locale, userRole, hasErrors, hasWarnings } = context;
     
-    let notes = [];
+    const notes = [];
     
     // Basic approval info
     notes.push(`Financial approval: ${invoice.vendor} - ${formatCurrency(invoice.amount, invoice.currency, locale)}`);

@@ -168,7 +168,7 @@ describe('DropZone', () => {
     startDragFn({
       id: 'test-item',
       type: 'document',
-      data: {},
+      data: Record<string, unknown>,
     });
 
     const dropZone = screen.getByRole('region');
@@ -204,7 +204,7 @@ describe('DropZone', () => {
     startDragFn({
       id: 'test-item',
       type: 'image',
-      data: {},
+      data: Record<string, unknown>,
     });
 
     const dropZone = screen.getByRole('region');

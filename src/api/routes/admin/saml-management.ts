@@ -54,7 +54,7 @@ const logAuditEvent = async (entry: AuditLogEntry): Promise<void> => {
 };
 
 // Admin authentication middleware
-const requireAdmin = async (req: Request, res: Response, next: Function) => {
+const requireAdmin = async (req: Request, res: Response, next: (...args: unknown[]) => unknown) => {
   try {
     // In production, implement proper admin role checking
     const userRoles = req.samlUser?.roles || [];

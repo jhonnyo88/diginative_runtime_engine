@@ -718,7 +718,7 @@ describe('PerformanceAnalyticsService Unit Tests', () => {
         new Error('Network error')
       );
 
-      (performanceAnalytics as any).metricsBuffer = [{ timestamp: 1000, metrics: {} }];
+      (performanceAnalytics as any).metricsBuffer = [{ timestamp: 1000, metrics: Record<string, unknown> }];
       
       await (performanceAnalytics as any).flushMetricsBuffer();
 

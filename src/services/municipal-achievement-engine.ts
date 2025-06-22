@@ -87,7 +87,7 @@ export class MunicipalAchievementEngine {
   private state: MunicipalAchievementState;
   private config: MunicipalAchievementEngineConfig;
   private criteria: { [achievementId: string]: MunicipalAchievementCriteria };
-  private listeners: { [event: string]: Function[] } = {};
+  private listeners: { [event: string]: (...args: unknown[]) => unknown[] } = {};
 
   constructor(config: MunicipalAchievementEngineConfig) {
     this.config = config;
@@ -100,7 +100,7 @@ export class MunicipalAchievementEngine {
       achievements: {
         earned: [],
         available: [],  // Will be populated by achievement engine
-        inProgress: {}
+        inProgress: Record<string, unknown>
       },
       competencies: {
         developed: [],
@@ -206,14 +206,14 @@ export class MunicipalAchievementEngine {
   }
 
   // Event system for achievement recognition
-  public addEventListener(event: string, callback: Function): void {
+  public addEventListener(event: string, callback: (...args: unknown[]) => unknown): void {
     if (!this.listeners[event]) {
       this.listeners[event] = [];
     }
     this.listeners[event].push(callback);
   }
 
-  public removeEventListener(event: string, callback: Function): void {
+  public removeEventListener(event: string, callback: (...args: unknown[]) => unknown): void {
     if (this.listeners[event]) {
       this.listeners[event] = this.listeners[event].filter(cb => cb !== callback);
     }

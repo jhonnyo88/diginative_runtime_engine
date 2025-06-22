@@ -271,8 +271,8 @@ describe('Municipal Tenant Isolation', () => {
 
     beforeEach(() => {
       req = {
-        headers: {},
-        query: {},
+        headers: Record<string, unknown>,
+        query: Record<string, unknown>,
         samlUser: undefined
       } as any;
       

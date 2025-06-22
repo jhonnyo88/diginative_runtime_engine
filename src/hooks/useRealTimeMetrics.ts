@@ -64,7 +64,7 @@ export const useRealTimeMetrics = (options: RealTimeMetricsOptions) => {
 
   // Initialize connection and metrics
   useEffect(() => {
-    let unsubscribe: Function | null = null;
+    let unsubscribe: (...args: unknown[]) => unknown | null = null;
     let pollInterval: NodeJS.Timeout | null = null;
 
     const initialize = async () => {
@@ -198,7 +198,7 @@ export const useActivityStream = (tenantId: string, limit: number = 50) => {
   const [isConnected, setIsConnected] = useState(false);
 
   useEffect(() => {
-    let unsubscribe: Function | null = null;
+    let unsubscribe: (...args: unknown[]) => unknown | null = null;
 
     const connectToActivityStream = async () => {
       try {

@@ -25,7 +25,7 @@ const mockSummaryScene: SummarySceneType = {
   type: 'SummaryScene',
   title: 'GDPR-utbildning Slutförd',
   message: 'Du har framgångsrikt genomfört din kompetensutveckling',
-  config: {}
+  config: Record<string, unknown>
 };
 
 // Mock analytics

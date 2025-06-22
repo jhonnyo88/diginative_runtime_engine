@@ -421,7 +421,7 @@ describe('DevTeamContentValidator - Comprehensive Test Suite', () => {
         version: false, // Should be string
         metadata: {
           title: 123, // Should be string
-          description: {}, // Should be string
+          description: Record<string, unknown>, // Should be string
           duration: [], // Should be string
           targetAudience: null, // Should be string
           language: undefined // Should be string

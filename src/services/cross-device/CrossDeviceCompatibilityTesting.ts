@@ -145,7 +145,7 @@ export interface CrossDeviceTestResult {
   compatibilityScore: number; // %
   performanceMetrics: CrossDevicePerformanceMetrics;
   visualMetrics: VisualCompatibilityMetrics;
-  functionalMetrics: FunctionalCompatibilityMetrics;
+  functionalMetrics: (...args: unknown[]) => unknownalCompatibilityMetrics;
   governmentReadiness: boolean;
   issues: CrossDeviceIssue[];
 }

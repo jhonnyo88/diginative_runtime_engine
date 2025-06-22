@@ -379,7 +379,7 @@ class PerformanceAnalyticsService {
   private collectCurrentMetrics(): void {
     const snapshot: PerformanceSnapshot = {
       timestamp: Date.now(),
-      metrics: {}
+      metrics: Record<string, unknown>
     };
 
     // Memory usage

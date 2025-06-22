@@ -278,29 +278,6 @@ Cypress.Commands.add('measureActionPerformance', (actionName, actionFn) => {
   });
 });
 
-// Type definitions for TypeScript support
-declare global {
-  namespace Cypress {
-    interface Chainable {
-      tab(options?: { shift?: boolean }): Chainable<Element>
-      realTouch(options?: { x?: number, y?: number, duration?: number }): Chainable<Element>
-      swipe(direction: 'left' | 'right' | 'up' | 'down', distance?: number): Chainable<Element>
-      longPress(duration?: number): Chainable<Element>
-      loginAsMunicipalEmployee(employeeData?: object): Chainable<void>
-      simulateSlowNetwork(type?: 'municipal-3g' | 'municipal-wifi' | 'municipal-4g'): Chainable<void>
-      screenshotWithDeviceInfo(name: string, options?: object): Chainable<void>
-      waitForMunicipalBranding(timeout?: number): Chainable<void>
-      handleiOSElements(): Chainable<void>
-      auditAccessibility(options?: { logViolations?: boolean, failOnViolations?: boolean }): Chainable<any>
-      measureActionPerformance(actionName: string, actionFn: () => Cypress.Chainable): Chainable<number>
-      municipalLogin(userType?: string): Chainable<void>
-      simulateMunicipalNetwork(): Chainable<void>
-      checkAccessibility(): Chainable<void>
-      measurePerformance(): Chainable<void>
-      takeScreenshotForRegression(name: string, options?: object): Chainable<void>
-      verifyMunicipalBranding(): Chainable<void>
-    }
-  }
-}
+// Type definitions moved to separate .d.ts file
 
 export {};

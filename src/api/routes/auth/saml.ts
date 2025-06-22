@@ -21,7 +21,7 @@ import {
 const router = Router();
 
 // Middleware for SAML session validation
-export const requireSAMLAuth = (req: Request, res: Response, next: Function) => {
+export const requireSAMLAuth = (req: Request, res: Response, next: (...args: unknown[]) => unknown) => {
   const sessionId = req.session?.samlSessionId || req.headers['x-saml-session'];
   
   if (!sessionId || !isValidSAMLSession(sessionId as string)) {

@@ -686,7 +686,6 @@ if (require.main === module) {
 }
 
 module.exports = RealDeviceTestingSetup;
-`;
 
 // Create scripts directory
 if (!fs.existsSync('./scripts')) {

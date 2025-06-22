@@ -261,7 +261,7 @@ describe('GameStateManager Unit Tests', () => {
         user_id: 'anna.svensson@malmo.se',
         started_at: new Date(Date.now() - 25 * 60 * 60 * 1000).toISOString(), // 25 hours ago
         completed_at: null,
-        progress: {}
+        progress: Record<string, unknown>
       };
 
       const mockSelect = vi.fn().mockReturnValue({
@@ -552,7 +552,7 @@ describe('GameStateManager Unit Tests', () => {
         gameId: 'ethics-training',
         progress: expect.objectContaining({
           completedScenes: [],
-          sceneResults: {}
+          sceneResults: Record<string, unknown>
         })
       });
     });
@@ -872,7 +872,7 @@ describe('ResumeGameDialog Component Tests', () => {
       sceneIndex: 1,
       progress: {
         completedScenes: ['scene-1'],
-        sceneResults: {},
+        sceneResults: Record<string, unknown>,
         startTime: '2025-01-19T09:00:00Z',
         lastActiveTime: '2025-01-19T09:15:00Z',
         totalTimeSpent: 900000
@@ -893,7 +893,7 @@ describe('ResumeGameDialog Component Tests', () => {
       sceneIndex: 0,
       progress: {
         completedScenes: [],
-        sceneResults: {},
+        sceneResults: Record<string, unknown>,
         startTime: '2025-01-19T10:00:00Z',
         lastActiveTime: '2025-01-19T10:05:00Z',
         totalTimeSpent: 300000
@@ -1108,7 +1108,7 @@ describe('Health Checks and Error Handling', () => {
 
     await gameStateManager.updateGameState('test-session-id-12345', {
       currentSceneId: 'scene-2',
-      sceneResult: {} // Empty result
+      sceneResult: Record<string, unknown> // Empty result
     });
 
     const results = await gameStateManager.completeGameSession('test-session-id-12345');

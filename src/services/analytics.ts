@@ -106,7 +106,7 @@ class AnalyticsService {
   }
 
   // Subscribe to real-time updates
-  subscribe(eventType: string, callback: Function) {
+  subscribe(eventType: string, callback: (...args: unknown[]) => unknown) {
     if (!this.listeners.has(eventType)) {
       this.listeners.set(eventType, []);
     }
@@ -282,7 +282,7 @@ export const useAnalytics = (tenantId?: string) => {
   React.useEffect(() => {
     if (!tenantId) return;
 
-    let unsubscribe: Function | null = null;
+    let unsubscribe: (...args: unknown[]) => unknown | null = null;
 
     const initializeAnalytics = async () => {
       try {

@@ -162,7 +162,7 @@ export const BranchingNarrativeEngine: React.FC<BranchingNarrativeEngineProps> =
     reputation: scenario.startingConditions.reputation,
     timeRemaining: scenario.startingConditions.timeRemaining,
     choiceHistory: [],
-    characterRelationships: {},
+    characterRelationships: Record<string, unknown>,
     visitedNodes: new Set()
   });
 

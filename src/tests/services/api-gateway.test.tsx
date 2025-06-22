@@ -55,8 +55,8 @@ describe('APIGateway', () => {
     // Setup request/response mocks
     mockReq = {
       ip: '192.168.1.100',
-      headers: {},
-      query: {},
+      headers: Record<string, unknown>,
+      query: Record<string, unknown>,
       get: jest.fn()
     };
 

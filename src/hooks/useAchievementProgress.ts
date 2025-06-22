@@ -93,10 +93,10 @@ const municipalCompetencyFrameworks: Record<AchievementCategory, MunicipalCompet
         capabilities: ['Basic document drag-drop', 'Simple workflow navigation'],
         municipalResponsibilities: ['Handle routine permit applications'],
         culturalAdaptations: {
-          swedish: { culture: 'swedish', localizedTitle: 'Grundläggande Arbetsflödesanvändare', culturalRequirements: [], governmentStandards: [], professionalTerminology: {}, assessmentAdaptations: [] },
-          german: { culture: 'german', localizedTitle: 'Grundlegender Workflow-Benutzer', culturalRequirements: [], governmentStandards: [], professionalTerminology: {}, assessmentAdaptations: [] },
-          french: { culture: 'french', localizedTitle: 'Utilisateur de Flux de Travail de Base', culturalRequirements: [], governmentStandards: [], professionalTerminology: {}, assessmentAdaptations: [] },
-          dutch: { culture: 'dutch', localizedTitle: 'Basis Workflow Gebruiker', culturalRequirements: [], governmentStandards: [], professionalTerminology: {}, assessmentAdaptations: [] }
+          swedish: { culture: 'swedish', localizedTitle: 'Grundläggande Arbetsflödesanvändare', culturalRequirements: [], governmentStandards: [], professionalTerminology: Record<string, unknown>, assessmentAdaptations: [] },
+          german: { culture: 'german', localizedTitle: 'Grundlegender Workflow-Benutzer', culturalRequirements: [], governmentStandards: [], professionalTerminology: Record<string, unknown>, assessmentAdaptations: [] },
+          french: { culture: 'french', localizedTitle: 'Utilisateur de Flux de Travail de Base', culturalRequirements: [], governmentStandards: [], professionalTerminology: Record<string, unknown>, assessmentAdaptations: [] },
+          dutch: { culture: 'dutch', localizedTitle: 'Basis Workflow Gebruiker', culturalRequirements: [], governmentStandards: [], professionalTerminology: Record<string, unknown>, assessmentAdaptations: [] }
         },
         timeToAchieve: '1-2 weeks',
         prerequisites: []
@@ -118,10 +118,10 @@ const municipalCompetencyFrameworks: Record<AchievementCategory, MunicipalCompet
         capabilities: ['Multi-step workflow management', 'Error detection and correction'],
         municipalResponsibilities: ['Process complex permit applications', 'Handle citizen inquiries'],
         culturalAdaptations: {
-          swedish: { culture: 'swedish', localizedTitle: 'Kompetent Arbetsflödeshanterare', culturalRequirements: [], governmentStandards: [], professionalTerminology: {}, assessmentAdaptations: [] },
-          german: { culture: 'german', localizedTitle: 'Kompetenter Workflow-Manager', culturalRequirements: [], governmentStandards: [], professionalTerminology: {}, assessmentAdaptations: [] },
-          french: { culture: 'french', localizedTitle: 'Gestionnaire de Flux Compétent', culturalRequirements: [], governmentStandards: [], professionalTerminology: {}, assessmentAdaptations: [] },
-          dutch: { culture: 'dutch', localizedTitle: 'Competente Workflow Manager', culturalRequirements: [], governmentStandards: [], professionalTerminology: {}, assessmentAdaptations: [] }
+          swedish: { culture: 'swedish', localizedTitle: 'Kompetent Arbetsflödeshanterare', culturalRequirements: [], governmentStandards: [], professionalTerminology: Record<string, unknown>, assessmentAdaptations: [] },
+          german: { culture: 'german', localizedTitle: 'Kompetenter Workflow-Manager', culturalRequirements: [], governmentStandards: [], professionalTerminology: Record<string, unknown>, assessmentAdaptations: [] },
+          french: { culture: 'french', localizedTitle: 'Gestionnaire de Flux Compétent', culturalRequirements: [], governmentStandards: [], professionalTerminology: Record<string, unknown>, assessmentAdaptations: [] },
+          dutch: { culture: 'dutch', localizedTitle: 'Competente Workflow Manager', culturalRequirements: [], governmentStandards: [], professionalTerminology: Record<string, unknown>, assessmentAdaptations: [] }
         },
         timeToAchieve: '1-2 months',
         prerequisites: ['novice']
@@ -143,10 +143,10 @@ const municipalCompetencyFrameworks: Record<AchievementCategory, MunicipalCompet
         capabilities: ['Workflow optimization', 'Training and mentoring', 'Process improvement'],
         municipalResponsibilities: ['Lead workflow improvement initiatives', 'Mentor junior staff'],
         culturalAdaptations: {
-          swedish: { culture: 'swedish', localizedTitle: 'Skicklig Arbetsflödesexpert', culturalRequirements: [], governmentStandards: [], professionalTerminology: {}, assessmentAdaptations: [] },
-          german: { culture: 'german', localizedTitle: 'Qualifizierter Workflow-Experte', culturalRequirements: [], governmentStandards: [], professionalTerminology: {}, assessmentAdaptations: [] },
-          french: { culture: 'french', localizedTitle: 'Expert en Flux de Travail Qualifié', culturalRequirements: [], governmentStandards: [], professionalTerminology: {}, assessmentAdaptations: [] },
-          dutch: { culture: 'dutch', localizedTitle: 'Bekwame Workflow Expert', culturalRequirements: [], governmentStandards: [], professionalTerminology: {}, assessmentAdaptations: [] }
+          swedish: { culture: 'swedish', localizedTitle: 'Skicklig Arbetsflödesexpert', culturalRequirements: [], governmentStandards: [], professionalTerminology: Record<string, unknown>, assessmentAdaptations: [] },
+          german: { culture: 'german', localizedTitle: 'Qualifizierter Workflow-Experte', culturalRequirements: [], governmentStandards: [], professionalTerminology: Record<string, unknown>, assessmentAdaptations: [] },
+          french: { culture: 'french', localizedTitle: 'Expert en Flux de Travail Qualifié', culturalRequirements: [], governmentStandards: [], professionalTerminology: Record<string, unknown>, assessmentAdaptations: [] },
+          dutch: { culture: 'dutch', localizedTitle: 'Bekwame Workflow Expert', culturalRequirements: [], governmentStandards: [], professionalTerminology: Record<string, unknown>, assessmentAdaptations: [] }
         },
         timeToAchieve: '3-6 months',
         prerequisites: ['competent']
@@ -168,10 +168,10 @@ const municipalCompetencyFrameworks: Record<AchievementCategory, MunicipalCompet
         capabilities: ['System design', 'Strategic planning', 'Innovation leadership'],
         municipalResponsibilities: ['Design new municipal processes', 'Lead digital transformation'],
         culturalAdaptations: {
-          swedish: { culture: 'swedish', localizedTitle: 'Expert Arbetsflödesarkitekt', culturalRequirements: [], governmentStandards: [], professionalTerminology: {}, assessmentAdaptations: [] },
-          german: { culture: 'german', localizedTitle: 'Experte Workflow-Architekt', culturalRequirements: [], governmentStandards: [], professionalTerminology: {}, assessmentAdaptations: [] },
-          french: { culture: 'french', localizedTitle: 'Expert Architecte de Flux', culturalRequirements: [], governmentStandards: [], professionalTerminology: {}, assessmentAdaptations: [] },
-          dutch: { culture: 'dutch', localizedTitle: 'Expert Workflow Architect', culturalRequirements: [], governmentStandards: [], professionalTerminology: {}, assessmentAdaptations: [] }
+          swedish: { culture: 'swedish', localizedTitle: 'Expert Arbetsflödesarkitekt', culturalRequirements: [], governmentStandards: [], professionalTerminology: Record<string, unknown>, assessmentAdaptations: [] },
+          german: { culture: 'german', localizedTitle: 'Experte Workflow-Architekt', culturalRequirements: [], governmentStandards: [], professionalTerminology: Record<string, unknown>, assessmentAdaptations: [] },
+          french: { culture: 'french', localizedTitle: 'Expert Architecte de Flux', culturalRequirements: [], governmentStandards: [], professionalTerminology: Record<string, unknown>, assessmentAdaptations: [] },
+          dutch: { culture: 'dutch', localizedTitle: 'Expert Workflow Architect', culturalRequirements: [], governmentStandards: [], professionalTerminology: Record<string, unknown>, assessmentAdaptations: [] }
         },
         timeToAchieve: '6-12 months',
         prerequisites: ['proficient']
@@ -193,10 +193,10 @@ const municipalCompetencyFrameworks: Record<AchievementCategory, MunicipalCompet
         capabilities: ['Industry leadership', 'Innovation strategy', 'Municipal excellence'],
         municipalResponsibilities: ['Set municipal standards', 'Lead industry innovation'],
         culturalAdaptations: {
-          swedish: { culture: 'swedish', localizedTitle: 'Mästare i Kommunal Innovation', culturalRequirements: [], governmentStandards: [], professionalTerminology: {}, assessmentAdaptations: [] },
-          german: { culture: 'german', localizedTitle: 'Meister der Kommunalen Innovation', culturalRequirements: [], governmentStandards: [], professionalTerminology: {}, assessmentAdaptations: [] },
-          french: { culture: 'french', localizedTitle: 'Maître de l\'Innovation Municipale', culturalRequirements: [], governmentStandards: [], professionalTerminology: {}, assessmentAdaptations: [] },
-          dutch: { culture: 'dutch', localizedTitle: 'Meester Gemeentelijke Innovatie', culturalRequirements: [], governmentStandards: [], professionalTerminology: {}, assessmentAdaptations: [] }
+          swedish: { culture: 'swedish', localizedTitle: 'Mästare i Kommunal Innovation', culturalRequirements: [], governmentStandards: [], professionalTerminology: Record<string, unknown>, assessmentAdaptations: [] },
+          german: { culture: 'german', localizedTitle: 'Meister der Kommunalen Innovation', culturalRequirements: [], governmentStandards: [], professionalTerminology: Record<string, unknown>, assessmentAdaptations: [] },
+          french: { culture: 'french', localizedTitle: 'Maître de l\'Innovation Municipale', culturalRequirements: [], governmentStandards: [], professionalTerminology: Record<string, unknown>, assessmentAdaptations: [] },
+          dutch: { culture: 'dutch', localizedTitle: 'Meester Gemeentelijke Innovatie', culturalRequirements: [], governmentStandards: [], professionalTerminology: Record<string, unknown>, assessmentAdaptations: [] }
         },
         timeToAchieve: '12+ months',
         prerequisites: ['expert']
@@ -263,10 +263,10 @@ const municipalCompetencyFrameworks: Record<AchievementCategory, MunicipalCompet
         capabilities: ['Basic emergency protocols', 'Time-sensitive decision making'],
         municipalResponsibilities: ['Follow emergency procedures', 'Assist in crisis response'],
         culturalAdaptations: {
-          swedish: { culture: 'swedish', localizedTitle: 'Trainee Krishantering', culturalRequirements: [], governmentStandards: [], professionalTerminology: {}, assessmentAdaptations: [] },
-          german: { culture: 'german', localizedTitle: 'Notfall-Trainee', culturalRequirements: [], governmentStandards: [], professionalTerminology: {}, assessmentAdaptations: [] },
-          french: { culture: 'french', localizedTitle: 'Stagiaire Gestion d\'Urgence', culturalRequirements: [], governmentStandards: [], professionalTerminology: {}, assessmentAdaptations: [] },
-          dutch: { culture: 'dutch', localizedTitle: 'Noodrespons Trainee', culturalRequirements: [], governmentStandards: [], professionalTerminology: {}, assessmentAdaptations: [] }
+          swedish: { culture: 'swedish', localizedTitle: 'Trainee Krishantering', culturalRequirements: [], governmentStandards: [], professionalTerminology: Record<string, unknown>, assessmentAdaptations: [] },
+          german: { culture: 'german', localizedTitle: 'Notfall-Trainee', culturalRequirements: [], governmentStandards: [], professionalTerminology: Record<string, unknown>, assessmentAdaptations: [] },
+          french: { culture: 'french', localizedTitle: 'Stagiaire Gestion d\'Urgence', culturalRequirements: [], governmentStandards: [], professionalTerminology: Record<string, unknown>, assessmentAdaptations: [] },
+          dutch: { culture: 'dutch', localizedTitle: 'Noodrespons Trainee', culturalRequirements: [], governmentStandards: [], professionalTerminology: Record<string, unknown>, assessmentAdaptations: [] }
         },
         timeToAchieve: '2-4 weeks',
         prerequisites: []
@@ -288,10 +288,10 @@ const municipalCompetencyFrameworks: Record<AchievementCategory, MunicipalCompet
         capabilities: ['Multi-task coordination', 'Resource allocation', 'Stress management'],
         municipalResponsibilities: ['Coordinate emergency response', 'Manage resource allocation'],
         culturalAdaptations: {
-          swedish: { culture: 'swedish', localizedTitle: 'Krishanteringskoordinator', culturalRequirements: [], governmentStandards: [], professionalTerminology: {}, assessmentAdaptations: [] },
-          german: { culture: 'german', localizedTitle: 'Notfall-Koordinator', culturalRequirements: [], governmentStandards: [], professionalTerminology: {}, assessmentAdaptations: [] },
-          french: { culture: 'french', localizedTitle: 'Coordinateur d\'Urgence', culturalRequirements: [], governmentStandards: [], professionalTerminology: {}, assessmentAdaptations: [] },
-          dutch: { culture: 'dutch', localizedTitle: 'Noodrespons Coördinator', culturalRequirements: [], governmentStandards: [], professionalTerminology: {}, assessmentAdaptations: [] }
+          swedish: { culture: 'swedish', localizedTitle: 'Krishanteringskoordinator', culturalRequirements: [], governmentStandards: [], professionalTerminology: Record<string, unknown>, assessmentAdaptations: [] },
+          german: { culture: 'german', localizedTitle: 'Notfall-Koordinator', culturalRequirements: [], governmentStandards: [], professionalTerminology: Record<string, unknown>, assessmentAdaptations: [] },
+          french: { culture: 'french', localizedTitle: 'Coordinateur d\'Urgence', culturalRequirements: [], governmentStandards: [], professionalTerminology: Record<string, unknown>, assessmentAdaptations: [] },
+          dutch: { culture: 'dutch', localizedTitle: 'Noodrespons Coördinator', culturalRequirements: [], governmentStandards: [], professionalTerminology: Record<string, unknown>, assessmentAdaptations: [] }
         },
         timeToAchieve: '2-3 months',
         prerequisites: ['novice']
@@ -313,10 +313,10 @@ const municipalCompetencyFrameworks: Record<AchievementCategory, MunicipalCompet
         capabilities: ['Team leadership', 'Strategic decision making', 'Crisis communication'],
         municipalResponsibilities: ['Lead emergency response', 'Communicate with media and public'],
         culturalAdaptations: {
-          swedish: { culture: 'swedish', localizedTitle: 'Krishanteringsledare', culturalRequirements: [], governmentStandards: [], professionalTerminology: {}, assessmentAdaptations: [] },
-          german: { culture: 'german', localizedTitle: 'Notfall-Leiter', culturalRequirements: [], governmentStandards: [], professionalTerminology: {}, assessmentAdaptations: [] },
-          french: { culture: 'french', localizedTitle: 'Chef d\'Urgence', culturalRequirements: [], governmentStandards: [], professionalTerminology: {}, assessmentAdaptations: [] },
-          dutch: { culture: 'dutch', localizedTitle: 'Noodrespons Leider', culturalRequirements: [], governmentStandards: [], professionalTerminology: {}, assessmentAdaptations: [] }
+          swedish: { culture: 'swedish', localizedTitle: 'Krishanteringsledare', culturalRequirements: [], governmentStandards: [], professionalTerminology: Record<string, unknown>, assessmentAdaptations: [] },
+          german: { culture: 'german', localizedTitle: 'Notfall-Leiter', culturalRequirements: [], governmentStandards: [], professionalTerminology: Record<string, unknown>, assessmentAdaptations: [] },
+          french: { culture: 'french', localizedTitle: 'Chef d\'Urgence', culturalRequirements: [], governmentStandards: [], professionalTerminology: Record<string, unknown>, assessmentAdaptations: [] },
+          dutch: { culture: 'dutch', localizedTitle: 'Noodrespons Leider', culturalRequirements: [], governmentStandards: [], professionalTerminology: Record<string, unknown>, assessmentAdaptations: [] }
         },
         timeToAchieve: '4-6 months',
         prerequisites: ['competent']
@@ -338,10 +338,10 @@ const municipalCompetencyFrameworks: Record<AchievementCategory, MunicipalCompet
         capabilities: ['System design', 'Protocol development', 'Training program creation'],
         municipalResponsibilities: ['Design emergency protocols', 'Train emergency personnel'],
         culturalAdaptations: {
-          swedish: { culture: 'swedish', localizedTitle: 'Expert Krishantering', culturalRequirements: [], governmentStandards: [], professionalTerminology: {}, assessmentAdaptations: [] },
-          german: { culture: 'german', localizedTitle: 'Notfall-Experte', culturalRequirements: [], governmentStandards: [], professionalTerminology: {}, assessmentAdaptations: [] },
-          french: { culture: 'french', localizedTitle: 'Expert Gestion d\'Urgence', culturalRequirements: [], governmentStandards: [], professionalTerminology: {}, assessmentAdaptations: [] },
-          dutch: { culture: 'dutch', localizedTitle: 'Noodrespons Expert', culturalRequirements: [], governmentStandards: [], professionalTerminology: {}, assessmentAdaptations: [] }
+          swedish: { culture: 'swedish', localizedTitle: 'Expert Krishantering', culturalRequirements: [], governmentStandards: [], professionalTerminology: Record<string, unknown>, assessmentAdaptations: [] },
+          german: { culture: 'german', localizedTitle: 'Notfall-Experte', culturalRequirements: [], governmentStandards: [], professionalTerminology: Record<string, unknown>, assessmentAdaptations: [] },
+          french: { culture: 'french', localizedTitle: 'Expert Gestion d\'Urgence', culturalRequirements: [], governmentStandards: [], professionalTerminology: Record<string, unknown>, assessmentAdaptations: [] },
+          dutch: { culture: 'dutch', localizedTitle: 'Noodrespons Expert', culturalRequirements: [], governmentStandards: [], professionalTerminology: Record<string, unknown>, assessmentAdaptations: [] }
         },
         timeToAchieve: '8-12 months',
         prerequisites: ['proficient']
@@ -363,10 +363,10 @@ const municipalCompetencyFrameworks: Record<AchievementCategory, MunicipalCompet
         capabilities: ['Regional leadership', 'Policy development', 'International coordination'],
         municipalResponsibilities: ['Regional emergency coordination', 'Policy and standard setting'],
         culturalAdaptations: {
-          swedish: { culture: 'swedish', localizedTitle: 'Mästare Krishantering', culturalRequirements: [], governmentStandards: [], professionalTerminology: {}, assessmentAdaptations: [] },
-          german: { culture: 'german', localizedTitle: 'Notfall-Meister', culturalRequirements: [], governmentStandards: [], professionalTerminology: {}, assessmentAdaptations: [] },
-          french: { culture: 'french', localizedTitle: 'Maître Gestion d\'Urgence', culturalRequirements: [], governmentStandards: [], professionalTerminology: {}, assessmentAdaptations: [] },
-          dutch: { culture: 'dutch', localizedTitle: 'Meester Noodrespons', culturalRequirements: [], governmentStandards: [], professionalTerminology: {}, assessmentAdaptations: [] }
+          swedish: { culture: 'swedish', localizedTitle: 'Mästare Krishantering', culturalRequirements: [], governmentStandards: [], professionalTerminology: Record<string, unknown>, assessmentAdaptations: [] },
+          german: { culture: 'german', localizedTitle: 'Notfall-Meister', culturalRequirements: [], governmentStandards: [], professionalTerminology: Record<string, unknown>, assessmentAdaptations: [] },
+          french: { culture: 'french', localizedTitle: 'Maître Gestion d\'Urgence', culturalRequirements: [], governmentStandards: [], professionalTerminology: Record<string, unknown>, assessmentAdaptations: [] },
+          dutch: { culture: 'dutch', localizedTitle: 'Meester Noodrespons', culturalRequirements: [], governmentStandards: [], professionalTerminology: Record<string, unknown>, assessmentAdaptations: [] }
         },
         timeToAchieve: '18+ months',
         prerequisites: ['expert']
@@ -410,14 +410,14 @@ const municipalCompetencyFrameworks: Record<AchievementCategory, MunicipalCompet
   },
 
   // Simplified implementations for other categories
-  branching_narratives: {} as MunicipalCompetencyFramework,
-  character_relationships: {} as MunicipalCompetencyFramework,
-  municipal_compliance: {} as MunicipalCompetencyFramework,
-  citizen_service: {} as MunicipalCompetencyFramework,
-  cultural_adaptation: {} as MunicipalCompetencyFramework,
-  leadership_development: {} as MunicipalCompetencyFramework,
-  innovation_implementation: {} as MunicipalCompetencyFramework,
-  emergency_response: {} as MunicipalCompetencyFramework
+  branching_narratives: Record<string, unknown> as MunicipalCompetencyFramework,
+  character_relationships: Record<string, unknown> as MunicipalCompetencyFramework,
+  municipal_compliance: Record<string, unknown> as MunicipalCompetencyFramework,
+  citizen_service: Record<string, unknown> as MunicipalCompetencyFramework,
+  cultural_adaptation: Record<string, unknown> as MunicipalCompetencyFramework,
+  leadership_development: Record<string, unknown> as MunicipalCompetencyFramework,
+  innovation_implementation: Record<string, unknown> as MunicipalCompetencyFramework,
+  emergency_response: Record<string, unknown> as MunicipalCompetencyFramework
 };
 
 export const useAchievementProgress = (characterId: string): UseAchievementProgressReturn => {

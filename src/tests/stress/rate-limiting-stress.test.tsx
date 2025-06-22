@@ -23,7 +23,7 @@ describe('Rate Limiting Stress Testing', () => {
   const createMockRequest = (overrides: Partial<Request> = {}): Partial<Request> => ({
     ip: '192.168.1.100',
     headers: { 'x-municipality-id': 'malmo_stad' },
-    query: {},
+    query: Record<string, unknown>,
     get: jest.fn(),
     ...overrides
   });
@@ -202,7 +202,7 @@ describe('Rate Limiting Stress Testing', () => {
       const nextFunctions = allRequests.map(() => jest.fn());
 
       // Mock DDoS detection
-      let requestCounts = new Map<string, number>();
+      const requestCounts = new Map<string, number>();
       mockRedis.zrangebyscore.mockImplementation((key: string) => {
         const ip = key.split(':')[1];
         const currentCount = requestCounts.get(ip) || 0;
@@ -267,7 +267,7 @@ describe('Rate Limiting Stress Testing', () => {
       const nextFunctions = attackRequests.map(() => jest.fn());
 
       // Mock coordinated attack detection
-      let ipRequestCounts = new Map<string, number>();
+      const ipRequestCounts = new Map<string, number>();
       mockRedis.zrangebyscore.mockImplementation((key: string) => {
         const ip = key.split(':')[1];
         const currentCount = ipRequestCounts.get(ip) || 0;

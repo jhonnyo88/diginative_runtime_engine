@@ -654,7 +654,7 @@ export class GDPRComplianceTenantManager {
     municipalityId: string,
     subjectId?: string
   ): Promise<ComplianceResult> {
-    let deletedRecords = 0;
+    const deletedRecords = 0;
     
     // Delete from Redis cache
     const deletedCacheKeys = await this.tenantRedis.deleteTenantData(municipalityId);

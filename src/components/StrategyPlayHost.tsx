@@ -80,7 +80,7 @@ export const StrategyPlayHost: React.FC<StrategyPlayHostProps> = ({
     scenesCompleted: [] as string[],
     score: 0,
     totalScore: 0,
-    answers: {} as Record<string, any>,
+    answers: Record<string, unknown> as Record<string, any>,
     correctAnswers: 0,
     totalQuestions: 0,
   });

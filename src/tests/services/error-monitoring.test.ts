@@ -424,7 +424,7 @@ describe('ErrorMonitoringService Unit Tests', () => {
         name: 'disabled.metric',
         value: 100,
         unit: 'count' as const,
-        tags: {}
+        tags: Record<string, unknown>
       };
 
       errorMonitoring.captureMetric(testMetric);
@@ -994,7 +994,7 @@ describe('ErrorMonitoringService Error Handling', () => {
       name: 'test.metric',
       value: 100,
       unit: 'count',
-      tags: {}
+      tags: Record<string, unknown>
     });
 
     // Attempt to flush

@@ -112,7 +112,7 @@ export const Draggable: React.FC<DraggableProps> = ({
         _hover={!isDisabled ? {
           transform: 'scale(1.02)',
           boxShadow: 'md',
-        } : {}}
+        } : Record<string, unknown>}
         aria-grabbed={isCurrentlyDragging}
         aria-dropeffect={isCurrentlyDragging ? 'move' : 'none'}
         role="button"

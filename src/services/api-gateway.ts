@@ -227,7 +227,7 @@ export class APIGateway {
       try {
         const municipalityId = this.extractMunicipalityId(req);
         const profile = this.municipalProfiles.get(municipalityId) || this.getDefaultProfile();
-        let config = { ...profile.limits[limitType] };
+        const config = { ...profile.limits[limitType] };
 
         // Apply SAML user privilege adjustments
         const adjustedConfig = this.applySAMLPrivilegeAdjustments(req, config, limitType);
@@ -607,7 +607,7 @@ export class APIGateway {
     const keys = await this.redis.keys(pattern);
     
     let totalRequests = 0;
-    let blockedRequests = 0;
+    const blockedRequests = 0;
     let ddosBlocks = 0;
     const apiKeyUsage: Record<string, number> = {};
 

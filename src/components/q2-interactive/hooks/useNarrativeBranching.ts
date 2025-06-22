@@ -61,9 +61,9 @@ export const useNarrativeBranching = () => {
     state: NarrativeState
   ): { matches: boolean; score: number; reason: string } => {
     let score = 0;
-    let totalConditions = path.conditions.length;
+    const totalConditions = path.conditions.length;
     let metConditions = 0;
-    let reasons: string[] = [];
+    const reasons: string[] = [];
 
     // Apply cultural modifiers
     const culturalModifier = path.culturalModifiers?.[state.culturalContext];
@@ -90,7 +90,7 @@ export const useNarrativeBranching = () => {
 
         case 'municipal_status':
           let statusMet = true;
-          let statusReasons: string[] = [];
+          const statusReasons: string[] = [];
 
           if (condition.budgetThreshold !== undefined) {
             const adjustedBudget = condition.budgetThreshold * conditionAdjustment;
@@ -180,7 +180,7 @@ export const useNarrativeBranching = () => {
     
     let bestMatch: BranchingPath | null = null;
     let bestScore = -1;
-    let evaluationResults: Array<{ path: BranchingPath; evaluation: ReturnType<typeof evaluateBranchingPath> }> = [];
+    const evaluationResults: Array<{ path: BranchingPath; evaluation: ReturnType<typeof evaluateBranchingPath> }> = [];
 
     // Evaluate all paths
     for (const path of sortedPaths) {

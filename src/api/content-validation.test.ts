@@ -56,7 +56,7 @@ describe('Content Validation API', () => {
 
     // Setup request/response mocks
     mockRequest = {
-      body: {}
+      body: Record<string, unknown>
     };
 
     mockResponse = {
@@ -159,7 +159,7 @@ describe('Content Validation API', () => {
       });
 
       mockRequest.body = {
-        content: {},
+        content: Record<string, unknown>,
         contentType: 'game'
       };
 
@@ -335,7 +335,7 @@ describe('Content Validation API', () => {
       });
 
       mockRequest.body = {
-        items: [{ content: {} }]
+        items: [{ content: Record<string, unknown> }]
       };
 
       await validateBatch(

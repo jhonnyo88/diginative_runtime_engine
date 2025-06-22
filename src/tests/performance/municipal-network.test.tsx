@@ -81,7 +81,7 @@ const MUNICIPAL_NETWORKS: NetworkProfile[] = [
 // Network simulation utilities
 class NetworkSimulator {
   private profile: NetworkProfile;
-  private requestQueue: Array<{ resolve: Function; delay: number }> = [];
+  private requestQueue: Array<{ resolve: (...args: unknown[]) => unknown; delay: number }> = [];
   private processing = false;
 
   constructor(profile: NetworkProfile) {

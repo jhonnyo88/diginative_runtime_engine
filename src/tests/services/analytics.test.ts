@@ -297,7 +297,7 @@ describe('AnalyticsService Unit Tests', () => {
       analyticsService.subscribe('test_event', errorCallback);
       
       // Send test message
-      const testData = { type: 'test_event', payload: {} };
+      const testData = { type: 'test_event', payload: Record<string, unknown> };
       webSocketInstance!.onmessage!(new MessageEvent('message', { 
         data: JSON.stringify(testData) 
       }));

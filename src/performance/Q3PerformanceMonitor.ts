@@ -338,7 +338,7 @@ export class Q3PerformanceMonitor {
     const now = Date.now();
     
     // Get or create current metrics object
-    let currentMetrics = this.metrics.length > 0 && (now - this.metrics[this.metrics.length - 1].timestamp < 1000)
+    const currentMetrics = this.metrics.length > 0 && (now - this.metrics[this.metrics.length - 1].timestamp < 1000)
       ? this.metrics[this.metrics.length - 1]
       : {
           hubLoadTime: 0,

@@ -244,7 +244,7 @@ export class OfflineResilienceManager {
     this.syncInProgress = true;
     const startTime = Date.now();
     let actionsProcessed = 0;
-    let conflictsResolved = 0;
+    const conflictsResolved = 0;
 
     try {
       console.log(`🔄 Syncing ${this.pendingActions.length} municipal actions`);
@@ -389,7 +389,7 @@ export class OfflineResilienceManager {
         lastSync: this.lastSyncAttempt,
         pendingActions: this.pendingActions,
         worldStates: new Map(),
-        userProgress: {},
+        userProgress: Record<string, unknown>,
         municipalContext: {
           municipality: '',
           userRole: '',

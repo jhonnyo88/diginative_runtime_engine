@@ -218,8 +218,8 @@ const WorldCard: React.FC<WorldCardProps> = ({
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ delay: index * 0.1, duration: 0.5 }}
-      whileHover={!isLocked ? { y: -4, boxShadow: '2xl' } : {}}
-      whileTap={!isLocked ? { scale: 0.98 } : {}}
+      whileHover={!isLocked ? { y: -4, boxShadow: '2xl' } : Record<string, unknown>}
+      whileTap={!isLocked ? { scale: 0.98 } : Record<string, unknown>}
     >
       <Box
         bg={cardBg}
@@ -384,8 +384,8 @@ const WorldCard: React.FC<WorldCardProps> = ({
             variant={isLocked ? 'outline' : 'solid'}
             size="sm"
             isDisabled={isLocked}
-            whileHover={!isLocked ? { scale: 1.02 } : {}}
-            whileTap={!isLocked ? { scale: 0.98 } : {}}
+            whileHover={!isLocked ? { scale: 1.02 } : Record<string, unknown>}
+            whileTap={!isLocked ? { scale: 0.98 } : Record<string, unknown>}
             onClick={(e) => {
               e.stopPropagation();
               if (!isLocked) onWorldSelect(world.id);

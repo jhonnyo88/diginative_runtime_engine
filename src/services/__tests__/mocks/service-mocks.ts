@@ -123,7 +123,7 @@ export class MockInfrastructureMonitoring extends BaseMockService {
     return this.handleCall('getHealthStatus', []) || {
       status: 'healthy',
       timestamp: Date.now(),
-      services: {},
+      services: Record<string, unknown>,
       metrics: []
     };
   });
@@ -206,7 +206,7 @@ export class MockPerformanceAnalytics extends BaseMockService {
     return transaction;
   });
   
-  measurePerformance = vi.fn(async (fn: Function) => {
+  measurePerformance = vi.fn(async (fn: (...args: unknown[]) => unknown) => {
     const start = Date.now();
     const result = await fn();
     const duration = Date.now() - start;
@@ -228,7 +228,7 @@ export class MockMunicipalIntegrationAPIs extends BaseMockService {
   
   fetchMunicipalData = vi.fn(async (tenantId: string, endpoint: string) => {
     return this.handleCall('fetchMunicipalData', [tenantId, endpoint]) || {
-      data: {},
+      data: Record<string, unknown>,
       status: 'success'
     };
   });

@@ -65,7 +65,7 @@ export class MultiWorldStateManager {
       completionPercentage: 0,
       timeSpent: 0,
       achievementsUnlocked: [],
-      competencyGains: {} as Record<CompetencyType, number>
+      competencyGains: Record<string, unknown> as Record<CompetencyType, number>
     }));
 
     const hubState: WorldHubState = {
@@ -78,7 +78,7 @@ export class MultiWorldStateManager {
       hubProgressData: {
         overallCompletionPercentage: 0,
         totalTimeSpent: 0,
-        competencyLevels: {} as Record<CompetencyType, number>,
+        competencyLevels: Record<string, unknown> as Record<CompetencyType, number>,
         unlockedAchievements: [],
         municipalCertificationProgress: 0,
         professionalDevelopmentScore: 0
@@ -254,7 +254,7 @@ export class MultiWorldStateManager {
       sceneIndex: 0,
       progress: {
         completedScenes: [],
-        sceneResults: {},
+        sceneResults: Record<string, unknown>,
         startTime: new Date().toISOString(),
         lastActiveTime: new Date().toISOString(),
         totalTimeSpent: 0
@@ -498,7 +498,7 @@ export class MultiWorldStateManager {
     return {
       overallCompletionPercentage: 0,
       totalTimeSpent: 0,
-      competencyLevels: {} as Record<CompetencyType, number>,
+      competencyLevels: Record<string, unknown> as Record<CompetencyType, number>,
       unlockedAchievements: [],
       municipalCertificationProgress: 0,
       professionalDevelopmentScore: 0
@@ -517,7 +517,7 @@ export class MultiWorldStateManager {
       completionPercentage: 0,
       timeSpent: 0,
       achievementsUnlocked: [],
-      competencyGains: {} as Record<CompetencyType, number>
+      competencyGains: Record<string, unknown> as Record<CompetencyType, number>
     }));
   }
 

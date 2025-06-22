@@ -29,7 +29,7 @@ vi.mock('../redis-cluster', () => ({
     del: vi.fn().mockResolvedValue(true),
     clearByPattern: vi.fn().mockResolvedValue(5),
     clearByTags: vi.fn().mockResolvedValue(3),
-    healthCheck: vi.fn().mockResolvedValue({ healthy: true, details: {} }),
+    healthCheck: vi.fn().mockResolvedValue({ healthy: true, details: Record<string, unknown> }),
     getMetrics: vi.fn().mockReturnValue({
       totalRequests: 100,
       hitRate: 0.75,
@@ -275,7 +275,7 @@ describe('ValidationMicroservice', () => {
       for (let i = 0; i < 3; i++) {
         await validationService.submitValidation({
           id: `metrics-test-${i}`,
-          content: { gameId: `game-${i}`, version: '1.0', metadata: {}, scenes: [] },
+          content: { gameId: `game-${i}`, version: '1.0', metadata: Record<string, unknown>, scenes: [] },
           contentType: 'game',
           priority: 'normal'
         });
@@ -296,7 +296,7 @@ describe('ValidationMicroservice', () => {
       for (let i = 0; i < 12; i++) { // Exceeds maxConcurrentValidations (10)
         const request = validationService.submitValidation({
           id: `capacity-test-${i}`,
-          content: { gameId: `game-${i}`, version: '1.0', metadata: {}, scenes: [] },
+          content: { gameId: `game-${i}`, version: '1.0', metadata: Record<string, unknown>, scenes: [] },
           contentType: 'game',
           priority: 'normal'
         });
@@ -503,7 +503,7 @@ describe('ValidationMicroservice', () => {
       // Submit a few requests
       await validationService.submitValidation({
         id: 'shutdown-test-1',
-        content: { gameId: 'test', version: '1.0', metadata: {}, scenes: [] },
+        content: { gameId: 'test', version: '1.0', metadata: Record<string, unknown>, scenes: [] },
         contentType: 'game',
         priority: 'normal'
       });

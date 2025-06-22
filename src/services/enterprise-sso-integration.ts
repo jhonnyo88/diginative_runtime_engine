@@ -373,7 +373,7 @@ export class EnterpriseSSOIntegrationService extends EventEmitter {
     recommendations: string[];
   }> {
     const complianceReport = {
-      complianceFrameworks: {} as Record<string, boolean>,
+      complianceFrameworks: Record<string, unknown> as Record<string, boolean>,
       authenticationSecurity: {
         strongAuthenticationEnforced: this.ssoConfig.securityCompliance.enforceStrongAuthentication,
         sessionSecurityValidated: true,

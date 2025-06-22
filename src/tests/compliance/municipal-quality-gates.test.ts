@@ -36,7 +36,7 @@ const COMPLIANCE_THRESHOLDS = {
 };
 
 describe('Municipal Compliance Quality Gates', () => {
-  let complianceReport: Record<string, unknown> = {};
+  const complianceReport: Record<string, unknown> = {};
 
   beforeAll(async () => {
     console.log('🏛️ Running Municipal Compliance Quality Gates...');

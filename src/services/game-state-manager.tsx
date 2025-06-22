@@ -64,7 +64,7 @@ class GameStateManager {
       sceneIndex: 0,
       progress: {
         completedScenes: [],
-        sceneResults: {},
+        sceneResults: Record<string, unknown>,
         startTime: new Date().toISOString(),
         lastActiveTime: new Date().toISOString(),
         totalTimeSpent: 0
@@ -298,7 +298,7 @@ class GameStateManager {
         sceneIndex: session.progress?.sceneIndex || 0,
         progress: session.progress || {
           completedScenes: [],
-          sceneResults: {},
+          sceneResults: Record<string, unknown>,
           startTime: session.started_at,
           lastActiveTime: session.started_at,
           totalTimeSpent: 0

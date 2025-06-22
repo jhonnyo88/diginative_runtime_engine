@@ -228,7 +228,7 @@ export const StrategyPlayHost: React.FC<StrategyPlayHostProps> = ({
         return (
           <DialogueScene 
             sceneData={currentScene as any}
-            onComplete={() => handleSceneComplete({})}
+            onComplete={() => handleSceneComplete({ nextScene: currentScene?.navigation?.next })}
             municipalBranding={{
               primaryColor: gameManifest.theme?.colors?.primary || '#005AA0',
               logoUrl: gameManifest.theme?.brand?.logo?.url || '',

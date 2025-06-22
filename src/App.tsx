@@ -63,6 +63,7 @@ function App() {
           gameManifest={sampleGame as GameManifest}
           onComplete={handleGameComplete}
           analytics={analytics}
+          playerName={user?.displayName}
         />
       </GameProtectedRoute>
     );

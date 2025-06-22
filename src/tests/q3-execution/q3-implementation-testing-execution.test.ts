@@ -10,7 +10,7 @@
  * @roadmap Q3-Game-Engine-Evolution
  */
 
-import { describe, test, expect, beforeEach, afterEach } from 'vitest';
+import { describe, test, expect, beforeEach } from 'vitest';
 import { performance } from 'perf_hooks';
 
 // Mock Q3 Implementation Components för Testing Execution

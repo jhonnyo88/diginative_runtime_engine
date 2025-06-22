@@ -280,6 +280,7 @@ Cypress.Commands.add('measureActionPerformance', (actionName, actionFn) => {
 
 // Type definitions for TypeScript support
 declare global {
+  // eslint-disable-next-line @typescript-eslint/no-namespace
   namespace Cypress {
     interface Chainable {
       tab(options?: { shift?: boolean }): Chainable<Element>

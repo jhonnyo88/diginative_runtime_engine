@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Box, VStack, Heading, Text, Button, HStack, Badge, Modal, ModalOverlay, ModalContent, ModalHeader, ModalBody, ModalCloseButton, useDisclosure, IconButton } from '@chakra-ui/react';
+import { Box, VStack, Heading, Text, Button, HStack, Badge, Modal, ModalOverlay, ModalContent, ModalHeader, ModalBody, ModalCloseButton, useDisclosure } from '@chakra-ui/react';
 import { StrategyPlayHost } from './components/StrategyPlayHost';
 import type { GameResults } from './components/StrategyPlayHost';
 import type { GameManifest } from './types/game-manifest';

@@ -1,4 +1,4 @@
-import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
+import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { Request, Response } from 'express';
 import { validateContent, validateBatch, validationHealthCheck } from './content-validation';
 import { DevTeamContentValidator } from '../validation/devteam-content-validator';
@@ -43,7 +43,7 @@ describe('Content Validation API', () => {
       })
     };
 
-    (DevTeamContentValidator as any).mockImplementation(() => mockValidator);
+    (DevTeamContentValidator as Record<string, unknown>).mockImplementation(() => mockValidator);
 
     // Setup mock monitoring
     mockMonitoring = {
@@ -52,7 +52,7 @@ describe('Content Validation API', () => {
       reportMessage: vi.fn()
     };
 
-    (InfrastructureMonitoring.getInstance as any).mockReturnValue(mockMonitoring);
+    (InfrastructureMonitoring.getInstance as Record<string, unknown>).mockReturnValue(mockMonitoring);
 
     // Setup request/response mocks
     mockRequest = {

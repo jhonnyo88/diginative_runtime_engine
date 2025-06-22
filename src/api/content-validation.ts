@@ -90,9 +90,9 @@ function generateSuggestions(errors: ValidationError[]): string[] {
  * Validates incoming content before processing
  */
 export async function validateContent(
-  req: Request<{}, {}, ValidationRequest>,
+  req: Request<Record<string, unknown>, Record<string, unknown>, ValidationRequest>,
   res: Response<ValidationResponse>,
-  next: NextFunction
+  _next: NextFunction
 ): Promise<void> {
   const startTime = Date.now();
   const monitoring = InfrastructureMonitoring.getInstance();
@@ -399,11 +399,14 @@ export function validationHealthCheck(req: Request, res: Response): void {
   const result = validator.validateGameManifest(testContent);
   const processingTime = Date.now() - startTime;
   
+  const healthStatus = monitoring.getHealthStatus();
+  
   res.json({
     status: 'healthy',
     validationWorking: result.isValid,
     processingTime,
     cacheSize: validationCache.size,
+    infrastructureHealth: healthStatus.status,
     timestamp: new Date().toISOString()
   });
 }

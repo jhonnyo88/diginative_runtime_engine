@@ -312,13 +312,13 @@ export class EuropeanCDNManager {
     }
   }
 
-  private async deployToEdge(edgeLocation: EdgeLocation, assets: Asset[]): Promise<void> {
+  private async deployToEdge(edgeLocation: EdgeLocation, _assets: Asset[]): Promise<void> {
     // CloudFlare Workers deployment för cultural assets
-    const workerScript = this.generateCulturalWorker(assets);
+    const workerScript = this.generateCulturalWorker();
     await this.deployWorkerToEdge(edgeLocation, workerScript);
   }
 
-  private generateCulturalWorker(assets: Asset[]): string {
+  private generateCulturalWorker(): string {
     // Generate CloudFlare Worker script för cultural asset delivery
     return `
       // Cultural asset delivery worker
@@ -341,7 +341,7 @@ export class EuropeanCDNManager {
     `;
   }
 
-  private async collectPerformanceData(): Promise<any> {
+  private async collectPerformanceData(): Promise<Record<string, unknown>> {
     // CloudFlare Analytics API integration
     return {
       stockholm: { latency: 45, cache_hits: 0.95, bandwidth: '2.3GB' },
@@ -362,7 +362,7 @@ export class EuropeanCDNManager {
       bundle_size_reduction: this.calculateSizeReduction(culturalContext),
       latency_improvement: this.calculateLatencyImprovement(culturalContext),
       cache_efficiency: this.calculateCacheEfficiency(culturalContext),
-      cultural_relevance_score: this.calculateCulturalRelevance(culturalContext)
+      cultural_relevance_score: this.calculateCulturalRelevance()
     };
   }
 
@@ -400,7 +400,7 @@ export class EuropeanCDNManager {
     return efficiencies[culturalContext];
   }
 
-  private calculateCulturalRelevance(culturalContext: CulturalContext): number {
+  private calculateCulturalRelevance(): number {
     // All cultural adaptations should score high
     return 0.95; // 95% cultural relevance through expert-designed adaptations
   }
